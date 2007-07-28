@@ -8,6 +8,7 @@ This module contains the XML parser
 #
 # Distributed under the terms of the MIT license.
 #
+__version__ = u'$Id$'
 
 import warnings
 import xml.sax
