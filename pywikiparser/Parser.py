@@ -8,6 +8,7 @@
 __version__ = '$Id$'
 
 import warnings
+import re
 
 import ObjectTree as dom
 from BufferedReader import BufferedReader
@@ -30,6 +31,17 @@ class Parser:
             return self.lex.next()
         else:
             raise ParseError('%r is not one of %r' % (data[0], tokens))
+            
+    def expecttext(self):
+    	data = self.lex.peek()
+    	if data[0] in [Tokens.TEXT, Tokens.WHITESPACE]:
+    		return self.lex.next()
+    	elif data[0] in [Tokens.EQUAL_SIGN,	Tokens.APOSTROPHE,	Tokens.ASTERISK,
+    	                 Tokens.COLON,      Tokens.SEMICOLON,	Tokens.HASH]:
+    		data = self.lex.next()
+    		return (data[0], data[0].__doc__[0]*data[1])
+    	else:
+    		raise ParseError('%r is not parsable as text data' % (data[0],))
 
     def parse(self, breaktoken=[]):
         self.root = dom.Element('wikipage')
@@ -166,14 +178,16 @@ class Parser:
     # True parser callers
 
     def parseWHITESPACE(self):
+    	# Todo: 
         return self.parseTEXT()
 
     def parseTEXT(self):
         text = ''
-        try:
-            while(True):
-                text += self.expect([Tokens.TEXT, Tokens.WHITESPACE])[1]
-        except ParseError: pass
+        while(True):
+        	try:
+        		text += self.expect([Tokens.TEXT, Tokens.WHITESPACE])[1]
+        	except ParseError: break
+
         if text:
             return [text]
         else:
@@ -183,7 +197,7 @@ class Parser:
         try:
             return self.parseWikilink()
         except ParseError: pass
-            
+
         self.lex.undo()
         try:
             return self.parseExternallink()
@@ -224,9 +238,39 @@ class Parser:
         self.lex.undo()
         token = self.expect(Tokens.TAB_OPEN)
         return ['{|']
-        
+    
+    titlere = re.compile(r"[^\^\]#<>\[\|\{\}\n]*$")   
     def parseWikilink(self):
-        raise ParseError("Needs implementation")
+    	retval = dom.Element('')
+    	pre = self.expect(Tokens.SQRE_OPEN)[1]-2
+    	
+    	if pre < 0:
+    		raise ParseError("Not enough opening brackets")
+    	elif pre > 0:
+    		retval.append('['*pre)
+    	
+    	title = ''
+    	while(True):
+    		try:
+    			data = self.expecttext()[1]
+    			print data
+    		except ParseError: break
+    		if not self.titlere.match(data):
+    			raise ParseError("Illegal page title")
+    		else:
+    			title += data
+    	
+    	link = retval.appendElement('wikilink')
+    	link.appendElement('url').append(title)
+    	
+    	aft = self.expect(Tokens.SQRE_CLOSE)[1]-2  
+    	if aft < 0:
+    		raise ParseError("Not enough closing brackets")
+    	elif aft > 0:
+    		self.lex.push((Tokens.SQRE_CLOSE, aft))
+    	 			
+    	return retval
+    		
         
     def parseExternallink(self):
         raise ParseError("Needs implementation")

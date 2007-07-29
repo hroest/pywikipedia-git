@@ -25,7 +25,7 @@ class Tokens:
                ('PIPE',        '|     Pipe symbol'),
                ('EQUAL_SIGN',  '=     Equal sign'),
                ('APOSTROPHE',  '\'     Apostrophe'),
-               ('ASTERISK',        '*     Star sign'),
+               ('ASTERISK',    '*     Asterisk'),
                ('COLON',       ':     Colon'),
                ('SEMICOLON',   ';     Semicolon'),
                ('HASH',        '#     Hash symbol'),
