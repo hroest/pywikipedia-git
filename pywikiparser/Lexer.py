@@ -25,6 +25,10 @@ class Tokens:
                ('PIPE',        '|     Pipe symbol'),
                ('EQUAL_SIGN',  '=     Equal sign'),
                ('APOSTROPHE',  '\'     Apostrophe'),
+               ('STAR',        '*     Star sign'),
+               ('COLON',       ':     Colon'),
+               ('SEMICOLON',   ';     Semicolon'),
+               ('HASH',        '#     Hash symbol'),
                ('CURL_OPEN',   '{     Curly bracket open'),
                ('CURL_CLOSE',  '}     Curly bracket close'),
                ('ANGL_OPEN',   '<     Angular bracket open'),
@@ -56,7 +60,7 @@ class Lexer:
         try:
             c = self.getchar()
             while True:
-                if (c in ('[', ']', '{', '}', '<', '>', '=', '\'')):
+                if (c in ('[', ']', '{', '}', '<', '>', '=', '\'', '*', ':', ';', '#')):
                     if text:
                         yield (Tokens.TEXT, text)
                         text = ''
@@ -76,6 +80,10 @@ class Lexer:
                         elif (c == '>'): yield (Tokens.ANGL_CLOSE, num)
                         elif (c == '='): yield (Tokens.EQUAL_SIGN, num)
                         elif (c == '\''): yield(Tokens.APOSTROPHE, num)
+                        elif (c == '*'): yield (Tokens.STAR,       num)
+                        elif (c == ':'): yield (Tokens.COLON,      num)
+                        elif (c == ';'): yield (Tokens.SEMICOLON,  num)
+                        elif (c == '#'): yield (Tokens.HASH,       num)
                     c = t
                 elif (c == '|'):
                     if text:

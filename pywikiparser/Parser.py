@@ -58,6 +58,8 @@ class Parser:
     def parseEOF(self):
         token = self.expect(Tokens.EOF)
         raise StopIteration
+    
+    # Special functions that directly access the storage tree
         
     def parseNEWPAR(self):
         token = self.expect(Tokens.NEWPAR)
@@ -113,6 +115,8 @@ class Parser:
             self.bold = True
         return []     
     
+    # Functions that return the input directly
+    
     def parseSQRE_CLOSE(self):
         token = self.expect(Tokens.SQRE_CLOSE)
         return [']'*token[1]]
@@ -133,6 +137,22 @@ class Parser:
         token = self.expect(Tokens.ANGL_CLOSE)
         return ['>'*token[1]]
 
+    def parseSTAR(self):
+        token = self.expect(Tokens.STAR)
+        return ['*'*token[1]]
+        
+    def parseCOLON(self):
+        token = self.expect(Tokens.COLON)
+        return [':'*token[1]]
+        
+    def parseSEMICOLON(self):
+        token = self.expect(Tokens.SEMICOLON)
+        return [';'*token[1]]
+        
+    def parseHASH(self):
+        token = self.expect(Tokens.HASH)
+        return ['#'*token[1]]
+
     def parseTAB_NEWLINE(self):
         token = self.expect(Tokens.TAB_NEWLINE)
         return ['|-']
@@ -140,6 +160,10 @@ class Parser:
     def parseTAB_CLOSE(self):
         token = self.expect(Tokens.TAB_CLOSE)
         return ['|}']
+        
+
+
+    # True parser callers
 
     def parseWHITESPACE(self):
         return self.parseTEXT()
@@ -156,15 +180,66 @@ class Parser:
             return []
 
     def parseSQRE_OPEN(self):
-        token = self.expect(Tokens.SQRE_OPEN)
-    def parseCURL_OPEN(self):
-        token = self.expect(Tokens.CURL_OPEN)
-    def parseANGL_OPEN(self):
-        token = self.expect(Tokens.ANGL_OPEN)
-    def parseTAB_OPEN(self):
-        token = self.expect(Tokens.TAB_OPEN)
-
-
-
+        try:
+            return self.parseWikilink()
+        except ParseError: pass
+            
+        self.lex.undo()
+        try:
+            return self.parseExternallink()
+        except ParseError: pass
         
-             
+        self.lex.undo()
+        token = self.expect(Tokens.SQRE_OPEN)
+        return ['['*token[1]]
+        
+    def parseCURL_OPEN(self):
+        try:
+            return self.parseTemplateparam()
+        except ParseError: pass
+        
+        self.lex.undo()
+        try:
+            return self.parseTemplate()
+        except ParseError: pass
+
+        self.lex.undo()
+        token = self.expect(Tokens.CURL_OPEN)
+        return ['{'*token[1]]
+                
+    def parseANGL_OPEN(self):
+        try:
+            return self.parseHTML()
+        except ParseError: pass
+        
+        self.lex.undo()
+        token = self.expect(Tokens.ANGL_OPEN)
+        return ['<'*token[1]]
+
+    def parseTAB_OPEN(self):
+        try:
+            return self.parseWikitable()
+        except ParseError: pass
+        
+        self.lex.undo()
+        token = self.expect(Tokens.TAB_OPEN)
+        return ['{|']
+        
+    def parseWikilink(self):
+        raise ParseError("Needs implementation")
+        
+    def parseExternallink(self):
+        raise ParseError("Needs implementation")
+    
+    def parseTemplateparam(self):
+        raise ParseError("Needs implementation")
+        
+    def parseTemplate(self):
+        raise ParseError("Needs implementation")
+        
+    def parseHTML(self):
+        raise ParseError("Needs implementation")
+        
+    def parseWikitable(self):
+    	raise ParseError("Needs implementation")
+    	
