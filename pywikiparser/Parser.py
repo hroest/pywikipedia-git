@@ -137,8 +137,8 @@ class Parser:
         token = self.expect(Tokens.ANGL_CLOSE)
         return ['>'*token[1]]
 
-    def parseSTAR(self):
-        token = self.expect(Tokens.STAR)
+    def parseASTERISK(self):
+        token = self.expect(Tokens.ASTERISK)
         return ['*'*token[1]]
         
     def parseCOLON(self):

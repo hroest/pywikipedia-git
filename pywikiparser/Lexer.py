@@ -25,7 +25,7 @@ class Tokens:
                ('PIPE',        '|     Pipe symbol'),
                ('EQUAL_SIGN',  '=     Equal sign'),
                ('APOSTROPHE',  '\'     Apostrophe'),
-               ('STAR',        '*     Star sign'),
+               ('ASTERISK',        '*     Star sign'),
                ('COLON',       ':     Colon'),
                ('SEMICOLON',   ';     Semicolon'),
                ('HASH',        '#     Hash symbol'),
@@ -80,7 +80,7 @@ class Lexer:
                         elif (c == '>'): yield (Tokens.ANGL_CLOSE, num)
                         elif (c == '='): yield (Tokens.EQUAL_SIGN, num)
                         elif (c == '\''): yield(Tokens.APOSTROPHE, num)
-                        elif (c == '*'): yield (Tokens.STAR,       num)
+                        elif (c == '*'): yield (Tokens.ASTERISK,       num)
                         elif (c == ':'): yield (Tokens.COLON,      num)
                         elif (c == ';'): yield (Tokens.SEMICOLON,  num)
                         elif (c == '#'): yield (Tokens.HASH,       num)
