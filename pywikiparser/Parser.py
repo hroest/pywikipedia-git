@@ -68,27 +68,27 @@ class Parser:
                 
     def parseAPOSTROPHE(self):
         token = self.expect(Tokens.APOSTROPHE)
-        retval = []
+        num = token[1]
         
         #prepare length
-        if (token[1] == 1):
-            retval.append('\'')
-        elif (token[1] == 4):
-            retval.append('\'')
-            token[1] = 3
-        elif (token[1] > 5):
-            retval.append('\'' * (token[1]-5))
-            token[1] = 5
+        if (num == 1):
+            self.par.append('\'')
+        elif (num == 4):
+            self.par.append('\'')
+            num = 3
+        elif (num > 5):
+            self.par.append('\'' * (num-5))
+            num = 5
         
         # determine changes
         newitalic = self.italic
         newbold  = self.bold
         
-        if token[1] == 2: #toggle italic
+        if num == 2: #toggle italic
             newitalic = not self.italic
-        elif token[1] == 3: #toggle bold
+        elif num == 3: #toggle bold
             newbold  = not self.bold
-        elif token[1] == 5: #toggle both
+        elif num == 5: #toggle both
             newitalic = not self.italic
             newbold = not self.bold
         
@@ -111,7 +111,7 @@ class Parser:
         if not self.bold and newbold:
             self.par = self.par.appendElement('b')   
             self.bold = True
-        return retval     
+        return []     
     
     def parseSQRE_CLOSE(self):
         token = self.expect(Tokens.SQRE_CLOSE)
