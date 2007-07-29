@@ -1,4 +1,4 @@
-# -*- coding: utf-8  -*-
+﻿# -*- coding: utf-8  -*-
 """
 Simple object tree system for python.
 This module contains the Element class
@@ -84,7 +84,10 @@ class Element(list):
             arg.parent = self
         else:
             raise TypeError(u'Argument is of %r; expected <type \'BaseElement\'>.' % (type(arg),))
-        
+    
+    def extend(self, list):
+        for item in list:
+            self.append(item)
         
     def appendElement(self, *args, **kwargs):
         element = Element(*args, **kwargs)

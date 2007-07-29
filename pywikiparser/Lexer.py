@@ -10,22 +10,34 @@ __version__ = '$Id$'
 import re
 
 class Token:
-    TEXT        = 258       #       Text
-    SQRE_OPEN   = 259       # [     Square bracket open
-    SQRE_CLOSE  = 260       # ]     Square bracket close
-    PIPE        = 261       # |     Pipe symbol
-    EQUAL_SIGN  = 262       # =     Equal sign
-    APOSTROPHE  = 263       # '     Apostrophe
-    CURL_OPEN   = 264       # {     Curly bracket open
-    CURL_CLOSE  = 265       # }     Curly bracket close
-    ANGL_OPEN   = 266       # <     Angular bracket open
-    ANGL_CLOSE  = 267       # >     Angular bracket close
-    NEWPAR      = 268       # \n\n  New paragraph
-    TAB_OPEN    = 269       # {|    Table opening symbol
-    TAB_NEWLINE = 270       # |-    Table new row symbol
-    TAB_CLOSE   = 271       # |}    Table closing symbol
-    WHITESPACE  = 272       #       Whitespace with max 1 newline
-    EOF         = 273       #       End of file
+    def __init__(self, name, description):
+        self.name = name
+        self.__doc__ = description
+        
+    def __repr__(self):
+        return '<T_%s>' % (self.name,)
+
+class Tokens: 
+    tokens = [
+               ('TEXT',        '      Text data'),
+               ('SQRE_OPEN',   '[     Square bracket open'),
+               ('SQRE_CLOSE',  ']     Square bracket close'),
+               ('PIPE',        '|     Pipe symbol'),
+               ('EQUAL_SIGN',  '=     Equal sign'),
+               ('APOSTROPHE',  '\'     Apostrophe'),
+               ('CURL_OPEN',   '{     Curly bracket open'),
+               ('CURL_CLOSE',  '}     Curly bracket close'),
+               ('ANGL_OPEN',   '<     Angular bracket open'),
+               ('ANGL_CLOSE',  '>     Angular bracket close'),
+               ('NEWPAR',      '\n\n  New paragraph'),
+               ('TAB_OPEN',    '{|    Table opening symbol'),
+               ('TAB_NEWLINE', '|-    Table new row symbol'),
+               ('TAB_CLOSE',   '|}    Table closing symbol'),
+               ('WHITESPACE',  '      Whitespace with max 1 newline'),
+               ('EOF',         '      End of file')
+             ]
+    for token in tokens:
+        exec("%s = Token(%r,%r)" % (token[0], token[0], token[1]), globals(), locals())
 
 class Lexer:
     """ Lexer class for mediawiki wikitext. Used by the Parser module
@@ -46,7 +58,7 @@ class Lexer:
             while True:
                 if (c in ('[', ']', '{', '}', '<', '>', '=', '\'')):
                     if text:
-                        yield (Token.TEXT, text)
+                        yield (Tokens.TEXT, text)
                         text = ''
                     num = 1
                     try:
@@ -56,37 +68,41 @@ class Lexer:
                             t = self.getchar()
                             
                     finally:
-                        if   (c == '['): yield (Token.SQRE_OPEN,  num)
-                        elif (c == ']'): yield (Token.SQRE_CLOSE, num)
-                        elif (c == '{'): yield (Token.CURL_OPEN,  num)
-                        elif (c == '}'): yield (Token.CURL_CLOSE, num)
-                        elif (c == '<'): yield (Token.ANGL_OPEN,  num)
-                        elif (c == '>'): yield (Token.ANGL_CLOSE, num)
-                        elif (c == '='): yield (Token.EQUAL_SIGN, num)
-                        elif (c == '\''): yield(Token.APOSTROPHE, num)
+                        if   (c == '['): yield (Tokens.SQRE_OPEN,  num)
+                        elif (c == ']'): yield (Tokens.SQRE_CLOSE, num)
+                        elif (c == '{'): yield (Tokens.CURL_OPEN,  num)
+                        elif (c == '}'): yield (Tokens.CURL_CLOSE, num)
+                        elif (c == '<'): yield (Tokens.ANGL_OPEN,  num)
+                        elif (c == '>'): yield (Tokens.ANGL_CLOSE, num)
+                        elif (c == '='): yield (Tokens.EQUAL_SIGN, num)
+                        elif (c == '\''): yield(Tokens.APOSTROPHE, num)
                     c = t
                 elif (c == '|'):
                     if text:
-                        yield (Token.TEXT, text)
+                        yield (Tokens.TEXT, text)
                         text = ''
                     try:
                         t = self.getchar()
                     except StopIteration:
-                        yield (Token.PIPE, None)
+                        yield (Tokens.PIPE, None)
                         raise
                     
                     if (t == '-'):
-                        yield (Token.TAB_NEWLINE, None)
+                        yield (Tokens.TAB_NEWLINE, None)
                         c = self.getchar()
                     elif (t == '}'):
-                        yield (Token.TAB_CLOSE, None)
+                        yield (Tokens.TAB_CLOSE, None)
                         c = self.getchar()
-                    else: 
-                        yield (Token.PIPE, None)
+                    else:
+                        num = 1
+                        while (t == c):
+                            num += 1
+                            t = self.getchar()
+                        yield (Tokens.PIPE, num)
                     c = t
                 elif re.match('\s', c): # whitespace eater pro (TM)
                     if text:
-                        yield (Token.TEXT, text)
+                        yield (Tokens.TEXT, text)
                         text = ''
                     ws = ''
                     try:
@@ -95,16 +111,16 @@ class Lexer:
                             c = self.getchar()   #eat up remaining whitespace
                     finally:
                         if (ws.count('\n') > 1):
-                            yield (Token.NEWPAR, ws)
+                            yield (Tokens.NEWPAR, ws)
                         else:
-                            yield (Token.WHITESPACE, ws)
+                            yield (Tokens.WHITESPACE, ws)
                 else:
                     text = text + c
                     c = self.getchar()
         except StopIteration: pass
         if text:
-            yield (Token.TEXT, text)
-        yield (Token.EOF, None)
+            yield (Tokens.TEXT, text)
+        yield (Tokens.EOF, None)
 
     def getchar(self): 
         return self.data.next()
