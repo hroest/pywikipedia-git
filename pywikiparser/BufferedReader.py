@@ -1,7 +1,41 @@
 ﻿class BufferedReader(object):
+    """ Buffered reader. Usage:
+    
+    >>> reader = BufferedReader((i for i in range(10)))
+    >>> restore = reader.getrestore()
+    >>> restore
+    -1
+    >>> reader.next()
+    0
+    >>> reader.next()
+    1
+    >>> reader.undo(-1)
+    >>> reader.next()
+    0
+    >>> restore = reader.commit(-1)
+    >>> restore
+    -1
+    >>> reader.next()
+    1
+    >>> reader.getrestore()
+    0
+    >>> reader.next()
+    2
+    >>> reader.undo(0)
+    >>> reader.next()
+    2
+    >>> reader.commit(0)
+    1
+    >>> reader.undo(1)
+    >>> reader.next()
+    3
+    >>> reader.undo(-1)
+    >>> reader.next()
+    1
+    """
+    
     def __init__(self, generator):
-        self.inbuffer = []
-        self.outbuffer = []
+        self.buffer = []
         self.counter = -1
         self.generator = generator
         self.gen = self._generator()
@@ -31,33 +65,36 @@
     def next(self, *args, **kwargs):
         return self.gen.next(*args, **kwargs)  
     
-    def peek(self):
-        if len(self.outbuffer) <= self.counter+1:
+    def peek(self, num=1):
+        if len(self.buffer) <= self.counter+num:
             data = self.generator.next()
-            self.inbuffer.append(data)
-            self.outbuffer.append(data)
-        return self.outbuffer[self.counter+1]
+            self.buffer.append(data)
+        return self.buffer[self.counter+num]
     
     def _generator(self):
         while(True):
             self.counter += 1
-            if len(self.outbuffer) <= self.counter:
+            if len(self.buffer) <= self.counter:
                 data = self.generator.next()
-                self.inbuffer.append(data)
-                self.outbuffer.append(data)
-            yield self.outbuffer[self.counter]
+                self.buffer.append(data)
+            yield self.buffer[self.counter]
     
-    def commit(self):
-        self.inbuffer = self.inbuffer[self.counter+1:]
-        self.outbuffer = self.outbuffer[self.counter+1:]
-        self.counter = -1
+    def getrestore(self):
+        return self.counter
+    
+    def commit(self, counter):
+        if counter == -1:
+            # clear memory
+            self.buffer = self.buffer[self.counter+1:]
+            self.counter = -1
+        
+        self.gen = self._generator()
+        return self.counter
+        
+    def undo(self, counter):
+        self.counter = counter
         self.gen = self._generator()
         
-    def undo(self):
-        self.outbuffer = self.inbuffer[:]
-        self.counter = -1
-        self.gen = self._generator()
-                
-    def push(self, data):
-        self.outbuffer.append(data)
-        self.gen = self._generator()
+if __name__ == "__main__":
+    import doctest
+    doctest.testmod()
