@@ -28,26 +28,24 @@ class Parser:
            
         data = self.lex.peek()
         if data[0] in tokens:
-            return self.lex.next()
+            return self.lex.next()[1]
         else:
             raise ParseError('%r is not one of %r' % (data[0], tokens))
-            
-    def expecttext(self):
-    	data = self.lex.peek()
-    	if data[0] in [Tokens.TEXT, Tokens.WHITESPACE]:
-    		return self.lex.next()
-    	elif data[0] in [Tokens.EQUAL_SIGN,	Tokens.APOSTROPHE,	Tokens.ASTERISK,
-    	                 Tokens.COLON,      Tokens.SEMICOLON,	Tokens.HASH]:
-    		data = self.lex.next()
-    		return (data[0], data[0].__doc__[0]*data[1])
-    	else:
-    		raise ParseError('%r is not parsable as text data' % (data[0],))
 
+    def eat(self, tokens):
+        data = ''
+        try:
+            while(True):
+                data += self.expect(tokens)
+        except ParseError:
+            return data
+                
     def parse(self, breaktoken=[]):
         self.root = dom.Element('wikipage')
         self.par = self.root.appendElement('p')
         self.italic = False
         self.bold = False
+        
         try:
             while(True):
                 token = self.lex.peek()
@@ -61,7 +59,7 @@ class Parser:
                 
         except StopIteration: pass
         return self.root
-        
+
     def parsetoken(self, token):
         # The function to call is parser<token>
         exec("data = self.parse%s()" % token[0].name, globals(), locals())
@@ -81,8 +79,7 @@ class Parser:
         return []
                 
     def parseAPOSTROPHE(self):
-        token = self.expect(Tokens.APOSTROPHE)
-        num = token[1]
+        num = len(self.eat(Tokens.APOSTROPHE))
         
         #prepare length
         if (num == 1):
@@ -130,51 +127,38 @@ class Parser:
     # Functions that return the input directly
     
     def parseSQRE_CLOSE(self):
-        token = self.expect(Tokens.SQRE_CLOSE)
-        return [']'*token[1]]
+        return self.expect(Tokens.SQRE_CLOSE)
         
     def parsePIPE(self):
-        token = self.expect(Tokens.PIPE)
-        return ['|'*token[1]]
+        return self.expect(Tokens.PIPE)
         
     def parseEQUAL_SIGN(self):
-        token = self.expect(Tokens.EQUAL_SIGN)
-        return ['='*token[1]]
+        return self.expect(Tokens.EQUAL_SIGN)
         
     def parseCURL_CLOSE(self):
-        token = self.expect(Tokens.CURL_CLOSE)
-        return ['}'*token[1]]
+        return self.expect(Tokens.CURL_CLOSE)
 
     def parseANGL_CLOSE(self):
-        token = self.expect(Tokens.ANGL_CLOSE)
-        return ['>'*token[1]]
+        return self.expect(Tokens.ANGL_CLOSE)
 
     def parseASTERISK(self):
-        token = self.expect(Tokens.ASTERISK)
-        return ['*'*token[1]]
+        return self.expect(Tokens.ASTERISK)
         
     def parseCOLON(self):
-        token = self.expect(Tokens.COLON)
-        return [':'*token[1]]
+        return self.expect(Tokens.COLON)
         
     def parseSEMICOLON(self):
-        token = self.expect(Tokens.SEMICOLON)
-        return [';'*token[1]]
+        return self.expect(Tokens.SEMICOLON)
         
     def parseHASH(self):
-        token = self.expect(Tokens.HASH)
-        return ['#'*token[1]]
+        return self.expect(Tokens.HASH)
 
     def parseTAB_NEWLINE(self):
-        token = self.expect(Tokens.TAB_NEWLINE)
-        return ['|-']
+        return self.expect(Tokens.TAB_NEWLINE)
 
     def parseTAB_CLOSE(self):
-        token = self.expect(Tokens.TAB_CLOSE)
-        return ['|}']
-        
-
-
+        return self.expect(Tokens.TAB_CLOSE)
+ 
     # True parser callers
 
     def parseWHITESPACE(self):
@@ -182,11 +166,7 @@ class Parser:
         return self.parseTEXT()
 
     def parseTEXT(self):
-        text = ''
-        while(True):
-        	try:
-        		text += self.expect([Tokens.TEXT, Tokens.WHITESPACE])[1]
-        	except ParseError: break
+        text = self.eat([Tokens.TEXT, Tokens.WHITESPACE])
 
         if text:
             return [text]
@@ -204,8 +184,7 @@ class Parser:
         except ParseError: pass
         
         self.lex.undo()
-        token = self.expect(Tokens.SQRE_OPEN)
-        return ['['*token[1]]
+        return self.expect(Tokens.SQRE_OPEN)
         
     def parseCURL_OPEN(self):
         try:
@@ -218,8 +197,7 @@ class Parser:
         except ParseError: pass
 
         self.lex.undo()
-        token = self.expect(Tokens.CURL_OPEN)
-        return ['{'*token[1]]
+        return self.expect(Tokens.CURL_OPEN)
                 
     def parseANGL_OPEN(self):
         try:
@@ -227,8 +205,7 @@ class Parser:
         except ParseError: pass
         
         self.lex.undo()
-        token = self.expect(Tokens.ANGL_OPEN)
-        return ['<'*token[1]]
+        return self.expect(Tokens.ANGL_OPEN)
 
     def parseTAB_OPEN(self):
         try:
@@ -236,39 +213,25 @@ class Parser:
         except ParseError: pass
         
         self.lex.undo()
-        token = self.expect(Tokens.TAB_OPEN)
-        return ['{|']
+        return self.expect(Tokens.TAB_OPEN)
     
     titlere = re.compile(r"[^\^\]#<>\[\|\{\}\n]*$")   
     def parseWikilink(self):
     	retval = dom.Element('')
-    	pre = self.expect(Tokens.SQRE_OPEN)[1]-2
+    	self.expect(Tokens.SQRE_OPEN)
+    	self.expect(Tokens.SQRE_OPEN)
     	
-    	if pre < 0:
-    		raise ParseError("Not enough opening brackets")
-    	elif pre > 0:
-    		retval.append('['*pre)
+    	pre = self.eat(Tokens.SQRE_OPEN)
+        if pre:
+            retval.append(pre)
     	
-    	title = ''
-    	while(True):
-    		try:
-    			data = self.expecttext()[1]
-    			print data
-    		except ParseError: break
-    		if not self.titlere.match(data):
-    			raise ParseError("Illegal page title")
-    		else:
-    			title += data
+      	title = self.eat(Tokens.TEXT)  # temp. needs to allow templates etc.
     	
     	link = retval.appendElement('wikilink')
     	link.appendElement('url').append(title)
-    	
-    	aft = self.expect(Tokens.SQRE_CLOSE)[1]-2  
-    	if aft < 0:
-    		raise ParseError("Not enough closing brackets")
-    	elif aft > 0:
-    		self.lex.push((Tokens.SQRE_CLOSE, aft))
-    	 			
+
+        self.expect(Tokens.SQRE_CLOSE)    	
+        self.expect(Tokens.SQRE_CLOSE)
     	return retval
     		
         

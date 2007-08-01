@@ -45,11 +45,16 @@ class Tokens:
 
 class Lexer:
     """ Lexer class for mediawiki wikitext. Used by the Parser module
+    Lexer.lexer() returns a generator that returns (Token, text) pairs. The text represents the actual text data, the token the interpreted data.
     
-    >>> l = Lexer('Test with [[wikilink|description]], {{template|parameter\\'s|{{nested}}=booh}}, \n\n new paragraphs, <html>, {| tables |- |}')
+    >>> l = Lexer('Test with [[wikilink|description]], {{template|parameter\\'s|{{nested}}=booh}}, \\n\\n new paragraphs, <html>, {| tables |- |}')
     >>> gen = l.lexer()
-    >>> [token for token in gen]
-    [(258, 'Test'), (272, ' '), (258, 'with'), (272, ' '), (259, 2), (258, 'wikilink'), (261, None), (258, 'description'), (260, 2), (258, ','), (272, ' '), (264, 2), (258, 'template'), (261, None), (258, 'parameter'), (263, 1), (258, 's'), (261, None), (264, 2), (258, 'nested'), (265, 2), (262, 1), (258, 'booh'), (265, 2), (258, ','), (268, ' \n\n '), (258, 'new'), (272, ' '), (258, 'paragraphs,'), (272, ' '), (266, 1), (258, 'html'), (267, 1), (258, ','), (272, ' '), (264, 1), (261, None), (272, ' '), (258, 'tables'), (272, ' '), (270, None), (258, '-'), (271, None), (273, None)]
+    >>> gen.next()
+    (<T_TEXT>, 'Test')
+    >>> gen.next()
+    (<T_WHITESPACE>, ' ')
+    >>> [token for token in gen][:10]
+    [(<T_TEXT>, 'with'), (<T_WHITESPACE>, ' '), (<T_SQRE_OPEN>, '['), (<T_SQRE_OPEN>, '['), (<T_TEXT>, 'wikilink'), (<T_PIPE>, None), (<T_TEXT>, 'description'), (<T_SQRE_CLOSE>, ']'), (<T_SQRE_CLOSE>, ']'), (<T_TEXT>, ',')]
     """
     
     def __init__(self, string):
@@ -60,54 +65,50 @@ class Lexer:
         try:
             c = self.getchar()
             while True:
-                if (c in ('[', ']', '{', '}', '<', '>', '=', '\'', '*', ':', ';', '#')):
+                if (c in ('[', ']', '}', '<', '>', '=', '\'', '*', ':', ';', '#')):
                     if text:
                         yield (Tokens.TEXT, text)
                         text = ''
-                    num = 1
-                    try:
-                        t = self.getchar()
-                        while (t == c):
-                            num += 1
-                            t = self.getchar()
-                            
-                    finally:
-                        if   (c == '['): yield (Tokens.SQRE_OPEN,  num)
-                        elif (c == ']'): yield (Tokens.SQRE_CLOSE, num)
-                        elif (c == '{'): yield (Tokens.CURL_OPEN,  num)
-                        elif (c == '}'): yield (Tokens.CURL_CLOSE, num)
-                        elif (c == '<'): yield (Tokens.ANGL_OPEN,  num)
-                        elif (c == '>'): yield (Tokens.ANGL_CLOSE, num)
-                        elif (c == '='): yield (Tokens.EQUAL_SIGN, num)
-                        elif (c == '\''): yield(Tokens.APOSTROPHE, num)
-                        elif (c == '*'): yield (Tokens.ASTERISK,       num)
-                        elif (c == ':'): yield (Tokens.COLON,      num)
-                        elif (c == ';'): yield (Tokens.SEMICOLON,  num)
-                        elif (c == '#'): yield (Tokens.HASH,       num)
+                    
+                    if   (c == '['): yield (Tokens.SQRE_OPEN,  c)
+                    elif (c == ']'): yield (Tokens.SQRE_CLOSE, c)
+                    elif (c == '}'): yield (Tokens.CURL_CLOSE, c)
+                    elif (c == '<'): yield (Tokens.ANGL_OPEN,  c)
+                    elif (c == '>'): yield (Tokens.ANGL_CLOSE, c)
+                    elif (c == '='): yield (Tokens.EQUAL_SIGN, c)
+                    elif (c == '\''): yield(Tokens.APOSTROPHE, c)
+                    elif (c == '*'): yield (Tokens.ASTERISK,   c)
+                    elif (c == ':'): yield (Tokens.COLON,      c)
+                    elif (c == ';'): yield (Tokens.SEMICOLON,  c)
+                    elif (c == '#'): yield (Tokens.HASH,       c)
+                    c = self.getchar()
+                elif (c == '{'):
+                    if text:
+                        yield (Tokens.TEXT, text)
+                        text = ''
+                    t = self.getchar()
+                    if (t == '|'):
+                        yield (Tokens.TAB_OPEN, '{|')
+                        c = self.getchar()
+                    else:
+                        yield (Tokens.CURL_OPEN, '{')
+                    
                     c = t
                 elif (c == '|'):
                     if text:
                         yield (Tokens.TEXT, text)
                         text = ''
-                    try:
-                        t = self.getchar()
-                    except StopIteration:
-                        yield (Tokens.PIPE, None)
-                        raise
+                    t = self.getchar()
                     
                     if (t == '-'):
-                        yield (Tokens.TAB_NEWLINE, None)
+                        yield (Tokens.TAB_NEWLINE, '|-')
                         c = self.getchar()
                     elif (t == '}'):
-                        yield (Tokens.TAB_CLOSE, None)
+                        yield (Tokens.TAB_CLOSE, '|}')
                         c = self.getchar()
                     else:
-                        num = 1
-                        while (t == c):
-                            num += 1
-                            t = self.getchar()
-                        yield (Tokens.PIPE, num)
-                    c = t
+                        yield (Tokens.PIPE, None)
+                        c = t
                 elif re.match('\s', c): # whitespace eater pro (TM)
                     if text:
                         yield (Tokens.TEXT, text)
@@ -132,3 +133,7 @@ class Lexer:
 
     def getchar(self): 
         return self.data.next()
+        
+if __name__ == "__main__":
+    import doctest
+    doctest.testmod()
