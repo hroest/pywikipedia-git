@@ -1,4 +1,4 @@
-﻿# -*- coding: utf-8  -*-
+# -*- coding: utf-8  -*-
 """ Mediawiki wikitext parser """
 #
 # (C) 2007 Merlijn 'valhallasw' van Deen
@@ -15,11 +15,20 @@ from BufferedReader import BufferedReader
 
 from Lexer import Lexer, Tokens
 
+_debug = False
+
+def dbgmsg(text):
+    if _debug:
+        print 'debug> ' + text
+
 class ParseError(Exception):
     """ Parsing Error """
 
 class Parser:
-    def __init__(self, data):
+    def __init__(self, data, debug = False):
+        global _debug
+        _debug = debug
+
         self.lex = BufferedReader(Lexer(data).lexer())
         
     def expect(self, tokens):
@@ -55,7 +64,7 @@ class Parser:
                     break
 
                 node = self.parsetoken(token, restore)
-                print "Adding %r (was %r)" % (node,token)
+                dbgmsg("Adding %r (was %r)" % (node,token))
                 self.par.extend(node)
                 restore = self.lex.commit(restore)
                 
@@ -105,7 +114,7 @@ class Parser:
             newitalic = not self.italic
             newbold = not self.bold
         
-        print 'bold: %r>%r italic: %r>%r' % (self.bold, newbold, self.italic, newitalic)
+        dbgmsg('bold: %r>%r italic: %r>%r' % (self.bold, newbold, self.italic, newitalic))
         if self.italic and not newitalic:
             if self.par.name == 'i' or not newbold:
                 self.par = self.par.parent
@@ -283,7 +292,7 @@ class Parser:
         self.expect(Tokens.CURL_OPEN)
         self.expect(Tokens.CURL_OPEN)
         pre = self.eat(Tokens.CURL_OPEN)
-        print 'pre: ' + pre
+        dbgmsg('pre: ' + pre)
         if pre:
             retval.append(pre)
 
@@ -302,7 +311,7 @@ class Parser:
         raise ParseError("Needs implementation")
         
     def parseWikitable(self):
-    	raise ParseError("Needs implementation")
+        raise ParseError("Needs implementation")
     
     titlere = re.compile(r"[^\^\]<>\[\|\{\}\n]*$")   	
     def parseTitle(self, closetoken):
@@ -314,7 +323,7 @@ class Parser:
             elif next[0] == Tokens.CURL_OPEN: # allow templates to expand
                 restore = self.lex.getrestore()
                 data = self.parseCURL_OPEN(restore)
-                print 'Parsed template: %r' % (data,)
+                dbgmsg('Parsed template: %r' % (data,))
                 for item in data:
                     if isinstance(item, basestring):
                         if not self.titlere.match(item):
@@ -326,5 +335,3 @@ class Parser:
                     raise ParseError('illegal wiki link')
                 title.append(next[1])
         return title
-
-    	
