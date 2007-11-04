@@ -1,4 +1,4 @@
-1 
+﻿1 
 1 '60
 1 '90
 0 'Patafysica 'patafysica
@@ -248347,3 +248347,23 @@
 1 †
 1 €
 1 →
+1 schoenmaat
+1 wereldbeker
+0 papagaai papegaai
+1 spoorweghalte
+1 rippen
+1 audio-cd
+1 audio-cd's
+1 bestandstype
+0 bekenste bekendste
+0 illigaal illegaal
+1 Gallië
+1 winterkamp
+1 artsenvereniging
+1 staalarbeider
+0 succevolle succesvolle
+0 ambitieuse ambitieuze
+0 ambiteuse ambitieuze
+0 relatie's relaties
+1 sportjournalistiek
+1 stadspoort
