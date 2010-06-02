@@ -47,6 +47,17 @@ class Family(family.Family):
         # Override defaults
         self.namespaces[2]['cs'] = u'Wikipedista'
         self.namespaces[3]['cs'] = u'Diskuse s wikipedistou'
+        self.namespaces[1]['ja'] = [u'ノート', u'トーク']
+        self.namespaces[3]['ja'] = [u'利用者‐会話', u'利用者・トーク']
+        self.namespaces[6]['ja'] = [u'ファイル', u'Image', u'画像']
+        self.namespaces[7]['ja'] = [u'ファイル‐ノート', u'ファイル・トーク', u'Image talk', u'画像‐ノート']
+        self.namespaces[9]['ja'] = [u'MediaWiki‐ノート', u'MediaWiki・トーク']
+        self.namespaces[10]['ja'] = [u'Template', u'テンプレート']
+        self.namespaces[11]['ja'] = [u'Template‐ノート', u'テンプレート・トーク']
+        self.namespaces[12]['ja'] = [u'Help', u'ヘルプ']
+        self.namespaces[13]['ja'] = [u'Help‐ノート', u'ヘルプ・トーク']
+        self.namespaces[14]['ja'] = [u'Category', u'カテゴリ']
+        self.namespaces[15]['ja'] = [u'Category', u'カテゴリ・トーク']
         self.namespaces[2]['pl'] = u'Wikipedysta'
         self.namespaces[3]['pl'] = u'Dyskusja wikipedysty'
 
@@ -233,7 +244,7 @@ class Family(family.Family):
             'io': u'Wikipedio Debato',
             'is': u'Wikipediaspjall',
             'it': u'Discussioni Wikipedia',
-            'ja': u'Wikipedia‐ノート',
+            'ja': [u'Wikipedia‐ノート', u'Wikipedia・トーク'],
             'jv': u'Dhiskusi Wikipedia',
             'ka': u'ვიკიპედია განხილვა',
             'kaa': u'Wikipedia sa\'wbeti',
@@ -462,7 +473,7 @@ class Family(family.Family):
             'id': u'Pembicaraan Portal',
             'is': u'Gáttaspjall',
             'it': u'Discussioni portale',
-            'ja': [u'Portal‐ノート', u'Portal・トーク'],
+            'ja': [u'Portal‐ノート', u'ポータル‐ノート', u'Portal・トーク'],
             'ka': u'პორტალი განხილვა',
             'kk': u'Портал талқылауы',
             'ko': u'들머리토론',
