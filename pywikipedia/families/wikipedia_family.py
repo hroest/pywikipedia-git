@@ -233,7 +233,7 @@ class Family(family.Family):
             'io': u'Wikipedio Debato',
             'is': u'Wikipediaspjall',
             'it': u'Discussioni Wikipedia',
-            'ja': u'Wikipedia・トーク',
+            'ja': u'Wikipedia‐ノート',
             'jv': u'Dhiskusi Wikipedia',
             'ka': u'ვიკიპედია განხილვა',
             'kaa': u'Wikipedia sa\'wbeti',
