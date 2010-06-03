@@ -1,10 +1,12 @@
 #! /usr/bin/env python
 # -*- coding: utf-8 -*-
 """
-A script that displays the ordinal number of the new articles being created visible on the Recent Changes list.
-The script doesn't make any edits, no bot account needed.
+A script that displays the ordinal number of the new articles being created
+visible on the Recent Changes list. The script doesn't make any edits, no bot
+account needed.
 
-Note: the script requires the Python IRC library http://python-irclib.sourceforge.net/
+Note: the script requires the Python IRC library
+http://python-irclib.sourceforge.net/
 """
 
 # Author: Balasyum
@@ -13,8 +15,9 @@ Note: the script requires the Python IRC library http://python-irclib.sourceforg
 __version__ = '$Id$'
 
 from ircbot import SingleServerIRCBot
-from irclib import nm_to_n, nm_to_h, irc_lower, ip_numstr_to_quad, ip_quad_to_numstr
-import wikipedia
+from irclib import nm_to_n, nm_to_h, irc_lower, ip_numstr_to_quad
+from irclib import ip_quad_to_numstr
+import wikipedia as pywikibot
 import re
 
 class ArtNoDisp(SingleServerIRCBot):
@@ -22,11 +25,13 @@ class ArtNoDisp(SingleServerIRCBot):
         SingleServerIRCBot.__init__(self, [(server, port)], nickname, nickname)
         self.channel = channel
         self.site = site
-        self.other_ns = re.compile(u'14\[\[07(' + u'|'.join(site.namespaces()) + u')')
+        self.other_ns = re.compile(
+            u'14\[\[07(' + u'|'.join(site.namespaces()) + u')')
         self.api_url = self.site.api_address()
         self.api_url += 'action=query&meta=siteinfo&siprop=statistics&format=xml'
         self.api_found = re.compile(r'articles="(.*?)"')
-        self.re_edit = re.compile(r'^C14\[\[^C07(?P<page>.+?)^C14\]\]^C4 (?P<flags>.*?)^C10 ^C02(?P<url>.+?)^C ^C5\*^C ^C03(?P<user>.+?)^C ^C5\*^C \(?^B?(?P<bytes>[+-]?\d+?)^B?\) ^C10(?P<summary>.*)^C'.replace('^B', '\002').replace('^C', '\003').replace('^U', '\037'))
+        self.re_edit = re.compile(
+            r'^C14\[\[^C07(?P<page>.+?)^C14\]\]^C4 (?P<flags>.*?)^C10 ^C02(?P<url>.+?)^C ^C5\*^C ^C03(?P<user>.+?)^C ^C5\*^C \(?^B?(?P<bytes>[+-]?\d+?)^B?\) ^C10(?P<summary>.*)^C'.replace('^B', '\002').replace('^C', '\003').replace('^U', '\037'))
 
     def on_nicknameinuse(self, c, e):
         c.nick(c.get_nickname() + "_")
@@ -52,12 +57,12 @@ class ArtNoDisp(SingleServerIRCBot):
         name = msg[8:msg.find(u'14',9)]
         text = self.site.getUrl(self.api_url)
         entry = self.api_found.findall(text)
-        page = wikipedia.Page(self.site, name)
+        page = pywikibot.Page(self.site, name)
         try:
                 text = page.get()
-        except wikipedia.NoPage:
+        except pywikibot.NoPage:
                 return
-        except wikipedia.IsRedirectPage:
+        except pywikibot.IsRedirectPage:
                 return
         print entry[0], name
 
@@ -74,7 +79,7 @@ class ArtNoDisp(SingleServerIRCBot):
         pass
 
 def main():
-    site = wikipedia.getSite()
+    site = pywikibot.getSite()
     site.forceLogin()
     chan = '#' + site.language() + '.' + site.family.name
     bot = ArtNoDisp(site, chan, site.loggedInAs(), "irc.wikimedia.org")

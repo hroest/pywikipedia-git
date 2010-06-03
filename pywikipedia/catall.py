@@ -10,13 +10,15 @@ Options:
 """
 #
 # (C) Rob W.W. Hooft, Andre Engels, 2004
+# (C) Pywikipedia bot team, 2004-2010
 #
 # Distributed under the terms of the MIT license.
 #
 __version__ = '$Id$'
 #
 
-import wikipedia, sys
+import wikipedia as pywikibot
+import sys
 
 msg={
     'ar':u'بوت: تغيير التصنيفات',
@@ -50,7 +52,7 @@ def choosecats(pagetext):
     print ("xx: if the first, remove all categories and add no new.")
     print ("q: quit.")
     while flag == False:
-        choice=wikipedia.input(u"?")
+        choice=pywikibot.input(u"?")
         if choice=="":
             flag=True
         elif choice=="-":
@@ -61,7 +63,7 @@ def choosecats(pagetext):
             editor = editarticle.TextEditor()
             newtext = editor.edit(pagetext)
         elif choice =="??":
-            wikipedia.output(pagetext[0:length])
+            pywikibot.output(pagetext[0:length])
             length = length+500
         elif choice=="xx" and chosen==[]:
             chosen = None
@@ -75,18 +77,18 @@ def choosecats(pagetext):
 
 def make_categories(page, list, site = None):
     if site is None:
-        site = wikipedia.getSite()
+        site = pywikibot.getSite()
     pllist=[]
     for p in list:
         cattitle="%s:%s" % (site.category_namespace(), p)
-        pllist.append(wikipedia.Page(site,cattitle))
-    page.put_async(wikipedia.replaceCategoryLinks(page.get(), pllist),
-                   comment=wikipedia.translate(site.lang, msg))
+        pllist.append(pywikibot.Page(site,cattitle))
+    page.put_async(pywikibot.replaceCategoryLinks(page.get(), pllist),
+                   comment=pywikibot.translate(site.lang, msg))
 
 docorrections=True
 start=[]
 
-for arg in wikipedia.handleArgs():
+for arg in pywikibot.handleArgs():
     if arg == '-onlynew':
         docorrections=False
     else:
@@ -97,7 +99,7 @@ if start == []:
 else:
     start=' '.join(start)
 
-mysite = wikipedia.getSite()
+mysite = pywikibot.getSite()
 
 try:
     for p in mysite.allpages(start = start):
@@ -105,7 +107,7 @@ try:
             text=p.get()
             cats=p.categories()
             if cats == []:
-                wikipedia.output(u"========== %s ==========" % p.title())
+                pywikibot.output(u"========== %s ==========" % p.title())
                 print "No categories"
                 print "----------------------------------------"
                 newcats=choosecats(text)
@@ -113,16 +115,16 @@ try:
                     make_categories(p, newcats, mysite)
             else:
                 if docorrections:
-                    wikipedia.output(u"========== %s ==========" % p.title())
+                    pywikibot.output(u"========== %s ==========" % p.title())
                     for c in cats:
-                        wikipedia.output(c.title())
+                        pywikibot.output(c.title())
                     print "----------------------------------------"
                     newcats=choosecats(text)
                     if newcats is None:
                         make_categories(p, [], mysite)
                     elif newcats != []:
                         make_categories(p, newcats, mysite)
-        except wikipedia.IsRedirectPage:
-            wikipedia.output(u'%s is a redirect' % p.title())
+        except pywikibot.IsRedirectPage:
+            pywikibot.output(u'%s is a redirect' % p.title())
 finally:
-    wikipedia.stopme()
+    pywikibot.stopme()

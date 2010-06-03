@@ -16,12 +16,17 @@ def xuniqueCombinations(items, n):
             for cc in xuniqueCombinations(items[i+1:],n-1):
                 yield [items[i]]+cc
 # End of permutation code
-
+#
+# (C) Pywikipedia bot team, 2006-2010
+#
+# Distributed under the terms of the MIT license.
+#
 __version__ = '$Id$'
 
 #
 # Windows Concose colors
-# This code makes this script Windows ONLY!!!  Feel free to adapt it to another platform
+# This code makes this script Windows ONLY!!!
+# Feel free to adapt it to another platform
 #
 # Adapted from http://aspn.activestate.com/ASPN/Cookbook/Python/Recipe/496901
 #
@@ -48,7 +53,8 @@ except:
 def SetColor(color):
     if std_out_handle:
         try:
-            return ctypes.windll.kernel32.SetConsoleTextAttribute(std_out_handle, color)
+            return ctypes.windll.kernel32.SetConsoleTextAttribute(
+                std_out_handle, color)
         except:
             pass
 
@@ -59,7 +65,8 @@ def SetColor(color):
 # end of console code
 
 import os
-import sys, query, wikipedia, re, codecs
+import sys, query, re, codecs
+import wikipedia as pywikibot
 
 
 class CaseChecker( object ):
@@ -74,7 +81,8 @@ class CaseChecker( object ):
         'ru': u'[[ВП:КЛ]]',
     }
 
-    # These words are always in one language, even though they could be typed in both
+    # These words are always in one language, even though they could be typed
+    # in both
     alwaysInLocal = [ u'СССР', u'Как', u'как' ]
     alwaysInLatin = [ u'II', u'III' ]
 
@@ -85,12 +93,16 @@ class CaseChecker( object ):
     localSuspects = u'АВЕКМНОРСТХІЁЇаеорсухіёї'
     latinSuspects = u'ABEKMHOPCTXIËÏaeopcyxiëï'
 
-    localKeyboard = u'йцукенгшщзфывапролдячсмить'   # possibly try to fix one character mistypes in an alternative keyboard layout
+    # possibly try to fix one character mistypes in an alternative keyboard
+    # layout
+    localKeyboard = u'йцукенгшщзфывапролдячсмить'
     latinKeyboard = u'qwertyuiopasdfghjklzxcvbnm'
 
     romanNumChars = u'IVXLMC'
-    romannumSuffixes = localLowerLtr                # all letters that may be used as suffixes after roman numbers:  "Iый"
-    romanNumSfxPtrn = re.compile(u'^[' + romanNumChars + ']+[' + localLowerLtr + ']+$')
+    # all letters that may be used as suffixes after roman numbers:  "Iый"
+    romannumSuffixes = localLowerLtr
+    romanNumSfxPtrn = re.compile(
+        u'^[' + romanNumChars + ']+[' + localLowerLtr + ']+$')
 
     whitelists = {
         'ru': u'ВП:КЛ/Whitelist'
@@ -118,12 +130,12 @@ class CaseChecker( object ):
 
     def __init__(self):
 
-        for arg in wikipedia.handleArgs():
+        for arg in pywikibot.handleArgs():
             if arg.startswith('-from'):
                 if arg.startswith('-from:'):
                     self.apfrom = arg[6:]
                 else:
-                    self.apfrom = wikipedia.input(u'Which page to start from: ')
+                    self.apfrom = pywikibot.input(u'Which page to start from: ')
             elif arg.startswith('-reqsize:'):
                 self.aplimit = int(arg[9:])
             elif arg == '-links':
@@ -142,13 +154,14 @@ class CaseChecker( object ):
             elif arg.startswith('-wikilog:'):
                 self.wikilogfile = arg[9:]
             else:
-                wikipedia.output(u'Unknown argument %s.' % arg)
-                wikipedia.showHelp()
+                pywikibot.output(u'Unknown argument %s.' % arg)
+                pywikibot.showHelp()
                 sys.exit()
 
         if self.namespaces == []:
             if self.apfrom == u'':
-                self.namespaces = [14, 10, 12, 0]    # 0 should be after templates ns
+                # 0 should be after templates ns
+                self.namespaces = [14, 10, 12, 0]
             else:
                 self.namespaces = [0]
 
@@ -161,7 +174,7 @@ class CaseChecker( object ):
             self.params['prop'] = 'links|categories'
 
 
-        self.site = wikipedia.getSite()
+        self.site = pywikibot.getSite()
 
         if len(self.localSuspects) != len(self.latinSuspects):
             raise ValueError(u'Suspects must be the same size')
@@ -169,7 +182,7 @@ class CaseChecker( object ):
             raise ValueError(u'Keyboard info must be the same size')
 
         if not os.path.isabs(self.wikilogfile):
-            self.wikilogfile = wikipedia.config.datafilepath(self.wikilogfile)
+            self.wikilogfile = pywikibot.config.datafilepath(self.wikilogfile)
         try:
             self.wikilog = codecs.open(self.wikilogfile, 'a', 'utf-8')
         except IOError:
@@ -177,29 +190,35 @@ class CaseChecker( object ):
 
         self.lclToLatDict = dict([(ord(self.localSuspects[i]),
                                    self.latinSuspects[i])
-                                     for i in range(len(self.localSuspects))])
+                                  for i in range(len(self.localSuspects))])
         self.latToLclDict = dict([(ord(self.latinSuspects[i]),
                                    self.localSuspects[i])
-                                     for i in range(len(self.localSuspects))])
+                                  for i in range(len(self.localSuspects))])
 
         if self.localKeyboard is not None:
-            self.lclToLatKeybDict = dict([(ord(self.localKeyboard[i]),
-                                       self.latinKeyboard[i])
-                                         for i in range(len(self.localKeyboard))])
-            self.latToLclKeybDict = dict([(ord(self.latinKeyboard[i]),
-                                       self.localKeyboard[i])
-                                         for i in range(len(self.localKeyboard))])
+            self.lclToLatKeybDict = dict(
+                [(ord(self.localKeyboard[i]),
+                  self.latinKeyboard[i])
+                 for i in range(len(self.localKeyboard))])
+            self.latToLclKeybDict = dict(
+                [(ord(self.latinKeyboard[i]),
+                  self.localKeyboard[i])
+                 for i in range(len(self.localKeyboard))])
         else:
             self.lclToLatKeybDict = {}
             self.latToLclKeybDict = {}
 
-        badPtrnStr = u'([%s][%s]|[%s][%s])' % (self.latLtr, self.localLtr, self.localLtr, self.latLtr)
-        self.badWordPtrn = re.compile(u'[%s%s]*%s[%s%s]*' % (self.latLtr, self.localLtr, badPtrnStr, self.latLtr, self.localLtr) )
+        badPtrnStr = u'([%s][%s]|[%s][%s])' \
+                     % (self.latLtr, self.localLtr, self.localLtr, self.latLtr)
+        self.badWordPtrn = re.compile(u'[%s%s]*%s[%s%s]*'
+                                      % (self.latLtr, self.localLtr,
+                                         badPtrnStr, self.latLtr,
+                                         self.localLtr))
 
         # Get whitelist
         if self.site.lang in self.whitelists:
             wlpage = self.whitelists[self.site.lang]
-            wikipedia.output(u'Loading whitelist from %s' % wlpage)
+            pywikibot.output(u'Loading whitelist from %s' % wlpage)
             wlparams = {
                 'action'    : 'query',
                 'prop'      : 'links',
@@ -208,18 +227,22 @@ class CaseChecker( object ):
                 'indexpageids' : '',
             }
 
-            data = query.GetData(wlparams, wikipedia.getSite(self.site.lang), encodeTitle=False)
+            data = query.GetData(wlparams, pywikibot.getSite(self.site.lang),
+                                 encodeTitle=False)
             if len(data['query']['pageids']) == 1:
                 pageid = data['query']['pageids'][0]
                 links = data['query']['pages'][pageid]['links']
                 self.knownWords = set( [n['title'] for n in links] )
             else:
                 raise "The number of pageids is not 1"
-            wikipedia.output(u'Loaded whitelist with %i items' % len(self.knownWords))
-            if wikipedia.verbose and len(self.knownWords) > 0:
-                wikipedia.output(u'Whitelist: [[%s]]' % u']], [['.join(self.knownWords))
+            pywikibot.output(u'Loaded whitelist with %i items'
+                             % len(self.knownWords))
+            if pywikibot.verbose and len(self.knownWords) > 0:
+                pywikibot.output(
+                    u'Whitelist: [[%s]]' % u']], [['.join(self.knownWords))
         else:
-            wikipedia.output(u'Whitelist is not known for language %s' % self.site.lang)
+            pywikibot.output(u'Whitelist is not known for language %s'
+                             % self.site.lang)
             self.knownWords = set()
 
     def Run(self):
@@ -235,7 +258,8 @@ class CaseChecker( object ):
                     self.params['gapfrom'] = self.apfrom
                     data = query.GetData(self.params, self.site)
                     try:
-                        self.apfrom = data['query-continue']['allpages']['gapfrom']
+                        self.apfrom = data['query-continue'] \
+                                          ['allpages']['gapfrom']
                     except:
                         self.apfrom = None
 
@@ -248,7 +272,7 @@ class CaseChecker( object ):
                             if firstItem:
                                 if lastLetter != title[0]:
                                     try:
-                                        print 'Processing ' + title
+                                        print 'Processing %s' % title
                                     except:
                                         print 'Processing unprintable title'
                                     lastLetter = title[0]
@@ -258,14 +282,24 @@ class CaseChecker( object ):
                                 if err:
                                     changed = False
                                     if self.replace:
-                                        newTitle = self.PickTarget(False, title, title, err[1])
+                                        newTitle = self.PickTarget(False,
+                                                                   title,
+                                                                   title,
+                                                                   err[1])
                                         if newTitle:
-                                            editSummary = wikipedia.translate(self.site, self.msgRename)
-                                            src = wikipedia.Page(self.site, title)
+                                            editSummary = pywikibot.translate(
+                                                self.site, self.msgRename)
+                                            src = pywikibot.Page(self.site,
+                                                                 title)
                                             if page['ns'] == 14:
                                                 import category
-                                                dst = wikipedia.Page(self.site, newTitle)
-                                                bot = category.CategoryMoveRobot(src.titleWithoutNamespace(), dst.titleWithoutNamespace(), self.autonomous, editSummary, True)
+                                                dst = pywikibot.Page(self.site,
+                                                                     newTitle)
+                                                bot = category.CategoryMoveRobot(
+                                                    src.titleWithoutNamespace(),
+                                                    dst.titleWithoutNamespace(),
+                                                    self.autonomous,
+                                                    editSummary, True)
                                                 bot.run()
                                             else:
                                                 src.move(newTitle, editSummary)
@@ -296,47 +330,76 @@ class CaseChecker( object ):
                                         if err:
                                             newTitle = None
                                             if self.replace:
-                                                newTitle = self.PickTarget(True, title, ltxt, err[1])
+                                                newTitle = self.PickTarget(
+                                                    True, title, ltxt, err[1])
                                                 if newTitle:
                                                     if pageObj is None:
-                                                        pageObj = wikipedia.Page(self.site, title)
+                                                        pageObj = pywikibot.Page(
+                                                            self.site, title)
                                                         pageTxt = pageObj.get()
-                                                    msg.append(u'[[%s]] => [[%s]]' % (ltxt, newTitle))
+                                                    msg.append(
+                                                        u'[[%s]] => [[%s]]'
+                                                        % (ltxt, newTitle))
 #                                                    pageTxt = pageTxt.replace(ltxt, newTitle)
 #                                                    pageTxt = pageTxt.replace(ltxt[0].lower() + ltxt[1:], newTitle[0].lower() + newTitle[1:])
 #                                                    pageTxt = pageTxt.replace(ltxt.replace(u' ', '_'), newTitle)
 
-                                                    frmParts = self.wordBreaker.split(ltxt)
-                                                    toParts = self.wordBreaker.split(newTitle)
-                                                    if len(frmParts) != len(toParts):
-                                                        raise ValueError(u'Splitting parts do not match counts')
-                                                    for i in range(0, len(frmParts)):
-                                                        if len(frmParts[i]) != len(toParts[i]):
-                                                            raise ValueError(u'Splitting parts do not match word length')
+                                                    frmParts = self.wordBreaker.split(
+                                                        ltxt)
+                                                    toParts = self.wordBreaker.split(
+                                                        newTitle)
+                                                    if len(frmParts) != len(
+                                                        toParts):
+                                                        raise ValueError(
+u'Splitting parts do not match counts')
+                                                    for i in range(0,
+                                                                   len(frmParts)):
+                                                        if len(frmParts[i]) != len(
+                                                            toParts[i]):
+                                                            raise ValueError(
+u'Splitting parts do not match word length')
                                                         if len(frmParts[i]) > 0:
-                                                            pageTxt = pageTxt.replace(frmParts[i], toParts[i])
-                                                            pageTxt = pageTxt.replace(frmParts[i][0].lower() + frmParts[i][1:], toParts[i][0].lower() + toParts[i][1:])
+                                                            pageTxt = pageTxt.replace(
+                                                                frmParts[i], toParts[i])
+                                                            pageTxt = pageTxt.replace(
+                                                                frmParts[i][0].lower() + frmParts[i][1:],
+                                                                toParts[i][0].lower() + toParts[i][1:])
 
                                             if not newTitle:
                                                 if not printed:
-                                                    self.WikiLog(u"* [[:%s]]: link to %s" % (title, err[0]))
+                                                    self.WikiLog(
+u"* [[:%s]]: link to %s" % (title, err[0]))
                                                     printed = True
                                                 else:
-                                                    self.WikiLog(u"** link to %s" % err[0])
+                                                    self.WikiLog(
+                                                        u"** link to %s"
+                                                        % err[0])
 
 
                                     if pageObj is not None:
-                                        coloredMsg = u', '.join([self.ColorCodeWord(m) for m in msg])
+                                        coloredMsg = u', '.join(
+                                            [self.ColorCodeWord(m)
+                                             for m in msg])
                                         if pageObj.get() == pageTxt:
-                                            self.WikiLog(u"* Error: Text replacement failed in [[:%s]] (%s)" % (title, coloredMsg))
+                                            self.WikiLog(
+u"* Error: Text replacement failed in [[:%s]] (%s)" % (title, coloredMsg))
                                         else:
-                                            wikipedia.output(u'Case Replacements: %s' % u', '.join(msg))
+                                            pywikibot.output(
+                                                u'Case Replacements: %s'
+                                                % u', '.join(msg))
                                             try:
-                                                pageObj.put(pageTxt, u'%s: %s' % (wikipedia.translate(self.site, self.msgLinkReplacement), u', '.join(msg)))
+                                                pageObj.put(
+                                                    pageTxt,
+                                                    u'%s: %s'
+                                                    % (pywikibot.translate(
+                                                        self.site,
+                                                        self.msgLinkReplacement),
+                                                       u', '.join(msg)))
                                             except KeyboardInterrupt:
                                                 raise
                                             except:
-                                                self.WikiLog(u"* Error: Could not save updated page [[:%s]] (%s)" % (title, coloredMsg))
+                                                self.WikiLog(
+u"* Error: Could not save updated page [[:%s]] (%s)" % (title, coloredMsg))
 
 
                             count += 1
@@ -352,11 +415,11 @@ class CaseChecker( object ):
 
         except:
             if self.apfrom is not None:
-                wikipedia.output(u'Exception at Title = %s, Next = %s' % (title, self.apfrom))
+                pywikibot.output(u'Exception at Title = %s, Next = %s' % (title, self.apfrom))
             raise
 
     def WikiLog(self, text):
-        wikipedia.output(text)
+        pywikibot.output(text)
         self.wikilog.write(text + u'\n')
         self.wikilog.flush()
 
@@ -385,7 +448,8 @@ class CaseChecker( object ):
                 mapLat = {}
                 found = True
 
-            # See if it would make sense to treat the whole word as either cyrilic or latin
+            # See if it would make sense to treat the whole word as either
+            # cyrilic or latin
             mightBeLat = mightBeLcl = True
             for l in badWord:
                 if l in self.localLtr:
@@ -409,7 +473,8 @@ class CaseChecker( object ):
                 mapLat[badWord] = badWord.translate(self.lclToLatDict)
             if mightBeLcl and mightBeLat:
                 ambigBadWords.add(badWord)
-                ambigBadWordsCount += 1    # Cannot do len(ambigBadWords) because they might be duplicates
+                # Cannot do len(ambigBadWords) because they might be duplicates
+                ambigBadWordsCount += 1
             count += 1
 
         if not found:
@@ -422,7 +487,8 @@ class CaseChecker( object ):
             # We cannot auto-translate - offer a list of suggested words
             suggestions = mapLcl.values() + mapLat.values()
             if len(suggestions) > 0:
-                infoText += u", word suggestions: " + u', '.join([self.ColorCodeWord(t) for t in suggestions])
+                infoText += u", word suggestions: " + u', '.join(
+                    [self.ColorCodeWord(t) for t in suggestions])
             else:
                 infoText += u", no suggestions"
         else:
@@ -437,12 +503,14 @@ class CaseChecker( object ):
                 possibleAlternatives.append(title)
                 infoText += u", convert to " + self.MakeLink(title)
             else:
-                # Try to pick 0, 1, 2, ..., len(ambiguous words) unique combinations
-                # from the bad words list, and convert just the picked words to cyrilic,
-                # whereas making all other words as latin character.
+                # Try to pick 0, 1, 2, ..., len(ambiguous words) unique
+                # combinations from the bad words list, and convert just the
+                # picked words to cyrilic, whereas making all other words as
+                # latin character.
                 for itemCntToPick in range(0, len(ambigBadWords)+1):
                     title2 = title
-                    for uc in xuniqueCombinations(list(ambigBadWords), itemCntToPick):
+                    for uc in xuniqueCombinations(list(ambigBadWords),
+                                                  itemCntToPick):
                         wordsToLat = ambigBadWords.copy()
                         for bw in uc:
                             title2 = title2.replace(bw, mapLcl[bw])
@@ -452,7 +520,8 @@ class CaseChecker( object ):
                         possibleAlternatives.append(title2)
 
                 if len(possibleAlternatives) > 0:
-                    infoText += u", can be converted to " + u', '.join([self.MakeLink(t) for t in possibleAlternatives])
+                    infoText += u", can be converted to " + u', '.join(
+                        [self.MakeLink(t) for t in possibleAlternatives])
                 else:
                     infoText += u", no suggestions"
 
@@ -471,7 +540,7 @@ class CaseChecker( object ):
             pagesExist = []
 
             for newTitle in candidates:
-                dst = wikipedia.Page(self.site, newTitle)
+                dst = pywikibot.Page(self.site, newTitle)
                 if not dst.exists():
                     pagesDontExist.append(newTitle)
                 elif dst.isRedirectPage():
@@ -496,28 +565,31 @@ class CaseChecker( object ):
                     return pagesRedir.keys()[0]
 
             if not self.autonomous:
-                wikipedia.output(u'Could not auto-decide for page [[%s]]. Which link should be chosen?' % title)
-                wikipedia.output(u'Original title: ', newline=False)
+                pywikibot.output(u'Could not auto-decide for page [[%s]]. Which link should be chosen?' % title)
+                pywikibot.output(u'Original title: ', newline=False)
                 self.ColorCodeWord(original + "\n", True)
                 count = 1
                 for t in candidates:
                     if t in pagesDontExist: msg = u'missing'
                     elif t in pagesRedir: msg = u'Redirect to ' + pagesRedir[t]
                     else: msg = u'page exists'
-                    self.ColorCodeWord(u'  %d: %s (%s)\n' % (count, t, msg), True)
+                    self.ColorCodeWord(u'  %d: %s (%s)\n'
+                                       % (count, t, msg), True)
                     count += 1
 
                 answers = [str(i) for i in range(0, count)]
-                choice = int(wikipedia.inputChoice(u'Which link to choose? (0 to skip)', answers, [a[0] for a in answers]))
+                choice = int(pywikibot.inputChoice(
+                    u'Which link to choose? (0 to skip)',
+                    answers, [a[0] for a in answers]))
                 if choice > 0:
                     return candidates[choice-1]
 
         else:
             if len(candidates) == 1:
                 newTitle = candidates[0]
-                dst = wikipedia.Page(self.site, newTitle)
+                dst = pywikibot.Page(self.site, newTitle)
                 if not dst.exists():
-                    # choice = wikipedia.inputChoice(u'Move %s to %s?' % (title, newTitle), ['Yes', 'No'], ['y', 'n'])
+                    # choice = pywikibot.inputChoice(u'Move %s to %s?' % (title, newTitle), ['Yes', 'No'], ['y', 'n'])
                     return newTitle
 
         return None
@@ -544,7 +616,7 @@ class CaseChecker( object ):
                     if toScreen: SetColor(FOREGROUND_RED)
                     else: res += self.suffixClr + self.latClrFnt
                     lastIsCyr = False
-            if toScreen: wikipedia.output(l, newline=False)
+            if toScreen: pywikibot.output(l, newline=False)
             else: res += l
 
         if toScreen: SetColor(FOREGROUND_WHITE)
@@ -559,4 +631,4 @@ if __name__ == "__main__":
         bot = CaseChecker()
         bot.Run()
     finally:
-        wikipedia.stopme()
+        pywikibot.stopme()
