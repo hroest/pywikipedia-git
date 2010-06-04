@@ -174,7 +174,7 @@ msg_replace={
     'cs':u'Robot nahradil kategorii %(oldcat)s za %(newcat)s',
     'de':u'Bot: Ersetze Kategorie %(oldcat)s durch %(newcat)s',
     'en':u'Robot: Replacing category %(oldcat)s with %(newcat)s',
-    'fa':u'ربات جایگزینی رده‌های %(oldcat) با %(newcat)',
+    'fa':u'ربات جایگزینی رده‌های %(oldcat)s با %(newcat)s',
     'sk':u'Robot nahradil kategóriu %(oldcat)s za %(newcat)s', 
     }
 
