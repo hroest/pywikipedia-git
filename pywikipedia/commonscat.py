@@ -355,7 +355,9 @@ def checkCommonscatLink (name = ""):
             return commonsPage.titleWithoutNamespace()
     except pywikibot.BadTitle:
         #Funky title so not correct
-        return u''        
+        return u''
+    except pywikibot.PageNotFound:
+        return u''
 
 def main():
     '''
