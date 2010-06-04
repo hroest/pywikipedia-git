@@ -94,6 +94,7 @@ msg = {
     'ksh': u'Bot: dobeijedonn: %s',
     'nds': u'Bot: tofoiegt: %s',
     'nn': u'Robot: La til %s',
+    'pdc': u'Waddefresser: %s dezu geduh',
     'pl': u'Robot dodaje: %s',
     'pt': u'Bot: Adicionando %s',
     'ru': u'Бот: добавление %s',
