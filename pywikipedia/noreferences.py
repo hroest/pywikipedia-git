@@ -354,6 +354,7 @@ class NoReferencesBot:
         self.site = wikipedia.getSite()
         self.refR = re.compile('</ref>', re.IGNORECASE)
         self.referencesR = re.compile('<references.*?/>', re.IGNORECASE)
+        self.referencesTagR = re.compile('<references>.*?</references>', re.IGNORECASE|re.DOTALL)
         try:
             self.referencesTemplates = referencesTemplates[wikipedia.getSite().family.name][wikipedia.getSite().lang]
         except KeyError:
@@ -368,7 +369,8 @@ class NoReferencesBot:
         Checks whether or not the page is lacking a references tag.
         """
         oldTextCleaned = wikipedia.removeDisabledParts(text)
-        if self.referencesR.search(oldTextCleaned):
+        if self.referencesR.search(oldTextCleaned) or \
+           self.referencesTagR.search(oldTextCleaned):
             if verbose:
                 wikipedia.output(u'No changes necessary: references tag found.')
             return False
@@ -378,7 +380,7 @@ class NoReferencesBot:
                 if verbose:
                     wikipedia.output(u'No changes necessary: references template found.')
                 return False
-        elif not self.refR.search(oldTextCleaned):
+        if not self.refR.search(oldTextCleaned):
             if verbose:
                 wikipedia.output(u'No changes necessary: no ref tags found.')
             return False
