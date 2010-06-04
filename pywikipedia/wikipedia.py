@@ -324,42 +324,42 @@ class Page(object):
                     break
                 p = m.group(1)
                 lowerNs = p.lower()
-                ns = self.site().getNamespaceIndex(lowerNs)
+                ns = self._site.getNamespaceIndex(lowerNs)
                 if ns:
                     t = m.group(2)
                     self._namespace = ns
                     break
 
-                if lowerNs in self.site().family.langs.keys():
+                if lowerNs in self._site.family.langs.keys():
                     # Interwiki link
                     t = m.group(2)
 
                     # Redundant interwiki prefix to the local wiki
-                    if lowerNs == self.site().lang:
+                    if lowerNs == self._site.lang:
                         if t == '':
                             raise Error("Can't have an empty self-link")
                     else:
-                        self._site = getSite(lowerNs, self.site().family.name)
+                        self._site = getSite(lowerNs, self._site.family.name)
 
                     # If there's an initial colon after the interwiki, that also
                     # resets the default namespace
                     if t != '' and t[0] == ':':
                         self._namespace = 0
                         t = t[1:]
-                elif lowerNs in self.site().family.get_known_families(site = self.site()):
-                    if self.site().family.get_known_families(site = self.site())[lowerNs] == self.site().family.name:
+                elif lowerNs in self._site.family.get_known_families(site = self._site):
+                    if self._site.family.get_known_families(site = self._site)[lowerNs] == self._site.family.name:
                         t = m.group(2)
                     else:
                         # This page is from a different family
                         if verbose:
                             output(u"Target link '%s' has different family '%s'" % (title, lowerNs))
-                        if self.site().family.name in ['commons', 'meta']:
+                        if self._site.family.name in ['commons', 'meta']:
                             #When the source wiki is commons or meta,
                             #w:page redirects you to w:en:page
                             otherlang = 'en'
                         else:
-                            otherlang = self.site().lang
-                        familyName = self.site().family.get_known_families(site = self.site())[lowerNs]
+                            otherlang = self._site.lang
+                        familyName = self._site.family.get_known_families(site = self._site)[lowerNs]
                         if familyName in ['commons', 'meta']:
                             otherlang = familyName
                         try:
@@ -368,7 +368,7 @@ class Page(object):
                             raise NoPage("""\
 %s is not a local page on %s, and the %s family is
 not supported by PyWikipediaBot!"""
-                              % (title, self.site(), familyName))
+                              % (title, self._site, familyName))
                         t = m.group(2)
                 else:
                     # If there's no recognized interwiki or namespace,
@@ -383,7 +383,7 @@ not supported by PyWikipediaBot!"""
             if sectionStart > 0 and self._namespace not in [14]:
                 self._section = t[sectionStart+1 : ].lstrip(" ")
                 self._section = sectionencode(self._section,
-                                              self.site().encoding())
+                                              self._site.encoding())
                 if not self._section:
                     self._section = None
                 t = t[ : sectionStart].rstrip(" ")
@@ -393,12 +393,12 @@ not supported by PyWikipediaBot!"""
                 self._section = None
 
             if t:
-                if not self.site().nocapitalize:
+                if not self._site.nocapitalize:
                     t = t[:1].upper() + t[1:]
 
             # reassemble the title from its parts
             if self._namespace != 0:
-                t = self.site().namespace(self._namespace) + u':' + t
+                t = self._site.namespace(self._namespace) + u':' + t
             if self._section:
                 t += u'#' + self._section
 
@@ -5141,14 +5141,22 @@ sysopnames['%s']['%s']='name' to your user-config.py"""
                 raise
             except urllib2.HTTPError, e:
                 if e.code in [401, 404]:
-                    raise PageNotFound(u'Page %s could not be retrieved. Check your family file ?' % url)
+                    raise PageNotFound(
+u'Page %s could not be retrieved. Check your family file.'
+                                       % url)
+                elif e.code in [403]:
+                    raise PageNotFound(
+u'Page %s could not be retrieved. Check your virus wall.'
+                                       % url)
                 elif e.code == 504:
                     output(u'HTTPError: %s %s' % (e.code, e.msg))
                     if retry:
-                        output(u"""WARNING: Could not open '%s'.Maybe the server or\n your connection is down. Retrying in %i minutes..."""
+                        output(
+u"""WARNING: Could not open '%s'.Maybe the server or\n your connection is down. Retrying in %i minutes..."""
                                % (url, retry_idle_time))
                         time.sleep(retry_idle_time * 60)
-                        # Next time wait longer, but not longer than half an hour
+                        # Next time wait longer,
+                        # but not longer than half an hour
                         retry_idle_time *= 2
                         if retry_idle_time > 30:
                             retry_idle_time = 30
@@ -5160,7 +5168,8 @@ sysopnames['%s']['%s']='name' to your user-config.py"""
             except Exception, e:
                 output(u'%s' %e)
                 if retry:
-                    output(u"""WARNING: Could not open '%s'. Maybe the server or\n your connection is down. Retrying in %i minutes..."""
+                    output(
+u"""WARNING: Could not open '%s'. Maybe the server or\n your connection is down. Retrying in %i minutes..."""
                            % (url, retry_idle_time))
                     time.sleep(retry_idle_time * 60)
                     retry_idle_time *= 2
