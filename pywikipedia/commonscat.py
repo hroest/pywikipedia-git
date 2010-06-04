@@ -15,9 +15,8 @@ supported:
 -always           Don't prompt you for each replacement. Warning message
                   has not to be confirmed. ATTENTION: Use this with care!
 
--summary:XYZ      Set the action summary message for the edit to XYZ.
-                  There is no predefined message text yet and this option is
-                  recommended.
+-summary:XYZ      Set the action summary message for the edit to XYZ,
+                  otherwise it uses messages from add_text.py as default.
 
 -checkcurrent     Work on all category pages that use the primary commonscat
                   template.
@@ -151,6 +150,13 @@ ignoreTemplates = {
     'ru' : [u'Навигация'],
 }
 
+msg_change = {
+    'de': u'Bot: Ändere commonscat link von [[:Commons:Category: %(oldcat)s|%(oldcat)s zu [[:Commons:Category:%(newcat)s|%(newcat)s]]',
+    'en': u'Robot: Changing commonscat link from [[:Commons:Category: %(oldcat)s|%(oldcat)s to [[:Commons:Category:%(newcat)s|%(newcat)s]]',
+    'fr': u'Robot: Changé commonscat link de [[:Commons:Category: %(oldcat)s|%(oldcat)s à [[:Commons:Category:%(newcat)s|%(newcat)s]]',
+    'pdc': u'Waddefresser: commonscat Gleecher vun [[:Commons:Category: %(oldcat)s|%(oldcat)s nooch [[:Commons:Category:%(newcat)s|%(newcat)s]] geennert',
+}
+
 def getCommonscatTemplate (lang = None):
     '''
     Get the template name in a language. Expects the language code.
@@ -269,7 +275,7 @@ def changeCommonscat (page=None, oldtemplate=u'', oldcat=u'', newtemplate=u'',
     newtext = re.sub(u'(?i)\{\{' + oldtemplate + u'\|?[^}]*\}\}',
                      u'{{' + newtemplate + u'|' + newcat + u'}}',
                      page.get())
-    comment = u'Changing commonscat link from [[:Commons:Category:' + oldcat + u'|' + oldcat + u']] to [[:Commons:Category:' + newcat + u'|' + newcat + u']]'
+    comment = pywikibot.translate(page.site(), msg_change) % {'oldcat':oldcat, 'newcat':newcat}
     pywikibot.showDiff(page.get(), newtext)
     page.put(newtext, comment)
 
