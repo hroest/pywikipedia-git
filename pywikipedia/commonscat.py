@@ -155,10 +155,10 @@ ignoreTemplates = {
 }
 
 msg_change = {
-    'de': u'Bot: Ändere commonscat link von [[:Commons:Category: %(oldcat)s|%(oldcat)s zu [[:Commons:Category:%(newcat)s|%(newcat)s]]',
-    'en': u'Robot: Changing commonscat link from [[:Commons:Category: %(oldcat)s|%(oldcat)s to [[:Commons:Category:%(newcat)s|%(newcat)s]]',
-    'fr': u'Robot: Changé commonscat link de [[:Commons:Category: %(oldcat)s|%(oldcat)s à [[:Commons:Category:%(newcat)s|%(newcat)s]]',
-    'pdc': u'Waddefresser: commonscat Gleecher vun [[:Commons:Category: %(oldcat)s|%(oldcat)s nooch [[:Commons:Category:%(newcat)s|%(newcat)s]] geennert',
+    'de': u'Bot: Ändere commonscat link von [[:Commons:Category:%(oldcat)s|%(oldcat)s]] zu [[:Commons:Category:%(newcat)s|%(newcat)s]]',
+    'en': u'Robot: Changing commonscat link from [[:Commons:Category:%(oldcat)s|%(oldcat)s]] to [[:Commons:Category:%(newcat)s|%(newcat)s]]',
+    'fr': u'Robot: Changé commonscat link de [[:Commons:Category:%(oldcat)s|%(oldcat)s]] à [[:Commons:Category:%(newcat)s|%(newcat)s]]',
+    'pdc': u'Waddefresser: commonscat Gleecher vun [[:Commons:Category:%(oldcat)s|%(oldcat)s]] nooch [[:Commons:Category:%(newcat)s|%(newcat)s]] geennert',
 }
 
 def getCommonscatTemplate (lang = None):
