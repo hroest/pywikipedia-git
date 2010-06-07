@@ -155,7 +155,7 @@ talk_report_caption = {
     'ar': u'وصلة ميتة',
     'de': u'Toter Weblink',
     'en': u'Dead link',
-    'en': u'پیوند مرده',
+    'fa': u'پیوند مرده',
     'fr': u'Lien mort',
     'he': u'קישור שבור',
     'ia': u'Ligamine defuncte',
