@@ -114,7 +114,8 @@ n_txt = {
 # If there's not a {{ it will work as usual (if x in Text)
 txt_find =  {
         'commons':[u'{{no license', u'{{no license/en', u'{{nld', u'{{no permission', u'{{no permission since'],
-        'de':[u'{{DÜP', u'{{Dateiüberprüfung'],
+        'ar':[u'{{لت', u'{{لا ترخيص'],
+		'de':[u'{{DÜP', u'{{Dateiüberprüfung'],
         'en':[u'{{nld', u'{{no license'],
         'fa':[u'{{حق تکثیر تصویر نامعلوم'],
         'ga':[u'{{Ceadúnas de dhíth', u'{{Ceadúnas de dhíth'],
@@ -438,7 +439,8 @@ duplicatesRegex = {
 # Category with the licenses and / or with subcategories with the other licenses.
 category_with_licenses = {
         'commons': 'Category:License tags',
-        'en'     : 'Category:Wikipedia image copyright templates',
+        'ar'     : 'تصنيف:قوالب حقوق الصور',
+		'en'     : 'Category:Wikipedia image copyright templates',
         'fa'     : u'رده:برچسب‌های حق تکثیر نگاره',
         'ga'     : 'Catagóir:Clibeanna cóipchirt d\'íomhánna',
         'it'     : 'Categoria:Template Licenze copyright',

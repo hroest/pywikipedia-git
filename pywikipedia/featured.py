@@ -139,7 +139,8 @@ msg_lists = {
     'sv': u'Bot: [[%s:%s]] är en utmärkt list',
 }
 msg_former = {
-    'en': u'Bot: [[%s:%s]] is a former featured article',
+    'ar': u'بوت: [[%s:%s]] مقالة مختارة سابقة',
+	'en': u'Bot: [[%s:%s]] is a former featured article',
     'fa': u'ربات:نوشتار [[%s:%s]] یک نوشتار برگزیده پیشین است.',
 }
 

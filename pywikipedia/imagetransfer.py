@@ -96,7 +96,8 @@ nowCommonsMessage = {
 }
 
 #nowCommonsThisMessage = {
-    #'en': u'File is now available on Commons with the same name.',
+    #'ar': u'الملف الآن متوفر في كومنز بنفس الاسم.',
+	#'en': u'File is now available on Commons with the same name.',
     #'he': u'הקובץ זמין כעת בוויקישיתוף בשם זהה.',
     #'it': u'L\'immagine è adesso disponibile su Wikimedia Commons con lo stesso nome.',
     #'kk': u'Файлды дәл сол атауымен енді Ортаққордан қатынауға болады.',

@@ -58,8 +58,8 @@ class PiperBot:
     # Edit summary message that should be used.
     # NOTE: Put a good description here, and add translations, if possible!
     msg = {
-        'en': u'Robot: Piping the article text through %s',
         'ar': u'روبوت: استبدال نص المقال من خلال %s',
+		'en': u'Robot: Piping the article text through %s',
         'is': u'Vélmenni: Pípa texta síðunnar í gegnum %s',
         'nl': u'Bot: paginatekst door %s geleid'
     }

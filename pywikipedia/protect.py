@@ -49,8 +49,8 @@ import pagegenerators
 
 # Summary messages for protecting from a category.
 msg_simple_protect = {
-    'en': u'Robot: Protecting a list of files.',
     'ar': u'بوت: حماية قائمة من الملفات.',
+	'en': u'Robot: Protecting a list of files.',
     'it': u'Bot: Protezione di una lista di pagine.',
     'fa': u'ربات:حفاظت فهرستی از صفحه‌ها',
     'nl': u'Bot: lijst met bestanden beveiligd',
@@ -58,8 +58,8 @@ msg_simple_protect = {
     'zh': u'機器人:保護清單中的所有檔案',
 }
 msg_protect_category = {
-    'en': u'Robot: Protecting all pages from category %s',
     'ar': u'روبوت - حماية كل الصفحات من التصنيف %s',
+	'en': u'Robot: Protecting all pages from category %s',
     'it': u'Bot: Protezione di tutte le pagine nella categoria %s.',
     'fa': u'ربات:حفاظت تمام صفحه‌های رده %s',
     'nl': u'Bot: alle pagina\'s uit categorie %s beveiligd',
@@ -67,8 +67,8 @@ msg_protect_category = {
     'zh': u'機器人: 保護目錄 %s 的所有頁面',
 }
 msg_protect_links = {
-    'en': u'Robot: Protecting all pages linked from %s',
     'ar': u'روبوت - حماية كل الصفحات الموصولة من %s',
+	'en': u'Robot: Protecting all pages linked from %s',
     'it': u'Bot: Protezione di tutte le pagine linkate da %s.',
     'fa': u'ربات:حفاظت تمام صفحه‌هایی که در %s پیوند شده‌اند.',
     'nl': u'Bot: alle pagina\'s met verwijzingen vanaf %s beveiligd',
@@ -76,8 +76,8 @@ msg_protect_links = {
     'zh': u'機器人: 保護所有從 %s 連結的頁面',
 }
 msg_protect_ref = {
-    'en': u'Robot: Protecting all pages referring from %s',
     'ar': u'روبوت - حماية كل الصفحات الراجعة من %s',
+	'en': u'Robot: Protecting all pages referring from %s',
     'it': u'Bot: Protezione di tutte le pagine con link verso %s.',
     'fa': u'ربات:حفاظت تمام صفحه‌هایی که به %s پیوند داده‌اند',
     'nl': u'Bot: alle pagina\'s met een verwijzing op beveiligd',
@@ -85,8 +85,8 @@ msg_protect_ref = {
     'zh': u'機器人: 保護所有連至 %s 的頁面',
 }
 msg_protect_images = {
-    'en': u'Robot: Protecting all images on page %s',
     'ar': u'روبوت - حماية كل الصور في الصفحة %s',
+	'en': u'Robot: Protecting all images on page %s',
     'it': u'Bot: Protezione di tutte le immagini presenti in %s.',
     'fa': u'ربات:حفاظت تمام تصاویر به کار رفته در %s',
     'nl': u'Bot: alle bestanden gebruikt op %s beveiligd',

@@ -551,7 +551,8 @@ moved_links = {
 # Pages which contains these shouldn't be changed.
 ignoreTemplates = {
     '_default': [u'delete'],
-    'cs' : [u'Pracuje_se'],
+    'ar' : [u'قيد الاستخدام'],
+	'cs' : [u'Pracuje_se'],
     'de' : [u'inuse', u'in bearbeitung', u'löschen', u'sla', u'löschantrag',
             u'löschantragstext'],
     'en' : [u'inuse', u'softredirect'],
