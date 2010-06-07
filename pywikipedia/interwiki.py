@@ -552,7 +552,7 @@ moved_links = {
 ignoreTemplates = {
     '_default': [u'delete'],
     'ar' : [u'قيد الاستخدام'],
-	'cs' : [u'Pracuje_se'],
+    'cs' : [u'Pracuje_se'],
     'de' : [u'inuse', u'in bearbeitung', u'löschen', u'sla', u'löschantrag',
             u'löschantragstext'],
     'en' : [u'inuse', u'softredirect'],

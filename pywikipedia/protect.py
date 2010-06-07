@@ -50,7 +50,7 @@ import pagegenerators
 # Summary messages for protecting from a category.
 msg_simple_protect = {
     'ar': u'بوت: حماية قائمة من الملفات.',
-	'en': u'Robot: Protecting a list of files.',
+    'en': u'Robot: Protecting a list of files.',
     'it': u'Bot: Protezione di una lista di pagine.',
     'fa': u'ربات:حفاظت فهرستی از صفحه‌ها',
     'nl': u'Bot: lijst met bestanden beveiligd',
@@ -59,7 +59,7 @@ msg_simple_protect = {
 }
 msg_protect_category = {
     'ar': u'روبوت - حماية كل الصفحات من التصنيف %s',
-	'en': u'Robot: Protecting all pages from category %s',
+    'en': u'Robot: Protecting all pages from category %s',
     'it': u'Bot: Protezione di tutte le pagine nella categoria %s.',
     'fa': u'ربات:حفاظت تمام صفحه‌های رده %s',
     'nl': u'Bot: alle pagina\'s uit categorie %s beveiligd',
@@ -68,7 +68,7 @@ msg_protect_category = {
 }
 msg_protect_links = {
     'ar': u'روبوت - حماية كل الصفحات الموصولة من %s',
-	'en': u'Robot: Protecting all pages linked from %s',
+    'en': u'Robot: Protecting all pages linked from %s',
     'it': u'Bot: Protezione di tutte le pagine linkate da %s.',
     'fa': u'ربات:حفاظت تمام صفحه‌هایی که در %s پیوند شده‌اند.',
     'nl': u'Bot: alle pagina\'s met verwijzingen vanaf %s beveiligd',
@@ -77,7 +77,7 @@ msg_protect_links = {
 }
 msg_protect_ref = {
     'ar': u'روبوت - حماية كل الصفحات الراجعة من %s',
-	'en': u'Robot: Protecting all pages referring from %s',
+    'en': u'Robot: Protecting all pages referring from %s',
     'it': u'Bot: Protezione di tutte le pagine con link verso %s.',
     'fa': u'ربات:حفاظت تمام صفحه‌هایی که به %s پیوند داده‌اند',
     'nl': u'Bot: alle pagina\'s met een verwijzing op beveiligd',
@@ -86,7 +86,7 @@ msg_protect_ref = {
 }
 msg_protect_images = {
     'ar': u'روبوت - حماية كل الصور في الصفحة %s',
-	'en': u'Robot: Protecting all images on page %s',
+    'en': u'Robot: Protecting all images on page %s',
     'it': u'Bot: Protezione di tutte le immagini presenti in %s.',
     'fa': u'ربات:حفاظت تمام تصاویر به کار رفته در %s',
     'nl': u'Bot: alle bestanden gebruikt op %s beveiligd',

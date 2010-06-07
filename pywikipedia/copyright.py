@@ -237,7 +237,7 @@ wikipedia_names = {
 
 editsection_names = {
     'ar': u'\[عدل\]',
-	'en': u'\[edit\]',
+    'en': u'\[edit\]',
     'fr': u'\[modifier\]',
     'de': u'\[Bearbeiten\]',
     'es,pt': u'\[editar\]',

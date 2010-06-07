@@ -28,7 +28,7 @@ append_date_to_entries = False
 
 msg_table = {
     'ar': {'_default': [u'مدخلات جديدة', u'مدخلات جديدة']},
-	'en': {'_default': [u'New entries', u'New entries']},
+    'en': {'_default': [u'New entries', u'New entries']},
     'es': {'_default': [u'Entradas nuevas', u'Entradas nuevas']},
     'it': {'_default': [u'Pagine nuove', u'Nuove voci'],
            'feed': [u'Aggiunte a voci esistenti', u'Testo aggiunto in']},

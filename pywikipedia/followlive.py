@@ -325,7 +325,7 @@ blanking = {
 # do nothing if this is in it
 done = {
     'ar':(u'{{شطب}}', u'{{حذف}}', u'{{خرق}}'),
-	'en':('{{VfD}}', '{{AfD}}', '{{AfD1}}', '{{cleanup}}', '{{nonsense}}', '{{deletedpage}}',
+    'en':('{{VfD}}', '{{AfD}}', '{{AfD1}}', '{{cleanup}}', '{{nonsense}}', '{{deletedpage}}',
           '{{db-reason}}', '{{notability}}', '{{not verified}}', '{{unreferenced}}', '{{db-empty}}',
           '{{db-nocontext}}', '{{db-foreign}}', '{{db-notenglish}}', '{{db-nocontent}}', '{{db-blankcsd}}',
           '{{db-transwiki}}', '{{db-attack}}', '{{db-band}}', '{{db-club}}', '{{db-bio}}', '{{db-bio-notenglish}}',

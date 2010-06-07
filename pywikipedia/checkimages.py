@@ -440,7 +440,7 @@ duplicatesRegex = {
 category_with_licenses = {
         'commons': 'Category:License tags',
         'ar'     : 'تصنيف:قوالب حقوق الصور',
-		'en'     : 'Category:Wikipedia image copyright templates',
+        'en'     : 'Category:Wikipedia image copyright templates',
         'fa'     : u'رده:برچسب‌های حق تکثیر نگاره',
         'ga'     : 'Catagóir:Clibeanna cóipchirt d\'íomhánna',
         'it'     : 'Categoria:Template Licenze copyright',
