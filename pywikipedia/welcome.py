@@ -213,9 +213,8 @@ logbook = {
     'commons': {'_default': u'Project:Welcome log', },
     'wikipedia': {
         '_default': None,
-        # Log disabled: da, de, en, he, id, ka, pdc, pt, ru, vo. 
+        # Log disabled: da, de, en, fa, he, id, ka, pdc, pt, ru, vo. 
         'ar': u'Project:سجل الترحيب',
-        'fa': u'Project:سیاهه خوشامد',
         'fr': u'Wikipedia:Prise de décision/Accueil automatique des nouveaux par un robot/log',
         'ga': u'Project:Log fáilte',
         'it': u'Project:Benvenuto Bot/Log',
