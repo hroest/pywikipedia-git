@@ -351,7 +351,7 @@ ignore_title = {
             u'Wikipedia:Common words, searching for which is not possible',
         ],
         'fa': [
-            u'ا:فهرست صفحات ابهام‌زدایی',
+            u'ویکی‌پدیا:فهرست صفحات ابهام‌زدایی',
         ],
         'fi': [
             u'Wikipedia:Luettelo täsmennyssivuista',
