@@ -862,7 +862,7 @@ class Family(family.Family):
             'es':  u'Desambiguación',
             'et':  u'Täpsustusleheküljed',
             'eu':  u'Argipen orriak',
-            'fa':  u'صفحات ابهام‌زدایی',
+            'fa':  u'صفحه‌های ابهام‌زدایی',
             'fi':  u'Täsmennyssivut',
             'fo':  u'Fleiri týdningar',
             'fr':  u'Homonymie',
