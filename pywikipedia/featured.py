@@ -142,6 +142,7 @@ msg_former = {
     'ar': u'بوت: [[%s:%s]] مقالة مختارة سابقة',
     'en': u'Bot: [[%s:%s]] is a former featured article',
     'fa': u'ربات:نوشتار [[%s:%s]] یک نوشتار برگزیده پیشین است.',
+    'fi': u'Botti: [[%s:%s]] on entinen suositeltu artikkeli',
 }
 
 # ALL wikis use 'Link FA', and sometimes other localized templates.
