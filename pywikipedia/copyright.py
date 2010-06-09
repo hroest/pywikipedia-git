@@ -238,6 +238,7 @@ wikipedia_names = {
 editsection_names = {
     'ar': u'\[عدل\]',
     'en': u'\[edit\]',
+    'fa': u'\[ویرایش\]',
     'fr': u'\[modifier\]',
     'de': u'\[Bearbeiten\]',
     'es,pt': u'\[editar\]',
@@ -249,6 +250,7 @@ editsection_names = {
 sections_to_skip = {
     'ar':['مراجع', 'قراءة أخرى', 'ملاحظات', 'وصلات خارجية'],
     'en':['References', 'Further reading', 'Citations', 'External links'],
+    'fa':[u'منابع',u'منابع برای مطالعه بیشتر',u'یادکردها',u'پیوند به بیرون'],
     'es':[u'Referencias', u'Ver también', u'Bibliografía', u'Enlaces externos', u'Notas'],
     'fr':['Liens externes'],
     'it':['Bibliografia', 'Discografia', 'Opere bibliografiche', 'Riferimenti bibliografici', 'Collegamenti esterni',  'Pubblicazioni', 'Pubblicazioni principali', 'Bibliografia parziale'],
