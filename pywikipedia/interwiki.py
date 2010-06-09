@@ -1063,7 +1063,8 @@ class Subject(object):
         if globalvar.nobackonly:
             if page == self.originPage:
                 try:
-                    pywikibot.output(u"%s has a backlink from %s."%(page,linkingPage))
+                    pywikibot.output(u"%s has a backlink from %s."
+                                     % (page, linkingPage))
                 except UnicodeDecodeError:
                     pywikibot.output(u"Found a backlink for a page.")
                 self.makeForcedStop(counter)
@@ -1712,9 +1713,6 @@ class Subject(object):
             pywikibot.output(u"Not editing %s: page does not exist" % page.aslink(True))
             raise SaveError
 
-        # Show a message in purple.
-        pywikibot.output(u"\03{lightpurple}Updating links on page %s.\03{default}" % page.aslink(True))
-
         # clone original newPages dictionary, so that we can modify it to the local page's needs
         new = dict(newPages)
 
@@ -1729,7 +1727,6 @@ class Subject(object):
 
             try:
                 if (new[ignorepage.site()] == ignorepage) and (ignorepage.site() != page.site()):
-                    
                     if (ignorepage not in interwikis):
                         pywikibot.output(u"Ignoring link to %(to)s for %(from)s" % {'to': ignorepage.aslink(), 'from': page.aslink()})
                         new.pop(ignorepage.site())
@@ -1768,8 +1765,13 @@ class Subject(object):
             mods, mcomment, adding, removing, modifying = compareLanguages(old, new, insite = page.site())
 
         if not mods:
-            pywikibot.output(u'No changes needed' )
+            if not globalvar.quiet or pywikibot.verbose:
+                pywikibot.output(u'No changes needed on page %s'
+                                 % page.aslink(True))
             return False
+
+        # Show a message in purple.
+        pywikibot.output(u"\03{lightpurple}Updating links on page %s.\03{default}" % page.aslink(True))
 
         pywikibot.output(u"Changes to be made: %s" % mods)
         oldtext = page.get()
