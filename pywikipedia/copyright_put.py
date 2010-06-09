@@ -30,7 +30,7 @@ msg_table = {
     'ar': {'_default': [u'مدخلات جديدة', u'مدخلات جديدة']},
     'en': {'_default': [u'New entries', u'New entries']},
     'es': {'_default': [u'Entradas nuevas', u'Entradas nuevas']},
-    'fa': {'_default': [u'محتویات جدید', u'محتویات جدید']}
+    'fa': {'_default': [u'محتویات جدید', u'محتویات جدید']},
     'it': {'_default': [u'Pagine nuove', u'Nuove voci'],
            'feed': [u'Aggiunte a voci esistenti', u'Testo aggiunto in']},
 }
