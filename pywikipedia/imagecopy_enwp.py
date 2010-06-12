@@ -73,6 +73,41 @@ imageMoveMessage = {
     'en': u'[[:File:%s|File]] moved to [[:commons:File:%s|commons]].',
 }
 
+skipTemplates = [u'Db-f1',
+                 u'Db-f2',
+                 u'Db-f3',
+                 u'Db-f7',
+                 u'Db-f8',
+                 u'Db-f9',
+                 u'Db-f10',
+                 u'NowCommons',
+                 u'CommonsNow',
+                 u'Nowcommons',
+                 u'NowCommonsThis',
+                 u'Nowcommons2',
+                 u'NCT',
+                 u'Nowcommonsthis',
+                 u'Moved to commons',
+                 u'Now Commons',
+                 u'Now at commons',
+                 u'Db-nowcommons',
+                 u'WikimediaCommons',
+                 u'Now commons',
+                 u'Di-no source',
+                 u'Di-no license',
+                 u'Di-no permission',
+                 u'Di-orphaned fair use',
+                 u'Di-no source no license',
+                 u'Di-replaceable fair use',
+                 u'Di-no fair use rationale',
+                 u'Di-disputed fair use rationale',
+                 u'Puf',
+                 u'PUI',
+                 u'Pui',
+                 u'Ffd',
+                 ]
+                 
+
 licenseTemplates = [(u'\{\{(self|self2)\|([^\}]+)\}\}', u'{{Self|\\2|author=[[:%(lang)s:User:%(author)s|%(author)s]] at [http://%(lang)s.%(family)s.org %(lang)s.%(family)s]}}'),
                     (u'\{\{(GFDL-self|GFDL-self-no-disclaimers)\|([^\}]+)\}\}', u'{{Self|GFDL|\\2|author=[[:%(lang)s:User:%(author)s|%(author)s]] at [http://%(lang)s.%(family)s.org %(lang)s.%(family)s]}}'),
                     (u'\{\{GFDL-self-with-disclaimers\|([^\}]+)\}\}', u'{{Self|GFDL-with-disclaimers|\\1|author=[[:%(lang)s:User:%(author)s|%(author)s]] at [http://%(lang)s.%(family)s.org %(lang)s.%(family)s]}}'),
@@ -82,7 +117,7 @@ licenseTemplates = [(u'\{\{(self|self2)\|([^\}]+)\}\}', u'{{Self|\\2|author=[[:%
                     ]
 
 sourceGarbage =     [u'== Summary ==',
-                     u'== Licensing ==',
+                     u'== Licensing:? ==',
                     ]
 
 class Tkdialog:
@@ -227,19 +262,15 @@ class Tkdialog:
         return (self.filename, self.description, self.date, self.source, self.author, self.licensetemplate, self.categories, self.skip)
 
 
-def doiskip(pagetext):
+def doiskip(imagepage):
     '''
     Skip this image or not.
     Returns True if the image is on the skip list, otherwise False
-    
-    saltos=getautoskip()
-    #print saltos
-    for salto in saltos:
-        rex=ur'\{\{\s*['+salto[0].upper()+salto[0].lower()+']'+salto[1:]+'(\}\}|\|)'
-        #print rex
-        if re.search(rex, pagetext):
-            return True
     '''
+    for template in imagepage.templates():
+        if template in skipTemplates:
+            wikipedia.output(u'Found ' + template + u' which is on the template skip list')
+            return True
     return False
 
 def getNewFields(imagepage):
@@ -266,20 +297,26 @@ def getNewFieldsFromInformation(imagepage):
     other_versions = u''
     text = imagepage.get()
     # Need to add the permission field
-    regex =u'\{\{Information[\s\r\n]*\|[\s\r\n]*description[\s\r\n]*=(?P<description>.*)\|[\s\r\n]*source[\s\r\n]*=(?P<source>.*)\|[\s\r\n]*date[\s\r\n]*=(?P<date>.*)\|[\s\r\n]*author[\s\r\n]*=(?P<author>.*)(\|[\s\r\n]*permission.*=(?P<permission>[^\}]*))?(\|[\s\r\n]*other_versions.*=(?P<other_versions>[^\}]*))?\}\}'
+    regexes =[u'\{\{Information[\s\r\n]*\|[\s\r\n]*description[\s\r\n]*=(?P<description>.*)\|[\s\r\n]*source[\s\r\n]*=(?P<source>.*)\|[\s\r\n]*date[\s\r\n]*=(?P<date>.*)\|[\s\r\n]*author[\s\r\n]*=(?P<author>.*)\|[\s\r\n]*permission.*=(?P<permission>[^\}]*)\|[\s\r\n]*other_versions.*=(?P<other_versions>[^\}]*)\}\}',
+              u'\{\{Information[\s\r\n]*\|[\s\r\n]*description[\s\r\n]*=(?P<description>.*)\|[\s\r\n]*source[\s\r\n]*=(?P<source>.*)\|[\s\r\n]*date[\s\r\n]*=(?P<date>.*)\|[\s\r\n]*author[\s\r\n]*=(?P<author>.*)\|[\s\r\n]*other_versions.*=(?P<other_versions>[^\}]*)\}\}',              
+              ]
+            
 
-    match =re.search(regex, text, re.IGNORECASE|re.DOTALL)
-    if match:
-        description = convertLinks(match.group(u'description').strip(), imagepage.site())
-        date = match.group(u'date').strip()
-        source = getSource(imagepage, source=convertLinks(match.group(u'source').strip(), imagepage.site()))
-        author = convertLinks(match.group(u'author').strip(), imagepage.site())
-        if match.group(u'permission'):
-            print u'permission'
-            permission = convertLinks(match.group(u'permission').strip(), imagepage.site())
-        if match.group(u'other_versions'):
-            print u'other_versions'
-            other_versions = convertLinks(match.group(u'other_versions').strip(), imagepage.site())       
+    for regex in regexes:
+        match =re.search(regex, text, re.IGNORECASE|re.DOTALL)
+        if match:
+            description = convertLinks(match.group(u'description').strip(), imagepage.site())
+            date = match.group(u'date').strip()
+            source = getSource(imagepage, source=convertLinks(match.group(u'source').strip(), imagepage.site()))
+            author = convertLinks(match.group(u'author').strip(), imagepage.site())
+            if u'permission' in match.groupdict():
+                permission = convertLinks(match.group(u'permission').strip(), imagepage.site())
+            if  u'other_versions' in match.groupdict():
+                other_versions = convertLinks(match.group(u'other_versions').strip(), imagepage.site())
+            # Return the stuff we found
+            return (description, date, source, author)
+    
+    #We didn't find anything, return the empty strings
     return (description, date, source, author)
 
 def getNewFieldsFromFreetext(imagepage):
@@ -417,7 +454,7 @@ def processImage(page):
         imagepage = wikipedia.ImagePage(page.site(), page.title())
 
         #First do autoskip.
-        if doiskip(imagepage.get()):
+        if doiskip(imagepage):
             wikipedia.output("Skipping " + page.title())
             skip = True
         else:
