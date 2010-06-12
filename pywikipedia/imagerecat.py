@@ -49,11 +49,11 @@ def initLists():
     global category_blacklist
     global countries
 
-    blacklistPage = wikipedia.Page(wikipedia.getSite(), u'User:Multichill/Category_blacklist')
+    blacklistPage = wikipedia.Page(wikipedia.getSite(u'commons', u'commons'), u'User:Multichill/Category_blacklist')
     for cat in blacklistPage.linkedPages():
         category_blacklist.append(cat.titleWithoutNamespace())
 
-    countryPage = wikipedia.Page(wikipedia.getSite(), u'User:Multichill/Countries')
+    countryPage = wikipedia.Page(wikipedia.getSite(u'commons', u'commons'), u'User:Multichill/Countries')
     for country in countryPage.linkedPages():
         countries.append(country.titleWithoutNamespace())
     return
@@ -106,8 +106,17 @@ def getCommonshelperCats(imagepage):
 
     global search_wikis
     global hint_wiki
+    site = imagepage.site()
+    lang = site.language()
+    family = site.family.name
+    if lang==u'commons' and family==u'commons':
+        parameters = urllib.urlencode({'i' : imagepage.titleWithoutNamespace().encode('utf-8'), 'r' : 'on', 'go-clean' : 'Find+Categories', 'p' : search_wikis, 'cl' : hint_wiki})
+    elif family==u'wikipedia':
+        parameters = urllib.urlencode({'i' : imagepage.titleWithoutNamespace().encode('utf-8'), 'r' : 'on', 'go-move' : 'Find+Categories', 'p' : search_wikis, 'cl' : hint_wiki, 'w' : lang})
+    else:
+        #Cant handle other sites atm
+        return ([], [], [])
     
-    parameters = urllib.urlencode({'i' : imagepage.titleWithoutNamespace().encode('utf-8'), 'r' : 'on', 'go-clean' : 'Find+Categories', 'p' : search_wikis, 'cl' : hint_wiki})
     commonsenseRe = re.compile('^#COMMONSENSE(.*)#USAGE(\s)+\((?P<usagenum>(\d)+)\)\s(?P<usage>(.*))\s#KEYWORDS(\s)+\((?P<keywords>(\d)+)\)(.*)#CATEGORIES(\s)+\((?P<catnum>(\d)+)\)\s(?P<cats>(.*))\s#GALLERIES(\s)+\((?P<galnum>(\d)+)\)\s(?P<gals>(.*))\s(.*)#EOF$', re.MULTILINE + re.DOTALL)
 
     gotInfo = False
@@ -210,7 +219,7 @@ def filterDisambiguation(categories):
     '''
     result = []
     for cat in categories:
-        if(not wikipedia.Page(wikipedia.getSite(), u'Category:' + cat).isDisambig()):
+        if(not wikipedia.Page(wikipedia.getSite(u'commons', u'commons'), u'Category:' + cat).isDisambig()):
             result.append(cat)
     return result
 
@@ -220,7 +229,7 @@ def followRedirects(categories):
     '''
     result = []
     for cat in categories:
-        categoryPage = wikipedia.Page(wikipedia.getSite(), u'Category:' + cat)
+        categoryPage = wikipedia.Page(wikipedia.getSite(u'commons', u'commons'), u'Category:' + cat)
         if u'Category redirect' in categoryPage.templates() or u'Seecat' in categoryPage.templates():
             for template in categoryPage.templatesWithParams():
                 if ((template[0]==u'Category redirect' or template[0]==u'Seecat') and (len(template[1]) > 0)):
@@ -253,7 +262,7 @@ def filterCountries(categories):
 
     if(len(listByCountry) > 0):
         for bc in listByCountry:
-            category = catlib.Category(wikipedia.getSite(), u'Category:' + bc)
+            category = catlib.Category(wikipedia.getSite(u'commons', u'commons'), u'Category:' + bc)
             for subcategory in category.subcategories():
                 for country in listCountries:
                     if (subcategory.titleWithoutNamespace().endswith(country)):
