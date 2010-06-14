@@ -248,14 +248,20 @@ editsection_names = {
 }
 
 sections_to_skip = {
-    'ar':['مراجع', 'قراءة أخرى', 'ملاحظات', 'وصلات خارجية'],
-    'en':['References', 'Further reading', 'Citations', 'External links'],
-    'fa':[u'منابع',u'منابع برای مطالعه بیشتر',u'یادکردها',u'پیوند به بیرون'],
-    'es':[u'Referencias', u'Ver también', u'Bibliografía', u'Enlaces externos', u'Notas'],
-    'fr':['Liens externes'],
-    'it':['Bibliografia', 'Discografia', 'Opere bibliografiche', 'Riferimenti bibliografici', 'Collegamenti esterni',  'Pubblicazioni', 'Pubblicazioni principali', 'Bibliografia parziale'],
-    'ja':[u'脚注',u'脚注欄',u'脚注・出典',u'出典',u'注釈'],
-    'zh':[u'參考文獻',u'参考文献',u'參考資料',u'参考资料', u'資料來源',u'资料来源',u'參見',u'参见',u'參閱',u'参阅'],
+    'ar': [u'مراجع', u'قراءة أخرى', u'ملاحظات', u'وصلات خارجية'],
+    'en': [u'References', u'Further reading', u'Citations', u'External links'],
+    'fa': [u'منابع', u'منابع برای مطالعه بیشتر', u'یادکردها',
+           u'پیوند به بیرون'],
+    'es': [u'Referencias', u'Ver también', u'Bibliografía', u'Enlaces externos',
+           u'Notas'],
+    'fr': [u'Liens externes'],
+    'it': [u'Bibliografia', u'Discografia', u'Opere bibliografiche',
+           u'Riferimenti bibliografici', u'Collegamenti esterni',
+           u'Pubblicazioni', u'Pubblicazioni principali',
+           u'Bibliografia parziale'],
+    'ja': [u'脚注', u'脚注欄', u'脚注・出典', u'出典', u'注釈'],
+    'zh': [u'參考文獻', u'参考文献', u'參考資料', u'参考资料', u'資料來源', u'资料来源',
+           u'參見', u'参见', u'參閱', u'参阅'],
 }
 
 if enable_color:
@@ -278,14 +284,8 @@ def error(text ,prefix = None):
     _output(text, prefix = prefix, color = error_color)
 
 def skip_section(text):
-    l = list()
-    for s in sections_to_skip.itervalues():
-        l.extend(s)
-    sect_titles = '|'.join(l)
-
+    sect_titles = '|'.join(sections_to_skip[wikipedia.getSite().lang])
     sectC = re.compile('(?mi)^==\s*(' + sect_titles + ')\s*==')
-    newtext = ''
-
     while True:
         newtext = cut_section(text, sectC)
         if newtext == text:
