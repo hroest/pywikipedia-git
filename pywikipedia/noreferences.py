@@ -319,6 +319,7 @@ referencesSubstitute = {
     'wikipedia': {
         'fi': u'{{viitteet}}',
         'hu': u'{{Források}}',
+        'pl': u'{{Przypisy}}',
     },
 }
 
