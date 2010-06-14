@@ -120,7 +120,7 @@ for page in gen:
     for s in mysplit(query.ListToParam(titles), 50, "|"):
         query_results_titles.append(query_api({'titles': s,}))
     for s in mysplit(query.ListToParam(revids), 50, "|"):
-        query_results_revids.append(query_api({'revids': ,}))
+        query_results_revids.append(query_api({'revids': s,}))
 
     comment_entry = list()
     add_separator = False
