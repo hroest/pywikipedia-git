@@ -1064,12 +1064,11 @@ class Subject(object):
             if page == self.originPage:
                 try:
                     pywikibot.output(u"%s has a backlink from %s."
-                                     % (page, linkingPage))
+                                     % (page.aslink(), linkingPage.aslink()))
                 except UnicodeDecodeError:
                     pywikibot.output(u"Found a backlink for a page.")
                 self.makeForcedStop(counter)
                 return False
-
 
         if page in self.foundIn:
             # not new
@@ -1574,6 +1573,17 @@ class Subject(object):
            bot, just before submitting a page change to the live wiki it is
            checked whether we will have to wait. If that is the case, the bot will
            be told to make another get request first."""
+
+        #from clean_sandbox
+        def minutesDiff(time1, time2):
+            if type(time1) is long:
+                time1 = str(time1)
+            if type(time2) is long:
+                time2 = str(time2)
+            t1 = (((int(time1[0:4])*12+int(time1[4:6]))*30+int(time1[6:8]))*24+int(time1[8:10])*60)+int(time1[10:12])
+            t2 = (((int(time2[0:4])*12+int(time2[4:6]))*30+int(time2[6:8]))*24+int(time2[8:10])*60)+int(time2[10:12])
+            return abs(t2-t1)
+
         if not self.isDone():
             raise "Bugcheck: finish called before done"
         if not self.workonme:
@@ -1618,7 +1628,8 @@ class Subject(object):
 
             for siteCode in lclSite.family.languages_by_size:
                 site = pywikibot.getSite(code = siteCode)
-                if (not lclSiteDone and site == lclSite) or (not frgnSiteDone and site != lclSite and site in new):
+                if (not lclSiteDone and site == lclSite) or \
+                   (not frgnSiteDone and site != lclSite and site in new):
                     if site == lclSite:
                         lclSiteDone = True   # even if we fail the update
                     if site.family.name in config.usernames and site.lang in config.usernames[site.family.name]:
@@ -1631,16 +1642,23 @@ class Subject(object):
                             notUpdatedSites.append(site)
                         except GiveUpOnPage:
                             break
-                elif not globalvar.strictlimittwo and site in new and site != lclSite:
+                elif not globalvar.strictlimittwo and site in new \
+                     and site != lclSite:
                     old={}
                     try:
                         for page in new[site].interwiki():
                             old[page.site()] = page
                     except pywikibot.NoPage:
-                        pywikibot.output(u"BUG>>> %s no longer exists?" % new[site].aslink(True))
+                        pywikibot.output(u"BUG>>> %s no longer exists?"
+                                         % new[site].aslink(True))
                         continue
-                    mods, mcomment, adding, removing, modifying = compareLanguages(old, new, insite = lclSite)
-                    if (len(removing) > 0 and not globalvar.autonomous) or (len(modifying) > 0 and self.problemfound) or len(old) == 0 or (globalvar.needlimit and len(adding) + len(modifying) >= globalvar.needlimit +1):
+                    mods, mcomment, adding, removing, modifying \
+                          = compareLanguages(old, new, insite = lclSite)
+                    if (len(removing) > 0 and not globalvar.autonomous) or \
+                       (len(modifying) > 0 and self.problemfound) or \
+                       len(old) == 0 or \
+                       (globalvar.needlimit and \
+                        len(adding) + len(modifying) >= globalvar.needlimit +1):
                         try:
                             if self.replaceLinks(new[site], new, bot):
                                 updatedSites.append(site)
@@ -1652,8 +1670,48 @@ class Subject(object):
                             break
         else:
             for (site, page) in new.iteritems():
+                # edit restriction on is-wiki
+                # http://is.wikipedia.org/wiki/Wikipediaspjall:V%C3%A9lmenni
+                # allow edits for the same conditions as -whenneeded
+                # or the last edit wasn't a bot
+                # or the last edit as 1 month ago
+				smallWikiAllowed = True
+                if self.autonomous and page.site().sitename() == 'wikipedia:is':
+                    old={}
+                    try:
+                        for mypage in new[page.site()].interwiki():
+                            old[mypage.site()] = mypage
+                    except pywikibot.NoPage:
+                        pywikibot.output(u"BUG>>> %s no longer exists?"
+                                         % new[site].aslink(True))
+                        continue
+                    mods, mcomment, adding, removing, modifying \
+                          = compareLanguages(old, new, insite=site)
+                    smallWikiAllowed = len(removing) > 0 or len(old) == 0 or \
+                                       len(adding) + len(modifying) > 2 or \
+                                       len(removing) + len(modifying) == 0 and \
+                                       adding == [page.site()]
+                    if not smallWikiAllowed:
+                        import userlib
+                        user = userlib.User(page.site(), page.userName())
+                        if not 'bot' in user.groups() \
+                           and not 'bot' in page.userName().lower(): #erstmal auch keine namen mit bot
+                            smallWikiAllowed = True
+                        else:
+                            diff = minutesDiff(page.editTime(),
+                                               time.strftime("%Y%m%d%H%M%S",
+                                                             time.gmtime()))
+                            if diff > 30*24*60:
+                                smallWikiAllowed = True
+                            else:
+                                pywikibot.output(
+u'NOTE: number of edits are restricted at %s'
+                                    % page.site().sitename())
+
                 # if we have an account for this site
-                if site.family.name in config.usernames and site.lang in config.usernames[site.family.name]:
+                if site.family.name in config.usernames \
+                   and site.lang in config.usernames[site.family.name] \
+                   and smallWikiAllowed:
                     # Try to do the changes
                     try:
                         if self.replaceLinks(page, new, bot):
