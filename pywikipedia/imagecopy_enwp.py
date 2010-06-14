@@ -9,10 +9,8 @@ only environment.
 
 Examples
 
-Work on a single image
- python imagecopy.py -page:Image:<imagename>
-Work on the 100 newest images:
- python imagecopy.py -newimages:100
+Work on a single file
+ python imagecopy.py -page:file:<filename>
 Work on all images in a category:<cat>
  python imagecopy.py -cat:<cat>
 Work on all images which transclude a template
@@ -23,6 +21,11 @@ By default the bot works on your home wiki (set in user-config)
 
 This is a first test version and should be used with care.
 
+Use -nochecktemplate if you don't want to add the check template. Be sure to check it yourself.
+
+Todo:
+*Queues with threads have to be implemented for the information collecting part and for the upload part.
+*Categories are now on a single line. Something like hotcat would be nice.
 
 """
 #
@@ -421,12 +424,13 @@ def getOriginalUploadLog(imagepage):
 
     
 
-def buildNewImageDescription(imagepage, description, date, source, author, licensetemplate, categories):
+def buildNewImageDescription(imagepage, description, date, source, author, licensetemplate, categories, checkTemplate):
     '''
     Build a new information template 
     '''
     cid = u''
-    cid = cid + u'\n{{BotMoveToCommons|'+ imagepage.site().language() + '.' + imagepage.site().family.name +'|year={{subst:CURRENTYEAR}}|month={{subst:CURRENTMONTHNAME}}|day={{subst:CURRENTDAY}}}}\n'
+    if checkTemplate:
+        cid = cid + u'\n{{BotMoveToCommons|'+ imagepage.site().language() + '.' + imagepage.site().family.name +'|year={{subst:CURRENTYEAR}}|month={{subst:CURRENTMONTHNAME}}|day={{subst:CURRENTDAY}}}}\n'
     cid = cid + u'== {{int:filedesc}} ==\n'
     cid = cid + u'{{Information\n'
     cid = cid + u'|description={{en|1=' + description + u'}}\n'
@@ -448,7 +452,7 @@ def buildNewImageDescription(imagepage, description, date, source, author, licen
     return cid
 
 
-def processImage(page):
+def processImage(page, checkTemplate):
     skip = False
     if page.exists() and (page.namespace() == 6) and (not page.isRedirectPage()):
         imagepage = wikipedia.ImagePage(page.site(), page.title())
@@ -477,7 +481,7 @@ def processImage(page):
                     # We dont overwrite images, pick another name, go to the start of the loop   
             
             if not skip:
-                cid = buildNewImageDescription(imagepage, description, date, source, author, licensetemplate, categories)
+                cid = buildNewImageDescription(imagepage, description, date, source, author, licensetemplate, categories, checkTemplate)
                 wikipedia.output(cid)
                 bot = UploadRobot(url=imagepage.fileUrl(), description=cid, useFilename=filename, keepFilename=True, verifyDescription=False, ignoreWarning = True, targetSite = wikipedia.getSite('commons', 'commons'))
                 bot.run()
@@ -524,16 +528,14 @@ def main(args):
     #newname = "";
     imagepage = None;
     always = False
-    category = u''
+    checkTemplate = True
     imagerecat.initLists()
     # Load a lot of default generators
     genFactory = pagegenerators.GeneratorFactory()
 
     for arg in wikipedia.handleArgs():
-        if arg == '-always':
-            always = True
-        elif arg.startswith('-cc:'):
-            category = arg [len('-cc:'):]
+        if arg == '-nochecktemplate':
+            checkTemplate = False
         else:
             genFactory.handleArg(arg)
     
@@ -544,7 +546,7 @@ def main(args):
     pregenerator = pagegenerators.PreloadingGenerator(generator)
 
     for page in pregenerator:
-        processImage(page)
+        processImage(page, checkTemplate)
 
 
     wikipedia.output(u'Still ' + str(threading.activeCount()) + u' active threads, lets wait')
