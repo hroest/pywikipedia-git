@@ -345,14 +345,18 @@ class TemplateRobot:
 
         replacements = []
         exceptions = {}
-
+        site = pywikibot.getSite()
         for old, new in self.templates.iteritems():
-            if not pywikibot.getSite().nocapitalize:
+            namespaces = list(site.namespace(10, all=True))
+            if not site.nocapitalize:
                 pattern = '[' + re.escape(old[0].upper()) + re.escape(old[0].lower()) + ']' + re.escape(old[1:])
             else:
                 pattern = re.escape(old)
             pattern = re.sub(r'_|\\ ', r'[_ ]', pattern)
-            templateRegex = re.compile(r'\{\{ *([Tt]emplate:|[mM][sS][gG]:)?' + pattern + r'(?P<parameters>\s*\|.+?|) *}}', re.DOTALL)
+            templateRegex = re.compile(r'\{\{ *(' + ':|'.join(namespaces) + \
+                                       r':|[mM][sS][gG]:)?' + pattern + \
+                                       r'(?P<parameters>\s*\|.+?|) *}}',
+                                       re.DOTALL)
 
             if self.remove:
                 replacements.append((templateRegex, ''))
