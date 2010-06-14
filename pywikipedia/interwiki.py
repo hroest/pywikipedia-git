@@ -1675,8 +1675,8 @@ class Subject(object):
                 # allow edits for the same conditions as -whenneeded
                 # or the last edit wasn't a bot
                 # or the last edit as 1 month ago
-				smallWikiAllowed = True
-                if self.autonomous and page.site().sitename() == 'wikipedia:is':
+                smallWikiAllowed = True
+                if globalvar.autonomous and page.site().sitename() == 'wikipedia:is':
                     old={}
                     try:
                         for mypage in new[page.site()].interwiki():
