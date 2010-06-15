@@ -1687,7 +1687,9 @@ class Subject(object):
                         continue
                     mods, mcomment, adding, removing, modifying \
                           = compareLanguages(old, new, insite=site)
-                    smallWikiAllowed = len(removing) > 0 or len(old) == 0 or \
+                    #cannot create userlib.User with IP
+                    smallWikiAllowed = page.isIpEdit() or \
+                                       len(removing) > 0 or len(old) == 0 or \
                                        len(adding) + len(modifying) > 2 or \
                                        len(removing) + len(modifying) == 0 and \
                                        adding == [page.site()]
