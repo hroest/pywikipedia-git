@@ -108,6 +108,7 @@ skipTemplates = [u'Db-f1',
                  u'PUI',
                  u'Pui',
                  u'Ffd',
+                 u'PD-user', # Only the self templates are supported for now.
                  ]
                  
 
