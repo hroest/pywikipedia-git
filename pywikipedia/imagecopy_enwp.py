@@ -360,8 +360,13 @@ def getSource(imagepage, source=u''):
     return source.strip() + u'<BR />Transferred from [http://%(lang)s.%(family)s.org %(lang)s.%(family)s]' % {u'lang' : lang, u'family' : family}
 
 def getAuthorText(imagepage):
+    site = imagepage.site()
+    lang = site.language()
+    family = site.family.name
+    
     firstuploader = getAuthor(imagepage)
-    return u'[[:en:User:' + firstuploader + u'|' + firstuploader + u']] at [http://en.wikipedia.org en.wikipedia]'
+    #FIXME : Make other sites than Wikipedia work
+    return u'[[:%(lang)s:User:%(firstuploader)s|%(firstuploader)s]] at [http://%(lang)s.%(family)s.org %(lang)s.%(family)s]' % {u'lang' : lang, u'family' : family , u'firstuploader' : firstuploader}
 
 def getAuthor(imagepage):
     return imagepage.getFileVersionHistory()[-1][1].strip()
@@ -414,12 +419,26 @@ def getNewCategories(imagepage):
 def getOriginalUploadLog(imagepage):
     filehistory = imagepage.getFileVersionHistory()
     filehistory.reverse()
+
+    site = imagepage.site()
+    lang = site.language()
+    family = site.family.name
+
+    sourceimage = imagepage.site().get_address(imagepage.title()).replace(u'&redirect=no&useskin=monobook', u'')
     
     result = u'== Original upload log ==\n'
-    result = result + u'The original description page is/was [http://en.wikipedia.org%s here]. All following user names refer to en.wikipedia.\n' % (imagepage.site().get_address(imagepage.title()).replace(u'&redirect=no&useskin=monobook', u''))
+    result = result + u'The original description page is/was [http://%(lang)s.%(family)s.org%(sourceimage)s here]. All following user names refer to %(lang)s.%(family)s.\n' % {u'lang' : lang, u'family' : family , u'sourceimage' : sourceimage}
     for (timestamp, username, resolution, size, comment) in filehistory:
-        result = result + u'* %s [[:en:user:%s|%s]] %s (%s bytes) \'\'<nowiki>%s</nowiki>\'\'\n' % (datetime.strptime(timestamp, u'%Y-%m-%dT%H:%M:%SZ').strftime('%Y-%m-%d %H:%M'), username, username, resolution, size, comment)        
-
+        date = datetime.strptime(timestamp, u'%Y-%m-%dT%H:%M:%SZ').strftime('%Y-%m-%d %H:%M')
+        result = result + u'* %(date)s [[:%(lang)s:user:%(username)s|%(username)s]] %(resolution)s (%(size)s bytes) \'\'<nowiki>%(comment)s</nowiki>\'\'\n' % {
+            u'lang' : lang,
+            u'family' : family ,
+            u'date' : date,
+            u'username' : username,
+            u'resolution': resolution,
+            u'size': size,
+            u'comment' : comment}       
+        
     return result
 
     
@@ -428,12 +447,18 @@ def buildNewImageDescription(imagepage, description, date, source, author, licen
     '''
     Build a new information template 
     '''
+    
+    site = imagepage.site()
+    lang = site.language()
+    family = site.family.name
+    
     cid = u''
     if checkTemplate:
-        cid = cid + u'\n{{BotMoveToCommons|'+ imagepage.site().language() + '.' + imagepage.site().family.name +'|year={{subst:CURRENTYEAR}}|month={{subst:CURRENTMONTHNAME}}|day={{subst:CURRENTDAY}}}}\n'
+        cid = cid + u'\n{{BotMoveToCommons|%(lang)s.%(family)s|year={{subst:CURRENTYEAR}}|month={{subst:CURRENTMONTHNAME}}|day={{subst:CURRENTDAY}}}}\n' % {u'lang' : lang, u'family' : family}
     cid = cid + u'== {{int:filedesc}} ==\n'
     cid = cid + u'{{Information\n'
-    cid = cid + u'|description={{en|1=' + description + u'}}\n'
+    cid = cid + u'|description={{%(lang)s|1=' % {u'lang' : lang, u'family' : family}
+    cid = cid + description + u'}}\n' 
     cid = cid + u'|date=' + date + u'\n'
     cid = cid + u'|source=' + source + u'\n'
     cid = cid + u'|author=' + author + u'\n'
