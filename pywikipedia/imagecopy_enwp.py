@@ -223,13 +223,13 @@ class Tkdialog:
         '''
         The user pressed the OK button.
         '''
-        self.filename=self.filename_field.get().decode('utf-8')
-        self.description=self.information_description.get().decode('utf-8')
-        self.date=self.information_date.get().decode('utf-8')
-        self.source=self.information_source.get().decode('utf-8')
-        self.author=self.information_author.get().decode('utf-8')
-        self.licensetemplate=self.information_licensetemplate.get().decode('utf-8')
-        self.categories=self.information_categories.get().decode('utf-8')
+        self.filename=self.filename_field.get()
+        self.description=self.information_description.get()
+        self.date=self.information_date.get()
+        self.source=self.information_source.get()
+        self.author=self.information_author.get()
+        self.licensetemplate=self.information_licensetemplate.get()
+        self.categories=self.information_categories.get()
         
         self.root.destroy()
 
