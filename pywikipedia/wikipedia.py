@@ -705,7 +705,7 @@ not supported by PyWikipediaBot!"""
             self._userName = None
         else:
             self._userName = lastRev['user']
-
+            self._ipedit = 'anon' in lastRev
         for restr in pageInfo['protection']:
             if restr['type'] == 'edit':
                 self.editRestriction = restr['level']
@@ -1098,7 +1098,7 @@ not supported by PyWikipediaBot!"""
     def isIpEdit(self):
         """Return True if last editor was unregistered.
 
-        Returns None unless page was retrieved with getAll().
+        Returns None unless page was retrieved with getAll() or _getEditPage().
 
         """
         return self._ipedit
