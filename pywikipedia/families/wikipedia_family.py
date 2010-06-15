@@ -32,10 +32,10 @@ class Family(family.Family):
             'ln', 'cbk-zam', 'krc', 'nv', 'ky', 'mhr', 'ext', 'ty', 'arc',
             'jbo', 'wo', 'so', 'eml', 'kab', 'tpi', 'pap', 'zea', 'srn', 'ay',
             'ba', 'or', 'ig', 'dsb', 'kl', 'ce', 'udm', 'kg', 'lo', 'rmy', 'cu',
-            'ab', 'pcd', 'mwl', 'kaa', 'sm', 'av', 'ks', 'tet', 'mdf', 'got',
+            'ab', 'pcd', 'mwl', 'kaa', 'sm', 'av', 'ks', 'mdf', 'tet', 'got',
             'sd', 'na', 'bm', 'pnt', 'pih', 'iu', 'cdo', 'as', 'bug', 'ee',
-            'chr', 'bi', 'om', 'zu', 'za', 'ti', 'ts', 'ss', 've', 'ha', 'dz',
-            'sg', 'ch', 'bxr', 'cr', 'xh', 'ak', 'ik', 'lbe', 'ki', 'tn', 'rw',
+            'chr', 'bi', 'om', 'zu', 'za', 'ti', 'ts', 'ss', 've', 'ha', 'sg',
+            'dz', 'ch', 'bxr', 'cr', 'xh', 'ak', 'ik', 'lbe', 'ki', 'tn', 'rw',
             'st', 'tw', 'ny', 'sn', 'chy', 'ff', 'lg', 'rn', 'tum',
         ]
 
@@ -67,6 +67,7 @@ class Family(family.Family):
         # You only need to enter translations that differ from _default.
         self.namespaces[4] = {
             '_default': [u'Wikipedia', self.namespaces[4]['_default']],
+            'ab': u'Авикипедиа',
             'ar': u'ويكيبيديا',
             'arc': u'ܘܝܩܝܦܕܝܐ',
             'arz': u'ويكيبيديا',
@@ -164,7 +165,7 @@ class Family(family.Family):
 
         self.namespaces[5] = {
             '_default': [u'Wikipedia talk', self.namespaces[5]['_default']],
-            'ab': u'Wikipedia ахцәажәара',
+            'ab': u'Авикипедиа ахцәажәара',
             'ace': u'Marit Wikipedia',
             'af': u'Wikipediabespreking',
             'als': u'Wikipedia Diskussion',
@@ -498,7 +499,7 @@ class Family(family.Family):
             'oc': u'Discussion Portal',
             'pl': u'Dyskusja portalu',
             'pt': [u'Portal Discussão', u'Discussão Portal'],
-            'ro': u'Discuţie Portal',
+            'ro': u'Discuție Portal',
             'ru': u'Обсуждение портала',
             'scn': u'Discussioni purtali',
             'si': u'Portal talk',
@@ -570,7 +571,7 @@ class Family(family.Family):
             'oc': u'Discussion Projècte',
             'pl': u'Dyskusja Wikiprojektu',
             'pt': u'Anexo Discussão',
-            'ro': u'Discuţie Proiect',
+            'ro': u'Discuție Proiect',
             'scn': u'Discussioni pruggettu',
             'vec': u'Discussion projeto',
         }

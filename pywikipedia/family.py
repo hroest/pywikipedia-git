@@ -943,6 +943,7 @@ class Family:
             },
             4: {
                 '_default': u'Project',
+                'ab': u'Авикипедиа',
                 'arc': u'ܘܝܩܝܦܕܝܐ',
                 'bn': u'উইকিপিডিয়া',
                 'mwl': u'Biquipédia',
@@ -952,7 +953,7 @@ class Family:
             },
             5: {
                 '_default': u'Project talk',
-                'ab': u'Wikipedia ахцәажәара',
+                'ab': u'Авикипедиа ахцәажәара',
                 'ace': [u'Marit Wikipedia', u'Pembicaraan Wikipedia'],
                 'arc': [u'ܡܡܠܠܐ ܕ ܘܝܩܝܦܕܝܐ', u'ܘܝܩܝܦܕܝܐ talk'],
                 'bn': u'উইকিপিডিয়া আলোচনা',
