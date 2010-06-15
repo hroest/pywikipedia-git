@@ -509,6 +509,9 @@ class NoReferencesBot:
             except wikipedia.LockedPage:
                 wikipedia.output(u"Page %s is locked?!" % page.aslink())
                 continue
+            if wikipedia.getSite().sitename() == 'wikipedia:en' and page.isIpEdit():
+                wikipedia.output(u"Page %s is edited by IP. Possible vandalized" % page.aslink())
+                continue
             if self.lacksReferences(text):
                 newText = self.addReferences(text)
                 self.save(page, newText)
