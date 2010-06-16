@@ -282,11 +282,13 @@ class Family(family.Family):
 
         self.namespaces[112] = {
             'en': u'Subject',
+            'si': u'විෂයය',
             'tr': u'Kitaplık',
         }
 
         self.namespaces[113] = {
             'en': u'Subject talk',
+            'si': u'විෂයය සාකච්ඡාව',
             'tr': u'Kitaplık tartışma',
         }
 
