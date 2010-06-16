@@ -308,7 +308,7 @@ referencesTemplates = {
                u'Bron3',u'ref',u'references',u'appendix',
                u'Noot',u'FootnotesSmall'],
         'pl': [u'przypisy', u'Przypisy'],
-        'pt': [u'Notas', 'ref-section'],
+        'pt': [u'Notas', u'ref-section', u'Referências', u'Reflist'],
         'zh': [u'Reflist'],
     },
 }
