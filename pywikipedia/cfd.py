@@ -17,8 +17,12 @@ import wikipedia
 import re
 import category
 
-# The locateion of the CFD working page.
+# The location of the CFD working page.
 cfdPage = 'Wikipedia:Categories for discussion/Working'
+
+# A list of templates that are used on category pages as part of the CFD
+# process that contain information such as the link to the per-day discussion page.
+cfdTemplates = ['Cfd full', 'Cfr full']
 
 # Regular expression declarations
 # See the en-wiki CFD working page at [[Wikipedia:Categories for discussion/Working]]
@@ -83,13 +87,15 @@ def main():
             day = "None"
         elif (m.check(dateheader, line)):
             day = m.result.group(1)
+            wikipedia.output("Found day header: %s" % day)
         elif (m.check(movecat, line)):
             src = m.result.group(1)
             dest = m.result.group(2)
-            if (mode == "Move" and day != "None"):
-                summary = "Robot - Moving category " + src + " to " + dest + " per [[WP:CFD|CFD]] at " + findDay(src, day) + "."
+            thisDay = findDay(src, day)
+            if (mode == "Move" and thisDay != "None"):
+                summary = "Robot - Moving category " + src + " to " + dest + " per [[WP:CFD|CFD]] at " + thisDay + "."
             elif (mode == "Speedy"):
-                summary = "Robot - Speedily moving category " + src + " to " + dest + " per [[WP:CFD|CFD]]."
+                summary = "Robot - Speedily moving category " + src + " to " + dest + " per [[WP:CFDS|CFDS]]."
             else:
                 continue
             # If the category is redirect, we do NOT want to move articles to
@@ -104,14 +110,15 @@ def main():
             else:
                 robot = category.CategoryMoveRobot(oldCatTitle=src, newCatTitle=dest, batchMode=True,
                                                    editSummary=summary, inPlace=True, moveCatPage=True,
-                                                   deleteEmptySourceCat=True)
+                                                   deleteEmptySourceCat=True, useSummaryForDeletion=True)
         elif (m.check(deletecat, line)):
             src = m.result.group(1)
             # I currently don't see any reason to handle these two cases separately, though
             # if are guaranteed that the category in the "Delete" case is empty, it might be
             # easier to call delete.py on it.
-            if ((mode == "Empty" or mode == "Delete") and day != "None"):
-                summary = "Robot - Removing category " + src + " per [[WP:CFD|CFD]] at " + findDay(src, day) + "."
+            thisDay = findDay(src, day)
+            if ((mode == "Empty" or mode == "Delete") and thisDay != "None"):
+                summary = "Robot - Removing category " + src + " per [[WP:CFD|CFD]] at " + thisDay + "."
             else:
                 continue
             robot = category.CategoryRemoveRobot(catTitle=src, batchMode=True, editSummary=summary,
@@ -142,7 +149,22 @@ def findDay(pageTitle, oldDay):
     if (m != None):
         return "[[" + m.group(1) + "]]"
     else:
-        wikipedia.output("Could not find CFD day link on Category:" + pageTitle + "\n", toStdout=True)
+        # Try to parse day link from CFD template parameters.
+        templates = page.templatesWithParams()
+        for template in templates:
+            if template[0] in cfdTemplates:
+                params = template[1]
+                (day, month, year) = [None, None, None]
+                for param in params:
+                    (paramName, paramVal) = param.split('=', 1)
+                    if (paramName == 'day'):
+                        day = paramVal
+                    elif (paramName == 'month'):
+                        month = paramVal
+                    elif (paramName == 'year'):
+                        year = paramVal
+                if (day and month and year):
+                    return "[[Wikipedia:Categories for discussion/Log/%s %s %s]]" % (year, month, day)
         return oldDay
 
 if __name__ == "__main__":

@@ -429,7 +429,7 @@ class CategoryMoveRobot:
     """Robot to move pages from one category to another."""
     def __init__(self, oldCatTitle, newCatTitle, batchMode=False,
                  editSummary='', inPlace=False, moveCatPage=True,
-                 deleteEmptySourceCat=True, titleRegex=None):
+                 deleteEmptySourceCat=True, titleRegex=None, useSummaryForDeletion=True):
         site = pywikibot.getSite()
         self.editSummary = editSummary
         self.oldCat = catlib.Category(site, oldCatTitle)
@@ -439,6 +439,7 @@ class CategoryMoveRobot:
         self.batchMode = batchMode
         self.deleteEmptySourceCat = deleteEmptySourceCat
         self.titleRegex = titleRegex
+        self.useSummaryForDeletion = useSummaryForDeletion
 
     def run(self):
         site = pywikibot.getSite()
@@ -450,6 +451,13 @@ class CategoryMoveRobot:
             except TypeError:
                 self.editSummary = pywikibot.translate(site, msg_change) % self.oldCat.title()
 
+        if self.useSummaryForDeletion and self.editSummary:
+            reason = self.editSummary
+        else:
+            reason = pywikibot.translate(site, deletion_reason_move) \
+                % (self.newCatTitle, self.newCatTitle)
+
+
         # Copy the category contents to the new category page
         copied = False
         oldMovedTalk = None
@@ -459,8 +467,6 @@ class CategoryMoveRobot:
                             pywikibot.translate(site, cfd_templates))
             # Also move the talk page
             if copied:
-                reason = pywikibot.translate(site, deletion_reason_move) \
-                         % (self.newCatTitle, self.newCatTitle)
                 oldTalk = self.oldCat.toggleTalkPage()
                 if oldTalk.exists():
                     newTalkTitle = newCat.toggleTalkPage().title()
@@ -494,14 +500,13 @@ class CategoryMoveRobot:
             if not self.titleRegex or re.search(self.titleRegex,
                                                 subcategory.title()):
                 catlib.change_category(subcategory, self.oldCat, newCat,
+
                                        comment=self.editSummary,
                                        inPlace=self.inPlace)
 
         # Delete the old category and its moved talk page
         if copied and self.deleteEmptySourceCat == True:
             if self.oldCat.isEmpty():
-                reason = pywikibot.translate(site, deletion_reason_move) \
-                         % (self.newCatTitle, self.newCatTitle)
                 confirm = not self.batchMode
                 self.oldCat.delete(reason, confirm, mark = True)
                 if oldMovedTalk is not None:
