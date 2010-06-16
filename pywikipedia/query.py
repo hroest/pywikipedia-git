@@ -130,6 +130,13 @@ def GetData(params, site = None, useAPI = True, retryCount = 5, encodeTitle = Tr
             # decodedObj = eval( jsontext )
             
             jsontext = json.loads( jsontext )
+
+            if "error" in jsontext:
+                errorDetails = jsontext["error"]
+                if errorDetails["code"] == 'badtoken':
+                    wikipedia.output('Received a bad login token error from the server.  Attempting to refresh.')
+                    params['token'] = site.getToken(sysop = sysop, getagain = True)
+                    continue
             
             if back_response:
                 return res, jsontext

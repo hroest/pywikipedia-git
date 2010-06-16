@@ -2580,7 +2580,14 @@ not supported by PyWikipediaBot!"""
                     if 'comment' in r:
                         c = r['comment']
                     #revision id, edit date/time, user name, edit summary
-                    dataQ.append((r['revid'], r['timestamp'], r['user'], c))
+                    (revidStrr, timestampStrr, userStrr) = (None, None, None)
+                    if 'revid' in r:
+                        revidStrr = r['revid']
+                    if 'timestamp' in r:
+                        timestampStrr = r['timestamp']
+                    if 'user' in r:
+                        userStrr = r['user']
+                    dataQ.append((revidStrr, timestampStrr, userStrr, c))
             
                 if len(result['query']['pages'].values()[0]['revisions']) < revCount:
                     thisHistoryDone = True
