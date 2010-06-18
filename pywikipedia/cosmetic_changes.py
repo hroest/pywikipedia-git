@@ -236,14 +236,9 @@ moved_links = {
 deprecatedTemplates = {
     'wikipedia': {
         'de': [
-            (u'Stub', None),
             (u'Belege', u'Belege fehlen\g<parameters>'),
             (u'Quelle', u'Belege fehlen\g<parameters>'),
             (u'Quellen', u'Belege fehlen\g<parameters>'),
-            (u'CommonsCat', u'Commonscat\g<parameters>'),
-        ],
-        'pdc':[
-            (u'Schkiss', None),
         ],
     }
 }
