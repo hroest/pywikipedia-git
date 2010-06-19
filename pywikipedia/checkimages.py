@@ -433,7 +433,7 @@ duplicates_comment_image = {
 # Regex to detect the template put in the image's decription to find the dupe
 duplicatesRegex = {
         '_default':None,
-        'commons': r'\{\{(?:[Tt]emplate:|)[Dd]upe[|}]',
+        'commons': r'\{\{(?:[Tt]emplate:|)(?:[Dd]up(?:licat|)e|[Bb]ad[ _][Nn]ame)[|}]',
         'it'     : r'\{\{(?:[Tt]emplate:|)[Pp]rogetto:[Cc]oordinamento/Immagini/Bot/Template duplicati[|}]',
         }
 # Category with the licenses and / or with subcategories with the other licenses.
@@ -917,13 +917,10 @@ class main:
                 
                 for duplicate in duplicates:
                     DupePage = wikipedia.ImagePage(self.site, duplicate)
-                    
-                    if DupePage.urlname() == self.image.urlname() and self.timestamp != None:
-                        imagedata = self.timestamp
-                    else:
-                        imagedata = DupePage.getLatestUploader()[1]
-                    # '2008-06-18T08:04:29Z'
-                    data = time.strptime(imagedata, u"%Y-%m-%dT%H:%M:%SZ")
+
+                    if DupePage.urlname() != self.image.urlname() or self.timestamp == None:
+                        self.timestamp = DupePage.getLatestUploader()[1]
+                    data = time.strptime(self.timestamp, u"%Y-%m-%dT%H:%M:%SZ")
                     data_seconds = time.mktime(data)
                     time_image_list.append([data_seconds, duplicate])
                     time_list.append(data_seconds)
@@ -952,7 +949,7 @@ class main:
                         #    string += "*[[:%s%s]]" % (self.image_namespace, duplicate)
                     else:
                         wikipedia.output(u"Already put the dupe-template in the files's page or in the dupe's page. Skip.")
-                        return True # Ok - No problem. Let's continue the checking phase
+                        return False # Ok - No problem. Let's continue the checking phase
                 older_image_ns = u'%s%s' % (self.image_namespace, older_image) # adding the namespace
                 only_report = False # true if the image are not to be tagged as dupes
                 
