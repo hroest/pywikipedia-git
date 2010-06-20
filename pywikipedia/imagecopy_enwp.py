@@ -61,7 +61,7 @@ from image import *
 NL=''
 
 nowCommonsTemplate = {
-    'en': u'{{subst:ncd|%s}}',
+    'en': u'{{NowCommons|1=File:%s|date=~~~~~|reviewer={{subst:REVISIONUSER}}}}',
 }
 
 nowCommonsMessage = {
