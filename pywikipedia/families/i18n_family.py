@@ -135,6 +135,12 @@ class Family(family.Family):
         self.namespaces[1225] = {
             '_default': [u'WikiReader talk'],
         }
+        self.namespaces[1226] = {
+            '_default': [u'Shapado'],
+        }
+        self.namespaces[1227] = {
+            '_default': [u'Shapado talk'],
+        }
 
     def version(self, code):
         return "1.17alpha"
