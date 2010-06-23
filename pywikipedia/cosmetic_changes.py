@@ -539,6 +539,7 @@ class CosmeticChangesToolkit:
     def resolveHtmlEntities(self, text):
         ignore = [
              38,     # Ampersand (&amp;)
+             39,     # Bugzilla 24093
              60,     # Less than (&lt;)
              62,     # Great than (&gt;)
              91,     # Opening bracket - sometimes used intentionally inside links
@@ -547,8 +548,8 @@ class CosmeticChangesToolkit:
             160,     # Non-breaking space (&nbsp;) - not supported by Firefox textareas
         ]
         # ignore ' see http://eo.wikipedia.org/w/index.php?title=Liberec&diff=next&oldid=2320801
-        if self.site.lang == 'eo':
-            ignore += [39]
+        #if self.site.lang == 'eo':
+        #    ignore += [39]
         text = pywikibot.html2unicode(text, ignore = ignore)
         return text
 
