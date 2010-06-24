@@ -1019,6 +1019,21 @@ not supported by PyWikipediaBot!"""
             return False
         return False
 
+    def isStaticRedirect(self, force=False):
+        """Return True if this is a redirect containing the magic word
+        __STATICREDIRECT__, False if not or not existing."""
+        if self.isRedirectPage():
+            staticKeys = self.site().getmagicwords('staticredirect')
+            text = self.get(get_redirect=True, force=force)
+            if staticKeys:
+                found = False
+                for key in staticKeys:
+                    if key in text:
+                        found = True
+                        break
+                if found: return True
+        return False
+
     def isEmpty(self):
         """Return True if the page text has less than 4 characters.
 
