@@ -1,9 +1,11 @@
 #!/usr/bin/python
 # -*- coding: utf-8  -*-
 """
-This is not a complete bot; rather, it is a template from which simple
-bots can be made. You can rename it to mybot.py, then edit it in
-whatever way you want.
+This bot implements a blocking review process for de-wiki first.
+For other sites this bot script must be changed.
+
+This script is run by [[de:User:xqt]]. It should
+not be run by other users without prior contact.
 
 The following parameters are supported:
 
@@ -16,8 +18,11 @@ and the bot will only work on that single page.
 #
 # (C) xqt, 2010
 #
-__version__ = '$Id: blockreview.py 8320 2010-06-24 17:35:26Z xqt $'
+# Distributed under the terms of the MIT license.
 #
+__version__ =
+#
+
 import wikipedia as pywikibot
 import userlib
 
@@ -34,6 +39,10 @@ class BlockreviewBot:
     # edit summaries
     msg_admin = {
         'de': u'Bot-Benachrichtigung: Sperrprüfungswunsch von [[%(user)s]]',
+    }
+
+    msg_user = {
+        'de': u'Bot: Administrator [[Benutzer:%(admin)s|%(admin)s]] für Sperrprüfung benachrichtigt',
     }
 
     msg_done = {
@@ -91,6 +100,7 @@ class BlockreviewBot:
         """
         talkText = self.load(userPage)
         if not talkText:
+            # sanity check. No talk page found.
             return
         unblock_tpl = self.unblock_tpl[self.site.lang]
         project_name = self.project_name[self.site.lang]
@@ -118,13 +128,14 @@ class BlockreviewBot:
                                                     u'{{%s|2}}' % unblock_tpl)
                         talkText = talkText.replace(u'{{%s|1}}' % unblock_tpl,
                                                     u'{{%s|2}}' % unblock_tpl)
-                        talkComment = u'Bot: Administrator [[Benutzer:%(admin)s|%(admin)s]] für Sperrprüfung benachrichtigt' \
-                                      % self.parts
-
-                        #testPage = pywikibot.Page(self.site, 'Benutzer:Xqt/Test')
-                        #test = testPage.get()
-                        #test += note
-                        #self.save(test, testPage, '[[WP:BA#SPP-Bot|SPPB-Test]]')
+                        talkComment = pywikibot.translate(self.site.lang, self.msg_user % self.parts)
+        
+                        # some test stuff
+                        if pywikibot.debug and self.site().loggedInAs() == u'Xqbot:
+                            testPage = pywikibot.Page(self.site, 'Benutzer:Xqt/Test')
+                            test = testPage.get()
+                            test += note
+                            self.save(test, testPage, '[[WP:BA#SPP-Bot|SPPB-Test]]')
                     else:
                         # nicht blockiert. Fall auf DS abschließen
                         talkText = talkText.replace(u'{{%s}}'   % unblock_tpl,
@@ -133,7 +144,7 @@ class BlockreviewBot:
                                                     u'{{%s|4}}' % unblock_tpl)
                         talkComment = pywikibot.translate(self.site.lang, self.msg_done)
                 # Step 2
-                # Admin has beend notified.
+                # Admin has been notified.
                 # Wait for 2 hours, than put a message to the project page
                 elif templates[1][0]==u'2':
                     if self.info['action'] == 'block' or user.isBlocked():
@@ -195,7 +206,6 @@ class BlockreviewBot:
                 'duration' : self.info['block']['duration'],
                 'comment'  : self.info['comment'],
             }
-
 
     def load(self, page):
         """
