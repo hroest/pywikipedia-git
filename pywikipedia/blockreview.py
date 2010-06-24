@@ -16,13 +16,10 @@ and the bot will only work on that single page.
 #
 # (C) xqt, 2010
 #
-__version__ = '$Id: basic.py 7845 2009-12-30 17:02:05Z xqt $'
+__version__ = '$Id: blockreview.py 8320 2010-06-24 17:35:26Z xqt $'
 #
 import wikipedia as pywikibot
 import userlib
-
-# This is required for the text that is shown when you run this script
-# with the parameter -help.
 
 class BlockreviewBot:
     # notes
@@ -34,14 +31,22 @@ class BlockreviewBot:
         'de': u"\n\n== [[%(user)s]] ==\n* gesperrt am %(time)s durch {{Benutzer|%(admin)s}} für eine Dauer von %(duration)s.\n* Kommentar war ''%(comment)s''.\n* [[Benutzer:%(admin)s]] wurde [[Benutzer Diskussion:%(admin)s#Sperrprüfungswunsch|benachrichtigt]].\n* [[%(usertalk)s#%(section)s|Link zur Diskussion]]\n:<small>-~~~~</small>\n;Antrag entgegengenommen"
     }
 
-    # edit summary
+    # edit summaries
     msg_admin = {
         'de': u'Bot-Benachrichtigung: Sperrprüfungswunsch von [[%(user)s]]',
     }
 
+    msg_done = {
+        'de': u'Bot: Sperrprüfung abgeschlossen. Benutzer ist entsperrt.',
+    }
+
     unblock_tpl = {
         'de' : u'Benutzer:TAXman/Sperrprüfungsverfahren',
+        'pt' : u'Predefinição:Discussão de bloqueio',
     }
+
+    review_cat = {
+        'de' : u'Wikipedia:Sperrprüfung'
 
     project_name = {
         'de' : u'Benutzer:TAXman/Sperrprüfung Neu'
@@ -62,6 +67,7 @@ class BlockreviewBot:
         self.parts = None
 
     def run(self):
+        # TODO: change the generator for template to the included category
         try:
             genPage = pywikibot.Page(self.site,
                                      self.unblock_tpl[self.site.lang],
@@ -94,8 +100,9 @@ class BlockreviewBot:
         for templates in userPage.templatesWithParams():
             if templates[0] == unblock_tpl:
                 self.getInfo(user)
-                # Sperrprüfung ist neu eingetragen.
-                # Sperrenden Admin benachrichtigen.
+                # Step 1
+                # a new template is set on blocked users talk page.
+                # Notify the blocking admin
                 if templates[1]==[] or templates[1][0]==u'1':
                     if self.info['action'] == 'block' or user.isBlocked():
                         admin = userlib.User(self.site, self.info['user'])
@@ -113,7 +120,7 @@ class BlockreviewBot:
                                                     u'{{%s|2}}' % unblock_tpl)
                         talkComment = u'Bot: Administrator [[Benutzer:%(admin)s|%(admin)s]] für Sperrprüfung benachrichtigt' \
                                       % self.parts
-    
+
                         #testPage = pywikibot.Page(self.site, 'Benutzer:Xqt/Test')
                         #test = testPage.get()
                         #test += note
@@ -124,13 +131,14 @@ class BlockreviewBot:
                                                     u'{{%s|4}}' % unblock_tpl)
                         talkText = talkText.replace(u'{{%s|1}}' % unblock_tpl,
                                                     u'{{%s|4}}' % unblock_tpl)
-                        talkComment = u'Bot: Sperrprüfung abgeschlossen. Benutzer ist entsperrt.'
-                # Admin ist benachrichtigt.
-                # 2 Stunden warten, dann eintrag auf Projektseite
+                        talkComment = pywikibot.translate(self.site.lang, self.msg_done)
+                # Step 2
+                # Admin has beend notified.
+                # Wait for 2 hours, than put a message to the project page
                 elif templates[1][0]==u'2':
                     if self.info['action'] == 'block' or user.isBlocked():
-                        # todo: Wartezeit einplanen
-                        #       prüfen, ob Eintrag schon vorhanden
+                        # TODO: check whether wait time is gone
+                        #       check whether this entry already esists
                         project = pywikibot.Page(self.site, project_name)
                         projText = project.get()
                         note = pywikibot.translate(self.site.lang,
@@ -144,25 +152,32 @@ class BlockreviewBot:
                         talkComment = u'Bot: [[%s|Wikipedia:Sperrprüfung]] eingetragen' \
                                       % project_name
                     else:
-                        # nicht blockiert. Fall auf DS abschließen
+                        # User is unblocked. Review can be closed
                         talkText = talkText.replace(u'{{%s|2}}' % unblock_tpl,
                                                     u'{{%s|4}}' % unblock_tpl)
-                        talkComment = u'Bot: Sperrprüfung abgeschlossen. Benutzer ist entsperrt.'
+                        talkComment = pywikibot.translate(self.site.lang, self.msg_done)
+                # Step 3
+                # Admin is notified, central project page has a message
+                # Discussion is going on
+                # Check whether it can be closed
                 elif templates[1][0]==u'3':
                     if self.info['action'] == 'block' or user.isBlocked():
                         pass
                     else:
-                        # nicht blockiert. Fall auf DS abschließen
+                        # User is unblocked. Review can be closed
                         talkText = talkText.replace(u'{{%s|3}}' % unblock_tpl,
                                                     u'{{%s|4}}' % unblock_tpl)
-                        talkComment = u'Bot: Sperrprüfung abgeschlossen. Benutzer ist entsperrt.'
+                        talkComment = pywikibot.translate(self.site.lang, self.msg_done)
+                # Step 4
+                # Review is closed
                 elif templates[1][0]==u'4':
                     # nothing left to do
                     pass
             else:
                 # wrong template found
                 pass
-            
+
+        # at last if there is a talk comment, users talk page must be changed
         if talkComment:
             self.save(talkText, userPage, talkComment)
 
@@ -180,7 +195,7 @@ class BlockreviewBot:
                 'duration' : self.info['block']['duration'],
                 'comment'  : self.info['comment'],
             }
-        
+
 
     def load(self, page):
         """
@@ -242,8 +257,6 @@ def main():
             show = True
 
     if not show:
-        # The preloading generator is responsible for downloading multiple
-        # pages from the wiki simultaneously.
         bot = BlockreviewBot(dry)
         bot.run()
     else:
