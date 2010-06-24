@@ -36,6 +36,8 @@ Furthermore, the following command line parameters are supported:
 
 -up               If used, put the text at the top of the page
 
+-noreorder        Avoid to reorder cats and interwiki
+
 --- Example ---
 1.
 # This is a script to add a template to the top of the pages with
@@ -152,7 +154,7 @@ def untaggedGenerator(untaggedProject, limit = 500):
 
 def add_text(page = None, addText = None, summary = None, regexSkip = None,
              regexSkipUrl = None, always = False, up = False, putText = True,
-             oldTextGiven = None, create=False):
+             oldTextGiven = None, reorderEnabled = True, create=False):
     if not addText:
         raise NoEnoughData('You have to specify what text you want to add!')
     if not summary:
@@ -230,45 +232,49 @@ u'Exception! regex (or word) used with -except is in the page. Skip!')
     # If not up, text put below
     if not up:
         newtext = text
-        # Getting the categories
-        categoriesInside = pywikibot.getCategoryLinks(newtext, site)
-        # Deleting the categories
-        newtext = pywikibot.removeCategoryLinks(newtext, site)
-        # Getting the interwiki
-        interwikiInside = pywikibot.getLanguageLinks(newtext, site)
-        # Removing the interwiki
-        newtext = pywikibot.removeLanguageLinks(newtext, site)
-        # nn got a message between the categories and the iw's and they want to
-        # keep it there, first remove it
-        if (site.language()==u'nn'):
-            newtext = newtext.replace(nn_iw_msg, '')
         # Translating the \\n into binary \n
         addText = addText.replace('\\n', '\n')
-        # Adding the text
-        newtext += u"\n%s" % addText
-        # Reputting the categories
-        newtext = pywikibot.replaceCategoryLinks(newtext,
+        if (reorderEnabled):
+            # Getting the categories
+            categoriesInside = pywikibot.getCategoryLinks(newtext, site)
+            # Deleting the categories
+            newtext = pywikibot.removeCategoryLinks(newtext, site)
+            # Getting the interwiki
+            interwikiInside = pywikibot.getLanguageLinks(newtext, site)
+            # Removing the interwiki
+            newtext = pywikibot.removeLanguageLinks(newtext, site)
+            # nn got a message between the categories and the iw's and they want to
+            # keep it there, first remove it
+            if (site.language()==u'nn'):
+                newtext = newtext.replace(nn_iw_msg, '')
+            # Adding the text
+            newtext += u"\n%s" % addText
+            # Reputting the categories
+            newtext = pywikibot.replaceCategoryLinks(newtext,
                                                  categoriesInside, site, True)
-        #Put the nn iw message back
-        if (site.language()==u'nn'):
-            newtext = newtext + u'\n' + nn_iw_msg
-        # Dealing the stars' issue
-        allstars = []
-        starstext = pywikibot.removeDisabledParts(text)
-        for star in starsList:
-            regex = re.compile('(\{\{(?:template:|)%s\|.*?\}\}[\s]*)' % star,
-                               re.I)
-            found = regex.findall(starstext)
-            if found != []:
-                newtext = regex.sub('', newtext)
-                allstars += found
-        if allstars != []:
-            newtext = newtext.strip()+'\r\n\r\n'
-            allstars.sort()
-            for element in allstars:
-                newtext += '%s\r\n' % element.strip()
-        # Adding the interwiki
-        newtext = pywikibot.replaceLanguageLinks(newtext, interwikiInside, site)
+            #Put the nn iw message back
+            if (site.language()==u'nn'):
+                newtext = newtext + u'\n' + nn_iw_msg
+            # Dealing the stars' issue
+            allstars = []
+            starstext = pywikibot.removeDisabledParts(text)
+            for star in starsList:
+                regex = re.compile('(\{\{(?:template:|)%s\|.*?\}\}[\s]*)' % star,
+                                   re.I)
+                found = regex.findall(starstext)
+                if found != []:
+                    newtext = regex.sub('', newtext)
+                    allstars += found
+            if allstars != []:
+                newtext = newtext.strip()+'\r\n\r\n'
+                allstars.sort()
+                for element in allstars:
+                    newtext += '%s\r\n' % element.strip()
+            # Adding the interwiki
+            newtext = pywikibot.replaceLanguageLinks(newtext, interwikiInside, site)
+        else:
+            # Adding the text
+            newtext += u"\n%s" % addText
     # If instead the text must be added above...
     else:
         newtext = addText + '\n' + text
@@ -331,6 +337,7 @@ def main():
     generator = None; always = False
     textfile=None
     talkPage=False
+    reorderEnabled = True
     namespaces=[]
     # Load a lot of default generators
     genFactory = pagegenerators.GeneratorFactory()
@@ -381,6 +388,8 @@ def main():
             generator = untaggedGenerator(untaggedProject)
         elif arg == '-up':
             up = True
+        elif arg == '-noreorder':
+            reorderEnabled = False
         elif arg == '-always':
             always = True
         elif arg == '-talk' or arg == '-talkpage':
@@ -409,7 +418,7 @@ def main():
     # Main Loop
     for page in generator:
         (text, newtext, always) = add_text(page, addText, summary, regexSkip,
-                                           regexSkipUrl, always, up, True,
+                                           regexSkipUrl, always, up, True, reorderEnabled=reorderEnabled,
                                            create=talkPage)
 
 if __name__ == "__main__":
