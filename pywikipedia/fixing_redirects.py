@@ -16,6 +16,8 @@ options -file, -ref, -links, ...
 #
 # This script based on disambredir.py and solve_disambiguation.py
 #
+# (C) Pywikipedia team, 2004-2010
+#
 # Distributed under the terms of the MIT license.
 #
 __version__='$Id$'
@@ -185,9 +187,7 @@ def workon(page):
             wikipedia.output('Error: unable to put %s' % page.aslink())
 
 def main():
-    start = '!'
     featured = False
-    namespace = None
     gen = None
 
     # This factory is responsible for processing command line arguments
@@ -198,33 +198,22 @@ def main():
     for arg in wikipedia.handleArgs():
         if arg == '-featured':
             featured = True
-        elif arg.startswith('-namespace'):
-            if len(arg) == 10:
-                namespace = int(wikipedia.input(u'Which namespace should be processed?'))
-            else:
-                namespace = int(arg[11:])
         else:
             genFactory.handleArg(arg)
-
-    gen = genFactory.getCombinedGenerator()
 
     mysite = wikipedia.getSite()
     if mysite.sitename() == 'wikipedia:nl':
         wikipedia.output(u'\03{lightred}There is consensus on the Dutch Wikipedia that bots should not be used to fix redirects.\03{default}')
         sys.exit()
 
-    linktrail = mysite.linktrail()
     if featured:
         featuredList = wikipedia.translate(mysite, featured_articles)
         ref = wikipedia.Page(wikipedia.getSite(), featuredList)
         gen = pagegenerators.ReferringPageGenerator(ref)
-        generator = pagegenerators.NamespaceFilterPageGenerator(gen, [0])
-        for page in generator:
-            workon(page)
-    elif namespace is not None:
-        for page in pagegenerators.AllpagesPageGenerator(start=start, namespace=namespace, includeredirects=False):
-            workon(page)
-    elif gen:
+        gen = pagegenerators.NamespaceFilterPageGenerator(gen, [0])
+    if not gen:
+        gen = genFactory.getCombinedGenerator()
+    if gen:
         for page in pagegenerators.PreloadingGenerator(gen):
             workon(page)
     else:
