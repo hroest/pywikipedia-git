@@ -65,12 +65,12 @@ or you need some help regarding this script, you can find us here:
 """
 
 #
-# (C) Filnik, 2007-2009
+# (C) Filnik, 2007-2010
 # (C) Pywikipedia bot team, 2007-2010
 #
 # Distributed under the terms of the MIT license.
 #
-__version__ = '$Id: add_text.py,v 1.5 2008/04/25 17:08:30 filnik Exp$'
+__version__ = '$Id$'
 #
 
 import re, pagegenerators, urllib2, urllib
