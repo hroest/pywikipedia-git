@@ -20,11 +20,11 @@ and the bot will only work on that single page.
 #
 # Distributed under the terms of the MIT license.
 #
-__version__ =
+__version__ = '$Id$'
 #
 
 import wikipedia as pywikibot
-import userlib
+import userlib, query
 
 class BlockreviewBot:
     # notes
@@ -55,11 +55,12 @@ class BlockreviewBot:
     }
 
     review_cat = {
-        'de' : u'Wikipedia:Sperrprüfung'
+        'de' : u'Wikipedia:Sperrprüfung',
+    }
 
     project_name = {
-        'de' : u'Benutzer:TAXman/Sperrprüfung Neu'
-        'pt' : u'Wikipedia:Pedidos a administradores/Discussão de bloqueio'
+        'de' : u'Benutzer:TAXman/Sperrprüfung Neu',
+        'pt' : u'Wikipedia:Pedidos a administradores/Discussão de bloqueio',
     }
 
     def __init__(self, dry):
@@ -115,15 +116,24 @@ class BlockreviewBot:
                 # Notify the blocking admin
                 if templates[1]==[] or templates[1][0]==u'1':
                     if self.info['action'] == 'block' or user.isBlocked():
-                        admin = userlib.User(self.site, self.info['user'])
-                        adminPage = admin.getUserTalkPage()
-                        adminText = adminPage.get()
-                        note = pywikibot.translate(self.site.lang,
-                                                   self.note_admin) % self.parts
-                        comment = pywikibot.translate(self.site.lang,
-                                                      self.msg_admin) % self.parts
-                        adminText += note
-                        self.save(adminText, adminPage, comment, False)
+                        if self.site.sitename() == 'wikipedia:de':
+                            admin = userlib.User(self.site, self.info['user'])
+                            adminPage = admin.getUserTalkPage()
+                            adminText = adminPage.get()
+                            note = pywikibot.translate(self.site.lang,
+                                                       self.note_admin) % self.parts
+                            comment = pywikibot.translate(self.site.lang,
+                                                          self.msg_admin) % self.parts
+                            adminText += note
+                            self.save(adminText, adminPage, comment, False)
+                        ### test for pt-wiki
+                        ### just print all sysops talk pages
+                        elif self.site.sitename() == 'wikipedia:pt':
+                            import pagegenerators as pg
+                            gen = pg.PreloadingGenerator(self.SysopGenerator())
+                            for sysop in gen:
+                                print sysop.title()
+                            
                         talkText = talkText.replace(u'{{%s}}'   % unblock_tpl,
                                                     u'{{%s|2}}' % unblock_tpl)
                         talkText = talkText.replace(u'{{%s|1}}' % unblock_tpl,
@@ -131,7 +141,7 @@ class BlockreviewBot:
                         talkComment = pywikibot.translate(self.site.lang, self.msg_user % self.parts)
         
                         # some test stuff
-                        if pywikibot.debug and self.site().loggedInAs() == u'Xqbot:
+                        if pywikibot.debug and self.site().loggedInAs() == u'Xqbot:':
                             testPage = pywikibot.Page(self.site, 'Benutzer:Xqt/Test')
                             test = testPage.get()
                             test += note
@@ -206,6 +216,18 @@ class BlockreviewBot:
                 'duration' : self.info['block']['duration'],
                 'comment'  : self.info['comment'],
             }
+
+    def SysopGenerator(self):
+        params = param = {
+            'action'  : 'query',
+            'list'    : 'allusers',
+            'augroup' : 'sysop',
+            'aulimit' : 500
+	}
+        data = query.GetData(params, self.site)
+        for user in data['query']['allusers']:
+            # yield the sysop talkpage
+            yield pywikibot.Page(self.site, user['name'], defaultNamespace=3)
 
     def load(self, page):
         """
