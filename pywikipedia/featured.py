@@ -123,6 +123,7 @@ msg_good = {
     'no': u'bot: [[%s:%s]] er en anbefalt artikkel',
     'nn': u'bot: [[%s:%s]] er ein god artikkel',
     'pl': u'Bot: Link do dobrego artykułu: [[%s:%s]]',
+    'pt': u'Bot: [[%s:%s]] é um artigo bom',
     'ru': u'Робот: хорошая статья [[%s:%s]]',
     'sv': u'Bot: [[%s:%s]] är en läsvärd artikel',
 }
@@ -136,6 +137,7 @@ msg_lists = {
     'fa': u'ربات:[[%s:%s]] یک فهرست برگزیده است',
     'fi': u'Botti: [[%s:%s]] on suositeltu luettelo',
     'ksh':u'bot: [[%s:%s]] ess_en joode Leß',
+    'pt': u'Bot: [[%s:%s]] é uma lista destacada',
     'sv': u'Bot: [[%s:%s]] är en utmärkt list',
 }
 msg_former = {
@@ -187,6 +189,7 @@ template_good = {
     'is': ['Tengill GG'],
     'nn': ['Link AA'],
     'no': ['Link AA'],
+    'pt': ['Bom interwiki'],
    #'tr': ['Link GA', 'Link KM'],
     'vi': [u'Liên kết bài chất lượng tốt'],
     'wo': ['Lien BA'],
@@ -327,6 +330,7 @@ good_name = {
     'no': (CAT, u"Anbefalte artikler"),
     'oc': (CAT, u"Bon article"),
     'pl': (CAT, u"Dobre artykuły"),
+    'pt': (CAT, u"Artigos bons"),
     'ro': (BACK, u"Articol bun"),
     'ru': (CAT, u"Википедия:Хорошие статьи"),
     'simple': (CAT, u"Good articles"),
@@ -360,6 +364,7 @@ lists_name = {
     'zh': (BACK, u'Featured list'),
     'da': (BACK, u'FremragendeListe'),
 }
+
 former_name = {
     'th': (CAT, u"บทความคัดสรรในอดีต"),
     'pt': (CAT,u"!Ex-Artigos_destacados"),
