@@ -6654,10 +6654,10 @@ u"""WARNING: Could not open '%s'. Maybe the server or\n your connection is down.
         """
         #NOTE: this is needed, since the API can give false positives!
         default = 'REDIRECT'
-        try:
-            keywords = self.getmagicwords('redirect')
+        keywords = self.getmagicwords('redirect')
+        if keywords:
             pattern = r'(?:' + '|'.join(keywords) + ')'
-        except KeyError:
+        else:
             # no localized keyword for redirects
             pattern = r'#%s' % default
         if self.versionnumber() > 12:
