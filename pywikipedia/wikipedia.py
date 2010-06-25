@@ -1286,7 +1286,7 @@ not supported by PyWikipediaBot!"""
 
                         yield plk
                         refPages.add(plk)
-                        if follow_redirects and 'redirect' in p:
+                        if follow_redirects and 'redirect' in p and plk != self:
                             for zms in plk.getReferences(follow_redirects, withTemplateInclusion, 
                                               onlyTemplateInclusion, redirectsOnly, internal=True):
                                 yield zms
