@@ -222,12 +222,15 @@ class BlockreviewBot:
             'action'  : 'query',
             'list'    : 'allusers',
             'augroup' : 'sysop',
-            'aulimit' : 500
-	}
+            'auprop'  : 'groups',
+            'aulimit' : 500,
+    }
         data = query.GetData(params, self.site)
         for user in data['query']['allusers']:
-            # yield the sysop talkpage
-            yield pywikibot.Page(self.site, user['name'], defaultNamespace=3)
+            # exclude sysop bots
+            if 'bot' not in user['groups']:
+                # yield the sysop talkpage
+                yield pywikibot.Page(self.site, user['name'], defaultNamespace=3)
 
     def load(self, page):
         """
