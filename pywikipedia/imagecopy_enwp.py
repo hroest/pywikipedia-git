@@ -427,7 +427,7 @@ def getOriginalUploadLog(imagepage):
 
     sourceimage = imagepage.site().get_address(imagepage.title()).replace(u'&redirect=no&useskin=monobook', u'')
     
-    result = u'== Original upload log ==\n'
+    result = u'== {{Original upload log}} ==\n'
     result = result + u'The original description page is/was [http://%(lang)s.%(family)s.org%(sourceimage)s here]. All following user names refer to %(lang)s.%(family)s.\n' % {u'lang' : lang, u'family' : family , u'sourceimage' : sourceimage}
     for (timestamp, username, resolution, size, comment) in filehistory:
         date = datetime.strptime(timestamp, u'%Y-%m-%dT%H:%M:%SZ').strftime('%Y-%m-%d %H:%M')
