@@ -580,25 +580,32 @@ class ReferencesRobot:
 
                 meta_content = self.META_CONTENT.search(linkedpagetext)
                 enc = []
+                # use charset from http header
+                s = self.CHARSET.search(contentType)
                 if meta_content:
                     tag = meta_content.group()
                     # Prefer the contentType from the HTTP header :
                     if not contentType:
                         contentType = tag
-                    s = self.CHARSET.search(tag)
-                    if s:
-                        tmp = s.group('enc').strip("\"' ").lower()
-                        naked = re.sub('[ _\-]', '', tmp)
-                        # Convert to python correct encoding names
-                        if naked == "gb2312":
-                            enc.append("gbk")
-                        elif naked == "shiftjis":
-                            enc.append("shift jis 2004")
-                            enc.append("cp932")
-                        elif naked == "xeucjp":
-                            enc.append("euc-jp")
-                        else:
-                            enc.append(tmp)
+                    if not s:
+                        # use charset from html
+                        s = self.CHARSET.search(tag)
+                if s:
+                    tmp = s.group('enc').strip("\"' ").lower()
+                    naked = re.sub('[ _\-]', '', tmp)
+                    # Convert to python correct encoding names
+                    if naked == "gb2312":
+                        enc.append("gbk")
+                    elif naked == "shiftjis":
+                        enc.append("shift jis 2004")
+                        enc.append("cp932")
+                    elif naked == "xeucjp":
+                        enc.append("euc-jp")
+                    else:
+                        enc.append(tmp)
+                else:
+                    wikipedia.output(u'No charset found for %s' % ref.link)
+                    #continue            # do not process pages without charset
                 if not contentType:
                     wikipedia.output(u'No content-type found for %s' % ref.link)
                     continue
