@@ -4510,6 +4510,7 @@ class Site(object):
         uncategorizedpages(): Special:Uncategorizedpages
         uncategorizedimages(): Special:Uncategorizedimages (yields
             ImagePage objects)
+        uncategorizedtemplates(): Special:UncategorizedTemplates
         unusedcategories(): Special:Unusuedcategories (yields Category)
         unusedfiles(): Special:Unusedimages (yields ImagePage)
         randompage: Special:Random
@@ -4573,6 +4574,7 @@ class Site(object):
         uncategorizedcategories_address: Special:Uncategorizedcategories.
         uncategorizedimages_address: Special:Uncategorizedimages.
         uncategorizedpages_address: Special:Uncategorizedpages.
+        uncategorizedtemplates_address: Special:UncategorizedTemplates.
         unusedcategories_address: Special:Unusedcategories.
         withoutinterwiki_address: Special:Withoutinterwiki.
         references_address(s): Special:Whatlinksere for page 's'.
@@ -6205,6 +6207,25 @@ u"""WARNING: Could not open '%s'. Maybe the server or\n your connection is down.
             if not repeat:
                 break
 
+    def uncategorizedtemplates(self, number = 10, repeat = False):
+        """Yield Pages from Special:UncategorizedTemplates."""
+        seen = set()
+        while True:
+            path = self.uncategorizedtemplates_address(n=number)
+            get_throttle()
+            html = self.getUrl(path)
+            entryR = re.compile(
+                '<li><a href=".+?" title="(?P<title>.+?)">.+?</a></li>')
+            for m in entryR.finditer(html):
+                title = m.group('title')
+
+                if title not in seen:
+                    seen.add(title)
+                    page = Page(self, title)
+                    yield page
+            if not repeat:
+                break
+
     def unusedcategories(self, number = 10, repeat = False):
         """Yield Category objects from Special:Unusedcategories."""
         import catlib
@@ -6902,6 +6923,10 @@ u"""WARNING: Could not open '%s'. Maybe the server or\n your connection is down.
     def uncategorizedpages_address(self, n=500):
         """Return path to Special:Uncategorizedpages."""
         return self.family.uncategorizedpages_address(self.lang, n)
+
+    def uncategorizedtemplates_address(self, n=500):
+        """Return path to Special:Uncategorizedpages."""
+        return self.family.uncategorizedtemplates_address(self.lang, n)
 
     def unusedcategories_address(self, n=500):
         """Return path to Special:Unusedcategories."""

@@ -60,6 +60,8 @@ parameterHelp = u"""\
 
 -uncatfiles       Work on all files which are not categorised.
 
+-uncattemplates   Work on all templates which are not categorised.
+
 -file             Read a list of pages to treat from the named text file.
                   Page titles in the file must be enclosed with [[brackets]]
                   or separated by newlines. Argument can also be given as
@@ -465,6 +467,8 @@ class GeneratorFactory(object):
             gen = UnCategorizedImageGenerator()
         elif arg.startswith('-uncatcat'):
             gen = UnCategorizedCategoryGenerator()
+        elif arg.startswith('-uncattemplates'):
+            gen = UnCategorizedTemplatesGenerator()
         elif arg.startswith('-uncat'):
             gen = UnCategorizedPageGenerator()
         elif arg.startswith('-ref'):
@@ -772,7 +776,7 @@ def UnCategorizedCategoryGenerator(number=100, repeat=False, site=None):
     for page in site.uncategorizedcategories(number=number, repeat=repeat):
         yield page
 
-def UnCategorizedImageGenerator(number = 100, repeat = False, site = None):
+def UnCategorizedImageGenerator(number=100, repeat=False, site=None):
     if site is None:
         site = pywikibot.getSite()
     for page in site.uncategorizedimages(number=number, repeat=repeat):
@@ -784,19 +788,25 @@ def UnCategorizedPageGenerator(number=100, repeat=False, site=None):
     for page in site.uncategorizedpages(number=number, repeat=repeat):
         yield page
 
-def LonelyPagesPageGenerator(number = 100, repeat = False, site = None):
+def UnCategorizedTemplatesGenerator(number=100, repeat=False, site=None):
+    if site is None:
+        site = pywikibot.getSite()
+    for page in site.uncategorizedtemplates(number=number, repeat=repeat):
+        yield page
+
+def LonelyPagesPageGenerator(number=100, repeat=False, site=None):
     if site is None:
         site = pywikibot.getSite()
     for page in site.lonelypages(number=number, repeat=repeat):
         yield page
 
-def UnwatchedPagesPageGenerator(number = 100, repeat = False, site = None):
+def UnwatchedPagesPageGenerator(number=100, repeat=False, site=None):
     if site is None:
         site = pywikibot.getSite()
     for page in site.unwatchedpages(number=number, repeat=repeat):
         yield page
 
-def AncientPagesPageGenerator(number = 100, repeat = False, site = None):
+def AncientPagesPageGenerator(number=100, repeat=False, site=None):
     if site is None:
         site = pywikibot.getSite()
     for page in site.ancientpages(number=number, repeat=repeat):

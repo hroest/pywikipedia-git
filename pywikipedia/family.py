@@ -3754,6 +3754,9 @@ class Family:
     def uncategorizedpages_address(self, code, limit=500):
         return "%s?title=%s:Uncategorizedpages&limit=%d&useskin=monobook" % (self.path(code), self.special_namespace_url(code), limit)
 
+    def uncategorizedtemplates_address(self, code, limit=500):
+        return "%s?title=%s:UncategorizedTemplates&limit=%d&useskin=monobook" % (self.path(code), self.special_namespace_url(code), limit)
+
     def unusedcategories_address(self, code, limit=500):
         return "%s?title=%s:Unusedcategories&limit=%d&useskin=monobook" % (self.path(code), self.special_namespace_url(code), limit)
 
