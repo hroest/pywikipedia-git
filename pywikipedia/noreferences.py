@@ -49,6 +49,7 @@ msg = {
     'cs':u'Robot doplnil chybějící <references />',
     'de':u'Bot: Trage fehlendes <references /> nach',
     'en':u'Robot: Adding missing <references /> tag',
+    'ru':u'Robot: Добавлен отсутствующий тег <references />',
     'eo':u'Roboto: Aldono de "<references />"',
     'fa':u'ربات:تگ رفرنسز فراموش شده‌است',
     'fi':u'Botti lisäsi puuttuvan {{viitteet}}-mallineen',
@@ -92,6 +93,10 @@ placeBeforeSections = {
         u'External links',
         u'See also',
         u'Notes'
+    ],
+    'ru': [
+        u'Ссылки',
+        u'Литература',
     ],
     'eo': [
         u'Eksteraj ligiloj',
@@ -198,6 +203,11 @@ referencesSections = {
         u'Footnotes',
         u'Notes',
     ],
+    'ru': [
+        u'Примечания',
+        u'Ссылки',
+        u'Источники',
+    ],
     'eo': [
         u'Referencoj',
     ],
@@ -292,6 +302,10 @@ referencesTemplates = {
         'en': [u'Reflist',u'Refs',u'FootnotesSmall',u'Reference',
                u'Ref-list',u'Reference list',u'References-small',u'Reflink',
                u'Footnotes',u'FootnotesSmall'],
+        'ru': [u'Reflist',u'Ref-list',u'Refs',u'Sources',
+               u'примечания',u'список примечаний',
+               u'Примечания',u'Список примечаний',
+               u'Сноска',u'Сноски'],
         'eo': [u'Referencoj'],
         'es': ['Listaref', 'Reflist', 'muchasref'],
         'fa': [u'Reflist',u'Refs',u'FootnotesSmall',u'Reference',u'پانویس',u'Reflist',u'پانویس‌ها ',u'پانویس ۲',u'پانویس۲'],
@@ -320,6 +334,7 @@ referencesSubstitute = {
         'fi': u'{{viitteet}}',
         'hu': u'{{Források}}',
         'pl': u'{{Przypisy}}',
+        'ru': u'{{примечания}}',
     },
 }
 
