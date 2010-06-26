@@ -471,6 +471,14 @@ uploadBots = {
         'commons':[['File Upload Bot (Magnus Manske)', r'\|[Ss]ource=Transferred from .*?; transferred to Commons by \[\[User:(.*?)\]\]']],
 }
 
+# Service images that don't have to be deleted and/or reported has a template inside them
+# (you can let this param as None)
+
+serviceTemplates = {
+        '_default': None,
+        'it': ['Template:Immagine di servizio'],
+}
+
 # Add your project (in alphabetical order) if you want that the bot start
 project_inserted = [u'ar', u'commons', u'de', u'en', u'fa', u'ga', u'hu', u'it', u'ja', u'ko', u'ta', u'zh']
 
@@ -862,6 +870,13 @@ class main:
         else:
             commons_image_with_this_hash = commons_site.getFilesFromAnHash(hash_found)
             if commons_image_with_this_hash != [] and commons_image_with_this_hash != 'None':
+                servTMP = wikipedia.translate(self.site, serviceTemplates)
+                templatesInTheImage = self.image.getTemplates()
+                if servTMP != None:
+                    for template in servTMP:
+                        if wikipedia.Page(self.site, template) in templatesInTheImage:
+                            wikipedia.output(u"%s is on commons but it's a service image." % self.imageName)
+                            return True # Problems? No, return True and continue with the check-part
                 wikipedia.output(u'%s is on commons!' % self.imageName)
                 on_commons_text = self.image.getImagePageHtml()
                 if u"<div class='sharedUploadNotice'>" in on_commons_text:
@@ -879,11 +894,9 @@ class main:
                     else:
                         repme = u"\n*[[:File:%s]] is also on '''Commons''': [[commons:File:%s]]" % (self.imageName, commons_image_with_this_hash[0])
                     self.report_image(self.imageName, self.rep_page, self.com, repme, addings = False, regex = regexOnCommons)
-                    # Problems? No, return True
-                    return True
+                    return True # Problems? No, return True
             else:
-                # Problems? No, return True
-                return True
+                return True # Problems? No, return True
     
     def checkImageDuplicated(self, duplicates_rollback):
         """ Function to check the duplicated files. """
