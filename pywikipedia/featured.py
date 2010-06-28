@@ -367,9 +367,10 @@ lists_name = {
 
 former_name = {
     'th': (CAT, u"บทความคัดสรรในอดีต"),
-    'pt': (CAT,u"!Ex-Artigos_destacados"),
-    'es': (CAT,u"Wikipedia:Artículos anteriormente destacados"),
-    'hu': (CAT,u"Korábbi kiemelt cikkek"),
+    'pt': (CAT, u"!Ex-Artigos_destacados"),
+    'fa': (CAT, u"مقاله‌های برگزیده پیشین"),
+    'es': (CAT, u"Wikipedia:Artículos anteriormente destacados"),
+    'hu': (CAT, u"Korábbi kiemelt cikkek"),
     'ru': (CAT, u"Википедия:Устаревшие избранные статьи"),
     'ca': (CAT, u"Arxiu de propostes de la retirada de la distinció"),
     'es': (CAT, u"Wikipedia:Artículos anteriormente destacados"),
