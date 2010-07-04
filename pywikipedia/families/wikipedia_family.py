@@ -829,7 +829,7 @@ class Family(family.Family):
                     u'Kişi adları (anlam ayrımı)', u'Yerleşim yerleri (anlam ayrımı)',
                     u'kısaltmalar (anlam ayrımı)'],
             'uk':  None,
-            'vec': [u'Disambigua'],
+            'vec': [u'Disanbigua', u'Disambigua'],
             'vi':  None,
             'vls': [u'Db', u'Dp', u'Dpintro'],
             'vo':  None,
