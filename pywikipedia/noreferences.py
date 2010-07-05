@@ -205,7 +205,7 @@ referencesSections = {
     ],
     'ru': [
         u'Примечания',
-        u'Ссылки',
+        u'Сноски',
         u'Источники',
     ],
     'eo': [
@@ -303,7 +303,6 @@ referencesTemplates = {
                u'Ref-list',u'Reference list',u'References-small',u'Reflink',
                u'Footnotes',u'FootnotesSmall'],
         'ru': [u'Reflist',u'Ref-list',u'Refs',u'Sources',
-               u'примечания',u'список примечаний',
                u'Примечания',u'Список примечаний',
                u'Сноска',u'Сноски'],
         'eo': [u'Referencoj'],
@@ -392,7 +391,7 @@ class NoReferencesBot:
             return False
         elif self.referencesTemplates:
             templateR = u'{{(' + u'|'.join(self.referencesTemplates) + ')'
-            if re.search(templateR, oldTextCleaned, re.IGNORECASE):
+            if re.search(templateR, oldTextCleaned, re.IGNORECASE|re.UNICODE):
                 if verbose:
                     wikipedia.output(u'No changes necessary: references template found.')
                 return False

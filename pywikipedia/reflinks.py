@@ -580,8 +580,10 @@ class ReferencesRobot:
 
                 meta_content = self.META_CONTENT.search(linkedpagetext)
                 enc = []
-                # use charset from http header
-                s = self.CHARSET.search(contentType)
+                s = None
+                if contentType:
+                    # use charset from http header
+                    s = self.CHARSET.search(contentType)
                 if meta_content:
                     tag = meta_content.group()
                     # Prefer the contentType from the HTTP header :
