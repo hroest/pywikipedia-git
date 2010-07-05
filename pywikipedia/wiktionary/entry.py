@@ -22,7 +22,7 @@ class Entry:
         self.entrylang=entrylang
         self.meanings = {} # a dictionary containing the meanings for this term grouped by part of speech
     if meaning:
-            self.addMeaning(meaning)
+        self.addMeaning(meaning)
         self.posorder = [] # we don't want to shuffle the order of the parts of speech, so we keep a list to keep the order in which they were encountered
 
     def addMeaning(self,meaning):
