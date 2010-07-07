@@ -3432,8 +3432,10 @@ not supported by PyWikipediaBot!"""
         # Remove the image from galleries
         galleryR = re.compile(r'(?is)<gallery>(?P<items>.*?)</gallery>')
         galleryItemR = re.compile(r'(?m)^%s?(?P<filename>%s)\s*(?P<label>\|.*?)?\s*$' % (namespacePattern, imagePattern))
+
         def gallery_replacer(match):
-            return ur'<gallery>%s<gallery>' % galleryItemR.sub(filename_replacer, match.group('items'))
+            return ur'<gallery>%s</gallery>' % galleryItemR.sub(filename_replacer, match.group('items'))
+
         new_text = galleryR.sub(gallery_replacer, new_text)
 
         if (text == new_text) or (not safe):
@@ -3445,6 +3447,7 @@ not supported by PyWikipediaBot!"""
 
             def template_replacer(match):
                 return fileReferenceR.sub(filename_replacer, match.group(0))
+
             new_text = templateR.sub(template_replacer, new_text)
 
         if put:
