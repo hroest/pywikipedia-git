@@ -1042,6 +1042,7 @@ class Family(family.Family):
             'he': ['en'],
             'hu': ['en'],
             'lb': self.alphabetic,
+            'mk': self.alphabetic,
             'ms': self.alphabetic_revised,
             'nds': ['nds-nl', 'pdt'] + self.alphabetic, # Note: as of 2008-02-24, pdt: (Plautdietsch) is still in the Incubator.
             'nn': ['no', 'nb', 'sv', 'da'] + self.alphabetic,
