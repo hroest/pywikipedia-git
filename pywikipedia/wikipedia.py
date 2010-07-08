@@ -2929,7 +2929,7 @@ not supported by PyWikipediaBot!"""
                  output(u'Cannot delete page %s - marking the page for deletion instead:' % self.aslink())
                  # Note: Parameters to {{delete}}, and their meanings, vary from one Wikipedia to another.
                  # If you want or need to use them, you must be careful not to break others. Else don't.
-                 self.put(u'{{delete}}\n%s --~~~~\n----\n\n%s' % (reason, text), comment = reason)
+                 self.put(u'{{delete|bot=yes}}\n%s --~~~~\n----\n\n%s' % (reason, text), comment = reason)
                  return
              else:
                  raise
