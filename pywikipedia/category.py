@@ -451,9 +451,9 @@ class CategoryMoveRobot:
         newCat = catlib.Category(site, self.newCatTitle)
         # set edit summary message
         if not self.editSummary:
-            self.editSummary = pywikibot.translate(site, msg_change)
-                                   % {'oldcat':self.oldCat.title(),
-                                      'newcat':newCat.title()}
+            self.editSummary = pywikibot.translate(site, msg_change) \
+                               % {'oldcat':self.oldCat.title(),
+                                  'newcat':newCat.title()}
 
         if self.useSummaryForDeletion and self.editSummary:
             reason = self.editSummary
@@ -707,8 +707,8 @@ class CategoryTidyRobot:
     def __init__(self, catTitle, catDB):
         self.catTitle = catTitle
         self.catDB = catDB
-        self.editSummary = pywikibot.translate(pywikibot.getSite(), msg_change)
-                               % {'oldcat':catTitle, 'newcat':u''}
+        self.editSummary = pywikibot.translate(pywikibot.getSite(), msg_change)\
+                           % {'oldcat':catTitle, 'newcat':u''}
 
     def move_to_category(self, article, original_cat, current_cat):
         '''
