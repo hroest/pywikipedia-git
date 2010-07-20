@@ -751,6 +751,7 @@ class Family(family.Family):
             'fy':  [u'Tfs', u'Neibetsjuttings'],
             'ga':  [u'Idirdhealú', u'Disambig'],
             'gan': [u'扤清楚', u'Disambig'],
+            'gd':  [u'Soilleireachadh'],
             'gl':  None,
             'gv':  [u'Reddaghey'],
             'haw': [u'Huaʻōlelo puana like'],
