@@ -12,7 +12,7 @@ class Family(family.Family):
 
         self.languages_by_size = [
             'en', 'zh', 'ru', 'pt', 'fr', 'de', 'es', 'it', 'he', 'ar', 'hu',
-            'fa', 'pl', 'th', 'cs', 'ro', 'hr', 'te', 'fi', 'bn', 'nl', 'tr',
+            'fa', 'pl', 'th', 'cs', 'ro', 'hr', 'te', 'fi', 'bn', 'tr', 'nl',
             'sv', 'sl', 'ko', 'vi', 'uk', 'sr', 'ja', 'el', 'la', 'li', 'yi',
             'ml', 'az', 'is', 'bs', 'hy', 'ca', 'id', 'mk', 'ta', 'no', 'da',
             'et', 'bg', 'lt', 'gl', 'kn', 'cy', 'sk', 'zh-min-nan', 'fo',
@@ -225,6 +225,7 @@ class Family(family.Family):
             '-': u'Page',
             'ar': u'صفحة',
             'ca': u'Llibre',
+            'da': u'Side',
             'de': u'Index',
             'en': u'Page',
             'es': u'Índice',
@@ -252,6 +253,7 @@ class Family(family.Family):
             '-': u'Page talk',
             'ar': u'نقاش الصفحة',
             'ca': u'Llibre Discussió',
+            'da': u'Sidediskussion',
             'de': u'Index Diskussion',
             'en': u'Page talk',
             'es': u'Índice Discusión',
@@ -278,6 +280,7 @@ class Family(family.Family):
         self.namespaces[106] = {
             '-': u'Index',
             'ar': u'فهرس',
+            'da': u'Indeks',
             'en': u'Index',
             'et': u'Autor',
             'fr': u'Portail',
@@ -297,6 +300,7 @@ class Family(family.Family):
         self.namespaces[107] = {
             '-': u'Index talk',
             'ar': u'نقاش الفهرس',
+            'da': u'Indeksdiskussion',
             'en': u'Index talk',
             'et': u'Autori arutelu',
             'fr': u'Discussion Portail',
