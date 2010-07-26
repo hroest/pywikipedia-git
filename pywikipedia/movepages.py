@@ -54,7 +54,7 @@ summary={
     'en': u'Robot: Moved page',
     'de': u'Bot: Seite verschoben',
     'el': u'Μετακίνηση σελίδων με bot',
-	'fa': u'ربات: صفحه منتقل شد',
+    'fa': u'ربات: صفحه منتقل شد',
     'fi': u'Botti siirsi sivun',
     'fr': u'Bot: Page renommée',
     'ja': u'ロボットによる: ページの移動',

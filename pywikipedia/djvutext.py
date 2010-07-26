@@ -39,7 +39,7 @@ class DjVuTextBot:
     msg = {
         'ar': u'روبوت: إنشاء صفحة بنص مستخرج من DjVu',
         'en': u'Robot: Creating page with text extracted from DjVu',
-		'fa': u'ربات: ایجاد صفحه با متنی که از دژاوو استخراج شد',
+        'fa': u'ربات: ایجاد صفحه با متنی که از دژاوو استخراج شد',
         'fr': u'Bot: Creating page with texte extracted from DjVu',
         'nl': u'Bot: pagina aangemaakt met tekst geëxtraheerd uit DjVu-bestand',
         'pt': u'Bot: criando página com texto extraído do DjVu',
@@ -48,7 +48,7 @@ class DjVuTextBot:
     # It may be omitted by adding an empty string like has been done for 'fr'.
     blank = {
         'en': u'{{blank page}}',
-		'fa': u'',
+        'fa': u'',
         'fr': u'',
         'pt': u'',
     }

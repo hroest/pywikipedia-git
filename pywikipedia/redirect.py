@@ -156,7 +156,7 @@ reason_loop={
     'ar': u'بوت: هدف التحويلة يصنع عقدة تحويل',
     'de': u'Bot: Weiterleitungsziel auf sich selbst',
     'en': u'[[WP:CSD#G8|G8]]: [[Wikipedia:Redirect|Redirect]] target forms a redirect loop',
-	'fa': u'ربات: تغییر مسیر حلقه‌ای',
+    'fa': u'ربات: تغییر مسیر حلقه‌ای',
 }
 
 # Insert deletion template into page with a broken redirect
@@ -167,7 +167,7 @@ sd_template = {
     'de': u'{{sla|Defekte Weiterleitung --~~~~}}',
     'cs': u'{{smazat|přerušené přesměrování}}',
     'en': u'{{db-r1}}',
-	'fa': u'{{حذف سریع|بن بست}}',
+    'fa': u'{{حذف سریع|بن بست}}',
     'ga': u'{{scrios|Athsheoladh briste}}',
     'it': u'{{Cancella subito|9}}',
     'ja': u'{{即時削除|壊れたリダイレクト}}',

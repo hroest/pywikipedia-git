@@ -14,7 +14,7 @@ import wikipedia
 
 myComment = {'ar':u'بوت: URL تم إصلاحها',
              'en':u'Bot: URL fixed',
-			 'fa':u'ربات: URL اصلاح شد',
+             'fa':u'ربات: URL اصلاح شد',
              'he':u'בוט: תוקנה כתובת URL',
              'pt':u'Bot: URL corrigido',
              'zh':u'機器人: 網址已修復',

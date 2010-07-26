@@ -588,7 +588,7 @@ class CategoryRemoveRobot:
         'de':u'Bot: Kategorie wurde aufgelöst',
         'en':u'Robot: Category was disbanded',
         'es':u'Robot: La categoría ha sido eliminada',
-		'fa':u'ربات: رده خالی',
+        'fa':u'ربات: رده خالی',
         'fi':u'Botti tyhjensi luokan',
         'he':u'בוט: הקטגוריה פורקה',
         'ia':u'Robot: Categoria esseva dissolvite',
