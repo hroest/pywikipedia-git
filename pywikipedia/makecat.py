@@ -45,6 +45,7 @@ msg={
     'ar':u'إنشاء أو تحديث التصنيف:',
     'en':u'Creation or update of category:',
     'es':u'Creación o actualiza de la categoría:',
+	'fa':u'ایجاد یا تصحیح رده:',
     'fr':u'Création ou mise à jour de categorie:',
     'he':u'יצירה או עדכון של קטגוריה:',
     'ia':u'Creation o actualisation de categoria:',

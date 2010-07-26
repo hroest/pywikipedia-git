@@ -23,8 +23,9 @@ import sys
 msg={
     'ar':u'بوت: تغيير التصنيفات',
     'de':u'Bot: Wechsele Kategorien',
-    'en':u'Bot: Changing categories',
+    'en':u'Robot: Changing categories',
     'he':u'Bot: משנה קטגוריות',
+	'fa':u'ربات: تغییر رده‌ها',
     'fr':u'Bot: Change categories',
     'he':u'בוט: משנה קטגוריות',
     'ia':u'Bot: Alteration de categorias',

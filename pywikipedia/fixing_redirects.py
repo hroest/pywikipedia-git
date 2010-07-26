@@ -36,7 +36,7 @@ msg = {
     'ar': u'بوت: إصلاح التحويلات',
     'cs': u'Robot opravil přesměrování',
     'en': u'Bot: Fixing redirects',
-    'fa': u'ربات:تصحیح تغییرمسیرهای پیوند شده',
+    'fa': u'ربات:تصحیح تغییرمسیرها',
     'he': u'בוט: מתקן הפניות',
     'ja': u'ロボットによる:リダイレクト回避',
     'nn': u'robot: retta omdirigeringar',

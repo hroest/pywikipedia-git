@@ -1,4 +1,4 @@
-#!/usr/bin/python
+﻿#!/usr/bin/python
 # -*- coding: utf-8 -*-
 """
 This script understands various command-line arguments:
@@ -76,7 +76,7 @@ msg = {
     'en': u'Bot: [[%s:%s]] is a featured article',
     'eo': u'roboto: [[%s:%s]] estas artikolo elstara',
     'es': u'Bot: Enlace a artículo destacado para: [[%s:%s]]',
-    'fa': u' ربات: [[%s:%s]] یک مقاله برگزیده‌است',
+    'fa': u'ربات: [[%s:%s]] یک مقاله برگزیده است',
     'fi': u'Botti: [[%s:%s]] on suositeltu artikkeli',
     'fr': u'Bot: Lien AdQ pour [[%s:%s]]',
     'he': u'בוט: קישור לערך מומלץ עבור [[%s:%s]]',
@@ -134,7 +134,7 @@ msg_lists = {
     'de': u'Bot: [[%s:%s]] ist eine informative Liste',
     'en': u'Bot: [[%s:%s]] is a featured list',
     'es': u'Bot: Enlace a lista destacado para: [[%s:%s]]',
-    'fa': u'ربات:[[%s:%s]] یک فهرست برگزیده است',
+    'fa': u'ربات: [[%s:%s]] یک فهرست برگزیده است',
     'fi': u'Botti: [[%s:%s]] on suositeltu luettelo',
     'ksh':u'bot: [[%s:%s]] ess_en joode Leß',
     'pt': u'Bot: [[%s:%s]] é uma lista destacada',
@@ -230,7 +230,7 @@ featured_name = {
     'et': (CAT, u"Eeskujulikud artiklid"),
     'eu': (CAT, u"Nabarmendutako artikuluak"),
     'ext':(BACK,u"Destacau"),
-    'fa': (BACK,u"نوشتار برگزیده"),
+    'fa': (BACK,u"نوشتارهای برگزیده"),
     'fi': (CAT, u"Suositellut sivut"),
     'fo': (CAT, u"Mánaðargrein"),
     'fr': (CAT, u"Article de qualité"),

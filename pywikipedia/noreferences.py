@@ -51,7 +51,7 @@ msg = {
     'en':u'Robot: Adding missing <references /> tag',
     'ru':u'Robot: Добавлен отсутствующий тег <references />',
     'eo':u'Roboto: Aldono de "<references />"',
-    'fa':u'ربات:تگ رفرنسز فراموش شده‌است',
+    'fa':u'ربات: برچسب <references /> فراموش شده‌است',
     'fi':u'Botti lisäsi puuttuvan {{viitteet}}-mallineen',
     'he':u'בוט: מוסיף תגית <references /> חסרה',
     'hu':u'Hiányzó {{Források}} pótlása',

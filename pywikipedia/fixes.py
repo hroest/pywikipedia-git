@@ -55,7 +55,7 @@ fixes = {
             'cs':u'převod/oprava HTML',
             'en':u'Robot: Converting/fixing HTML',
             'eo':u'Bot: koredtado de HTMLa teksto',
-            'fa':u'ربات:تصحیح/فیکس کدهای اچ‌تی‌ام‌ال',
+            'fa':u'ربات:تبدیل/تصحیح کدهای اچ‌تی‌ام‌ال',
             'de':u'Bot: konvertiere/korrigiere HTML',
             'fr':u'Robot: convertit/fixe HTML',
             'he':u'בוט: ממיר/מתקן HTML',
@@ -195,7 +195,7 @@ fixes = {
             'be':u'Бот: Карэкцыя вiкi-сiнтаксiсу',
             'cs':u'Oprava wikisyntaxe',
             'de':u'Bot: Korrigiere Wiki-Syntax',
-            'en':u'Bot: Fixing wiki syntax',
+            'en':u'Robot: Fixing wiki syntax',
             'eo':u'Bot: Korektado de vikia sintakso',
             'fa':u'ربات:تصحیح قالب ویکی‌نویسی',
             'fr':u'Bot: Corrige wiki-syntaxe',
@@ -271,7 +271,7 @@ fixes = {
             'be':u'Бот: Карэкцыя вiкi-сiнтаксiсу',
             'cs':u'Oprava wikisyntaxe',
             'de':u'Bot: Korrigiere Wiki-Syntax',
-            'en':u'Bot: Fixing wiki syntax',
+            'en':u'Robot: Fixing wiki syntax',
             'eo':u'Bot: Korektado de vikia sintakso',
             'fa':u'ربات:تصحیح قالب ویکی‌نویسی',
             'fr':u'Bot: Corrige wiki-syntaxe',
@@ -571,6 +571,7 @@ fixes = {
         'regex': False,
         'msg': {
             'en': u'Robot: Fixing special page capitalisation',
+			'fa':u'ربات: تصحیح بزرگی و کوچکی حروف صفحه‌های ویژه',
         },
         'replacements': [
             (u'Special:Allpages',        u'Special:AllPages'),
@@ -602,6 +603,7 @@ fixes = {
         'msg': {
             'de': u'Bot: Ersetze Links auf .yu-Domains',
             'en': u'Robot: Replacing links to .yu domains',
+			'fa': u'ربات: جایگزینی پیوندها به دامنه‌ها با پسوند yu',
             'fr': u'Robot: Correction des liens pointant vers le domaine .yu, qui expire en 2009',
             'ksh': u'Bot: de ahle .yu-Domains loufe us, dröm ußjetuusch',
          },
@@ -656,6 +658,7 @@ fixes = {
         'regex': True,
         'msg': {
             'en': u'Robot: Fixing rich-editor html',
+			'fa': u'ربات: تصحیح اچ‌تی‌ام‌ال ویرایشگر پیشرفته',
          },
          'replacements': [
             # replace <br> with a new line

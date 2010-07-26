@@ -67,7 +67,7 @@ class PageFromFileRobot:
         'ar': u'استيراد تلقائي للمقالات',
         'de': u'Automatischer Import von Artikeln',
         'en': u'Automated import of articles',
-        'fa': u'ربات:صفحه به طور خودکار وارد شد',
+        'fa': u'درون‌ریزی خودکار مقاله‌ها',
         'fr': u'Import automatique',
         'he': u'ייבוא ערכים אוטומטי',
         'ia': u'Importation automatic de articulos',

@@ -282,7 +282,7 @@ class SpeedyRobot:
                 u'Db-experiment': u'Deleting page per [[WP:CSD|CSD]] G2: Page was created as an experiment.',
                 },
             'fa': {
-                u'_default': u'ربات:حذف سریع بر اساس [[وپ:محس|معیارهای حذف سریع]]',
+                u'_default': u'ربات: حذف سریع بر اساس [[وپ:محس|معیارهای حذف سریع]]',
                 },
             'he': {
                 u'_default':      u'מחיקת מועמד למחיקה מהירה לפי [[ויקיפדיה:מדיניות המחיקה|מדיניות המחיקה]]',

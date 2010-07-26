@@ -20,6 +20,7 @@ msg = {
     'ar': u'تغيير التحويلات في صفحة توضيح',
     'en': u'Changing redirects on a disambiguation page',
     'he': u'משנה קישורים להפניות בדף פירושונים',
+	'fa': u'اصلاح تغییرمسیرها در یک صفحه ابهام‌زدایی',
     'ja': u'ロボットによる: 曖昧さ回避ページのリダイレクト修正',
     'nl': u'Verandering van redirects op een doorverwijspagina',
     'pl': u'Zmiana przekierowań na stronie ujednoznaczającej',

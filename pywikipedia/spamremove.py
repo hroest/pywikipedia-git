@@ -36,6 +36,7 @@ def main():
         'de': u'Entferne in Spam-Blacklist eingetragenen Weblink auf %s',
         'en': u'Removing links to spamming site %s',
         'es': u'Removiendo enlaces a sitio publicitario %s',
+		'fa': u'حذف پیوند به وبگاه هرزنگاری %s',
         'he': u'מסיר קישורים לאתר ספאם %s',
         'fr': u'Suppression du lien blacklisté %s',
         'it': u'Rimuovo link contenuto nella Spam-Blacklist %s',

@@ -61,7 +61,7 @@ msg = { 'fr':u'Bot: Correction des refs. mal formatées, suppression doublons en
         'ko':u'봇: url만 있는 주석을 보강, (영문)[[:en:User:DumZiBoT/refLinks]] 참조',
         'es':u'Formateando las referencias que no tuvieran títulos (FAQ : [[:en:User:DumZiBoT/refLinks]] )',
         'it':u'Bot: Sistemo note con collegamenti esterni senza titolo ([[Utente:Marco27Bot/refLinks.py|documentazione]])',
-        'en':u'Bot: Converting bare references, using ref names to avoid duplicates, see [[User:DumZiBoT/refLinks|FAQ]]',
+        'en':u'Robot: Converting bare references, using ref names to avoid duplicates, see [[User:DumZiBoT/refLinks|FAQ]]',
         'ru':u'Bot: добавление заголовков в сноски; исправление двойных сносок',
         'pl':u'Bot: Dodanie tytułów do linków w przypisach (patrz [[Wikipedysta:MastiBot/refLinks|FAQ]])',
 }

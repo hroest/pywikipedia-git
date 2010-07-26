@@ -60,6 +60,7 @@ class PiperBot:
     msg = {
         'ar': u'روبوت: استبدال نص المقال من خلال %s',
         'en': u'Robot: Piping the article text through %s',
+		'fa': u'ربات: رد کردن متن مقاله از درون %s',
         'is': u'Vélmenni: Pípa texta síðunnar í gegnum %s',
         'nl': u'Bot: paginatekst door %s geleid'
     }
