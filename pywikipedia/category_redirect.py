@@ -63,7 +63,7 @@ class CategoryRedirectBot(object):
                 'da': "Kategori:Omdirigeringskategorier",
                 'en': "Category:Wikipedia soft redirected categories",
                 'es': "Categoría:Wikipedia:Categorías redirigidas",
-				'hu': "Kategória:Kategóriaátirányítások",
+                'hu': "Kategória:Kategóriaátirányítások",
                 'ja': "Category:移行中のカテゴリ",
                 'no': "Kategori:Wikipedia omdirigertekategorier",
                 'pl': "Kategoria:Przekierowania kategorii",
