@@ -784,6 +784,7 @@ class Family(family.Family):
                     u'Desambiguassiú', u'Desambiguació'],
             'ln':  None,
             'lt':  None,
+            'lv':  [u'Nozīmju atdalīšana', u'Disambig'],
             'mk':  [u'Појаснување', u'Disambig', u'Geodis'],
             'mn':  [u'Салаа утгатай', u'Disambig'],
             'ms':  [u'Nyahkekaburan', u'Disambig'],
