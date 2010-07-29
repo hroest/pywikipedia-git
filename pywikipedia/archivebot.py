@@ -155,10 +155,10 @@ messages = {
             'OlderThanSummary': u'äldre än',
             },
         'fi': {
-            'ArchiveFull' : u'(ARCHIVE FULL)',
+            'ArchiveFull' : u'(ARKISTO TÄYSI)',
             'InitialArchiveHeader': u'{{arkisto}}',
             'PageSummary': u'Arkistoidaan %(count)d keskustelua (%(why)s) %(archives)s arkistoon.',
-            'ArchiveSummary': u'Arkistoidaan %(count)d keskutelua sivulta [[%(from)s]].',
+            'ArchiveSummary': u'Arkistoidaan %(count)d keskustelua sivulta [[%(from)s]].',
             'OlderThanSummary': u'vanhempi kuin',
             },
 }
@@ -223,7 +223,8 @@ def int2month(num):
 def int2month_short(num):
     """Returns the locale's abbreviated name of month 'num' (1-12)."""
     if hasattr(locale, 'nl_langinfo'):
-        return locale.nl_langinfo(locale.ABMON_1+num-1).replace('\xa0', '').decode('utf-8')
+        #filter out non-alpha characters
+        return ''.join([c for c in locale.nl_langinfo(locale.ABMON_1+num-1).decode('utf-8') if c.isalpha()])
     Months = ['jan', 'feb', 'mar', 'apr', 'may', 'jun',
               'jul', 'aug', 'sep', 'oct', 'nov', 'dec']
     return Site.mediawiki_message(Months[num-1])
