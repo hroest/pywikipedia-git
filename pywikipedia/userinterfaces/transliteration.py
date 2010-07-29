@@ -1311,7 +1311,7 @@ class transliterator(object):
             self.trans[char] = u"ü"
         for char in u"ว":
             self.trans[char] = u"ua"
-        for char in u"อว–โิ":
+        for char in u"อวโิ":
             self.trans[char] = u"o"
         for char in u"ะัา":
             self.trans[char] = u"a"
