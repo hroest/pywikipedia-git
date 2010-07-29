@@ -113,8 +113,11 @@ def main():
 
     gen = genFactory.getCombinedGenerator()
     preloadingGen = pagegenerators.PreloadingGenerator(gen)
-    bot = CapitalizeBot(preloadingGen, acceptall, titlecase, standard)
-    bot.run()
+    bot = CapitalizeBot(preloadingGen, acceptall, titlecase)
+    try:
+        bot.run()
+    except KeyboardInterrupt:
+        pywikibot.output('\nQuitting program...')
 
 if __name__ == "__main__":
     try:
