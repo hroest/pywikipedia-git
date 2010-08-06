@@ -209,7 +209,7 @@ featured_name = {
     'az': (BACK,u"Seçilmiş məqalə"),
     'bar':(CAT, u"Berig"),
     'bat-smg': (CAT, u"Vikipedėjės pavīzdėnē straipsnē"),
-    'be-x-old':(CAT, u"Вікіпэдыя:Выбраныя артыкулы"),
+    'be-x-old':(CAT, u"Вікіпэдыя:Абраныя артыкулы"),
     'bg': (CAT, u"Избрани статии"),
     'bn': (BACK,u"নির্বাচিত নিবন্ধ"),
     'br': (CAT, u"Pennadoù eus an dibab"),
