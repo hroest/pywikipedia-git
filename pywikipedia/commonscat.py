@@ -149,7 +149,8 @@ ignoreTemplates = {
             u'Catsjab', u'Catwiki'],
     'om' : [u'Commons'],
     'pt' : [u'Correlatos'],
-    'ru' : [u'Навигация'],
+    'ru' : [u'Навигация', (u'Навигация для категорий', 'commons=')],
+    'tt' : [u'Навигация'],
 }
 
 msg_change = {
