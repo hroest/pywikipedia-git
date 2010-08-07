@@ -120,12 +120,13 @@ licenseTemplates = [(u'\{\{(self|self2)\|([^\}]+)\}\}', u'{{Self|\\2|author=[[:%
                     (u'\{\{Multilicense replacing placeholder new(\|class=[^\}]+)?\}\}', u'{{Self|GFDL|Cc-by-sa-3.0,2.5,2.0,1.0|author=[[:%(lang)s:User:%(author)s|%(author)s]] at [http://%(lang)s.%(family)s.org %(lang)s.%(family)s]}}'),
                     ]
 
-sourceGarbage =     [u'== Summary ==',
-                     u'== Licensing:? ==',
+sourceGarbage =     [u'==\s*Summary\s*==',
+                     u'==\s*Licensing:?\s*==',
+                     u'\{\{(Copy to Wikimedia Commons|Move to Commons|Move to commons|Move to Wikimedia Commons|Copy to commons|Mtc|MtC|MTC|CWC|CtWC|CTWC|Ctwc|Tocommons|Copy to Commons|To Commons|Movetocommons|Move to Wikimedia commons|Move-to-commons|Commons ok|ToCommons|To commons|MoveToCommons|Copy to wikimedia commons|Upload to commons|CopyToCommons|Copytocommons|MITC|MovetoCommons|Do move to Commons)\}\}'
                     ]
 
 class Tkdialog:
-    def __init__(self, imagepage, currentcontent):
+    def __init__(self, imagepage, description, date, source, author, licensetemplate, categories):
         self.root=Tk()
         #"%dx%d%+d%+d" % (width, height, xoffset, yoffset)
         #Always appear the same size and in the bottom-left corner
@@ -144,12 +145,12 @@ class Tkdialog:
 
         self.filename = imagepage.titleWithoutNamespace()
 
-        (self.description,
-        self.date,
-        self.source,
-        self.author,
-        self.licensetemplate,
-        self.categories) = currentcontent
+        self.description = description
+        self.date = date
+        self.source = source
+        self.author = author 
+        self.licensetemplate = licensetemplate
+        self.categories = categories
         self.skip = False
 
         self.old_description_label=Label(self.root,text=u'The old description was : ')
@@ -282,7 +283,7 @@ def getNewFields(imagepage):
     Build a new description based on the imagepage
     '''
     if u'{{Information' in imagepage.get() or u'{{information' in imagepage.get():
-        (description, date, source, author) = getNewFieldsFromInformation(imagepage)
+        (description, date, source, author) = getNewFieldsFromInformation(imagepage)       
     else:
         (description, date, source, author) = getNewFieldsFromFreetext(imagepage)
 
@@ -301,6 +302,7 @@ def getNewFieldsFromInformation(imagepage):
     other_versions = u''
     text = imagepage.get()
     # Need to add the permission field
+    # Need to use pywikipedia template parser code
     regexes =[u'\{\{Information[\s\r\n]*\|[\s\r\n]*description[\s\r\n]*=(?P<description>.*)\|[\s\r\n]*source[\s\r\n]*=(?P<source>.*)\|[\s\r\n]*date[\s\r\n]*=(?P<date>.*)\|[\s\r\n]*author[\s\r\n]*=(?P<author>.*)\|[\s\r\n]*permission.*=(?P<permission>[^\}]*)\|[\s\r\n]*other_versions.*=(?P<other_versions>[^\}]*)\}\}',
               u'\{\{Information[\s\r\n]*\|[\s\r\n]*description[\s\r\n]*=(?P<description>.*)\|[\s\r\n]*source[\s\r\n]*=(?P<source>.*)\|[\s\r\n]*date[\s\r\n]*=(?P<date>.*)\|[\s\r\n]*author[\s\r\n]*=(?P<author>.*)\|[\s\r\n]*other_versions.*=(?P<other_versions>[^\}]*)\}\}',              
               ]
@@ -310,9 +312,17 @@ def getNewFieldsFromInformation(imagepage):
         match =re.search(regex, text, re.IGNORECASE|re.DOTALL)
         if match:
             description = convertLinks(match.group(u'description').strip(), imagepage.site())
+            
             date = match.group(u'date').strip()
+            if date == u'':
+                date = getUploadDate(imagepage)
+
             source = getSource(imagepage, source=convertLinks(match.group(u'source').strip(), imagepage.site()))
+
             author = convertLinks(match.group(u'author').strip(), imagepage.site())
+            if author == u'':
+                author = getAuthorText(imagepage)
+            
             if u'permission' in match.groupdict():
                 permission = convertLinks(match.group(u'permission').strip(), imagepage.site())
             if  u'other_versions' in match.groupdict():
@@ -485,67 +495,76 @@ def processImage(page, checkTemplate):
 
         #First do autoskip.
         if doiskip(imagepage):
-            wikipedia.output("Skipping " + page.title())
-            skip = True
-        else:
-            currentcontent = getNewFields(imagepage)
+            wikipedia.output(u'Skipping %s : Got a template on the skip list.' % page.title())
+            return False
+        
+        text = imagepage.get()
+        foundMatch = False
+        for (regex, replacement) in licenseTemplates:
+            match = re.search(regex, text, re.IGNORECASE)
+            if match:
+                foundMatch = True
+        if not foundMatch:
+            wikipedia.output(u'Skipping %s : No suitable license template was found.' % page.title())
+            return False
+        
+        (description, date, source, author, licensetemplate, categories) = getNewFields(imagepage)
 
-            while True:
-                # Do the Tkdialog to accept/reject and change te name
-                (filename, description, date, source, author, licensetemplate, categories, skip)=Tkdialog(imagepage, currentcontent).getnewmetadata()
+        while True:
+            # Do the Tkdialog to accept/reject and change te name
+            (filename, description, date, source, author, licensetemplate, categories, skip)=Tkdialog(imagepage, description, date, source, author, licensetemplate, categories).getnewmetadata()
 
-                if skip:
-                    wikipedia.output('Skipping this image')
-                    break
-                       
-                # Check if the image already exists
-                CommonsPage=wikipedia.Page(wikipedia.getSite('commons', 'commons'), u'File:' + filename)
-                if not CommonsPage.exists():
-                    break
+            if skip:
+                wikipedia.output(u'Skipping %s : User pressed skip.' % page.title())
+                return False
+                   
+            # Check if the image already exists
+            CommonsPage=wikipedia.Page(wikipedia.getSite('commons', 'commons'), u'File:' + filename)
+            if not CommonsPage.exists():
+                break
+            else:
+                wikipedia.output('Image already exists, pick another name or skip this image')
+                # We dont overwrite images, pick another name, go to the start of the loop   
+        
+        cid = buildNewImageDescription(imagepage, description, date, source, author, licensetemplate, categories, checkTemplate)
+        wikipedia.output(cid)
+        bot = UploadRobot(url=imagepage.fileUrl(), description=cid, useFilename=filename, keepFilename=True, verifyDescription=False, ignoreWarning = True, targetSite = wikipedia.getSite('commons', 'commons'))
+        bot.run()
+        
+        if wikipedia.Page(wikipedia.getSite('commons', 'commons'), u'File:' + filename).exists():
+            #Get a fresh copy, force to get the page so we dont run into edit conflicts
+            imtxt=imagepage.get(force=True)
+
+            #Remove the move to commons templates
+            if imagepage.site().language() in moveToCommonsTemplate:
+                for moveTemplate in moveToCommonsTemplate[imagepage.site().language()]:
+                    imtxt = re.sub(u'(?i)\{\{' + moveTemplate + u'[^\}]*\}\}', u'', imtxt)
+
+            #add {{NowCommons}}
+            if imagepage.site().language() in nowCommonsTemplate:
+                addTemplate = nowCommonsTemplate[imagepage.site().language()] % filename
+            else:
+                addTemplate = nowCommonsTemplate['_default'] % filename
+
+            if imagepage.site().language() in nowCommonsMessage:
+                commentText = nowCommonsMessage[imagepage.site().language()]
+            else:
+                commentText = nowCommonsMessage['_default']
+
+            wikipedia.showDiff(imagepage.get(), imtxt + addTemplate)
+            imagepage.put(imtxt + addTemplate, comment = commentText)
+
+            gen = pagegenerators.FileLinksGenerator(imagepage)
+            preloadingGen = pagegenerators.PreloadingGenerator(gen)
+
+            #If the image is uploaded under a different name, replace all instances
+            if imagepage.titleWithoutNamespace() != filename:
+                if imagepage.site().language() in imageMoveMessage:
+                    moveSummary = imageMoveMessage[imagepage.site().language()] % (imagepage.titleWithoutNamespace(), filename)
                 else:
-                    wikipedia.output('Image already exists, pick another name or skip this image')
-                    # We dont overwrite images, pick another name, go to the start of the loop   
-            
-            if not skip:
-                cid = buildNewImageDescription(imagepage, description, date, source, author, licensetemplate, categories, checkTemplate)
-                wikipedia.output(cid)
-                bot = UploadRobot(url=imagepage.fileUrl(), description=cid, useFilename=filename, keepFilename=True, verifyDescription=False, ignoreWarning = True, targetSite = wikipedia.getSite('commons', 'commons'))
-                bot.run()
-                
-                if wikipedia.Page(wikipedia.getSite('commons', 'commons'), u'File:' + filename).exists():
-                    #Get a fresh copy, force to get the page so we dont run into edit conflicts
-                    imtxt=imagepage.get(force=True)
-
-                    #Remove the move to commons templates
-                    if imagepage.site().language() in moveToCommonsTemplate:
-                        for moveTemplate in moveToCommonsTemplate[imagepage.site().language()]:
-                            imtxt = re.sub(u'(?i)\{\{' + moveTemplate + u'[^\}]*\}\}', u'', imtxt)
-
-                    #add {{NowCommons}}
-                    if imagepage.site().language() in nowCommonsTemplate:
-                        addTemplate = nowCommonsTemplate[imagepage.site().language()] % filename
-                    else:
-                        addTemplate = nowCommonsTemplate['_default'] % filename
-
-                    if imagepage.site().language() in nowCommonsMessage:
-                        commentText = nowCommonsMessage[imagepage.site().language()]
-                    else:
-                        commentText = nowCommonsMessage['_default']
-
-                    wikipedia.showDiff(imagepage.get(), imtxt + addTemplate)
-                    imagepage.put(imtxt + addTemplate, comment = commentText)
-
-                    gen = pagegenerators.FileLinksGenerator(imagepage)
-                    preloadingGen = pagegenerators.PreloadingGenerator(gen)
-
-                    #If the image is uploaded under a different name, replace all instances
-                    if imagepage.titleWithoutNamespace() != filename:
-                        if imagepage.site().language() in imageMoveMessage:
-                            moveSummary = imageMoveMessage[imagepage.site().language()] % (imagepage.titleWithoutNamespace(), filename)
-                        else:
-                            moveSummary = imageMoveMessage['_default'] % (imagepage.titleWithoutNamespace(), filename)
-                        imagebot = ImageRobot(generator = preloadingGen, oldImage = imagepage.titleWithoutNamespace(), newImage = filename, summary = moveSummary, always = True, loose = True)
-                        imagebot.run()             
+                    moveSummary = imageMoveMessage['_default'] % (imagepage.titleWithoutNamespace(), filename)
+                imagebot = ImageRobot(generator = preloadingGen, oldImage = imagepage.titleWithoutNamespace(), newImage = filename, summary = moveSummary, always = True, loose = True)
+                imagebot.run()             
     
 
 
