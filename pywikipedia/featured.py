@@ -1,4 +1,4 @@
-﻿#!/usr/bin/python
+#!/usr/bin/python
 # -*- coding: utf-8 -*-
 """
 This script understands various command-line arguments:
@@ -85,7 +85,7 @@ msg = {
     'hu': u'Bot: a(z) [[%s:%s]] kiemelt szócikk',
     'ia': u'Robot: Ligamine verso articulo eminente [[%s:%s]]',
     'it': u'Bot: collegamento articolo in vetrina [[%s:%s]]',
-    'ja': u'ロボットによる: 秀逸な項目へのリンク [[%s:%s]]',
+    'ja': u'ロボットによる: 秀逸な記事へのリンク [[%s:%s]]',
     'ka': u'ბოტი: რჩეული სტატიის ბმული გვერდისათვის [[%s:%s]]',
     'ko': u'로봇: 알찬 글 [[%s:%s]] 를 가리키는 링크',#로봇이：?
     'ksh':u'bot: [[%s:%s]] ess_enen ußjezëijshneten Atikkel',
@@ -119,6 +119,7 @@ msg_good = {
     'fa': u'ربات: [[%s:%s]] یک مقاله خوب است',
     'fi': u'Botti: [[%s:%s]] on hyvä artikkeli',
     'fr': u'Bot: Lien BA pour [[%s:%s]]',
+    'ja': u'ロボットによる: 良質な記事へのリンク [[%s:%s]]',
     'ksh':u'bot: [[%s:%s]] ess_enen jooden Atikkel',
     'no': u'bot: [[%s:%s]] er en anbefalt artikkel',
     'nn': u'bot: [[%s:%s]] er ein god artikkel',
@@ -136,6 +137,7 @@ msg_lists = {
     'es': u'Bot: Enlace a lista destacado para: [[%s:%s]]',
     'fa': u'ربات: [[%s:%s]] یک فهرست برگزیده است',
     'fi': u'Botti: [[%s:%s]] on suositeltu luettelo',
+    'ja': u'ロボットによる: 秀逸な一覧へのリンク [[%s:%s]]',
     'ksh':u'bot: [[%s:%s]] ess_en joode Leß',
     'pt': u'Bot: [[%s:%s]] é uma lista destacada',
     'sv': u'Bot: [[%s:%s]] är en utmärkt list',
@@ -323,7 +325,7 @@ good_name = {
     'id': (BACK,u"Artikel bagus"),
    #'id': (CAT, u"Artikel bagus"),
     'is': (CAT, u"Wikipedia:Gæðagreinar"),
-    'ja': (CAT, u"おすすめ記事"),
+    'ja': (BACK,u"Good article"),
     'ksh':(CAT, u"Joode Aatikkel"),
     'lt': (CAT, u"Vertingi straipsniai"),
     'lv': (CAT, u"Labi raksti"),
