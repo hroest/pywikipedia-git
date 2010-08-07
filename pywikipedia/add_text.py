@@ -243,18 +243,24 @@ u'Exception! regex (or word) used with -except is in the page. Skip!')
             interwikiInside = pywikibot.getLanguageLinks(newtext, site)
             # Removing the interwiki
             newtext = pywikibot.removeLanguageLinks(newtext, site)
-            # nn got a message between the categories and the iw's and they want to
-            # keep it there, first remove it
+            # nn got a message between the categories and the iw's
+            # and they want to keep it there, first remove it
+            hasCommentLine = False
             if (site.language()==u'nn'):
-                newtext = newtext.replace(nn_iw_msg, '')
+                regex = re.compile('(<!-- ?interwiki \(no(?:/nb)?, ?sv, ?da first; then other languages alphabetically by name\) ?-->)')
+                found = regex.findall(newtext)
+                if found:
+                    hasCommentLine = True
+                    newtext = regex.sub('', newtext)
+
             # Adding the text
             newtext += u"\n%s" % addText
             # Reputting the categories
             newtext = pywikibot.replaceCategoryLinks(newtext,
                                                  categoriesInside, site, True)
             #Put the nn iw message back
-            if (site.language()==u'nn'):
-                newtext = newtext + u'\n' + nn_iw_msg
+            if site.language()==u'nn' and (interwikiInside or hasCommentLine):
+                newtext = newtext + u'\r\n\r\n' + nn_iw_msg
             # Dealing the stars' issue
             allstars = []
             starstext = pywikibot.removeDisabledParts(text)
