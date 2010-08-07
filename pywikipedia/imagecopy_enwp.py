@@ -380,9 +380,9 @@ def convertLinks(text, sourceSite):
                   ]
     
     for (regex, replacement) in conversions:
-        text = re.sub(regex, replacement, text)              
+        text = re.sub(regex, replacement  % {u'lang' : lang, u'family' : family}, text)              
 
-    return text % {u'lang' : lang, u'family' : family}
+    return text
 
 def getNewLicensetemplate(imagepage):
     '''
