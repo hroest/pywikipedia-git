@@ -51,6 +51,7 @@ from Tkinter import *
 import os, sys, re, codecs
 import urllib, httplib, urllib2
 import webbrowser
+from Queue import Queue
 import time, threading
 import wikipedia, config, socket
 import pagegenerators, add_text
@@ -267,255 +268,252 @@ class Tkdialog:
         return (self.filename, self.description, self.date, self.source, self.author, self.licensetemplate, self.categories, self.skip)
 
 
-def doiskip(imagepage):
+class imageFetcher(threading.Thread):
     '''
-    Skip this image or not.
-    Returns True if the image is on the skip list, otherwise False
+    Tries to fetch information for all images in the generator
     '''
-    for template in imagepage.templates():
-        if template in skipTemplates:
-            wikipedia.output(u'Found ' + template + u' which is on the template skip list')
-            return True
-    return False
+    def __init__ ( self, pagegenerator, prefetchQueue):
+        self.pagegenerator = pagegenerator
+        self.prefetchQueue = prefetchQueue
+        imagerecat.initLists()
+        threading.Thread.__init__ ( self )
 
-def getNewFields(imagepage):
-    '''
-    Build a new description based on the imagepage
-    '''
-    if u'{{Information' in imagepage.get() or u'{{information' in imagepage.get():
-        (description, date, source, author) = getNewFieldsFromInformation(imagepage)       
-    else:
-        (description, date, source, author) = getNewFieldsFromFreetext(imagepage)
+    def run(self):
+        for page in self.pagegenerator:
+            self.processImage(page)
+        self.prefetchQueue.put(None)
+        wikipedia.output(u'Fetched all images.')
+        return True
 
-    licensetemplate = getNewLicensetemplate(imagepage)
-    categories = getNewCategories(imagepage)
-    return (description, date, source, author, licensetemplate, categories)
+    def processImage(self, page):
+        '''
+        Work on a single image
+        '''
+        if page.exists() and (page.namespace() == 6) and (not page.isRedirectPage()):
+            imagepage = wikipedia.ImagePage(page.site(), page.title())
 
-def getNewFieldsFromInformation(imagepage):
-    '''
-    '''
-    description = u''
-    date = u''
-    source = u''
-    author = u''
-    permission = u''
-    other_versions = u''
-    text = imagepage.get()
-    # Need to add the permission field
-    # Need to use pywikipedia template parser code
-    regexes =[u'\{\{Information[\s\r\n]*\|[\s\r\n]*description[\s\r\n]*=(?P<description>.*)\|[\s\r\n]*source[\s\r\n]*=(?P<source>.*)\|[\s\r\n]*date[\s\r\n]*=(?P<date>.*)\|[\s\r\n]*author[\s\r\n]*=(?P<author>.*)\|[\s\r\n]*permission.*=(?P<permission>[^\}]*)\|[\s\r\n]*other_versions.*=(?P<other_versions>[^\}]*)\}\}',
-              u'\{\{Information[\s\r\n]*\|[\s\r\n]*description[\s\r\n]*=(?P<description>.*)\|[\s\r\n]*source[\s\r\n]*=(?P<source>.*)\|[\s\r\n]*date[\s\r\n]*=(?P<date>.*)\|[\s\r\n]*author[\s\r\n]*=(?P<author>.*)\|[\s\r\n]*other_versions.*=(?P<other_versions>[^\}]*)\}\}',              
-              ]
+            #First do autoskip.
+            if self.doiskip(imagepage):
+                wikipedia.output(u'Skipping %s : Got a template on the skip list.' % page.title())
+                return False
             
+            text = imagepage.get()
+            foundMatch = False
+            for (regex, replacement) in licenseTemplates:
+                match = re.search(regex, text, re.IGNORECASE)
+                if match:
+                    foundMatch = True
+            if not foundMatch:
+                wikipedia.output(u'Skipping %s : No suitable license template was found.' % page.title())
+                return False
+            self.prefetchQueue.put(self.getNewFields(imagepage))
 
-    for regex in regexes:
-        match =re.search(regex, text, re.IGNORECASE|re.DOTALL)
-        if match:
-            description = convertLinks(match.group(u'description').strip(), imagepage.site())
-            
-            date = match.group(u'date').strip()
-            if date == u'':
-                date = getUploadDate(imagepage)
+    def doiskip(self, imagepage):
+        '''
+        Skip this image or not.
+        Returns True if the image is on the skip list, otherwise False
+        '''
+        for template in imagepage.templates():
+            if template in skipTemplates:
+                wikipedia.output(u'Found ' + template + u' which is on the template skip list')
+                return True
+        return False
 
-            source = getSource(imagepage, source=convertLinks(match.group(u'source').strip(), imagepage.site()))
+    def getNewFields(self, imagepage):
+        '''
+        Build a new description based on the imagepage
+        '''
+        if u'{{Information' in imagepage.get() or u'{{information' in imagepage.get():
+            (description, date, source, author) = self.getNewFieldsFromInformation(imagepage)       
+        else:
+            (description, date, source, author) = self.getNewFieldsFromFreetext(imagepage)
 
-            author = convertLinks(match.group(u'author').strip(), imagepage.site())
-            if author == u'':
-                author = getAuthorText(imagepage)
-            
-            if u'permission' in match.groupdict():
-                permission = convertLinks(match.group(u'permission').strip(), imagepage.site())
-            if  u'other_versions' in match.groupdict():
-                other_versions = convertLinks(match.group(u'other_versions').strip(), imagepage.site())
-            # Return the stuff we found
-            return (description, date, source, author)
-    
-    #We didn't find anything, return the empty strings
-    return (description, date, source, author)
+        licensetemplate = self.getNewLicensetemplate(imagepage)
+        categories = self.getNewCategories(imagepage)
+        return (imagepage, description, date, source, author, licensetemplate, categories)
 
-def getNewFieldsFromFreetext(imagepage):
-    '''
-    '''
-    text = imagepage.get()
-    #text = re.sub(u'== Summary ==', u'', text, re.IGNORECASE)
-    #text = re.sub(u'== Licensing ==', u'', text, re.IGNORECASE)
-    #text = re.sub(u'\{\{(self|self2)\|[^\}]+\}\}', u'', text, re.IGNORECASE)
-
-    for toRemove in sourceGarbage:
-        text = re.sub(toRemove, u'', text, re.IGNORECASE)
-    
-    for (regex, repl) in licenseTemplates:
-        text = re.sub(regex, u'', text, re.IGNORECASE)
-
-    text = wikipedia.removeCategoryLinks(text, imagepage.site()).strip()
-        
-    description = convertLinks(text.strip(), imagepage.site())
-    date = getUploadDate(imagepage)
-    source = getSource(imagepage)
-    author = getAuthorText(imagepage)
-    return (description, date, source, author)
-
-def getUploadDate(imagepage):
-    # Get the original upload date
-    uploadtime = imagepage.getFileVersionHistory()[-1][0]
-    uploadDatetime = datetime.strptime(uploadtime, u'%Y-%m-%dT%H:%M:%SZ')
-    return u'{{Date|' + str(uploadDatetime.year) + u'|' + str(uploadDatetime.month) + u'|' + str(uploadDatetime.day) + u'}} (original upload date)'
-
-def getSource(imagepage, source=u''):
-    site = imagepage.site()
-    lang = site.language()
-    family = site.family.name
-    if source==u'':
-        source=u'{{Own}}'
-        
-    return source.strip() + u'<BR />Transferred from [http://%(lang)s.%(family)s.org %(lang)s.%(family)s]' % {u'lang' : lang, u'family' : family}
-
-def getAuthorText(imagepage):
-    site = imagepage.site()
-    lang = site.language()
-    family = site.family.name
-    
-    firstuploader = getAuthor(imagepage)
-    #FIXME : Make other sites than Wikipedia work
-    return u'[[:%(lang)s:User:%(firstuploader)s|%(firstuploader)s]] at [http://%(lang)s.%(family)s.org %(lang)s.%(family)s]' % {u'lang' : lang, u'family' : family , u'firstuploader' : firstuploader}
-
-def getAuthor(imagepage):
-    return imagepage.getFileVersionHistory()[-1][1].strip()
-
-def convertLinks(text, sourceSite):
-    lang = sourceSite.language()
-    family = sourceSite.family.name
-    conversions =[(u'\[\[([^\[\]\|]+)\|([^\[\]\|]+)\]\]', u'[[:%(lang)s:\\1|\\2]]'),
-                  (u'\[\[([^\[\]\|]+)\]\]', u'[[:%(lang)s:\\1|\\1]]'),
-                  ]
-    
-    for (regex, replacement) in conversions:
-        text = re.sub(regex, replacement  % {u'lang' : lang, u'family' : family}, text)              
-
-    return text
-
-def getNewLicensetemplate(imagepage):
-    '''
-    '''
-    text = imagepage.get()
-    
-    site = imagepage.site()
-    lang = site.language()
-    family = site.family.name
-
-    result = u''   
-
-    for (regex, replacement) in licenseTemplates:
-        match = re.search(regex, text, re.IGNORECASE)
-        if match:
-            result = re.sub(regex, replacement, match.group(0), re.IGNORECASE)
-            return result % {u'author' : getAuthor(imagepage),
-                             u'lang' : lang,
-                             u'family' : family}
-        
-    return result
-    
-def getNewCategories(imagepage):
-    '''
-    Get a categories for the image
-    Dont forget to filter
-    '''
-    result = u''
-    (commonshelperCats, usage, galleries) = imagerecat.getCommonshelperCats(imagepage)
-    newcats = imagerecat.applyAllFilters(commonshelperCats)
-    for newcat in newcats:
-        result = result + u'[[Category:' + newcat + u']] '
-    return result
-
-def getOriginalUploadLog(imagepage):
-    filehistory = imagepage.getFileVersionHistory()
-    filehistory.reverse()
-
-    site = imagepage.site()
-    lang = site.language()
-    family = site.family.name
-
-    sourceimage = imagepage.site().get_address(imagepage.title()).replace(u'&redirect=no&useskin=monobook', u'')
-    
-    result = u'== {{Original upload log}} ==\n'
-    result = result + u'The original description page is/was [http://%(lang)s.%(family)s.org%(sourceimage)s here]. All following user names refer to %(lang)s.%(family)s.\n' % {u'lang' : lang, u'family' : family , u'sourceimage' : sourceimage}
-    for (timestamp, username, resolution, size, comment) in filehistory:
-        date = datetime.strptime(timestamp, u'%Y-%m-%dT%H:%M:%SZ').strftime('%Y-%m-%d %H:%M')
-        result = result + u'* %(date)s [[:%(lang)s:user:%(username)s|%(username)s]] %(resolution)s (%(size)s bytes) \'\'<nowiki>%(comment)s</nowiki>\'\'\n' % {
-            u'lang' : lang,
-            u'family' : family ,
-            u'date' : date,
-            u'username' : username,
-            u'resolution': resolution,
-            u'size': size,
-            u'comment' : comment}       
-        
-    return result
-
-    
-
-def buildNewImageDescription(imagepage, description, date, source, author, licensetemplate, categories, checkTemplate):
-    '''
-    Build a new information template 
-    '''
-    
-    site = imagepage.site()
-    lang = site.language()
-    family = site.family.name
-    
-    cid = u''
-    if checkTemplate:
-        cid = cid + u'\n{{BotMoveToCommons|%(lang)s.%(family)s|year={{subst:CURRENTYEAR}}|month={{subst:CURRENTMONTHNAME}}|day={{subst:CURRENTDAY}}}}\n' % {u'lang' : lang, u'family' : family}
-    cid = cid + u'== {{int:filedesc}} ==\n'
-    cid = cid + u'{{Information\n'
-    cid = cid + u'|description={{%(lang)s|1=' % {u'lang' : lang, u'family' : family}
-    cid = cid + description + u'}}\n' 
-    cid = cid + u'|date=' + date + u'\n'
-    cid = cid + u'|source=' + source + u'\n'
-    cid = cid + u'|author=' + author + u'\n'
-    cid = cid + u'|permission=\n'
-    cid = cid + u'|other_versions=\n'
-    cid = cid + u'}}\n'
-    cid = cid + u'== {{int:license}} ==\n'
-    cid = cid + licensetemplate + u'\n'
-    cid = cid + u'\n'
-    cid = cid + getOriginalUploadLog(imagepage)
-    cid = cid + u'__NOTOC__\n'
-    if categories.strip()==u'':
-        cid = cid + u'{{Subst:Unc}}'
-    else:
-        cid = cid + categories
-    return cid
-
-
-def processImage(page, checkTemplate):
-    skip = False
-    if page.exists() and (page.namespace() == 6) and (not page.isRedirectPage()):
-        imagepage = wikipedia.ImagePage(page.site(), page.title())
-
-        #First do autoskip.
-        if doiskip(imagepage):
-            wikipedia.output(u'Skipping %s : Got a template on the skip list.' % page.title())
-            return False
-        
+    def getNewFieldsFromInformation(self, imagepage):
+        '''
+        Try to extract fields from the current information template for the new information template.
+        '''
+        description = u''
+        date = u''
+        source = u''
+        author = u''
+        permission = u''
+        other_versions = u''
         text = imagepage.get()
-        foundMatch = False
+        # Need to add the permission field
+        # Need to use pywikipedia template parser code
+        regexes =[u'\{\{Information[\s\r\n]*\|[\s\r\n]*description[\s\r\n]*=(?P<description>.*)\|[\s\r\n]*source[\s\r\n]*=(?P<source>.*)\|[\s\r\n]*date[\s\r\n]*=(?P<date>.*)\|[\s\r\n]*author[\s\r\n]*=(?P<author>.*)\|[\s\r\n]*permission.*=(?P<permission>[^\}]*)\|[\s\r\n]*other_versions.*=(?P<other_versions>[^\}]*)\}\}',
+                  u'\{\{Information[\s\r\n]*\|[\s\r\n]*description[\s\r\n]*=(?P<description>.*)\|[\s\r\n]*source[\s\r\n]*=(?P<source>.*)\|[\s\r\n]*date[\s\r\n]*=(?P<date>.*)\|[\s\r\n]*author[\s\r\n]*=(?P<author>.*)\|[\s\r\n]*other_versions.*=(?P<other_versions>[^\}]*)\}\}',              
+                  ]
+                
+        for regex in regexes:
+            match =re.search(regex, text, re.IGNORECASE|re.DOTALL)
+            if match:
+                description = self.convertLinks(match.group(u'description').strip(), imagepage.site())
+                
+                date = match.group(u'date').strip()
+                if date == u'':
+                    date = self.getUploadDate(imagepage)
+
+                source = self.getSource(imagepage, source=self.convertLinks(match.group(u'source').strip(), imagepage.site()))
+
+                author = self.convertLinks(match.group(u'author').strip(), imagepage.site())
+                if author == u'':
+                    author = self.getAuthorText(imagepage)
+                
+                if u'permission' in match.groupdict():
+                    permission = self.convertLinks(match.group(u'permission').strip(), imagepage.site())
+                if  u'other_versions' in match.groupdict():
+                    other_versions = self.convertLinks(match.group(u'other_versions').strip(), imagepage.site())
+                # Return the stuff we found
+                return (description, date, source, author)
+        
+        #We didn't find anything, return the empty strings
+        return (description, date, source, author)
+
+    def getNewFieldsFromFreetext(self, imagepage):
+        '''
+        Try to extract fields from free text for the new information template.
+        '''
+        text = imagepage.get()
+        #text = re.sub(u'== Summary ==', u'', text, re.IGNORECASE)
+        #text = re.sub(u'== Licensing ==', u'', text, re.IGNORECASE)
+        #text = re.sub(u'\{\{(self|self2)\|[^\}]+\}\}', u'', text, re.IGNORECASE)
+
+        for toRemove in sourceGarbage:
+            text = re.sub(toRemove, u'', text, re.IGNORECASE)
+        
+        for (regex, repl) in licenseTemplates:
+            text = re.sub(regex, u'', text, re.IGNORECASE)
+
+        text = wikipedia.removeCategoryLinks(text, imagepage.site()).strip()
+            
+        description = self.convertLinks(text.strip(), imagepage.site())
+        date = self.getUploadDate(imagepage)
+        source = self.getSource(imagepage)
+        author = self.getAuthorText(imagepage)
+        return (description, date, source, author)
+
+    def getUploadDate(self, imagepage):
+        '''
+        Get the original upload date to put in the date field of the new information template. If we really have nothing better.
+        '''
+        uploadtime = imagepage.getFileVersionHistory()[-1][0]
+        uploadDatetime = datetime.strptime(uploadtime, u'%Y-%m-%dT%H:%M:%SZ')
+        return u'{{Date|' + str(uploadDatetime.year) + u'|' + str(uploadDatetime.month) + u'|' + str(uploadDatetime.day) + u'}} (original upload date)'
+
+    def getSource(self, imagepage, source=u''):
+        '''
+        Get the text to put in the source field of the new information template.
+        '''
+        site = imagepage.site()
+        lang = site.language()
+        family = site.family.name
+        if source==u'':
+            source=u'{{Own}}'
+            
+        return source.strip() + u'<BR />Transferred from [http://%(lang)s.%(family)s.org %(lang)s.%(family)s]' % {u'lang' : lang, u'family' : family}
+
+    def getAuthorText(self, imagepage):
+        '''
+        Get the original uploader to put in the author field of the new information template.
+        '''
+        site = imagepage.site()
+        lang = site.language()
+        family = site.family.name
+        
+        firstuploader = self.getAuthor(imagepage)
+        return u'[[:%(lang)s:User:%(firstuploader)s|%(firstuploader)s]] at [http://%(lang)s.%(family)s.org %(lang)s.%(family)s]' % {u'lang' : lang, u'family' : family , u'firstuploader' : firstuploader}
+
+    def getAuthor(self, imagepage):
+        '''
+        Get the first uploader.
+        '''
+        return imagepage.getFileVersionHistory()[-1][1].strip()
+
+    def convertLinks(self, text, sourceSite):
+        '''
+        Convert links from the current wiki to Commons.
+        '''
+        lang = sourceSite.language()
+        family = sourceSite.family.name
+        conversions =[(u'\[\[([^\[\]\|]+)\|([^\[\]\|]+)\]\]', u'[[:%(lang)s:\\1|\\2]]'),
+                      (u'\[\[([^\[\]\|]+)\]\]', u'[[:%(lang)s:\\1|\\1]]'),
+                      ]
+        
+        for (regex, replacement) in conversions:
+            text = re.sub(regex, replacement  % {u'lang' : lang, u'family' : family}, text)              
+
+        return text
+
+    def getNewLicensetemplate(self, imagepage):
+        '''
+        Get a license template to put on the image to be uploaded
+        '''
+        text = imagepage.get()
+        
+        site = imagepage.site()
+        lang = site.language()
+        family = site.family.name
+
+        result = u''   
+
         for (regex, replacement) in licenseTemplates:
             match = re.search(regex, text, re.IGNORECASE)
             if match:
-                foundMatch = True
-        if not foundMatch:
-            wikipedia.output(u'Skipping %s : No suitable license template was found.' % page.title())
-            return False
+                result = re.sub(regex, replacement, match.group(0), re.IGNORECASE)
+                return result % {u'author' : self.getAuthor(imagepage),
+                                 u'lang' : lang,
+                                 u'family' : family}
+            
+        return result
         
-        (description, date, source, author, licensetemplate, categories) = getNewFields(imagepage)
+    def getNewCategories(self, imagepage):
+        '''
+        Get a categories for the image
+        Dont forget to filter
+        '''
+        result = u''
+        (commonshelperCats, usage, galleries) = imagerecat.getCommonshelperCats(imagepage)
+        newcats = imagerecat.applyAllFilters(commonshelperCats)
+        for newcat in newcats:
+            result = result + u'[[Category:' + newcat + u']] '
+        return result
 
+class userInteraction(threading.Thread):
+    '''
+    Prompt all images to the user.
+    '''
+    def __init__ ( self, prefetchQueue, uploadQueue):
+        self.prefetchQueue = prefetchQueue
+        self.uploadQueue = uploadQueue
+        threading.Thread.__init__ ( self )
+
+    def run(self):
+        while True:
+            fields = self.prefetchQueue.get()
+            if fields:
+                self.processImage(fields)
+            else:
+                break
+        self.uploadQueue.put(None)
+        wikipedia.output(u'User worked on all images.')
+        return True
+            
+    def processImage(self, fields):
+        '''
+        Work on a single image
+        '''
+        (imagepage, description, date, source, author, licensetemplate, categories) = fields
         while True:
             # Do the Tkdialog to accept/reject and change te name
             (filename, description, date, source, author, licensetemplate, categories, skip)=Tkdialog(imagepage, description, date, source, author, licensetemplate, categories).getnewmetadata()
 
             if skip:
-                wikipedia.output(u'Skipping %s : User pressed skip.' % page.title())
+                wikipedia.output(u'Skipping %s : User pressed skip.' % imagepage.title())
                 return False
                    
             # Check if the image already exists
@@ -524,13 +522,115 @@ def processImage(page, checkTemplate):
                 break
             else:
                 wikipedia.output('Image already exists, pick another name or skip this image')
-                # We dont overwrite images, pick another name, go to the start of the loop   
-        
-        cid = buildNewImageDescription(imagepage, description, date, source, author, licensetemplate, categories, checkTemplate)
+                # We dont overwrite images, pick another name, go to the start of the loop
+
+        self.uploadQueue.put((imagepage, filename, description, date, source, author, licensetemplate, categories))
+
+
+class uploader(threading.Thread):
+    '''
+    Upload all images
+    '''
+    def __init__ ( self, uploadQueue):
+        self.uploadQueue = uploadQueue
+        self.checktemplate = True
+        threading.Thread.__init__ ( self )
+
+    def run(self):
+        while True: #Change later
+            fields = self.uploadQueue.get()
+            if fields:
+                self.processImage(fields)
+            else:
+                break
+        return True
+
+    def nochecktemplate(self):
+        '''
+        Don't want to add {{BotMoveToCommons}}
+        '''
+        self.checktemplate = False
+        return
+    
+    def processImage(self, fields):
+        '''
+        Work on a single image
+        '''
+        (imagepage, filename, description, date, source, author, licensetemplate, categories) = fields
+        cid = self.buildNewImageDescription(imagepage, description, date, source, author, licensetemplate, categories)
         wikipedia.output(cid)
         bot = UploadRobot(url=imagepage.fileUrl(), description=cid, useFilename=filename, keepFilename=True, verifyDescription=False, ignoreWarning = True, targetSite = wikipedia.getSite('commons', 'commons'))
         bot.run()
         
+        self.tagNowcommons(imagepage, filename)
+        self.replaceUsage(imagepage, filename)
+       
+
+    def buildNewImageDescription(self, imagepage, description, date, source, author, licensetemplate, categories):
+        '''
+        Build a new information template 
+        '''
+        
+        site = imagepage.site()
+        lang = site.language()
+        family = site.family.name
+        
+        cid = u''
+        if self.checktemplate:
+            cid = cid + u'\n{{BotMoveToCommons|%(lang)s.%(family)s|year={{subst:CURRENTYEAR}}|month={{subst:CURRENTMONTHNAME}}|day={{subst:CURRENTDAY}}}}\n' % {u'lang' : lang, u'family' : family}
+        cid = cid + u'== {{int:filedesc}} ==\n'
+        cid = cid + u'{{Information\n'
+        cid = cid + u'|description={{%(lang)s|1=' % {u'lang' : lang, u'family' : family}
+        cid = cid + description + u'}}\n' 
+        cid = cid + u'|date=' + date + u'\n'
+        cid = cid + u'|source=' + source + u'\n'
+        cid = cid + u'|author=' + author + u'\n'
+        cid = cid + u'|permission=\n'
+        cid = cid + u'|other_versions=\n'
+        cid = cid + u'}}\n'
+        cid = cid + u'== {{int:license}} ==\n'
+        cid = cid + licensetemplate + u'\n'
+        cid = cid + u'\n'
+        cid = cid + self.getOriginalUploadLog(imagepage)
+        cid = cid + u'__NOTOC__\n'
+        if categories.strip()==u'':
+            cid = cid + u'{{Subst:Unc}}'
+        else:
+            cid = cid + categories
+        return cid
+
+    def getOriginalUploadLog(self, imagepage):
+        '''
+        Get the original upload log to put at the bottom of the image description page at Commons.
+        '''
+        filehistory = imagepage.getFileVersionHistory()
+        filehistory.reverse()
+
+        site = imagepage.site()
+        lang = site.language()
+        family = site.family.name
+
+        sourceimage = imagepage.site().get_address(imagepage.title()).replace(u'&redirect=no&useskin=monobook', u'')
+        
+        result = u'== {{Original upload log}} ==\n'
+        result = result + u'The original description page is/was [http://%(lang)s.%(family)s.org%(sourceimage)s here]. All following user names refer to %(lang)s.%(family)s.\n' % {u'lang' : lang, u'family' : family , u'sourceimage' : sourceimage}
+        for (timestamp, username, resolution, size, comment) in filehistory:
+            date = datetime.strptime(timestamp, u'%Y-%m-%dT%H:%M:%SZ').strftime('%Y-%m-%d %H:%M')
+            result = result + u'* %(date)s [[:%(lang)s:user:%(username)s|%(username)s]] %(resolution)s (%(size)s bytes) \'\'<nowiki>%(comment)s</nowiki>\'\'\n' % {
+                u'lang' : lang,
+                u'family' : family ,
+                u'date' : date,
+                u'username' : username,
+                u'resolution': resolution,
+                u'size': size,
+                u'comment' : comment}       
+            
+        return result
+
+    def tagNowcommons(self, imagepage, filename):
+        '''
+        Tagged the imag which has been moved to Commons for deletion.
+        '''
         if wikipedia.Page(wikipedia.getSite('commons', 'commons'), u'File:' + filename).exists():
             #Get a fresh copy, force to get the page so we dont run into edit conflicts
             imtxt=imagepage.get(force=True)
@@ -554,27 +654,32 @@ def processImage(page, checkTemplate):
             wikipedia.showDiff(imagepage.get(), imtxt + addTemplate)
             imagepage.put(imtxt + addTemplate, comment = commentText)
 
+    def replaceUsage(self, imagepage, filename):
+        '''
+        If the image is uploaded under a different name, replace all usage.
+        '''
+        if imagepage.titleWithoutNamespace() != filename:
             gen = pagegenerators.FileLinksGenerator(imagepage)
             preloadingGen = pagegenerators.PreloadingGenerator(gen)
-
-            #If the image is uploaded under a different name, replace all instances
-            if imagepage.titleWithoutNamespace() != filename:
-                if imagepage.site().language() in imageMoveMessage:
-                    moveSummary = imageMoveMessage[imagepage.site().language()] % (imagepage.titleWithoutNamespace(), filename)
-                else:
-                    moveSummary = imageMoveMessage['_default'] % (imagepage.titleWithoutNamespace(), filename)
-                imagebot = ImageRobot(generator = preloadingGen, oldImage = imagepage.titleWithoutNamespace(), newImage = filename, summary = moveSummary, always = True, loose = True)
-                imagebot.run()             
+            
+            if imagepage.site().language() in imageMoveMessage:
+                moveSummary = imageMoveMessage[imagepage.site().language()] % (imagepage.titleWithoutNamespace(), filename)
+            else:
+                moveSummary = imageMoveMessage['_default'] % (imagepage.titleWithoutNamespace(), filename)
+            imagebot = ImageRobot(generator = preloadingGen, oldImage = imagepage.titleWithoutNamespace(), newImage = filename, summary = moveSummary, always = True, loose = True)
+            imagebot.run()   
     
 
-
 def main(args):
+    wikipedia.output(u'WARNING: This is an experimental bot')
+    wikipedia.output(u'WARNING: It will only work on self published work images')
+    wikipedia.output(u'WARNING: This bot is still full of bugs')
+    wikipedia.output(u'WARNING: Use at your own risk!')
+
     generator = None;
-    #newname = "";
-    imagepage = None;
     always = False
     checkTemplate = True
-    imagerecat.initLists()
+    
     # Load a lot of default generators
     genFactory = pagegenerators.GeneratorFactory()
 
@@ -590,15 +695,24 @@ def main(args):
 
     pregenerator = pagegenerators.PreloadingGenerator(generator)
 
-    for page in pregenerator:
-        processImage(page, checkTemplate)
+    prefetchQueue = Queue(maxsize=50)
+    uploadQueue = Queue(maxsize=200)
 
+    imageFetcherThread = imageFetcher(pregenerator, prefetchQueue)
+    userInteractionThread = userInteraction(prefetchQueue, uploadQueue)
+    uploaderThread = uploader(uploadQueue)
 
-    wikipedia.output(u'Still ' + str(threading.activeCount()) + u' active threads, lets wait')
-    for openthread in threading.enumerate():
-        if openthread != threading.currentThread():
-            openthread.join()
-    wikipedia.output(u'All threads are done')
+    imageFetcherThread.daemon=False
+    userInteractionThread.daemon=False
+    uploaderThread.daemon=False
+    
+    if not checkTemplate:
+        uploaderThread.nochecktemplate()
+    
+    fetchDone = imageFetcherThread.start()
+    userDone = userInteractionThread.start()
+    uploadDone = uploaderThread.start()
+
 
 if __name__ == "__main__":
     try:
