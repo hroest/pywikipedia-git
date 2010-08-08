@@ -324,7 +324,7 @@ class imageFetcher(threading.Thread):
         Build a new description based on the imagepage
         '''
         if u'{{Information' in imagepage.get() or u'{{information' in imagepage.get():
-            (description, date, source, author) = self.getNewFieldsFromInformation(imagepage)       
+            (description, date, source, author, permission, other_versions) = self.getNewFieldsFromInformation(imagepage)       
         else:
             (description, date, source, author) = self.getNewFieldsFromFreetext(imagepage)
 
@@ -336,43 +336,68 @@ class imageFetcher(threading.Thread):
         '''
         Try to extract fields from the current information template for the new information template.
         '''
+        
+        fields = [u'location', u'description', u'source', u'date', u'author', u'permission', u'other versions']
+
         description = u''
-        date = u''
         source = u''
+        date = u''
         author = u''
         permission = u''
         other_versions = u''
-        text = imagepage.get()
-        # Need to add the permission field
-        # Need to use pywikipedia template parser code
-        regexes =[u'\{\{Information[\s\r\n]*\|[\s\r\n]*description[\s\r\n]*=(?P<description>.*)\|[\s\r\n]*source[\s\r\n]*=(?P<source>.*)\|[\s\r\n]*date[\s\r\n]*=(?P<date>.*)\|[\s\r\n]*author[\s\r\n]*=(?P<author>.*)\|[\s\r\n]*permission.*=(?P<permission>[^\}]*)\|[\s\r\n]*other_versions.*=(?P<other_versions>[^\}]*)\}\}',
-                  u'\{\{Information[\s\r\n]*\|[\s\r\n]*description[\s\r\n]*=(?P<description>.*)\|[\s\r\n]*source[\s\r\n]*=(?P<source>.*)\|[\s\r\n]*date[\s\r\n]*=(?P<date>.*)\|[\s\r\n]*author[\s\r\n]*=(?P<author>.*)\|[\s\r\n]*other_versions.*=(?P<other_versions>[^\}]*)\}\}',              
-                  ]
-                
-        for regex in regexes:
-            match =re.search(regex, text, re.IGNORECASE|re.DOTALL)
-            if match:
-                description = self.convertLinks(match.group(u'description').strip(), imagepage.site())
-                
-                date = match.group(u'date').strip()
-                if date == u'':
-                    date = self.getUploadDate(imagepage)
 
-                source = self.getSource(imagepage, source=self.convertLinks(match.group(u'source').strip(), imagepage.site()))
+        contents = {}
 
-                author = self.convertLinks(match.group(u'author').strip(), imagepage.site())
-                if author == u'':
-                    author = self.getAuthorText(imagepage)
-                
-                if u'permission' in match.groupdict():
-                    permission = self.convertLinks(match.group(u'permission').strip(), imagepage.site())
-                if  u'other_versions' in match.groupdict():
-                    other_versions = self.convertLinks(match.group(u'other_versions').strip(), imagepage.site())
-                # Return the stuff we found
-                return (description, date, source, author)
-        
-        #We didn't find anything, return the empty strings
-        return (description, date, source, author)
+        for field in fields:
+            contents[field]=u''
+
+        templates = imagepage.templatesWithParams()
+
+        for (template, params) in templates:
+            if template==u'Information':
+                for param in params:
+                    #Split at =
+                    (field, sep, value) = param.partition(u'=')
+                    #To lowercase, remove underscores and strip of spaces
+                    field = field.lower().replace(u'_', u' ').strip()
+                    #See if first part is in fields list
+                    if field in fields:
+                        #Ok, field is good, store it.
+                        contents[field] = value.strip()
+ 
+        # We now got the contents from the old information template. Let's get the info for the new one
+
+        # Description
+        if not contents[u'location']==u'':
+            description = self.convertLinks(contents[u'location']) + u'\n'
+        if not contents[u'description']==u'':
+            description = description + self.convertLinks(contents[u'description'], imagepage.site())
+
+        # Source
+        source = self.getSource(imagepage, source=self.convertLinks(contents[u'source'], imagepage.site()))
+
+        # Date
+        if not contents[u'date']==u'':
+            date = contents[u'date']
+        else:
+            date = self.getUploadDate(imagepage)
+
+        # Author
+        if not (contents[u'author']==u'' or contents[u'author']==self.getAuthor(imagepage)):
+            author = self.convertLinks(contents[u'author'], imagepage.site())
+        else:
+            author = self.getAuthorText(imagepage)
+
+        # Permission
+        # Still have to filter out crap like "see below" or "yes"
+        if not contents[u'permission']==u'':
+            permission = self.convertLinks(contents[u'permission'], imagepage.site())
+
+        # Other_versions
+        if not contents[u'other versions']==u'':
+            other_versions = self.convertLinks(contents[u'other versions'], imagepage.site())        
+
+        return (description, date, source, author, permission, other_versions)
 
     def getNewFieldsFromFreetext(self, imagepage):
         '''
