@@ -17,21 +17,21 @@ class Family(family.Family):
             'war', 'sl', 'hr', 'et', 'new', 'ms', 'simple', 'th', 'gl',
             'roa-rup', 'nn', 'eu', 'hi', 'el', 'ht', 'te', 'la', 'ka', 'mk',
             'ceb', 'az', 'br', 'sh', 'tl', 'mr', 'jv', 'lb', 'bs', 'lv', 'is',
-            'cy', 'pms', 'sq', 'be-x-old', 'bpy', 'ta', 'oc', 'an', 'be', 'bn',
+            'cy', 'pms', 'sq', 'be-x-old', 'bpy', 'ta', 'oc', 'be', 'an', 'bn',
             'io', 'sw', 'fy', 'nds', 'lmo', 'scn', 'gu', 'af', 'qu', 'su',
-            'zh-yue', 'ku', 'ur', 'ast', 'ml', 'nap', 'bat-smg', 'wa', 'cv',
+            'zh-yue', 'ku', 'ur', 'ml', 'ast', 'nap', 'bat-smg', 'wa', 'cv',
             'ga', 'ksh', 'hy', 'yo', 'tg', 'kn', 'roa-tara', 'vec', 'gd', 'yi',
-            'uz', 'pam', 'zh-min-nan', 'os', 'tt', 'sah', 'als', 'ne', 'mi',
+            'uz', 'pam', 'zh-min-nan', 'os', 'tt', 'sah', 'ne', 'als', 'mi',
             'arz', 'kk', 'nah', 'li', 'hsb', 'glk', 'co', 'gan', 'pnb', 'ia',
             'bcl', 'mn', 'fiu-vro', 'am', 'nds-nl', 'fo', 'vls', 'tk', 'sa',
             'si', 'bar', 'dv', 'gv', 'nrm', 'pag', 'rm', 'map-bms', 'my', 'sco',
             'diq', 'se', 'wuu', 'fur', 'lij', 'ug', 'bh', 'mt', 'nov', 'mzn',
             'csb', 'mg', 'ilo', 'km', 'zh-classical', 'sc', 'lad', 'pi', 'ang',
             'cbk-zam', 'frp', 'bo', 'ckb', 'hak', 'hif', 'pa', 'kw', 'xal',
-            'szl', 'pdc', 'haw', 'ps', 'ie', 'stq', 'fj', 'crh', 'kv', 'to',
-            'ace', 'myv', 'so', 'nv', 'gn', 'ky', 'krc', 'ln', 'ext', 'mhr',
+            'szl', 'haw', 'pdc', 'ps', 'ie', 'stq', 'fj', 'crh', 'kv', 'to',
+            'ace', 'myv', 'nv', 'so', 'gn', 'ky', 'krc', 'ln', 'ext', 'mhr',
             'arc', 'jbo', 'wo', 'eml', 'ty', 'pcd', 'kab', 'tpi', 'pap', 'ay',
-            'zea', 'ba', 'srn', 'udm', 'kl', 'ig', 'ce', 'or', 'dsb', 'ee',
+            'zea', 'ba', 'srn', 'ee', 'kl', 'udm', 'ig', 'ce', 'or', 'dsb',
             'kg', 'lo', 'ab', 'rmy', 'cu', 'mwl', 'mdf', 'kaa', 'sm', 'av',
             'ks', 'tet', 'got', 'sd', 'na', 'bm', 'pih', 'pnt', 'iu', 'ik',
             'as', 'cdo', 'bi', 'chr', 'bug', 'om', 'za', 'ss', 'ti', 'ts', 've',
@@ -435,6 +435,7 @@ class Family(family.Family):
             'vi': u'Chủ đề',
             'wuu': u'Transwiki',
             'yi': u'פארטאל',
+            'yo': u'Èbúté',
             'zh': u'Portal',
             'zh-classical': u'門',
             'zh-min-nan': u'Portal',
@@ -521,6 +522,7 @@ class Family(family.Family):
             'vi': u'Thảo luận Chủ đề',
             'wuu': u'Transwiki talk',
             'yi': u'פארטאל רעדן',
+            'yo': u'Ọ̀rọ̀ èbúté',
             'zh': u'Portal talk',
             'zh-classical': u'議',
             'zh-min-nam': u'Portal talk',
@@ -603,11 +605,13 @@ class Family(family.Family):
         self.namespaces[108] = {
             'als': u'Spruch',
             'en': u'Book',
+            'yo': u'Ìwé',
         }
 
         self.namespaces[109] = {
             'als': u'Spruch Diskussion',
             'en': u'Book talk',
+            'yo': u'Ọ̀rọ̀ ìwé',
         }
 
         self.namespaces[110] = {
