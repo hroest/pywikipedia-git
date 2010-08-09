@@ -71,7 +71,7 @@ commonscatTemplates = {
     'crh' : (u'CommonsKat', [u'Commonscat']),
     'cs' : (u'Commonscat', [u'Commons cat']),
     'da' : (u'Commonscat', [u'Commons cat', u'Commonskat', u'Commonscat2']),
-    'de' : (u'Commonscat', [u'CommonsCat',]),
+    'de' : (u'Commonscat', [u'Commons cat',]),
     'en' : (u'Commons category', [u'Commoncat', u'Commons2', u'Cms-catlist-up',
                                   u'Catlst commons', u'Commonscategory',
                                   u'Commonscat', u'Commons cat']),
