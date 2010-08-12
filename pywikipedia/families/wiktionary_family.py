@@ -14,11 +14,11 @@ class Family(family.Family):
             'en', 'fr', 'lt', 'zh', 'tr', 'ru', 'vi', 'io', 'pl', 'pt', 'fi',
             'hu', 'el', 'ko', 'no', 'ta', 'de', 'sv', 'it', 'nl', 'kn', 'lo',
             'ml', 'li', 'ja', 'es', 'ku', 'ar', 'et', 'ro', 'id', 'te', 'gl',
-            'uk', 'bg', 'ca', 'vo', 'fa', 'is', 'scn', 'mg', 'sr', 'simple',
+            'uk', 'bg', 'ca', 'vo', 'mg', 'fa', 'is', 'scn', 'sr', 'simple',
             'cs', 'af', 'hr', 'th', 'oc', 'fy', 'sw', 'br', 'he', 'la', 'sq',
             'sl', 'hy', 'tt', 'my', 'zh-min-nan', 'da', 'wa', 'ne', 'tk', 'ast',
-            'ur', 'hsb', 'cy', 'kk', 'ky', 'eo', 'ka', 'lv', 'wo', 'ang', 'co',
-            'hi', 'ga', 'az', 'gn', 'ia', 'eu', 'sk', 'ms', 'csb', 'tl', 'st',
+            'ur', 'hsb', 'cy', 'kk', 'lv', 'ka', 'ky', 'eo', 'wo', 'ang', 'co',
+            'hi', 'ga', 'az', 'gn', 'ia', 'eu', 'sk', 'ms', 'csb', 'st', 'tl',
             'mr', 'nn', 'be', 'nds', 'kl', 'sd', 'ug', 'ps', 'ti', 'mk', 'sh',
             'an', 'bn', 'gu', 'km', 'si', 'ss', 'ts', 'qu', 'bs', 'fo', 'am',
             'rw', 'chr', 'su', 'om', 'iu', 'mn', 'nah', 'kw', 'yi', 'ie', 'gv',
@@ -257,6 +257,7 @@ class Family(family.Family):
             'he': u'נספח',
             'it': u'Appendice',
             'ko': u'부록',
+            'lb': u'Annexen',
             'lt': u'Sąrašas',
             'no': u'Tillegg',
             'oc': u'Annèxa',
@@ -284,6 +285,7 @@ class Family(family.Family):
             'he': u'שיחת נספח',
             'it': u'Discussioni appendice',
             'ko': u'부록 토론',
+            'lb': u'Annexen Diskussioun',
             'lt': u'Sąrašo aptarimas',
             'no': u'Tilleggdiskusjon',
             'oc': u'Discussion Annèxa',
@@ -406,6 +408,14 @@ class Family(family.Family):
 
         self.namespaces[115] = {
             'en': u'Citations talk',
+        }
+
+        self.namespaces[116] = {
+            'en': u'Sign gloss',
+        }
+
+        self.namespaces[117] = {
+            'en': u'Sign gloss talk',
         }
 
         # Other than most Wikipedias, page names must not start with a capital
