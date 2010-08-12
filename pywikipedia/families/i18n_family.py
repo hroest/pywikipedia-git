@@ -141,6 +141,12 @@ class Family(family.Family):
         self.namespaces[1227] = {
             '_default': [u'Shapado talk'],
         }
+        self.namespaces[1228] = {
+            '_default': [u'iHRIS'],
+        }
+        self.namespaces[1229] = {
+            '_default': [u'iHRIS talk'],
+        }
 
     def version(self, code):
         return "1.17alpha"
