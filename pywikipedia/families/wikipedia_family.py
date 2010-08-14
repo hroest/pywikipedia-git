@@ -762,7 +762,7 @@ class Family(family.Family):
             'hsb': [u'Wjacezmyslnosć', u'Disambig'],
             'ht':  [u'Menm non', u'Disambig'],
             'hu':  [u'Egyert', u'Disambig', u'Egyért', u'Egyért-redir'],
-            'hy':  None,
+            'hy':  [u'Երկիմաստ', u'Բազմիմաստություն', u'Բազմանշանակ', u'Disambig'],
             'ia':  [u'Disambiguation', u'Disambig'],
             'id':  None,
             'io':  [u'Homonimo', u'Disambig'],
