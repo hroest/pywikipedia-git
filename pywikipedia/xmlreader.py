@@ -294,6 +294,9 @@ Consider installing the python-celementtree package.''')
         if self.filename.endswith('.bz2'):
             import bz2
             source = bz2.BZ2File(self.filename)
+        elif self.filename.endswith('.gz'):
+            import gzip
+            source = gzip.open(self.filename)
         elif self.filename.endswith('.7z'):
             import subprocess
             source = subprocess.Popen('7za e -bd -so %s 2>/dev/null'
