@@ -85,7 +85,7 @@ commonscatTemplates = {
     'frp' : (u'Commonscat', [u'CommonsCat']), 
     'ga' : (u'Catcómhaoin', [u'Commonscat']),
     'hi' : (u'Commonscat', [u'Commons2', u'Commons cat', u'Commons category']),
-    'hu' : (u'Közvagyonkat', []),
+    'hu' : (u'Commonskat', [u'Közvagyonkat']),
     'hy' : (u'Commons cat', [u'Commonscat']),
     'id' : (u'Commonscat', [u'Commons cat', u'Commons2',
                             u'CommonsCat', u'Commons category']),
