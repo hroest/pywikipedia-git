@@ -83,7 +83,7 @@ class FamilyFileGenerator(object):
 
         if len(self.langs) > 1 and \
            raw_input("\nThere are %i languages available.\nDo you want to generate interwiki links? This might take a long time. (y/N)" % len(self.langs)).lower() != "y":
-            self.langs = [wiki for wiki in langs if wiki[u'url'] == w.iwpath]
+            self.langs = [wiki for wiki in self.langs if wiki[u'url'] == w.iwpath]
 
     def getapis(self):
         print "Loading wikis... "
