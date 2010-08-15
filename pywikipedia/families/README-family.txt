@@ -53,7 +53,7 @@ class Family(family.Family):          # REQUIRED
         #     unique name for each wiki) (example):
         self.namespaces[4] = {
             '_default': [u'WIKINAME', self.namespaces[4]['_default']], # REQUIRED
-            'de': 'Name des wiki',
+            'de': 'Name des Wikis',
             'es': 'Nombre del wiki',
             'fr': 'Nom du wiki',
             # ETC.
