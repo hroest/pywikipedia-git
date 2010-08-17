@@ -2750,15 +2750,31 @@ class Family:
             },
             90: {
                 '_default': u'Thread',
+                'fi': u'Viestiketju',
+                'gl': u'Tópico',
+                'mwl': u'Tópico',
+                'pt': u'Tópico',
             },
             91: {
                 '_default': u'Thread talk',
+                'fi': u'Keskustelu viestiketjusta',
+                'gl': u'Tópico discussão',
+                'mwl': u'Tópico discussão',
+                'pt': u'Tópico discussão',
             },
             92: {
                 '_default': u'Summary',
+                'fi': u'Yhteenveto',
+                'gl': u'Resumo',
+                'mwl': u'Resumo',
+                'pt': u'Resumo',
             },
             93: {
                 '_default': u'Summary talk',
+                'fi': u'Keskustelu yhteenvedosta',
+                'gl': u'Resumo discussão',
+                'mwl': u'Resumo discussão',
+                'pt': u'Resumo discussão',
             },
         }
 
