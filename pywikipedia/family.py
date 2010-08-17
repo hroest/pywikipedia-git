@@ -945,9 +945,12 @@ class Family:
                 '_default': u'Project',
                 'ab': u'Авикипедиа',
                 'arc': u'ܘܝܩܝܦܕܝܐ',
+                'bh': u'विकिपीडिया',
                 'bn': u'উইকিপিডিয়া',
                 'mwl': u'Biquipédia',
                 'nah': u'Huiquipedia',
+                'ne': u'विकिपीडिया',
+                'si': u'විකිපීඩියා',
                 'tk': u'Wikipediýa',
                 'tt': u'Википедия',
             },
@@ -956,6 +959,7 @@ class Family:
                 'ab': u'Авикипедиа ахцәажәара',
                 'ace': [u'Marit Wikipedia', u'Pembicaraan Wikipedia'],
                 'arc': [u'ܡܡܠܠܐ ܕ ܘܝܩܝܦܕܝܐ', u'ܘܝܩܝܦܕܝܐ talk'],
+                'bh': u'विकिपीडिया talk',
                 'bn': u'উইকিপিডিয়া আলোচনা',
                 'ckb': u'لێدوانی Wikipedia',
                 'cs': u'Diskuse k Wikipedii',
@@ -970,9 +974,11 @@ class Family:
                 'mwl': u'Biquipédia cumbersa',
                 'mzn': u'Wikipedia گپ',
                 'nah': u'Huiquipedia tēixnāmiquiliztli',
+                'ne': u'विकिपीडिया talk',
                 'nv': u'Wikiibíídiiya baa yáshtiʼ',
                 'rm': u'Wikipedia discussiun',
                 'ro': u'Discuție Wikipedia',
+                'si': u'විකිපීඩියා සාකච්ඡාව',
                 'sw': u'Majadiliano ya Wikipedia',
                 'tk': u'Wikipediýa çekişme',
                 'tt': u'Википедия бәхәсе',
@@ -2741,6 +2747,18 @@ class Family:
                 'za': u'分类讨论',
                 'zea': u'Overleg categorie',
                 'zh': [u'Category talk', u'分类讨论', u'分類討論', u'分类对话', u'分類對話'],
+            },
+            90: {
+                '_default': u'Thread',
+            },
+            91: {
+                '_default': u'Thread talk',
+            },
+            92: {
+                '_default': u'Summary',
+            },
+            93: {
+                '_default': u'Summary talk',
             },
         }
 
