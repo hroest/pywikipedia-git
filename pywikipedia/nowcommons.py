@@ -105,6 +105,10 @@ nowCommons = {
         u'Nun en komunejo',
         u'NowCommons',
     ],
+    'fa': [
+        u'موجود در انبار',
+        u'NowCommons',
+    ],
     'fr': [
         u'Image sur Commons',
         u'DoublonCommons',
