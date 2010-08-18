@@ -369,7 +369,7 @@ class imageFetcher(threading.Thread):
 
         # Description
         if not contents[u'location']==u'':
-            description = self.convertLinks(contents[u'location']) + u'\n'
+            description = self.convertLinks(contents[u'location'], imagepage.site()) + u'\n'
         if not contents[u'description']==u'':
             description = description + self.convertLinks(contents[u'description'], imagepage.site())
 
