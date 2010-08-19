@@ -444,7 +444,11 @@ not supported by PyWikipediaBot!"""
             begin = title.find('#')
             if begin != -1:
                 anchor = self.section(underscore = underscore, decode = True)
-                title = title[:begin + 1] + anchor
+                try:
+                    title = title[:begin + 1] + anchor
+                except TypeError:
+                    print title, begin, anchor
+                    raise
         if savetitle:
             # Ensure there's no wiki syntax in the title
             title = title.replace(u"''", u'%27%27')
@@ -1903,7 +1907,6 @@ not supported by PyWikipediaBot!"""
             predata['wpWatchthis'] = '1'
         # Give the token, but only if one is supplied.
         if token:
-            ##output(token) # for debug use only
             predata['wpEditToken'] = token
 
         # Sorry, single-site exception...
@@ -4606,16 +4609,21 @@ class Site(object):
                 self.lang = self.family.obsolete[self.lang]
             else:
                 # no such language anymore
-                raise NoSuchSite("Language %s in family %s is obsolete" % (self.lang, self.family.name))
+                raise NoSuchSite("Language %s in family %s is obsolete"
+                                 % (self.lang, self.family.name))
 
         if self.lang not in self.languages():
-            if self.lang == 'zh-classic' and 'zh-classical' in self.languages():
+            if self.lang == 'zh-classic' \
+               and 'zh-classical' in self.languages():
                 self.lang = 'zh-classical'
-                # ev0l database hack (database is varchar[10] -> zh-classical is cut to zh-classic.
-            elif self.family.name in self.family.langs.keys() or len(self.family.langs) == 1:
+                # database hack (database is varchar[10], so zh-classical
+                # is cut to zh-classic)
+            elif self.family.name in self.family.langs.keys() \
+                 or len(self.family.langs) == 1:
                 self.lang = self.family.name
             else:
-                raise NoSuchSite("Language %s does not exist in family %s"%(self.lang,self.family.name))
+                raise NoSuchSite("Language %s does not exist in family %s"
+                                 %(self.lang,self.family.name))
 
         self._mediawiki_messages = {}
         self._info = {}
@@ -5279,7 +5287,8 @@ u"""WARNING: Could not open '%s'. Maybe the server or\n your connection is down.
                 account = 'Your sysop account'
             else:
                 account = 'Your account'
-            output(u'WARNING: %s on %s is blocked. Editing using this account will stop the run.' % (account, self))
+            output(u'\nWARNING: %s on %s is blocked by %s.\nReason: %s\nEditing using this account will stop the run.\n'
+                   % (account, self, text['blockedby'], text['blockreason']))
         self._isBlocked[index] = 'blockedby' in text
 
         # Check for new messages, the data must had key 'messages' in dict.
