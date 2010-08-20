@@ -14,7 +14,7 @@ class Family(family.Family):
             'id':'id.mac.wikia.com',
             'it':'it.mac.wikia.com',
             'zh':'zh.mac.wikia.com',
-            }
+        }
 
         # Most namespaces are inherited from family.Family.
         self.namespaces[4] = {
