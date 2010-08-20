@@ -191,7 +191,7 @@ class NamespaceStorage(object):
         for nsid, langs in self.nsinfo.iteritems():
             for lang, translations in langs.iteritems():
                 data += " " * indent
-                data += "self.namespaces[%(nsid)i][%(lang)r] = %(translations)r" % locals()
+                data += "self.namespaces[%(nsid)i] = {%(lang)r : %(translations)r}" % locals()
                 data += "\n"
         return data
         
