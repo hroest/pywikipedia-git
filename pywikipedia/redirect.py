@@ -100,6 +100,7 @@ msg_double={
     'no': u'bot: Retter dobbel omdirigering → %s',
     'pl': u'Robot naprawia podwójne przekierowanie → %s',
     'pt': u'Bot: Corrigido duplo redirecionamento → %s',
+    'ro': u'Robot: Corectarea dublu redirecţionare în %s',
     'ru': u'Робот: исправление двойного перенаправления → %s',
     'sr': u'Бот: Поправка дуплих преусмерења → %s',
     'sv': u'Robot: Rättar dubbel omdirigering → %s',
@@ -194,7 +195,11 @@ class RedirectGenerator:
         self.api_until = until
         self.api_number = number
         if self.api_number is None:
-            self.api_number = 'max'
+            # since 'max' does not works with wikia 1.15.5 use a number instead
+            if self.site.versionnumber() < 16:
+                self.api_number = config.special_page_limit
+            else:
+                self.api_number = 'max'
 
     def get_redirects_from_dump(self, alsoGetPageTitles=False):
         '''
@@ -273,7 +278,6 @@ class RedirectGenerator:
             'apfilterredir': 'redirects',
             'aplimit': self.api_number,
             'apdir': 'ascending',
-            #'':'',
         }
         for ns in self.namespaces:
             params['apnamespace'] = ns
@@ -283,6 +287,8 @@ class RedirectGenerator:
             while not done:
                 pywikibot.output(u'\nRetrieving pages...', newline=False)
                 data = query.GetData(params, self.site)
+                if 'error' in data:
+                    raise RuntimeError("API query error: %s" % data['error'])
                 if "limits" in data: # process aplimit = max
                     params['aplimit'] = int(data['limits']['allpages'])
                 for x in data['query']['allpages']:
