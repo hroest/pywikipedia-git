@@ -2762,34 +2762,34 @@ class Family:
                 'zea': u'Overleg categorie',
                 'zh': [u'Category talk', u'分类讨论', u'分類討論', u'分类对话', u'分類對話'],
             },
-            90: {
+            #90: {
                 #'_default': u'Thread',
-                'fi': u'Viestiketju',
-                'gl': u'Tópico',
-                'mwl': u'Tópico',
-                'pt': u'Tópico',
-            },
-            91: {
+                #'fi': u'Viestiketju',
+                #'gl': u'Tópico',
+                #'mwl': u'Tópico',
+                #'pt': u'Tópico',
+            #},
+            #91: {
                 #'_default': u'Thread talk',
-                'fi': u'Keskustelu viestiketjusta',
-                'gl': u'Tópico discussão',
-                'mwl': u'Tópico discussão',
-                'pt': u'Tópico discussão',
-            },
-            92: {
+                #'fi': u'Keskustelu viestiketjusta',
+                #'gl': u'Tópico discussão',
+                #'mwl': u'Tópico discussão',
+                #'pt': u'Tópico discussão',
+            #},
+            #92: {
                 #'_default': u'Summary',
-                'fi': u'Yhteenveto',
-                'gl': u'Resumo',
-                'mwl': u'Resumo',
-                'pt': u'Resumo',
-            },
-            93: {
+                #'fi': u'Yhteenveto',
+                #'gl': u'Resumo',
+                #'mwl': u'Resumo',
+                #'pt': u'Resumo',
+            #},
+            #93: {
                 #'_default': u'Summary talk',
-                'fi': u'Keskustelu yhteenvedosta',
-                'gl': u'Resumo discussão',
-                'mwl': u'Resumo discussão',
-                'pt': u'Resumo discussão',
-            },
+                #'fi': u'Keskustelu yhteenvedosta',
+                #'gl': u'Resumo discussão',
+                #'mwl': u'Resumo discussão',
+                #'pt': u'Resumo discussão',
+            #},
         }
 
         # letters that can follow a wikilink and are regarded as part of
