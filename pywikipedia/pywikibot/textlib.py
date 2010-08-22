@@ -492,7 +492,7 @@ def interwikiSort(sites, insite = None):
 # Functions dealing with category links
 #---------------------------------------
 
-def getCategoryLinks(text, site):
+def getCategoryLinks(text, site = None):
     import catlib
     """Return a list of category links found in text.
 
@@ -501,6 +501,10 @@ def getCategoryLinks(text, site):
 
     """
     result = []
+
+    if site is None:
+        site = pywikibot.getSite()
+        
     # Ignore category links within nowiki tags, pre tags, includeonly tags,
     # and HTML comments
     text = removeDisabledParts(text)
@@ -515,7 +519,7 @@ def getCategoryLinks(text, site):
     return result
 
 
-def removeCategoryLinks(text, site, marker = ''):
+def removeCategoryLinks(text, site = None, marker = ''):
     """Return text with all category links removed.
 
     Put the string marker after the last replacement (at the end of the text
@@ -526,6 +530,10 @@ def removeCategoryLinks(text, site, marker = ''):
     # interwiki link, plus trailing whitespace. The language code is grouped.
     # NOTE: This assumes that language codes only consist of non-capital
     # ASCII letters and hyphens.
+
+    if site is None:
+        site = pywikibot.getSite()
+    
     catNamespace = '|'.join(site.category_namespaces())
     categoryR = re.compile(r'\[\[\s*(%s)\s*:.*?\]\]\s*' % catNamespace, re.I)
     text = replaceExcept(text, categoryR, '',
@@ -547,6 +555,10 @@ def removeCategoryLinksAndSeparator(text, site=None, marker='', separator=''):
     if there is no replacement).
 
     """
+
+    if site is None:
+        site = pywikibot.getSite()
+
     if separator:
         mymarker = findmarker(text, u'@C@')
         newtext = removeCategoryLinks(text, site, mymarker)
