@@ -145,7 +145,7 @@ categoryToCheck = {
             }
 # Comment used when the Bot edits
 comment = {
-            'en':u'Robot: Deleting out-dated template',
+            'en':u'Bot: Deleting out-dated template',
             'ar':u'بوت: حذف قالب قديم',
             'fr':u'Robot: Mise à jour des bandeaux de protection',
             'he':u'בוט: מסיר תבנית שעבר זמנה',
