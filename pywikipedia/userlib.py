@@ -379,7 +379,8 @@ class User(object):
         if self.isBlocked() and not reBlock:
             raise AlreadyBlocked()
 
-        self.site()._getActionUser('block', sysop=True)
+        if not self.site().isAllowed('block', sysop=True):
+            raise UserActionRefuse('You don\'t have permission to block')
         if not expiry:
             expiry = pywikibot.input(u'Please enter the expiry time for the block:')
         if not reason:
@@ -446,7 +447,8 @@ class User(object):
             #This user is probably being queried for purpose of lifting
             #an autoblock, so can't be blocked.
             raise AutoblockUser
-        sefl.site()._getActionUser('block', sysop=True)
+        if not self.site().isAllowed('block', sysop=True):
+            raise UserActionRefuse('You don\'t have permission to block')
         if expiry is None:
             expiry = input(u'Please enter the expiry time for the block:')
         if reason is None:
