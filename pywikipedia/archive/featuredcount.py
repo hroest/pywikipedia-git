@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 """
 ##################################################
-This script all function have merge to featured.py. plese use:
+This script all function have merged to featured.py. please use:
 
   featured.py -fromall -count
 

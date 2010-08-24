@@ -54,13 +54,13 @@ followlive.py          : Periodically grab the list of new articles and analyze
                          easily add a template.
 get.py                 : Script to get a page and write its contents to standard
                          output.
-login.py               : Log in to an account on your "home" wiki.
+login.py               : Log in to an account on your "home" wiki. or check the
+                         login status
 splitwarning.py        : split an interwiki.log file into warning files for each
                          separate language. suggestion: Zip the created
                          files up, put them somewhere on the internet, and
                          send an announcement of the location on the robot
                          mailinglist.
-test.py                : Check whether you are logged in.
 testfamily.py          : Check whether you are logged in all known languages
                          in a family.
 xmltest.py             : Read an XML file (e.g. the sax_parse_bug.txt sometimes
@@ -171,13 +171,10 @@ warnfile.py            : A robot that parses a warning file created by
                          them.
 weblinkchecker.py      : Check if external links are still working.
 welcome.py             : Script to welcome new users.
-windows_chars.py       : Change characters that are not part of Latin-1 into
-                         something harmless. It is advisable to do this on
-                         Latin-1 wikis before switching to UTF-8.
 
 === Directories ===
 
-archive                : Contains old bots.
+archive                : Contains old bots. Maybe they not run no more
 category               :
 copyright              : Contains information retrieved by copyright.py
 deadlinks              : Contains information retrieved by weblinkchecker.py
@@ -186,18 +183,21 @@ disambiguations        : If you run solve_disambiguation.py with the -primary
 families               : Contains wiki-specific information like URLs,
                          languages, encodings etc.
 featured               : Stored featured article in cache file.
-interwiki_dump         : If the interwiki bot is interrupted, it will store
+interwiki_dumps        : If the interwiki bot is interrupted, it will store
                          a dump file here. This file will be read when using
                          the interwiki bot with -restore or -continue.
 interwiki_graphs       : Contains graphs for interwiki_graph.py
 logs                   : Contains logfiles.
 mediawiki-messages     : Information retrieved by mediawiki_messages.py will
                          be stored here.
+maintenance            : contains maintenance scripts for the developing team
 login-data             : login.py stores your cookies here (Your password won't
                          be stored as plaintext).
+pywikibot              : Contains some libraries and control files
 simplejson             : A simple, fast, extensible JSON encoder and decoder
                          used by query.py.
 spelling               : Contains dictionaries for spellcheck.py.
+test                   : Some test stuff for the developing team
 userinterfaces         : Contains Tkinter, WxPython, terminal and
                          transliteration interfaces user choose in
                          user-config.py
@@ -229,10 +229,11 @@ parameter, e.g.
 
     python interwiki.py -help
 
-You need to have at least python version 2.4 (http://www.python.org/download/)
-installed on your computer to be able to run any of the code in this package.
-Although some of the code may work on python version 2.3, support for older
-versions of python is not planned.
+You need to have at least python version 2.4 or newer installed on your
+computer to be able to run any of the code in this package, but not 3.x,
+because pywikipediabot is still not updated to it! Support for older versions
+of python is not planned. (http://www.python.org/download/)
+
 
 You do not need to "install" this package to be able to make use of
 it. You can actually just run it from the directory where you unpacked
