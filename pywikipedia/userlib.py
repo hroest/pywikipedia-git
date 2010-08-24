@@ -378,7 +378,6 @@ class User(object):
             raise AutoblockUser
         if self.isBlocked() and not reBlock:
             raise AlreadyBlocked()
-
         if not self.site().isAllowed('block', sysop=True):
             raise UserActionRefuse('You don\'t have permission to block')
         if not expiry:
@@ -439,20 +438,11 @@ class User(object):
     def _blockOld(self, expiry, reason, anonOnly, noSignup, enableAutoblock, emailBan,
                 watchUser, allowUsertalk):
         """
-        Block the user by web page.
+        Internal use to block the user by web page.
+        Don't use this function directly.
 
         """
 
-        if self.name()[0] == '#':
-            #This user is probably being queried for purpose of lifting
-            #an autoblock, so can't be blocked.
-            raise AutoblockUser
-        if not self.site().isAllowed('block', sysop=True):
-            raise UserActionRefuse('You don\'t have permission to block')
-        if expiry is None:
-            expiry = input(u'Please enter the expiry time for the block:')
-        if reason is None:
-            reason = input(u'Please enter a reason for the block:')
         token = self.site().getToken(self, sysop = True)
         pywikibot.output(u"Blocking [[User:%s]]..." % self.name())
         boolStr = ['0','1']
