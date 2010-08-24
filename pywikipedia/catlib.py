@@ -31,6 +31,7 @@ msg_created_for_renaming = {
     'fi':u'Botti siirsi luokan %s. Muokkaajat: %s',
     'fr':u'Robot : déplacé depuis %s. Auteurs: %s',
     'he':u'בוט: הועבר מהשם %s. כותבים: %s',
+    'hu':u'Bottal áthelyezve innen: %s. Eredeti szerzők: %s',
     'ia':u'Robot: Transferite de %s. Autores: %s',
     'id':u'Bot: Memindahkan dari %s. Kontributor: %s',
     'it':u'Bot: Voce spostata da %s. Autori: %s',
