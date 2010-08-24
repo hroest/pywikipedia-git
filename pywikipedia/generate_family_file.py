@@ -32,6 +32,12 @@ except ImportError:
 # Monkey-patching wikipediatools to prevent questions about user_config.py
 import wikipediatools
 wikipediatools.get_base_dir = lambda: '.'
+
+# Monkey-patch os.path.exists to prevent config.py from loading user_config.py
+import os.path
+os.path.exists = lambda x: False
+
+# Now we can load family.py
 import family
 
 class FamilyFileGenerator(object):
