@@ -347,23 +347,28 @@ class User(object):
             comment = m.group('comment') or ''
             yield pywikibot.ImagePage(self.site(), image), date, comment, deleted
     
-    def block(self, expiry = None, reason = None, anon= True, noCreate = False,
-          onAutoblock = False, banMail = False, watchUser = False, allowUsertalk = True,
-          reBlock = False):
+    def block(self, expiry=None, reason=None, anon=True, noCreate=False,
+          onAutoblock=False, banMail=False, watchUser=False, allowUsertalk=True,
+          reBlock=False, hidename=False):
         """
         Block the user by API.
 
-        Parameters:
-        expiry - expiry time of block, may be a period of time (incl. infinite)
-                 or the block's expiry time
-        reason - reason for block
-        anonOnly - is the block affecting only anonymous users?
-        noSignup - does the block disable account creation?
-        enableAutoblock - is autoblock enabled on the block?
-        emailBan - prevent user from sending e-mail?
-        watchUser - watch the user's user and talk pages?
-        allowUsertalk - allow this user to edit own talk page?
-
+        Parameters (from http://en.wikipedia.org/w/api.php)
+        expiry        - Expiry time of block, may be a period of time
+                        or the block's expiry time
+                        If set to 'infinite', 'indefinite' or 'never',
+                        the block will never expire.
+        reason        - Reason for block 
+        anon          - Block anonymous users only
+        noCreate      - Prevent account creation
+        onAutoblock   - Automatically block the last used IP address, and any
+                        subsequent IP addresses they try to login from
+        banMail       - Prevent user from sending e-mail through the wiki.
+        hidename      - Hide the username from the block log. (API only)
+        allowUsertalk - Allow the user to edit their own talk page
+        reBlock       - If user is already blocked, overwrite the existing block
+        watchUser     - watch the user's user and talk pages (not used with API)
+        
         The default values for block options are set to as most unrestrictive
         """
 
@@ -389,7 +394,6 @@ class User(object):
             'user': self.name(),
             'token': self.site().getToken(self, sysop = True),
             'reason': reason,
-            #'':'',
         }
         if expiry:
             params['expiry'] = expiry
@@ -401,13 +405,13 @@ class User(object):
             params['autoblock'] = 1
         if banMail:
             params['noemail'] = 1
-        #if watchUser:
-        #    
-        if reBlock:
-            params['reblock'] = 1
+        if hidename:
+            params['hidename'] = 1
         if allowUsertalk:
             params['allowusertalk'] = 1
-            
+        if reBlock:
+            params['reblock'] = 1
+
         data = query.GetData(params, self.site(), sysop=True)
         if 'error' in data: #error occured
             errCode = data['error']['code']
