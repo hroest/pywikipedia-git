@@ -7339,21 +7339,11 @@ default_family = config.family
 default_code = config.mylang
 logfile = None
 # Check
-try:
-    # if the default family+wiki is a non-public one,
-    # getSite will try login in. We don't want that, the module
-    # is not yet loaded.
-    getSite(noLogin=True)
-except KeyError:
-    print(
-u"""Please create a file user-config.py, and put in there:\n
-One line saying \"mylang='language'\"
-One line saying \"usernames['wikipedia']['language']='yy'\"\n
-...filling in your username and the language code of the wiki you want to work
-on.\n
-For other possible configuration variables check config.py.
-""")
-    sys.exit(1)
+
+# if the default family+wiki is a non-public one,
+# getSite will try login in. We don't want that, the module
+# is not yet loaded.
+getSite(noLogin=True)
 
 # Set socket timeout
 socket.setdefaulttimeout(config.socket_timeout)
