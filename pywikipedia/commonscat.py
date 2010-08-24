@@ -154,11 +154,14 @@ ignoreTemplates = {
 }
 
 msg_change = {
+    'cs': u'Robot změnil šablonu Commonscat z [[:Commons:Category:%(oldcat)s|%(oldcat)s]] na [[:Commons:Category:%(newcat)s|%(newcat)s]]',
     'de': u'Bot: Ändere commonscat link von [[:Commons:Category:%(oldcat)s|%(oldcat)s]] zu [[:Commons:Category:%(newcat)s|%(newcat)s]]',
     'en': u'Bot: Changing commonscat link from [[:Commons:Category:%(oldcat)s|%(oldcat)s]] to [[:Commons:Category:%(newcat)s|%(newcat)s]]',
     'fr': u'Robot: Changé commonscat link de [[:Commons:Category:%(oldcat)s|%(oldcat)s]] à [[:Commons:Category:%(newcat)s|%(newcat)s]]',
     'frr':u'Bot: Feranere commonscat link faan [[:Commons:Category:%(oldcat)s|%(oldcat)s]] tu [[:Commons:Category:%(newcat)s|%(newcat)s]]',
     'pdc': u'Waddefresser: commonscat Gleecher vun [[:Commons:Category:%(oldcat)s|%(oldcat)s]] nooch [[:Commons:Category:%(newcat)s|%(newcat)s]] geennert',
+    'sk': u'Robot zmenil šablónu Commonscat z [[:Commons:Category:%(oldcat)s|%(oldcat)s]] na [[:Commons:Category:%(newcat)s|%(newcat)s]]',
+    'th': u'บอต: เปลี่ยนลิงก์หมวดหมู่คอมมอนส์จาก [[:Commons:Category:%(oldcat)s|%(oldcat)s]] เป็น [[:Commons:Category:%(newcat)s|%(newcat)s]]',
 }
 
 def getCommonscatTemplate (lang = None):
