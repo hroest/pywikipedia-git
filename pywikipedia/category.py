@@ -1,6 +1,5 @@
 #!/usr/bin/python
 # -*- coding: utf-8 -*-
-
 """
 Scripts to manage categories.
 
@@ -136,7 +135,7 @@ msg_change={
     'ar':u'روبوت: تغيير %(oldcat)s',
     'be-x-old':u'Робат: зьмена %(oldcat)s',
     'ca':u'Robot: Canviant %(oldcat)s',
-    'cs':u'Robot změnil %(oldcat)s',
+    'cs':u'Robot změnil [[%(oldcat)s]]→[[%(newcat)s]]',
     'da':u'Robot: Ændrer %(oldcat)s',
     'de':u'Bot: Ändere %(oldcat)s',
     'en':u'Robot: Changing %(oldcat)s',
@@ -163,7 +162,7 @@ msg_change={
     'pt':u'Bot: Modificando [[%(oldcat)s]]',
     'pl':u'Robot przenosi %(oldcat)s',
     'ru':u'Робот: изменение %(oldcat)s',
-    'sk':u'Robot pridal [[Kategória:%(oldcat)s]]',
+    'sk':u'Robot zmenil [[%(oldcat)s]]→[[%(newcat)s]]',
     'sr':u'Бот: Измена категорије %(oldcat)s',
     'sv':u'Robot: Ändrar %(oldcat)s',
     'uk':u'Робот: змінено [[Категорія:%(oldcat)s]]',
