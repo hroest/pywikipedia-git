@@ -503,7 +503,6 @@ class CategoryMoveRobot:
             if not self.titleRegex or re.search(self.titleRegex,
                                                 subcategory.title()):
                 catlib.change_category(subcategory, self.oldCat, newCat,
-
                                        comment=self.editSummary,
                                        inPlace=self.inPlace)
 
@@ -527,7 +526,7 @@ class CategoryListifyRobot:
         'ar':u'روبوت: عرض من %s (%d مدخلة)',
         'ca':u'Robot: Llistant de %s (%d entrades)',
         'cs':u'Robot: vytvoření soupisu obsahu kategorie %s (%d položek)',
-        'en':u'Robot: Listifying from %s (%d entries)',
+        'en':u'Bot: Listifying from %s (%d entries)',
         'fa':u'ربات:فهرست کردن اعضای رده %s(%d عضو)',
         'fi':u'Botti listasi luokan %s (%d jäsentä)',
         'he':u'בוט: יוצר רשימה מהקטגוריה %s (%d דפים)',
@@ -587,7 +586,7 @@ class CategoryRemoveRobot:
         'cs':u'Robot: kategorie byla vyprázdněna',
         'da':u'Robot: Kategorien blev opløst',
         'de':u'Bot: Kategorie wurde aufgelöst',
-        'en':u'Robot: Category was disbanded',
+        'en':u'Bot: Category was disbanded',
         'es':u'Robot: La categoría ha sido eliminada',
         'fa':u'ربات: رده خالی',
         'fi':u'Botti tyhjensi luokan',
@@ -616,7 +615,7 @@ class CategoryRemoveRobot:
         'cs':u'Robot: odstranění kategorie %s',
         'da':u'Robot: Fjerner fra %s',
         'de':u'Bot: Entferne aus %s',
-        'en':u'Robot: Removing from %s',
+        'en':u'Bot: Removing from %s',
         'es':u'Bot: Eliminada de la %s',
         'fa':u'ربات:حذف از %s',
         'fi':u'Botti poisti luokasta %s',
