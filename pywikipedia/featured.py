@@ -15,9 +15,9 @@ This script understands various command-line arguments:
 
 -after:zzzz       process pages after and including page zzzz
 
--top              use -top if you want to move all {{Link FA|lang}} to the top
-                  of the interwiki links. Default is placing {{Link FA|lang}}
-                  next to the corresponding interwiki link.
+-side             use -side if you want to move all {{Link FA|lang}} next to the
+                  corresponding interwiki links. Default is placing
+                  {{Link FA|lang}} on top of the interwiki links.
                   
 -count            Only counts how many featured/good articles exist
                   on all wikis (given with the "-fromlang" argument) or
@@ -30,7 +30,8 @@ This script understands various command-line arguments:
 
 -good             use this script for good articles.
 
--former           use this script for removing {{Link FA|xx}} from former fearured articles
+-former           use this script for removing {{Link FA|xx}} from former
+                  fearured articles
 
 -quiet            no corresponding pages are displayed.
 
@@ -261,7 +262,7 @@ featured_name = {
     'kn': (BACK,u"ವಿಶೇಷ ಲೇಖನ"),
     'ko': (CAT, u"알찬 글"),
     'ksh':(CAT, u"Exzälenter Aatikkel"),
-	'kv': (CAT, u"Википедия:Бур гижӧдъяс"),
+    'kv': (CAT, u"Википедия:Бур гижӧдъяс"),
     'la': (CAT, u"Paginae mensis"),
     'li': (CAT, u"Wikipedia:Sjterartikele"),
     'lmo':(CAT, u"Articol ben faa"),
@@ -488,19 +489,13 @@ def getTemplateList (lang, pType):
             templates+= template_good['_default']
         except KeyError:
             templates = template_good['_default']
-    elif pType == 'former':
-        try:
-            templates = template[lang]
-            templates+= template['_default']
-        except KeyError:
-            templates = template['_default']
     elif pType == 'list':
         try:
             templates = template_lists[lang]
             templatest+= template_lists['_default']
         except KeyError:
             templates = template_lists['_default']
-    else:
+    else: #pType in ['former', 'featured']
         try:
             templates = template[lang]
             templates+= template['_default']
@@ -610,11 +605,9 @@ def featuredWithInterwiki(fromsite, tosite, template_on_top, pType, quiet, dry =
                     cc[a.title()]=atrans.title()
         except wikipedia.PageNotSaved, e:
             wikipedia.output(u"Page not saved")
-                        
-
 
 if __name__=="__main__":
-    template_on_top = False
+    template_on_top = True
     featuredcount = False
     fromlang=[]
     processType = 'featured'
@@ -634,8 +627,8 @@ if __name__=="__main__":
             doAll = True
         elif arg.startswith('-after:'):
             afterpage=arg[7:]
-        elif arg == '-top':
-            template_on_top = True
+        elif arg == '-side':
+            template_on_top = False
         elif arg == '-count':
             featuredcount = True
         elif arg == '-good':
