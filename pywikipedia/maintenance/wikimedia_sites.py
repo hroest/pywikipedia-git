@@ -23,10 +23,11 @@ familiesDict = {
     'wikinews':   'wikinews_wiki.php',
     'wikiversity':'wikiversity_wiki.php',
 }
-families = familiesDict.keys()
 exceptions = ['www']
 
-def update_family():
+def update_family(families):
+    if not families:
+        families = familiesDict.keys()
     for family in families:
         wikipedia.output('Checking family %s:' % family)
 
@@ -76,6 +77,10 @@ def update_family():
 
 if __name__ == '__main__':
     try:
-        update_family()
+        fam = []
+        for arg in wikipedia.handleArgs():
+            if arg in familiesDict.keys():
+                fam = [arg]
+        update_family(fam)
     finally:
         wikipedia.stopme()
