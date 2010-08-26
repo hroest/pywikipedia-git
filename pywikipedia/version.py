@@ -9,7 +9,6 @@ __version__ = '$Id$'
 import os
 import time
 import sys
-import wikipediatools
 import config
 
 cache = None
@@ -47,7 +46,10 @@ def getversiondict():
     return cache
 
 def getversion_svn():
-    entries = open(os.path.join(wikipediatools.get_base_dir(), '.svn/entries'))
+    _program_dir = os.path.normpath(os.path.dirname(sys.argv[0]))
+#   if not os.path.isabs(_program_dir):
+#      _program_dir = os.path.normpath(os.path.join(os.getcwd(), _program_dir))
+    entries = open(os.path.join(_program_dir, '.svn/entries'))
     for i in range(4):
         entries.readline()
     tag = entries.readline().strip()
