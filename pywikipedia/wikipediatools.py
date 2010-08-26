@@ -25,7 +25,7 @@ def get_base_dir():
     for arg in sys.argv[1:]:
         if arg.startswith("-dir:"):
             base_dir = arg[5:]
-            sys.argv.remove(arg)
+            # sys.argv.remove(arg) // keep, so as to yield identical results, since this routine is called multiple times.
             break
     else:
         if "PYWIKIBOT_DIR" in os.environ:

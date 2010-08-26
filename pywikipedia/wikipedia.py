@@ -7284,6 +7284,8 @@ def handleArgs(*args):
         if arg == '-help':
             showHelp(moduleName)
             sys.exit(0)
+        elif arg.startswith('-dir:'):
+            pass # config_dir = arg[5:] // currently handled in wikipediatools.py - possibly before this routine is called.
         elif arg.startswith('-family:'):
             default_family = arg[8:]
         elif arg.startswith('-lang:'):
