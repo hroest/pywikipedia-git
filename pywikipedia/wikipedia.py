@@ -2683,7 +2683,7 @@ not supported by PyWikipediaBot!"""
     def getVersionHistoryTable(self, forceReload=False, reverseOrder=False,
                                getAll=False, revCount=500):
         """Return the version history as a wiki table."""
-        result = '{| border="1"\n'
+        result = '{| class="wikitable"\n'
         result += '! oldid || date/time || username || edit summary\n'
         for oldid, time, username, summary in self.getVersionHistory(forceReload = forceReload, reverseOrder = reverseOrder, getAll = getAll, revCount = revCount):
             result += '|----\n'
