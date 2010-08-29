@@ -75,6 +75,7 @@ class PageFromFileRobot:
         'it': u'Caricamento automatico',
         'ja': u'記事の自動取り込み',
         'ksh': u'Bot: automatesch huhjelaade',
+        'mzn': u'ربوت:صفحه شه خاد به خاد دله دکته',
         'nl': u'Geautomatiseerde import',
         'no': u'bot: Automatisk import',
         'pl': u'Automatyczny import artykułów',
