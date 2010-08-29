@@ -95,7 +95,7 @@ msg_double={
     'lb': u'Bot: Duebel Viruleedung gefléckt → %s',
     'lt': u'robotas: Taisomas dvigubas peradresavimas → %s',
     'mk': u'Бот: Исправка на двојни пренасочувања → %s',
-    'mzn' u'ربوت:عوض هایتن دکشیه‌ئون دِتایی → %s',
+    'mzn': u'ربوت:عوض هایتن دکشیه‌ئون دِتایی → %s',
     'nds':u'Bot: Dubbelte Wiederleiden rutmakt → %s',
     'nl': u'Bot: dubbele doorverwijzing gecorrigeerd aan %s',
     'nn': u'robot: retta dobbel omdirigering → %s',
