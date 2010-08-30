@@ -84,6 +84,7 @@ msg_double={
     'ga': u'Róbó: Ag socrú athsheolta dúbailte → %s',
     'he': u'בוט: מתקן הפניה כפולה → %s',
     'hr': u'Bot: Popravak dvostrukih preusmjeravanja → %s',
+    'hu': u'Bot: %s lapra mutató dupla átirányítás javítása',
     'ia': u'Robot: reparation de duple redirection → %s',
     'is': u'Vélmenni: Lagfæri tvöfalda tilvísun → %s',
     'it': u'Bot: Sistemo i redirect doppi a %s',
@@ -132,6 +133,7 @@ reason_broken={
     'frr':u'Bot: Widjerfeerang tu en duad sidj.',
     'ga': u'Róbó : Targaid athsheoladh ar iarraidh',
     'he': u'בוט: יעד ההפניה אינו קיים',
+    'hu': u'Bot: Törölt vagy nemlétező lapra mutató [[WP:REDIR|átirányítás]] törlése',
     'it': u'Bot: Il redirect indirizza ad una pagina inesistente',
     'ja': u'ロボットによる:リダイレクトの目標は存在しませんでした',
     'ka': u'რობოტი: გადამისამართებული გვერდი არ არსებობს',
@@ -163,6 +165,7 @@ reason_loop={
     'en': u'[[WP:CSD#G8|G8]]: [[Wikipedia:Redirect|Redirect]] target forms a redirect loop',
     'fa': u'ربات: تغییر مسیر حلقه‌ای',
     'frr':u'Bot: Widjerfeerang üüb ham salew',
+    'hu': u'Bot: A cél átirányítási hurkot hoz létre',
 }
 
 # Insert deletion template into page with a broken redirect
@@ -176,6 +179,7 @@ sd_template = {
     'fa': u'{{حذف سریع|بن بست}}',
     'frr':u'{{delete|Widjerfeerang uunstaken --~~~~}}',
     'ga': u'{{scrios|Athsheoladh briste}}',
+    'hu': u'{{azonnali|Hibás átirányítás|~~~~}}',
     'it': u'{{Cancella subito|9}}',
     'ja': u'{{即時削除|壊れたリダイレクト}}',
     'ksh':u'{{Schmieß fott}}Di Ömlëijdong jeiht noh nörjendwoh hen.<br />--~~~~~\n\n',
