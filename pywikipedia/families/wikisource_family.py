@@ -13,7 +13,7 @@ class Family(family.Family):
         self.languages_by_size = [
             'en', 'ru', 'zh', 'pt', 'fr', 'de', 'es', 'it', 'he', 'ar', 'hu',
             'fa', 'pl', 'th', 'cs', 'ro', 'hr', 'te', 'fi', 'bn', 'sv', 'tr',
-            'nl', 'sl', 'vi', 'ko', 'uk', 'sr', 'ja', 'el', 'la', 'li', 'yi',
+            'nl', 'vi', 'sl', 'ko', 'uk', 'sr', 'ja', 'el', 'la', 'li', 'yi',
             'ml', 'az', 'is', 'bs', 'hy', 'ca', 'id', 'mk', 'ta', 'da', 'no',
             'et', 'bg', 'lt', 'gl', 'kn', 'cy', 'sk', 'zh-min-nan', 'fo',
         ]
@@ -130,6 +130,23 @@ class Family(family.Family):
             'yi': [u'װיקיביבליאָטעק רעדן', u'וויקיביבליאטעק רעדן'],
             'zh': [u'Wikisource talk', u'维基文库讨论'],
         }
+        
+        self.namespaces[90] = {
+            'sv': u'Thread',
+        }
+
+        self.namespaces[91] = {
+            'sv': u'Thread talk',
+        }
+
+        self.namespaces[92] = {
+            'sv': u'Summary',
+        }
+
+        self.namespaces[93] = {
+            'sv': u'Summary talk',
+        }
+
         self.namespaces[100] = {
             'ar': u'بوابة',
             'bg': u'Автор',
@@ -153,6 +170,7 @@ class Family(family.Family):
             'tr': u'Kişi',
             'vi': u'Chủ đề',
         }
+
         self.namespaces[101] = {
             'ar': u'نقاش البوابة',
             'bg': u'Автор беседа',
@@ -176,6 +194,7 @@ class Family(family.Family):
             'tr': u'Kişi tartışma',
             'vi': u'Thảo luận Chủ đề',
         }
+
         self.namespaces[102] = {
             'ar': u'مؤلف',
             'ca': u'Pàgina',
@@ -201,6 +220,7 @@ class Family(family.Family):
             'vi': u'Tác gia',
             'zh': u'Author',
         }
+
         self.namespaces[103] = {
             'ar': u'نقاش المؤلف',
             'ca': u'Pàgina Discussió',

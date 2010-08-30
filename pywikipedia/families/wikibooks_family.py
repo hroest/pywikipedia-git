@@ -16,8 +16,8 @@ class Family(family.Family):
             'th', 'mk', 'ko', 'id', 'sr', 'fa', 'tl', 'ar', 'gl', 'is', 'no',
             'ta', 'ka', 'lt', 'eo', 'bg', 'ro', 'sk', 'el', 'si', 'la', 'uk',
             'ang', 'ia', 'cv', 'sl', 'mr', 'et', 'az', 'ur', 'ml', 'oc', 'ms',
-            'eu', 'hi', 'fy', 'ie', 'af', 'tg', 'bn', 'hy', 'pa', 'te', 'sa',
-            'bs', 'ky', 'tt', 'be', 'ne', 'ast', 'zh-min-nan', 'mg', 'cy', 'ku',
+            'eu', 'hi', 'fy', 'ie', 'af', 'tg', 'bn', 'hy', 'tt', 'pa', 'te',
+            'sa', 'bs', 'ky', 'be', 'ne', 'ast', 'zh-min-nan', 'mg', 'cy', 'ku',
             'co', 'sw', 'tk', 'als', 'su', 'vo', 'uz', 'na', 'mn', 'kk', 'nds',
             'zu', 'my',
         ]
@@ -177,20 +177,6 @@ class Family(family.Family):
             'zh': [u'Wikibooks talk', u'维基教科书讨论'],
         }
 
-        self.namespaces[100] = {
-            'fr': u'Transwiki',
-            'he': u'שער',
-            'id': u'Resep',
-            'it': u'Progetto',
-            'ja': u'Transwiki',
-            'ml': u'പാചകപുസ്തകം',
-            'ms': u'Resipi',
-            'ro': u'Raft',
-            'ru': u'Полка',
-            'tr': u'Yemek',
-            'uk': u'Полиця',
-        }
-
         self.namespaces[90] = {
             'pt': u'Tópico',
         }
@@ -205,6 +191,20 @@ class Family(family.Family):
 
         self.namespaces[93] = {
             'pt': u'Resumo discussão',
+        }
+
+        self.namespaces[100] = {
+            'fr': u'Transwiki',
+            'he': u'שער',
+            'id': u'Resep',
+            'it': u'Progetto',
+            'ja': u'Transwiki',
+            'ml': u'പാചകപുസ്തകം',
+            'ms': u'Resipi',
+            'ro': u'Raft',
+            'ru': u'Полка',
+            'tr': u'Yemek',
+            'uk': u'Полиця',
         }
 
         self.namespaces[101] = {
