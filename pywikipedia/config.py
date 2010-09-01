@@ -50,7 +50,7 @@ account_global = False
 # exception CaptchaError being thrown if a captcha is encountered.
 solve_captcha = True
 
-# Some sites will require password identication to access the HTML pages at
+# Some sites will require password authentication to access the HTML pages at
 # the site. If you have any such site, add lines to your user-config.py of
 # the following form:
 #
@@ -64,9 +64,7 @@ solve_captcha = True
 # 2. You must use the hostname of the site, not its family/language pair
 authenticate = {}
 
-#
-#    Security Connection for Wikimedia Projects
-#
+#    Secure Connection to all Wikimedia Projects
 SSL_connection = False
     
 # password_file = ".passwd"
@@ -79,21 +77,7 @@ password_file = None
 use_api_login = True
 
 # Enable data recieve from all avalible API.
-
 use_api = True
-
-# Get the names of all known families, and initialize
-# with empty dictionaries
-import wikipediatools as _wt
-_base_dir = _wt.get_base_dir()
-_RfamilyFile = re.compile('(?P<name>.+)_family.py$')
-for _filename in os.listdir(os.path.join(_base_dir, 'families')):
-    _m = _RfamilyFile.match(_filename)
-    if _m:
-        familyName = _m.group('name')
-        usernames[familyName] = {}
-        sysopnames[familyName] = {}
-        disambiguation_comment[familyName] = {}
 
 # Display a warning message if your edits appear in recent changes page
 notify_unflagged_bot = True
@@ -334,9 +318,8 @@ db_password = ''
 # You can signup an API key from http://code.google.com/apis/ajaxsearch/signup.html.
 google_key = ''
 
-
-# using Google AJAX Search API, it require the refer website, this variable save the refer web address
-# when you sign up the Key.
+# using Google AJAX Search API, it requires the referer website, this variable saves the referer web address
+# when you sign up with the key.
 google_api_refer = ''
 
 # Some scripts allow using the Yahoo! Search Web Services. To use this feature,
@@ -355,9 +338,9 @@ flickr = {
     'reviewer': None, # If so, under what reviewer name?
     }
 
-# for all connection proxy handle
+# for all connections: proxy handle
 # to use it, proxy['host'] have to support HTTP and include port number (e.g. localhost:8080)
-# if proxy server neen authentication, set ('ID', 'PASSWORD') to proxy['auth'].
+# if the proxy server needs authentication, set ('ID', 'PASSWORD') to proxy['auth'].
 proxy = {
     'host': None,
     'auth': None,
@@ -371,17 +354,16 @@ copyright_yahoo = True
 copyright_msn = False
 
 # Perform a deep check, loading URLs to search if 'Wikipedia' is present.
-# This may be useful to improve number of correct results. If you haven't
-# a fast connection, you might want to keep they disabled.
+# This may be useful to increase the number of correct results. If you haven't
+# a fast connection, you might want to keep them disabled.
 copyright_check_in_source_google = False
 copyright_check_in_source_yahoo = False
 copyright_check_in_source_msn = False
 
-# Web pages may content a Wikipedia text without 'Wikipedia' word but with
-# typical '[edit]' tag result of copy & paste procedure. You can want no
-# report for this kind of URLs, even if they are copyright violation.
-# However, when enabled these URLs are logged in a file.
-
+# Web pages may contain a Wikipedia text without the word 'Wikipedia' but with the
+# typical '[edit]' tag as a result of a copy & paste procedure. You want no
+# report for this kind of URLs, even if they are copyright violations.
+# However, when enabled, these URLs are logged in a file.
 copyright_check_in_source_section_names = False
 
 # Limit number of queries for page.
@@ -401,7 +383,6 @@ copyright_connection_tries = 10
 #    1 = Disable search engine
 #    2 = Sleep (default)
 #    3 = Stop
-
 copyright_exceeded_in_queries = 2
 copyright_exceeded_in_queries_sleep_hours = 6
 
@@ -411,12 +392,11 @@ copyright_show_date = True
 # Append length of URL to script result
 copyright_show_length = True
 
-# By default the script try to identify and skip text that contents a wide
+# By default the script tries to identify and skip text that contains a large
 # comma separated list or only numbers. But sometimes that might be the
 # only part unmodified of a slightly edited and not otherwise reported
-# copyright violation. You can disable this feature to try to increase
+# copyright violation. You can disable this feature to try to increase the
 # number of results.
-
 copyright_economize_query = True
 
 ############## HTTP SETTINGS ##############
@@ -431,7 +411,6 @@ socket_timeout = 120  # set a pretty long timeout just in case...
 
 
 ############## FURTHER SETTINGS ##############
-
 # The bot can make some additional changes to each page it edits, e.g. fix
 # whitespace or positioning of interwiki and category links.
 
@@ -474,6 +453,19 @@ max_queue_size = 64
 
 # End of configuration section
 # ============================
+
+# Get the names of all known families, and initialize
+# with empty dictionaries
+import wikipediatools as _wt
+_base_dir = _wt.get_base_dir()
+_RfamilyFile = re.compile('(?P<name>.+)_family.py$')
+for _filename in os.listdir(os.path.join(_base_dir, 'families')):
+    _m = _RfamilyFile.match(_filename)
+    if _m:
+        familyName = _m.group('name')
+        usernames[familyName] = {}
+        sysopnames[familyName] = {}
+        disambiguation_comment[familyName] = {}
 # System-level and User-level changes.
 # Store current variables and their types.
 _glv = {}
