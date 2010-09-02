@@ -118,6 +118,7 @@ class Family(family.Family):
             'pt': u'Portal',
             'ru': u'Портал',
             'sv': u'Portal',
+            'ta': u'வலைவாசல்',
             'tr': u'Portal',
             'zh': u'频道',
         }
@@ -136,6 +137,7 @@ class Family(family.Family):
             'pt': u'Portal Discussão',
             'ru': u'Обсуждение портала',
             'sv': u'Portaldiskussion',
+            'ta': u'வலைவாசல் பேச்சு',
             'tr': u'Portal tartışma',
             'zh': u'频道 talk',
         }
