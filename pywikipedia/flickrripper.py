@@ -131,12 +131,11 @@ def getFlinfoDescription(photo_id = 0):
     '''
     parameters = urllib.urlencode({'id' : photo_id, 'raw' : 'on'})
     
-    #print 'Flinfo gaat nu aan de slag'
     rawDescription = urllib.urlopen("http://wikipedia.ramselehof.de/flinfo.php?%s" % parameters).read()
-    #print rawDescription.decode('utf-8')
+    
     return rawDescription.decode('utf-8')
 
-def getFilename(photoInfo=None, site=wikipedia.getSite(u'commons', u'commons')):
+def getFilename(photoInfo=None, site=wikipedia.getSite(u'commons', u'commons'), project=u'Flickr'):
     '''
     Build a good filename for the upload based on the username and the title.
     Prevents naming collisions.
@@ -149,15 +148,15 @@ def getFilename(photoInfo=None, site=wikipedia.getSite(u'commons', u'commons')):
     else:
         title = u''
 
-    if wikipedia.Page(site, u'File:Flickr - %s - %s.jpg' % (username, title) ).exists():
+    if wikipedia.Page(site, u'File:%s - %s - %s.jpg' % (project, username, title) ).exists():
         i = 1
         while True:
-            if (wikipedia.Page(site, u'File:Flickr - %s - %s (%s).jpg' % (username, title, str(i))).exists()):
+            if (wikipedia.Page(site, u'File:%s - %s - %s (%s).jpg' % (project, username, title, str(i))).exists()):
                 i = i + 1
             else:
-                return u'Flickr - %s - %s (%s).jpg' % (username, title, str(i))            
+                return u'%s - %s - %s (%s).jpg' % (project, username, title, str(i))            
     else:
-        return u'Flickr - %s - %s.jpg' % (username, title)
+        return u'%s - %s - %s.jpg' % (project, username, title)
 
 def cleanUpTitle(title):
     '''
