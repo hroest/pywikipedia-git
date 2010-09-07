@@ -3516,12 +3516,14 @@ class ImagePage(Page):
             self._imagePageHtml = self.site().getUrl(path)
         return self._imagePageHtml
 
-    def _loadInfo(self, limit = 1):
+    def _loadInfo(self, limit=1):
         params = {
             'action': 'query',
             'prop': 'imageinfo',
             'titles': self.title(),
-            'iiprop': ['timestamp', 'user', 'comment', 'url', 'size', 'dimensions', 'sha1', 'mime', 'metadata', 'archivename', 'bitdepth'],
+            'iiprop': ['timestamp', 'user', 'comment', 'url', 'size',
+                       'dimensions', 'sha1', 'mime', 'metadata', 'archivename',
+                       'bitdepth'],
             'iilimit': limit,
         }
         try:
@@ -3534,7 +3536,14 @@ class ImagePage(Page):
         if 'error' in data:
             raise RuntimeError("%s" %data['error'])
         count = 0
-        if data['query']['pages'].values()[0]["imagerepository"] == "shared":
+        pageInfo = data['query']['pages'].values()[0]
+        if data['query']['pages'].keys()[0] == "-1":
+            if 'missing' in pageInfo:
+                raise NoPage(self.site(), self.aslink(forceInterwiki=True),
+                             "Page does not exist.")
+            elif 'invalid' in pageInfo:
+                raise BadTitle('BadTitle: %s' % self)
+        if pageInfo["imagerepository"] == "shared":
             self._local = False
         else:
             self._local = True
@@ -3542,7 +3551,7 @@ class ImagePage(Page):
         
         try:
             while True:
-                for info in data['query']['pages'].values()[0]['imageinfo']:
+                for info in pageInfo['imageinfo']:
                     count += 1
                     if count == 1 and 'iistart' not in params: 
                     # count 1 and no iicontinue mean first image revision is latest.
