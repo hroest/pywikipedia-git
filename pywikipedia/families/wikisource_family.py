@@ -132,19 +132,19 @@ class Family(family.Family):
         }
         
         self.namespaces[90] = {
-            'sv': u'Thread',
+            'sv': u'Tråd',
         }
 
         self.namespaces[91] = {
-            'sv': u'Thread talk',
+            'sv': u'Tråddiskussion',
         }
 
         self.namespaces[92] = {
-            'sv': u'Summary',
+            'sv': u'Summering',
         }
 
         self.namespaces[93] = {
-            'sv': u'Summary talk',
+            'sv': u'Summeringsdiskussion',
         }
 
         self.namespaces[100] = {
