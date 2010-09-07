@@ -2244,7 +2244,7 @@ not supported by PyWikipediaBot!"""
                         params['clcontinue'] = datas['query-continue']['categories']['clcontinue']
                 else:
                     allDone = True
-                return cats
+            return cats
 
     def __cmp__(self, other):
         """Test for equality and inequality of Page objects"""
