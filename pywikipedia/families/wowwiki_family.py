@@ -191,7 +191,9 @@ class Family(family.Family):
 
         self.content_id = "article"
 
-        self.disambiguationTemplates['en'] = ['disambig', 'disambig/quest', 'disambig/quest2', 'disambig/achievement2']
+        self.disambiguationTemplates['en'] = ['disambig', 'disambig/quest',
+                                              'disambig/quest2',
+                                              'disambig/achievement2']
         self.disambcatname['en'] = "Disambiguations"
 
     def protocol(self, code):
