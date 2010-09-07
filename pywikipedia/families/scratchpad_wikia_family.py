@@ -12,7 +12,7 @@ class Family(family.Family):
             'fr':'bloc-notes.wikia.com',
             'ja':'ja.scratchpad.wikia.com',
             'zh':'zh.scratchpad.wikia.com',
-            }
+        }
 
         # Most namespaces are inherited from family.Family.
         self.namespaces[1]['fr'] = u'Discuter'
@@ -69,10 +69,10 @@ class Family(family.Family):
         self.namespaces[111] = {
             '_default': u'Forum talk',
         }
-        # A few selected big languages for things that we do not want to loop over
-        # all languages. This is only needed by the titletranslate.py module, so
-        # if you carefully avoid the options, you could get away without these
-        # for another wikimedia family.
+        # A few selected big languages for things that we do not want to loop
+        # over all languages. This is only needed by the titletranslate.py
+        # module, so if you carefully avoid the options, you could get away
+        # without these for another wikimedia family.
 
         self.languages_by_size = ['en','de']
 
