@@ -6264,6 +6264,26 @@ u"""WARNING: Could not open '%s'. Maybe the server or\n your connection is down.
             if not repeat:
                 break
 
+    def wantedcategories(self, number=10, repeat=False):
+        """Yield Category objects from Special:wantedcategories."""
+        import catlib
+        seen = set()
+        while True:
+            path = self.wantedcategories_address(n=number)
+            get_throttle()
+            html = self.getUrl(path)
+            entryR = re.compile(
+                '<li><a href=".+?" class="new" title="(?P<title>.+?) \(page does not exist\)">.+?</a> .+?\)</li>')
+            for m in entryR.finditer(html):
+                title = m.group('title')
+
+                if title not in seen:
+                    seen.add(title)
+                    page = catlib.Category(self, title)
+                    yield page
+            if not repeat:
+                break
+
     def unusedfiles(self, number = 10, repeat = False, extension = None):
         """Yield ImagePage objects from Special:Unusedimages."""
         seen = set()
@@ -6950,6 +6970,10 @@ u"""WARNING: Could not open '%s'. Maybe the server or\n your connection is down.
     def unusedcategories_address(self, n=500):
         """Return path to Special:Unusedcategories."""
         return self.family.unusedcategories_address(self.lang, n)
+
+    def wantedcategories_address(self, n=500):
+        """Return path to Special:Wantedcategories."""
+        return self.family.wantedcategories_address(self.lang, n)
 
     def withoutinterwiki_address(self, n=500):
         """Return path to Special:Withoutinterwiki."""

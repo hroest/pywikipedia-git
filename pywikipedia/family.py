@@ -3825,6 +3825,9 @@ class Family:
     def unusedcategories_address(self, code, limit=500):
         return "%s?title=%s:Unusedcategories&limit=%d&useskin=monobook" % (self.path(code), self.special_namespace_url(code), limit)
 
+    def wantedcategories_address(self, code, limit=500):
+        return "%s?title=%s:wantedcategories&limit=%d&useskin=monobook&uselang=en" % (self.path(code), self.special_namespace_url(code), limit)
+
     def withoutinterwiki_address(self, code, limit=500):
         return "%s?title=%s:Withoutinterwiki&limit=%d&useskin=monobook" % (self.path(code), self.special_namespace_url(code), limit)
 
