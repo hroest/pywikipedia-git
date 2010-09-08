@@ -351,10 +351,10 @@ class CategoryDatabase:
 class AddCategory:
     '''A robot to mass-add a category to a list of pages.'''
 
-    def __init__(self, generator, sort=False, create=False, editSummary='',
-                 dry=False):
+    def __init__(self, generator, sort_by_last_name=False, create=False,
+                 editSummary='', dry=False):
         self.generator = generator
-        self.sort = sort # sort by last name
+        self.sort = sort_by_last_name
         self.create = create
         self.site = pywikibot.getSite()
         self.always = False
@@ -362,7 +362,7 @@ class AddCategory:
         self.newcatTitle = None
         self.editSummary = editSummary
 
-    def sorted_by_last_name(catlink, pagelink):
+    def sorted_by_last_name(self, catlink, pagelink):
             '''Return a Category with key that sorts persons by their last name.
 
             Parameters: catlink - The Category to be linked
