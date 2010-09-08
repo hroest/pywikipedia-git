@@ -1,3 +1,4 @@
+﻿#!/usr/bin/python
 #!/usr/bin/python
 # -*- coding: utf-8 -*-
 """
@@ -580,7 +581,7 @@ class CategoryMoveRobot:
 
         # Delete the old category and its moved talk page
         if copied and self.deleteEmptySourceCat == True:
-            if self.oldCat.isEmpty():
+            if self.oldCat.isEmptyCategory():
                 confirm = not self.batchMode
                 self.oldCat.delete(reason, confirm, mark = True)
                 if oldMovedTalk is not None:
@@ -745,7 +746,7 @@ class CategoryRemoveRobot:
             for subcategory in subcategories:
                 catlib.change_category(subcategory, self.cat, None, comment = self.editSummary, inPlace = self.inPlace)
         # Deletes the category page
-        if self.cat.exists() and self.cat.isEmpty():
+        if self.cat.exists() and self.cat.isEmptyCategory():
             if self.useSummaryForDeletion and self.editSummary:
                 reason = self.editSummary
             else:

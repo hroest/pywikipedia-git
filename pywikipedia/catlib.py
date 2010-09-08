@@ -1,3 +1,4 @@
+﻿#!/usr/bin/python
 #!/usr/bin/python
 # -*- coding: utf-8  -*-
 """
@@ -438,8 +439,8 @@ class Category(wikipedia.Page):
             supercats.append(cat)
         return unique(supercats)
 
-    def isEmpty(self):
-        # TODO: rename; naming conflict with Page.isEmpty
+    def isEmptyCategory(self):
+        """Return True if category has no members (including subcategories)."""
         for tag, title in self._parseCategory():
             return False
         return True
