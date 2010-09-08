@@ -984,7 +984,7 @@ class Family:
                 'mwl': u'Biquipédia cumbersa',
                 'mzn': u'Wikipedia گپ',
                 'nah': u'Huiquipedia tēixnāmiquiliztli',
-                'ne': u'विकिपीडिया talk',
+                'ne': u'विकिपीडिया वार्ता',
                 'nv': u'Wikiibíídiiya baa yáshtiʼ',
                 'rm': u'Wikipedia discussiun',
                 'ro': u'Discuție Wikipedia',
