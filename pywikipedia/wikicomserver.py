@@ -1,7 +1,8 @@
 #!/usr/bin/python
 # -*- coding: utf-8  -*-
 """
-This library allows the use of the pywikipediabot directly from COM-aware applications.
+This library allows the use of the pywikipediabot directly from COM-aware
+applications.
 
 Calling this class from Visual Basic:
     set wiki = CreateObject("Mediawiki.Wiki")
@@ -22,7 +23,8 @@ __version__ = '$Id$'
 
 #
 #
-#   IMPORTANT!!!   Make sure this points to the pywikipedia installation directory
+#   IMPORTANT!!!   Make sure this points to the pywikipedia installation
+#                  directory
 #
 #
 pywikipediaDir = "c:\\Projects\\Personal\\wiki\\pywikipedia"
@@ -66,7 +68,37 @@ class Wiki:
         site = wikipedia.getSite(code, fam, user)
         site.objectVer = wikipedia.__version__
         site.objectName = "WikiSite"
-        site._public_methods_ = ['__cmp__', '__repr__', 'allmessages_address', 'allpages', 'allpages_address', 'ancientpages', 'ancientpages_address', 'broken_redirects_address', 'categories', 'categories_address', 'category_namespace', 'category_namespaces', 'category_on_one_line', 'checkCharset', 'cookies', 'deadendpages', 'deadendpages_address', 'delete_address', 'double_redirects_address', 'edit_address', 'encoding', 'encodings', 'export_address', 'family', 'forceLogin', 'getSite', 'getToken', 'getUrl', 'get_address', 'hostname', 'image_namespace', 'interwiki_putfirst', 'interwiki_putfirst_doubled', 'language', 'languages', 'linkto', 'loggedin', 'login_address', 'lonelypages', 'lonelypages_address', 'longpages', 'longpages_address', 'namespace', 'namespaces', 'newpages', 'newpages_address', 'purge_address', 'putToken', 'put_address', 'redirect', 'redirectRegex', 'references_address', 'shortpages', 'shortpages_address', 'sitename', 'template_namespace', 'uncategorizedcategories', 'uncategorizedcategories_address', 'uncategorizedpages', 'uncategorizedpages_address', 'unusedcategories', 'unusedcategories_address', 'upload_address', 'version', 'watchlist_address']
+        site._public_methods_ = ['__cmp__', '__repr__', 'allmessages_address',
+                                 'allpages', 'allpages_address', 'ancientpages',
+                                 'ancientpages_address',
+                                 'broken_redirects_address', 'categories',
+                                 'categories_address', 'category_namespace',
+                                 'category_namespaces', 'category_on_one_line',
+                                 'checkCharset', 'cookies', 'deadendpages',
+                                 'deadendpages_address', 'delete_address',
+                                 'double_redirects_address', 'edit_address',
+                                 'encoding', 'encodings', 'export_address',
+                                 'family', 'forceLogin', 'getSite', 'getToken',
+                                 'getUrl', 'get_address', 'hostname',
+                                 'image_namespace', 'interwiki_putfirst',
+                                 'interwiki_putfirst_doubled', 'language',
+                                 'languages', 'linkto', 'loggedin',
+                                 'login_address', 'lonelypages',
+                                 'lonelypages_address', 'longpages',
+                                 'longpages_address', 'namespace',
+                                 'namespaces', 'newpages', 'newpages_address',
+                                 'purge_address', 'putToken', 'put_address',
+                                 'redirect', 'redirectRegex',
+                                 'references_address', 'shortpages',
+                                 'shortpages_address', 'sitename',
+                                 'template_namespace',
+                                 'uncategorizedcategories',
+                                 'uncategorizedcategories_address',
+                                 'uncategorizedpages',
+                                 'uncategorizedpages_address',
+                                 'unusedcategories', 'unusedcategories_address',
+                                 'upload_address', 'version',
+                                 'watchlist_address']
         site._public_attrs_ = ['objectVer', 'objectName']
         site._readonly_attrs_ = site._public_attrs_
         return wrap(site, useDispatcher=useDispatcher)
@@ -85,7 +117,18 @@ class WikiPage(wikipedia.Page):
     _reg_clsid_ = "{318CC152-D2A9-4C11-BA01-78B9B91DBDDE}"
     _reg_desc_ = "Mediawiki Wiki Page"
     _reg_progid_ = "Mediawiki.WikiPage"
-    _public_methods_ = ['__cmp__', '__repr__', '__str__', 'aslink', 'autoFormat', 'canBeEdited', 'categories', 'contributingUsers', 'delete', 'encoding', 'exists', 'get', 'getEditPage', 'getRedirectTarget', 'getReferences', 'getVersionHistory', 'getVersionHistoryTable', 'imagelinks', 'interwiki', 'isAutoTitle', 'isCategory', 'isDisambig', 'isEmpty', 'isImage', 'isRedirectPage', 'isTalkPage', 'linkedPages', 'namespace', 'permalink', 'put', 'putPage', 'section', 'sectionFreeTitle', 'site', 'toggleTalkPage', 'templates', 'title', 'titleWithoutNamespace', 'urlname']
+    _public_methods_ = ['__cmp__', '__repr__', '__str__', 'aslink',
+                        'autoFormat', 'canBeEdited', 'categories',
+                        'contributingUsers', 'delete', 'encoding',
+                        'exists', 'get', 'getEditPage', 'getRedirectTarget',
+                        'getReferences', 'getVersionHistory',
+                        'getVersionHistoryTable', 'imagelinks', 'interwiki',
+                        'isAutoTitle', 'isCategory', 'isDisambig', 'isEmpty',
+                        'isImage', 'isRedirectPage', 'isTalkPage',
+                        'linkedPages', 'namespace', 'permalink', 'put',
+                        'putPage', 'section', 'sectionFreeTitle', 'site',
+                        'toggleTalkPage', 'templates', 'title',
+                        'titleWithoutNamespace', 'urlname']
     _public_attrs_ = ['objectVer', 'objectName']
     _readonly_attrs_ = _public_attrs_
 
