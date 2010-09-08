@@ -363,36 +363,36 @@ class AddCategory:
         self.editSummary = editSummary
 
     def sorted_by_last_name(self, catlink, pagelink):
-            '''Return a Category with key that sorts persons by their last name.
+        '''Return a Category with key that sorts persons by their last name.
 
-            Parameters: catlink - The Category to be linked
-                        pagelink - the Page to be placed in the category
+        Parameters: catlink - The Category to be linked
+                    pagelink - the Page to be placed in the category
 
-            Trailing words in brackets will be removed. Example: If
-            category_name is 'Author' and pl is a Page to [[Alexandre Dumas
-            (senior)]], this function will return this Category:
-            [[Category:Author|Dumas, Alexandre]]
+        Trailing words in brackets will be removed. Example: If
+        category_name is 'Author' and pl is a Page to [[Alexandre Dumas
+        (senior)]], this function will return this Category:
+        [[Category:Author|Dumas, Alexandre]]
 
-            '''
-            page_name = pagelink.title()
-            site = pagelink.site()
-            # regular expression that matches a name followed by a space and
-            # disambiguation brackets. Group 1 is the name without the rest.
-            bracketsR = re.compile('(.*) \(.+?\)')
-            match_object = bracketsR.match(page_name)
-            if match_object:
-                page_name = match_object.group(1)
-            split_string = page_name.split(' ')
-            if len(split_string) > 1:
-                # pull last part of the name to the beginning, and append the
-                # rest after a comma; e.g., "John von Neumann" becomes
-                # "Neumann, John von"
-                sorted_key = split_string[-1] + ', ' + \
-                             ' '.join(split_string[:-1])
-                # give explicit sort key
-                return pywikibot.Page(site, catlink.title() + '|' + sorted_key)
-            else:
-                return pywikibot.Page(site, catlink.title())
+        '''
+        page_name = pagelink.title()
+        site = pagelink.site()
+        # regular expression that matches a name followed by a space and
+        # disambiguation brackets. Group 1 is the name without the rest.
+        bracketsR = re.compile('(.*) \(.+?\)')
+        match_object = bracketsR.match(page_name)
+        if match_object:
+            page_name = match_object.group(1)
+        split_string = page_name.split(' ')
+        if len(split_string) > 1:
+            # pull last part of the name to the beginning, and append the
+            # rest after a comma; e.g., "John von Neumann" becomes
+            # "Neumann, John von"
+            sorted_key = split_string[-1] + ', ' + \
+                         ' '.join(split_string[:-1])
+            # give explicit sort key
+            return pywikibot.Page(site, catlink.title() + '|' + sorted_key)
+        else:
+            return pywikibot.Page(site, catlink.title())
 
     def run(self):
         self.newcatTitle = pywikibot.input(
@@ -419,7 +419,7 @@ class AddCategory:
         except pywikibot.NoPage:
             if self.create:
                 pywikibot.output(u"Page %s doesn't exist yet; creating."
-                                 % (page.title()))
+                                 % (page.aslink()))
                 text = ''
             else:
                 pywikibot.output(u"Page %s does not exist; skipping."
@@ -487,12 +487,12 @@ u'Cannot change %s because of spam blacklist entry %s'
         for cat in cats:
             pywikibot.output(u"* %s" % cat.title())
         catpl = pywikibot.Page(self.site, self.newcatTitle, defaultNamespace=14)
-        if self.sort:
-            catpl = self.sorted_by_last_name(catpl, page)
         if catpl in cats:
             pywikibot.output(u"%s is already in %s."
                              % (page.title(), catpl.title()))
         else:
+            if self.sort:
+                catpl = self.sorted_by_last_name(catpl, page)
             pywikibot.output(u'Adding %s' % catpl.aslink())
             cats.append(catpl)
             text = pywikibot.replaceCategoryLinks(text, cats)
