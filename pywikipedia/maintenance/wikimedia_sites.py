@@ -79,8 +79,8 @@ if __name__ == '__main__':
     try:
         fam = []
         for arg in wikipedia.handleArgs():
-            if arg in familiesDict.keys():
-                fam = [arg]
+            if arg in familiesDict.keys() and arg not in fam:
+                fam.append(arg)
         update_family(fam)
     finally:
         wikipedia.stopme()
