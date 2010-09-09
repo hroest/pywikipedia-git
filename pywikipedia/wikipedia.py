@@ -5837,7 +5837,7 @@ u"""WARNING: Could not open '%s'. Maybe the server or\n your connection is down.
                 raise Error
             for c in result['query']['logevents']:
                 if (not namespace or c['ns'] in namespace) and \
-                   not c.has_key('actionhidden'):
+                   not 'actionhidden' in c.keys():
                     if dump:
                         # dump result only.
                         yield c
