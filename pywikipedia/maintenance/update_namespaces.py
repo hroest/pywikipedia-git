@@ -105,24 +105,26 @@ if __name__ == '__main__':
     try:
         update_main_family = False
         update_wikimedia = False
-        families = ['wiktionary', 'wikiquote','wikisource', 
-            'wikibooks', 'wikinews', 'wikiversity','meta', 'commons',
-            'mediawiki', 'species', 'incubator', 'test'
-        ]
+        families = ['wiktionary', 'wikiquote','wikisource', 'wikibooks',
+                    'wikinews', 'wikiversity','meta', 'commons', 'mediawiki',
+                    'species', 'incubator', 'test',
+                    ]
+        fam = []
         for arg in wikipedia.handleArgs():
             if  arg == '-upmain':
                 update_main_family = True
             elif arg == '-wikimedia':
                 update_wikimedia = True
+                fam = families
             elif arg in families:
-                families = [arg]
-                update_wikimedia = False
-            else:
-                families = [wikipedia.default_family]
-
+                if not arg in fam:
+                    fam.append(arg)
+                    update_wikimedia = False
+        if not fam:
+            fam = [wikipedia.default_family]
         if update_wikimedia:
-            check_and_update( ['wikipedia'], True)
+            check_and_update(['wikipedia'], True)
             update_main_family = False
-        check_and_update(families, update_main_family)
+        check_and_update(fam, update_main_family)
     finally:
         wikipedia.stopme()
