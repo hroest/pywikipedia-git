@@ -16,10 +16,6 @@ These command line parameters can be used to specify which pages to work on:
                   or pages-meta-current, see http://download.wikimedia.org).
                   Argument can also be given as "-xml:filename".
 
--page             Only edit a specific page.
-                  Argument can also be given as "-page:pagetitle". You can
-                  give this parameter multiple times to edit multiple pages.
-
 -protectedpages:  Check all the blocked pages; useful when you have not
                   categories or when you have problems with them. (add the
                   namespace after ":" where you want to check - default checks
@@ -69,7 +65,9 @@ __version__ = '$Id$'
 
 import re, webbrowser
 import wikipedia as pywikibot
-import catlib, pagegenerators, config
+import pagegenerators
+import config
+import catlib
 
 # This is required for the text that is shown when you run this script
 # with the parameter -help.
@@ -187,14 +185,17 @@ def understandBlock(text, TTP, TSP, TSMP, TTMP, TU):
             resultCatch = re.findall(catchRegex, text)
             if resultCatch:
                 return ('autoconfirmed-move', catchRegex)
-    return ('editable', r'\A\n') # If editable means that we have no regex, won't change anything with this regex
+    # If editable means that we have no regex, won't change anything with this
+    # regex
+    return ('editable', r'\A\n')
 
 def showQuest(site, page):
     quest = pywikibot.inputChoice(u'Do you want to open the page?',
                                   ['with browser', 'with gui', 'no'],
                                   ['b','g','n'], 'n')
     pathWiki = site.family.nicepath(site.lang)
-    url = 'http://%s%s%s?&redirect=no' % (pywikibot.getSite().hostname(), pathWiki, page.urlname())
+    url = 'http://%s%s%s?&redirect=no' % (pywikibot.getSite().hostname(),
+                                          pathWiki, page.urlname())
     if quest == 'b':
         webbrowser.open(url)
     elif quest == 'g':
@@ -206,14 +207,16 @@ def main():
     """ Main Function """
     # Loading the comments
     global categoryToCheck, comment, project_inserted
-    # always, define a generator to understand if the user sets one, defining what's genFactory
+    # always, define a generator to understand if the user sets one,
+    # defining what's genFactory
     always = False; generator = False; show = False
-    moveBlockCheck = False; genFactory = pagegenerators.GeneratorFactory()
+    moveBlockCheck = False
+    protectedpages = False
+    protectType = 'edit'
+    namespace = 0
+    genFactory = pagegenerators.GeneratorFactory()
     # To prevent Infinite loops
     errorCount = 0
-
-    site = pywikibot.getSite()
-
     # Loading the default options.
     for arg in pywikibot.handleArgs():
         if arg == '-always':
@@ -223,29 +226,23 @@ def main():
         elif arg == '-show':
             show = True
         elif arg.startswith('-protectedpages'):
-            if len(arg) == 15:
-                generator = site.protectedpages(namespace = 0)
-            else:
-                generator = site.protectedpages(namespace = int(arg[16:]))
+            protectedpages = True
+            if len(arg) > 15:
+                namespace = int(arg[16:])
         elif arg.startswith('-moveprotected'):
-            if len(arg) == 14:
-                generator = site.protectedpages(namespace = 0, type = 'move')
-            else:
-                generator = site.protectedpages(namespace = int(arg[16:]),
-                                                type = 'move')
-        elif arg.startswith('-page'):
-            if len(arg) == 5:
-                generator = [pywikibot.Page(site, pywikibot.input(u'What page do you want to use?'))]
-            else:
-                generator = [pywikibot.Page(site, arg[6:])]
+            protectedpages = True
+            protectType = 'move'
+            if len(arg) > 14:
+                namespace = int(arg[15:])
         else:
             genFactory.handleArg(arg)
 
     if config.mylang not in project_inserted:
         pywikibot.output(u"Your project is not supported by this script.\nYou have to edit the script and add it!")
         return
-
-
+    site = pywikibot.getSite()
+    if protectedpages:
+        generator = site.protectedpages(namespace=namespace, type=protectType)
     # Take the right templates to use, the category and the comment
     TSP = pywikibot.translate(site, templateSemiProtection)
     TTP = pywikibot.translate(site, templateTotalProtection)
@@ -293,7 +290,7 @@ def main():
             pywikibot.output("%s is sysop-protected : this account can't edit it! Skipping..." % pagename)
             continue
         """
-        if restrictions.has_key('edit'):
+        if 'edit' in restrictions.keys():
             editRestr = restrictions['edit']
         else:
             editRestr = None
