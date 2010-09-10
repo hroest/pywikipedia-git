@@ -31,6 +31,7 @@ import sys
 comment = {
     'ar': u'صور للاستبعاد',
     'en': u'images for elimination',
+    'fa': u'تصویر استفاده نشده',
     'he': u'תמונות להסרה',
     'it': u'Bot: segnalo immagine orfana da eliminare',
     'pt': u'Bot: marcação de imagens para eliminação',
@@ -42,6 +43,7 @@ template_to_the_image = {
     }
 template_to_the_user = {
     'en': u'\n\n{{img-sem-uso|%s}}',
+    'fa': u'\n\n{{img-sem-uso|%s|~~~~}}',
     'it': u'\n\n{{Utente:Filbot/Immagine orfana}}',
     }
 except_text = {
