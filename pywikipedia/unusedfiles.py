@@ -58,6 +58,7 @@ except_text = {
 #**********************#
 
 def appendtext(page, apptext, always):
+    msg = wikipedia.translate(wikipedia.getSite(), comment)
     try:
         text = page.get()
     except wikipedia.IsRedirectPage:
@@ -67,12 +68,14 @@ def appendtext(page, apptext, always):
     text += apptext;
     if text != page.get():
         wikipedia.showDiff(page.get(),text)
-        choice = wikipedia.inputChoice(u'Do you want to accept these changes?', ['Yes', 'No', 'All'], ['y', 'N', 'a'], 'N')
-        if choice == 'a':
-            always = True
-            choice = 'y'
-        if choice == 'y':
-            msg = wikipedia.translate(wikipedia.getSite(), comment)
+        if not always==True:
+            choice = wikipedia.inputChoice(u'Do you want to accept these changes?', ['Yes', 'No', 'All'], ['y', 'N', 'a'], 'N')
+            if choice == 'a':
+                always = True
+                choice = 'y'
+            if choice == 'y':
+                page.put(text, msg)
+        else:
             page.put(text, msg)
 
 def main():
