@@ -43,7 +43,7 @@ template_to_the_image = {
     }
 template_to_the_user = {
     'en': u'\n\n{{img-sem-uso|%s}}',
-    'fa': u'\n\n{{img-sem-uso|%s|~~~~}}',
+    'fa': u'\n\n{{اخطار به کاربر برای تصاویر بدون استفاده|%s}}--~~~~',
     'it': u'\n\n{{Utente:Filbot/Immagine orfana}}',
     }
 except_text = {
