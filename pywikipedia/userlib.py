@@ -217,7 +217,7 @@ class User(object):
         return False
 
     def sendMailOld(self, subject = u'', text = u'', ccMe = False):
-        addr = self.site().put_address('Special:EmailUser')
+        address = self.site().put_address('Special:EmailUser')
         predata = {
             "wpSubject" : subject,
             "wpText" : text,
