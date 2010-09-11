@@ -12,7 +12,7 @@ class Family(family.Family):
 
         self.languages_by_size = [
             'sr', 'en', 'pl', 'de', 'fr', 'it', 'pt', 'es', 'zh', 'ja', 'sv',
-            'ru', 'fi', 'he', 'cs', 'ta', 'bg', 'ro', 'ar', 'sd', 'hu', 'no',
+            'ru', 'fi', 'he', 'ta', 'cs', 'bg', 'ro', 'ar', 'sd', 'hu', 'no',
             'uk', 'tr', 'ca', 'bs', 'th', 'ko',
         ]
 
@@ -51,6 +51,7 @@ class Family(family.Family):
             'ro': u'Wikiştiri',
             'ru': u'Викиновости',
             'sr': u'Викивести',
+            'ta': u'விக்கிசெய்தி',
             'th': u'วิกิข่าว',
             'tr': u'Vikihaber',
             'uk': u'ВікіНовини',
@@ -81,7 +82,7 @@ class Family(family.Family):
             'sd': u'Wikinews بحث',
             'sr': u'Разговор о Викивестима',
             'sv': u'Wikinewsdiskussion',
-            'ta': u'Wikinews பேச்சு',
+            'ta': u'விக்கிசெய்தி பேச்சு',
             'th': u'คุยเรื่องวิกิข่าว',
             'tr': u'Vikihaber tartışma',
             'uk': u'Обговорення ВікіНовини',
