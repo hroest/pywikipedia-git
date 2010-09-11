@@ -12,7 +12,8 @@ it is doing !
 __version__='$Id$'
 
 import sys, datetime, time, traceback
-import wikipedia, editarticle
+import wikipedia as pywikibot
+import editarticle
 
 __metaclass__ = type
 
@@ -325,27 +326,43 @@ blanking = {
 # do nothing if this is in it
 done = {
     'ar':(u'{{شطب}}', u'{{حذف}}', u'{{خرق}}'),
-    'en':('{{VfD}}', '{{AfD}}', '{{AfD1}}', '{{cleanup}}', '{{nonsense}}', '{{deletedpage}}',
-          '{{db-reason}}', '{{notability}}', '{{not verified}}', '{{unreferenced}}', '{{db-empty}}',
-          '{{db-nocontext}}', '{{db-foreign}}', '{{db-notenglish}}', '{{db-nocontent}}', '{{db-blankcsd}}',
-          '{{db-transwiki}}', '{{db-attack}}', '{{db-band}}', '{{db-club}}', '{{db-bio}}', '{{db-bio-notenglish}}',
-          '{{db-inc}}', '{{db-bio-photo}}', '{{db-catempty}}', '{{db-c2}}', '{{db-catfd}}', '{{badname}}', '{{db-pagemove}}',
-          '{{db-nonsense}}', '{{db-spam}}', '{{db-copyvio}}', '{{db-test}}', '{{db-vandalism}}', '{{db-repost}}', '{{db-banned}}',
-          '{{db-histmerge}}', '{{db-move}}', '{{db-g6}}', '{{db-afd}}', '{{db-disambig}}', '{{db-authora}}', '{{db-author}}',
-          '{{db-blanked}}', '{{csd:g7}}', '{{db-talk}}', '{{db-botnomain}}', '{{db-redundantimage}}', '{{db-noimage}}', '{{db-noncom}}',
-          '{{db-ccnoncom}}', '{{db-unksource}}', '{{db-norat}}', '{{db-badfairuse}}', '{{duplicate}}', '{{db-meta}}',
-          '{{db-emptyportal}}', '{{db-redirnone}}', '{{db-rediruser}}', '{{db-redirtypo}}', '{{csd-c3}}', '{{cc-by-nc-sa}}',
-          '{{cc-nd-nc}}', '{{cc-nc}}', '{{cc-by-nc-2.0}}', '{{cc-by-nc-sa-2.0}}', '{{cc-by-nd-nc-2.0}}', '{{cc-by-2.0-nc-nd}}',
-          '{{cc-by-nc-nd-2.0}}', '{{db-contact}}', '{{db-i2}}', '{{db-i1}}', '{{communityuseonly}}', '{{db-disparage}}', '{{db-web}}',
-          '{{db-userreq}}', '{{db-nouser}}', '{{db-u3}}', '{{db-unfree}}'),
+    'en':('{{VfD}}', '{{AfD}}', '{{AfD1}}', '{{cleanup}}', '{{nonsense}}',
+          '{{deletedpage}}', '{{db-reason}}', '{{notability}}',
+          '{{not verified}}', '{{unreferenced}}', '{{db-empty}}',
+          '{{db-nocontext}}', '{{db-foreign}}', '{{db-notenglish}}',
+          '{{db-nocontent}}', '{{db-blankcsd}}', '{{db-transwiki}}',
+          '{{db-attack}}', '{{db-band}}', '{{db-club}}', '{{db-bio}}',
+          '{{db-bio-notenglish}}', '{{db-inc}}', '{{db-bio-photo}}',
+          '{{db-catempty}}', '{{db-c2}}', '{{db-catfd}}', '{{badname}}',
+          '{{db-pagemove}}', '{{db-nonsense}}', '{{db-spam}}', '{{db-copyvio}}',
+          '{{db-test}}', '{{db-vandalism}}', '{{db-repost}}', '{{db-banned}}',
+          '{{db-histmerge}}', '{{db-move}}', '{{db-g6}}', '{{db-afd}}',
+          '{{db-disambig}}', '{{db-authora}}', '{{db-author}}',
+          '{{db-blanked}}', '{{csd:g7}}', '{{db-talk}}', '{{db-botnomain}}',
+          '{{db-redundantimage}}', '{{db-noimage}}', '{{db-noncom}}',
+          '{{db-ccnoncom}}', '{{db-unksource}}', '{{db-norat}}',
+          '{{db-badfairuse}}', '{{duplicate}}', '{{db-meta}}',
+          '{{db-emptyportal}}', '{{db-redirnone}}', '{{db-rediruser}}',
+          '{{db-redirtypo}}', '{{csd-c3}}', '{{cc-by-nc-sa}}', '{{cc-nd-nc}}',
+          '{{cc-nc}}', '{{cc-by-nc-2.0}}', '{{cc-by-nc-sa-2.0}}',
+          '{{cc-by-nd-nc-2.0}}', '{{cc-by-2.0-nc-nd}}', '{{cc-by-nc-nd-2.0}}',
+          '{{db-contact}}', '{{db-i2}}', '{{db-i1}}', '{{communityuseonly}}',
+          '{{db-disparage}}', '{{db-web}}', '{{db-userreq}}', '{{db-nouser}}',
+          '{{db-u3}}', '{{db-unfree}}'),
     'fr':(u'{{suppression}}', u'{{à vérifier}}', u'{{ébauche}}'),
     'ia':(u'{{Eliminar}}', u'{{Revision}}', u'{{Stub}}'),
     'he':(u'{{מחק}}', u'{{פירושונים}}', u'{{הצבעת מחיקה}}'),
     'nl':('{{nuweg}}', '{{weg}}', '{{wb}}', '{{wiu}}', '{{nocat}}'),
     'pl':('{{ek}}', u'{{dopracować}}', '{{linki}}', u'{{źródła}}', u'{{stub}}'),
-    'pt':('{{wikificar}}', '{{reciclar}}', '{{lixo}}', u'{{revisão}}', u'{{impróprio}}', u'{{apagar vaidade}}'),
-    'sv':(u'{{radera', u'{{Radera', u'{{städa}}', u'{{stub}}', u'{{verifieras}}', u'{{språkvård}}', u'{{Källor', u'{{källor', u'{{wikify}}', u'{{Ickewiki}}', u'{{ickewiki}}', u'{{Wikify}}'),
-    'zh':(u'{{VfD}}',u'{{AfD}}',u'{{unreferenced}}',u'{{db-reason}}',u'{{cleanup}}',u'{{stub}}',u'{{uncategorized}}',u'{{notability}}',u'{{copyedit}}',u'{{unreferenced}}',u'{{wikify}}',u'{{Translating}}',u'{{copyvio}}',u'{{Notchinese}}'),
+    'pt':('{{wikificar}}', '{{reciclar}}', '{{lixo}}', u'{{revisão}}',
+          u'{{impróprio}}', u'{{apagar vaidade}}'),
+    'sv':(u'{{radera', u'{{Radera', u'{{städa}}', u'{{stub}}',
+          u'{{verifieras}}', u'{{språkvård}}', u'{{Källor', u'{{källor',
+          u'{{wikify}}', u'{{Ickewiki}}', u'{{ickewiki}}', u'{{Wikify}}'),
+    'zh':(u'{{VfD}}', u'{{AfD}}', u'{{unreferenced}}', u'{{db-reason}}',
+          u'{{cleanup}}', u'{{stub}}', u'{{uncategorized}}', u'{{notability}}',
+          u'{{copyedit}}', u'{{unreferenced}}', u'{{wikify}}',
+          u'{{Translating}}',u'{{copyvio}}',u'{{Notchinese}}'),
     }
 
 # TODO: merge 'done' with 'templates' above
@@ -362,9 +379,9 @@ class PageHandler:
 
     # Display informations about an article
     def showpageinfo(self):
-        wikipedia.output(u'[[%s]] %s ' % (self.page.title(), self.date))
+        pywikibot.output(u'[[%s]] %s ' % (self.page.title(), self.date))
         print 'Length: %i bytes' % self.length
-        wikipedia.output(u'User  : %s' % self.user)
+        pywikibot.output(u'User  : %s' % self.user)
 
     def couldbebad(self):
         return self.length < 250 or not self.loggedIn
@@ -372,30 +389,32 @@ class PageHandler:
     def handlebadpage(self):
         try:
             self.content = self.page.get()
-        except wikipedia.IsRedirectPage:
-            wikipedia.output(u'Already redirected, skipping.')
+        except pywikibot.IsRedirectPage:
+            pywikibot.output(u'Already redirected, skipping.')
             return
-        except wikipedia.NoPage:
-            wikipedia.output(u'Already deleted')
+        except pywikibot.NoPage:
+            pywikibot.output(u'Already deleted')
             return
 
-        for d in wikipedia.translate(wikipedia.getSite(), done):
+        for d in pywikibot.translate(pywikibot.getSite(), done):
             if d in self.content:
-                wikipedia.output(u'Found: "%s" in content, nothing necessary'%d)
+                pywikibot.output(
+                    u'Found: "%s" in content, nothing necessary' % d)
                 return
         print "---- Start content ----------------"
-        wikipedia.output(u""+self.content)
+        pywikibot.output(u"%s" % self.content)
         print "---- End of content ---------------"
 
         # Loop other user answer
         answered = False
         while not answered:
-            answer = wikipedia.input(question)
+            answer = pywikibot.input(question)
 
             if answer == 'q':
                 sys.exit("Exiting")
             if answer == 'd':
-                wikipedia.output(u'Trying to delete page [[%s]].' % self.page.title())
+                pywikibot.output(u'Trying to delete page [[%s]].'
+                                 % self.page.title())
                 self.page.delete()
                 return
             if answer == 'e':
@@ -404,14 +423,17 @@ class PageHandler:
                 editor = editarticle.TextEditor()
                 text = editor.edit(self.page.get())
                 if oldText != text:
-                    wikipedia.showDiff(oldText, text)
-                    msg = wikipedia.input(u'Summary message:')
+                    pywikibot.showDiff(oldText, text)
+                    msg = pywikibot.input(u'Summary message:')
                     self.page.put(text, msg)
                 return
             if answer == 'b':
-                wikipedia.output(u'Blanking page [[%s]].' % self.page.title())
+                pywikibot.output(u'Blanking page [[%s]].' % self.page.title())
                 try:
-                    self.page.put('', comment = wikipedia.translate(wikipedia.getSite(), blanking) % self.content )
+                    self.page.put('',
+                                  comment=pywikibot.translate(
+                                      pywikibot.getSite(), blanking)
+                                  % self.content)
                 except EditConflict:
                     print "An edit conflict occured ! Automatically retrying"
                     handlebadpage(self)
@@ -426,14 +448,14 @@ class PageHandler:
                     choices=answer[1:].split(',')
                 except ValueError:
                     # User entered wrong value
-                    wikipedia.output(u'ERROR: "%s" is not valid' % answer)
+                    pywikibot.output(u'ERROR: "%s" is not valid' % answer)
                     continue
             else:
                 try:
                     choices=answer.split(',')
                 except ValueError:
                     # User entered wrong value
-                    wikipedia.output(u'ERROR: "%s" is not valid' % answer)
+                    pywikibot.output(u'ERROR: "%s" is not valid' % answer)
                     continue
             #test input
             for choice in choices:
@@ -444,27 +466,30 @@ class PageHandler:
                 else:
                     answered=x in range(1,len(questionlist)+1)
             if not answered:
-                wikipedia.output(u'ERROR: "%s" is not valid' % answer)
+                pywikibot.output(u'ERROR: "%s" is not valid' % answer)
                 continue
         summary = u''
         for choice in choices:
             answer = int(choice)
             # grab the template parameters
-            tpl = wikipedia.translate(wikipedia.getSite(), templates)[questionlist[answer]]
+            tpl = pywikibot.translate(pywikibot.getSite(), templates) \
+                  [questionlist[answer]]
             if tpl['pos'] == 'top':
-                wikipedia.output(u'prepending %s...' % questionlist[answer])
+                pywikibot.output(u'prepending %s...' % questionlist[answer])
                 self.content = questionlist[answer] + '\n' + self.content
             elif tpl['pos'] == 'bottom':
-                wikipedia.output(u'appending %s...' % questionlist[answer])
+                pywikibot.output(u'appending %s...' % questionlist[answer])
                 self.content += '\n' + questionlist[answer]
             else:
-                wikipedia.output(u'ERROR: "pos" should be "top" or "bottom" for template %s. Contact a developer.' % questionlist[answer])
+                pywikibot.output(
+                    u'ERROR: "pos" should be "top" or "bottom" for template %s. Contact a developer.'
+                    % questionlist[answer])
                 sys.exit("Exiting")
             summary += tpl['msg']+' '
-            wikipedia.output(u'Probably added %s' % questionlist[answer])
-#        wikipedia.output(newcontent) bug #2986247
+            pywikibot.output(u'Probably added %s' % questionlist[answer])
+#        pywikibot.output(newcontent) bug #2986247
         self.page.put(self.content, comment = summary)
-        wikipedia.output(u'with comment %s\n' % summary)
+        pywikibot.output(u'with comment %s\n' % summary)
 
     def run(self):
         self.showpageinfo()
@@ -472,7 +497,7 @@ class PageHandler:
             print 'Integrity of page doubtful...'
             try:
                 self.handlebadpage()
-            except wikipedia.NoPage:
+            except pywikibot.NoPage:
                 print 'seems already gone'
         print '----- Current time:', datetime.datetime.now()
 
@@ -480,19 +505,21 @@ class PageHandler:
 class CleaningBot:
     def __init__(self, site=None):
         if site is None:
-            site = wikipedia.getSite()
+            site = pywikibot.getSite()
         self.site = site
 
     def run(self):
-        for (page, date, length, loggedIn, username, comment) in wikipedia.getSite().newpages(100, repeat = True):
-            handler = PageHandler(page, date, length, loggedIn, username, comment)
+        for (page, date, length, loggedIn, username, comment) in \
+                self.site.newpages(100, repeat=True):
+            handler = PageHandler(page, date, length, loggedIn, username,
+                                  comment)
             handler.run()
 
 # Generate the question text
 i = 0
 questions = '\n'
 questionlist = {}
-for t in wikipedia.translate(wikipedia.getSite(), templates):
+for t in pywikibot.translate(pywikibot.getSite(), templates):
     i+=1
     questions += ( u'%s) %s\n' % (i,t) )
     questionlist[i] = t
@@ -501,10 +528,11 @@ question = questions + question
 # MAIN
 if __name__ == "__main__":
     try:
-        for arg in wikipedia.handleArgs():
-            wikipedia.output(u'Warning: argument "%s" not understood; ignoring.' % arg)
+        for arg in pywikibot.handleArgs():
+            pywikibot.output(
+                u'Warning: argument "%s" not understood; ignoring.' % arg)
         bot = CleaningBot()
         bot.run()
     except:
-        wikipedia.stopme()
+        pywikibot.stopme()
         raise
