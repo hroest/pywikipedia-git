@@ -72,10 +72,12 @@ Known issues/FIXMEs (no critical issues known):
 # (C) Wikipedian, Keichwa, Leogregianin, Rikwade, Misza13 2003-2007
 #
 # New bot by:
-# (C) Kyle/Orgullomoore, Siebrand Mazeland 2007
+# (C) Kyle/Orgullomoore, Siebrand Mazeland 2007-2008
 #
 # Another rewrite by:
-#  (C) Multichill 2008
+#  (C) Multichill 2008-2010
+#
+# (C) Pywikipedia bot team, 2003-2010
 #
 # Distributed under the terms of the MIT license.
 #
@@ -87,7 +89,8 @@ import os, sys, re, codecs
 import urllib, httplib, urllib2
 import webbrowser
 import time, threading
-import wikipedia, config, socket
+import wikipedia as pywikibot
+import config, socket
 import pagegenerators, add_text
 from upload import *
 from image import *
@@ -242,9 +245,9 @@ def pageTextPost(url,parameters):
             data = commonsHelperPage.read().decode('utf-8')
             gotInfo = True;
         except IOError:
-            wikipedia.output(u'Got an IOError, let\'s try again')
+            pywikibot.output(u'Got an IOError, let\'s try again')
         except socket.timeout:
-            wikipedia.output(u'Got a timeout, let\'s try again')
+            pywikibot.output(u'Got a timeout, let\'s try again')
     return data
     
 class imageTransfer (threading.Thread):
@@ -276,7 +279,7 @@ class imageTransfer (threading.Thread):
         CH=CH.split('<textarea '+tablock+'>')[1].split('</textarea>')[0]
         CH=CH.replace(u'&times;', u'×')
         CH = self.fixAuthor(CH)
-        wikipedia.output(CH);        
+        pywikibot.output(CH);        
 
         # I want every picture to be tagged with the bottemplate so i can check my contributions later.
         CH=u'\n\n{{BotMoveToCommons|'+ self.imagePage.site().language() + '.' + self.imagePage.site().family.name +'|year={{subst:CURRENTYEAR}}|month={{subst:CURRENTMONTHNAME}}|day={{subst:CURRENTDAY}}}}' + CH
@@ -285,11 +288,11 @@ class imageTransfer (threading.Thread):
             CH = CH.replace(u'{{subst:Unc}} <!-- Remove this line once you have added categories -->', u'')
             CH = CH + u'[[Category:' + self.category + u']]'
         
-        bot = UploadRobot(url=self.imagePage.fileUrl(), description=CH, useFilename=self.newname, keepFilename=True, verifyDescription=False, ignoreWarning = True, targetSite = wikipedia.getSite('commons', 'commons'))
+        bot = UploadRobot(url=self.imagePage.fileUrl(), description=CH, useFilename=self.newname, keepFilename=True, verifyDescription=False, ignoreWarning = True, targetSite = pywikibot.getSite('commons', 'commons'))
         bot.run()
 
         #Should check if the image actually was uploaded
-        if wikipedia.Page(wikipedia.getSite('commons', 'commons'), u'Image:' + self.newname).exists():
+        if pywikibot.Page(pywikibot.getSite('commons', 'commons'), u'Image:' + self.newname).exists():
             #Get a fresh copy, force to get the page so we dont run into edit conflicts
             imtxt=self.imagePage.get(force=True)
 
@@ -309,7 +312,7 @@ class imageTransfer (threading.Thread):
             else:
                 commentText = nowCommonsMessage['_default']
 
-            wikipedia.showDiff(self.imagePage.get(), imtxt+addTemplate)
+            pywikibot.showDiff(self.imagePage.get(), imtxt+addTemplate)
             self.imagePage.put(imtxt + addTemplate, comment = commentText)
 
             self.gen = pagegenerators.FileLinksGenerator(self.imagePage)
@@ -349,7 +352,7 @@ class imageTransfer (threading.Thread):
 
 #-label ok skip view
 #textarea
-archivo=wikipedia.config.datafilepath("Uploadbot.localskips.txt")
+archivo=pywikibot.config.datafilepath("Uploadbot.localskips.txt")
 try:
     open(archivo, 'r')
 except IOError:
@@ -476,7 +479,7 @@ def main(args):
     # Load a lot of default generators
     genFactory = pagegenerators.GeneratorFactory()
 
-    for arg in wikipedia.handleArgs():
+    for arg in pywikibot.handleArgs():
         if arg == '-always':
             always = True
         elif arg.startswith('-cc:'):
@@ -493,11 +496,11 @@ def main(args):
     for page in pregenerator:
         skip = False
         if page.exists() and (page.namespace() == 6) and (not page.isRedirectPage()) :
-            imagepage = wikipedia.ImagePage(page.site(), page.title())
+            imagepage = pywikibot.ImagePage(page.site(), page.title())
 
             #First do autoskip.
             if doiskip(imagepage.get()):
-                wikipedia.output("Skipping " + page.title())
+                pywikibot.output("Skipping " + page.title())
                 skip = True
             else:
                 # The first upload is last in the list.
@@ -508,7 +511,7 @@ def main(args):
                     (datetime, username, resolution, size, comment) = imagepage.getFileVersionHistory().pop()
                 if always:
                     newname=imagepage.titleWithoutNamespace()
-                    CommonsPage=wikipedia.Page(wikipedia.getSite('commons', 'commons'), u'File:'+newname)
+                    CommonsPage=pywikibot.Page(pywikibot.getSite('commons', 'commons'), u'File:'+newname)
                     if CommonsPage.exists():
                         skip = True
                 else:
@@ -518,7 +521,7 @@ def main(args):
                         (newname, skip)=Tkdialog(imagepage.titleWithoutNamespace(), imagepage.get(), username, imagepage.permalink(), imagepage.templates()).getnewname()
 
                         if skip:
-                            wikipedia.output('Skipping this image')
+                            pywikibot.output('Skipping this image')
                             break
 
                         # Did we enter a new name?
@@ -529,26 +532,26 @@ def main(args):
                             newname = newname.decode('utf-8')
                         
                         # Check if the image already exists
-                        CommonsPage=wikipedia.Page(
-                                       wikipedia.getSite('commons', 'commons'),
+                        CommonsPage=pywikibot.Page(
+                                       pywikibot.getSite('commons', 'commons'),
                                        u'File:'+newname)
                         if not CommonsPage.exists():
                             break
                         else:
-                            wikipedia.output('Image already exists, pick another name or skip this image')
+                            pywikibot.output('Image already exists, pick another name or skip this image')
                         # We dont overwrite images, pick another name, go to the start of the loop
 
             if not skip:
                 imageTransfer(imagepage, newname, category).start()
 
-    wikipedia.output(u'Still ' + str(threading.activeCount()) + u' active threads, lets wait')
+    pywikibot.output(u'Still ' + str(threading.activeCount()) + u' active threads, lets wait')
     for openthread in threading.enumerate():
         if openthread != threading.currentThread():
             openthread.join()
-    wikipedia.output(u'All threads are done')
+    pywikibot.output(u'All threads are done')
 
 if __name__ == "__main__":
     try:
         main(sys.argv[1:])
     finally:
-        wikipedia.stopme()
+        pywikibot.stopme()

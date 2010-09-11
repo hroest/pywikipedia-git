@@ -1,8 +1,10 @@
 # -*- coding: utf-8 -*-
 """
-Script to copy self published files from the English Wikipedia to Wikimedia Commons.
+Script to copy self published files from the English Wikipedia to Wikimedia
+Commons.
 
-This bot is based on imagecopy.py and intended to be used to empty out http://en.wikipedia.org/wiki/Category:Self-published_work
+This bot is based on imagecopy.py and intended to be used to empty out
+http://en.wikipedia.org/wiki/Category:Self-published_work
 
 This bot uses a graphical interface and may not work from commandline
 only environment.
@@ -21,10 +23,12 @@ By default the bot works on your home wiki (set in user-config)
 
 This is a first test version and should be used with care.
 
-Use -nochecktemplate if you don't want to add the check template. Be sure to check it yourself.
+Use -nochecktemplate if you don't want to add the check template. Be sure to
+check it yourself.
 
 Todo:
-*Queues with threads have to be implemented for the information collecting part and for the upload part.
+*Queues with threads have to be implemented for the information collecting part
+ and for the upload part.
 *Categories are now on a single line. Something like hotcat would be nice.
 
 """
@@ -42,6 +46,8 @@ Todo:
 # English Wikipedia specific bot by:
 #  (C) Multichill 2010
 #
+# (C) Pywikipedia bot team, 2003-2010
+#
 # Distributed under the terms of the MIT license.
 #
 __version__='$Id$'
@@ -53,7 +59,8 @@ import urllib, httplib, urllib2
 import webbrowser
 from Queue import Queue
 import time, threading
-import wikipedia, config, socket
+import wikipedia as pywikibot
+import config, socket
 import pagegenerators, add_text
 import imagerecat
 from datetime import datetime
@@ -154,23 +161,28 @@ class Tkdialog:
         self.categories = categories
         self.skip = False
 
-        self.old_description_label=Label(self.root,text=u'The old description was : ')
-        self.new_description_label=Label(self.root,text=u'The new fields are : ')
-        self.filename_label=Label(self.root,text=u'Filename : ')
-        self.information_description_label=Label(self.root,text=u'Description : ')
-        self.information_date_label=Label(self.root,text=u'Date : ')
-        self.information_source_label=Label(self.root,text=u'Source : ')
-        self.information_author_label=Label(self.root,text=u'Author : ')
-        self.information_licensetemplate_label=Label(self.root,text=u'License : ')
-        self.information_categories_label=Label(self.root,text=u'Categories : ')
+        self.old_description_label = Label(self.root,
+                                           text=u'The old description was : ')
+        self.new_description_label = Label(self.root,
+                                           text=u'The new fields are : ')
+        self.filename_label = Label(self.root, text=u'Filename : ')
+        self.information_description_label = Label(self.root,
+                                                   text=u'Description : ')
+        self.information_date_label = Label(self.root, text=u'Date : ')
+        self.information_source_label = Label(self.root, text=u'Source : ')
+        self.information_author_label = Label(self.root, text=u'Author : ')
+        self.information_licensetemplate_label = Label(self.root,
+                                                       text=u'License : ')
+        self.information_categories_label = Label(self.root,
+                                                  text=u'Categories : ')
 
-        self.filename_field=Entry(self.root)
-        self.information_description=Entry(self.root)
-        self.information_date=Entry(self.root)
-        self.information_source=Entry(self.root)
-        self.information_author=Entry(self.root)
-        self.information_licensetemplate=Entry(self.root)
-        self.information_categories=Entry(self.root)
+        self.filename_field = Entry(self.root)
+        self.information_description = Entry(self.root)
+        self.information_date = Entry(self.root)
+        self.information_source = Entry(self.root)
+        self.information_author = Entry(self.root)
+        self.information_licensetemplate = Entry(self.root)
+        self.information_categories = Entry(self.root)
 
         self.field_width=120
 
@@ -191,7 +203,8 @@ class Tkdialog:
         self.information_licensetemplate.insert(0, self.licensetemplate)
         self.information_categories.insert(0, self.categories)
 
-        self.browserButton=Button(self.root, text='View in browser', command=self.openInBrowser)
+        self.browserButton=Button(self.root, text='View in browser',
+                                  command=self.openInBrowser)
         self.skipButton=Button(self.root, text="Skip", command=self.skipFile)
         self.okButton=Button(self.root, text="OK", command=self.okFile)
 
@@ -265,7 +278,8 @@ class Tkdialog:
         Activate the dialog and return the new name and if the image is skipped.
         '''
         self.root.mainloop()
-        return (self.filename, self.description, self.date, self.source, self.author, self.licensetemplate, self.categories, self.skip)
+        return (self.filename, self.description, self.date, self.source,
+                self.author, self.licensetemplate, self.categories, self.skip)
 
 
 class imageFetcher(threading.Thread):
@@ -282,19 +296,22 @@ class imageFetcher(threading.Thread):
         for page in self.pagegenerator:
             self.processImage(page)
         self.prefetchQueue.put(None)
-        wikipedia.output(u'Fetched all images.')
+        pywikibot.output(u'Fetched all images.')
         return True
 
     def processImage(self, page):
         '''
         Work on a single image
         '''
-        if page.exists() and (page.namespace() == 6) and (not page.isRedirectPage()):
-            imagepage = wikipedia.ImagePage(page.site(), page.title())
+        if page.exists() and (page.namespace() == 6) and \
+           (not page.isRedirectPage()):
+            imagepage = pywikibot.ImagePage(page.site(), page.title())
 
             #First do autoskip.
             if self.doiskip(imagepage):
-                wikipedia.output(u'Skipping %s : Got a template on the skip list.' % page.title())
+                pywikibot.output(
+                    u'Skipping %s : Got a template on the skip list.'
+                    % page.title())
                 return False
             
             text = imagepage.get()
@@ -304,7 +321,9 @@ class imageFetcher(threading.Thread):
                 if match:
                     foundMatch = True
             if not foundMatch:
-                wikipedia.output(u'Skipping %s : No suitable license template was found.' % page.title())
+                pywikibot.output(
+                    u'Skipping %s : No suitable license template was found.'
+                    % page.title())
                 return False
             self.prefetchQueue.put(self.getNewFields(imagepage))
 
@@ -315,7 +334,8 @@ class imageFetcher(threading.Thread):
         '''
         for template in imagepage.templates():
             if template in skipTemplates:
-                wikipedia.output(u'Found ' + template + u' which is on the template skip list')
+                pywikibot.output(
+                    u'Found %s which is on the template skip list' % template)
                 return True
         return False
 
@@ -345,7 +365,6 @@ class imageFetcher(threading.Thread):
         author = u''
         permission = u''
         other_versions = u''
-
         contents = {}
 
         for field in fields:
@@ -414,7 +433,7 @@ class imageFetcher(threading.Thread):
         for (regex, repl) in licenseTemplates:
             text = re.sub(regex, u'', text, re.IGNORECASE)
 
-        text = wikipedia.removeCategoryLinks(text, imagepage.site()).strip()
+        text = pywikibot.removeCategoryLinks(text, imagepage.site()).strip()
             
         description = self.convertLinks(text.strip(), imagepage.site())
         date = self.getUploadDate(imagepage)
@@ -525,7 +544,7 @@ class userInteraction(threading.Thread):
             else:
                 break
         self.uploadQueue.put(None)
-        wikipedia.output(u'User worked on all images.')
+        pywikibot.output(u'User worked on all images.')
         return True
             
     def processImage(self, fields):
@@ -538,15 +557,15 @@ class userInteraction(threading.Thread):
             (filename, description, date, source, author, licensetemplate, categories, skip)=Tkdialog(imagepage, description, date, source, author, licensetemplate, categories).getnewmetadata()
 
             if skip:
-                wikipedia.output(u'Skipping %s : User pressed skip.' % imagepage.title())
+                pywikibot.output(u'Skipping %s : User pressed skip.' % imagepage.title())
                 return False
                    
             # Check if the image already exists
-            CommonsPage=wikipedia.Page(wikipedia.getSite('commons', 'commons'), u'File:' + filename)
+            CommonsPage=pywikibot.Page(pywikibot.getSite('commons', 'commons'), u'File:' + filename)
             if not CommonsPage.exists():
                 break
             else:
-                wikipedia.output('Image already exists, pick another name or skip this image')
+                pywikibot.output('Image already exists, pick another name or skip this image')
                 # We dont overwrite images, pick another name, go to the start of the loop
 
         self.uploadQueue.put((imagepage, filename, description, date, source, author, licensetemplate, categories))
@@ -583,8 +602,8 @@ class uploader(threading.Thread):
         '''
         (imagepage, filename, description, date, source, author, licensetemplate, categories) = fields
         cid = self.buildNewImageDescription(imagepage, description, date, source, author, licensetemplate, categories)
-        wikipedia.output(cid)
-        bot = UploadRobot(url=imagepage.fileUrl(), description=cid, useFilename=filename, keepFilename=True, verifyDescription=False, ignoreWarning = True, targetSite = wikipedia.getSite('commons', 'commons'))
+        pywikibot.output(cid)
+        bot = UploadRobot(url=imagepage.fileUrl(), description=cid, useFilename=filename, keepFilename=True, verifyDescription=False, ignoreWarning = True, targetSite = pywikibot.getSite('commons', 'commons'))
         bot.run()
         
         self.tagNowcommons(imagepage, filename)
@@ -656,7 +675,7 @@ class uploader(threading.Thread):
         '''
         Tagged the imag which has been moved to Commons for deletion.
         '''
-        if wikipedia.Page(wikipedia.getSite('commons', 'commons'), u'File:' + filename).exists():
+        if pywikibot.Page(pywikibot.getSite('commons', 'commons'), u'File:' + filename).exists():
             #Get a fresh copy, force to get the page so we dont run into edit conflicts
             imtxt=imagepage.get(force=True)
 
@@ -676,7 +695,7 @@ class uploader(threading.Thread):
             else:
                 commentText = nowCommonsMessage['_default']
 
-            wikipedia.showDiff(imagepage.get(), imtxt + addTemplate)
+            pywikibot.showDiff(imagepage.get(), imtxt + addTemplate)
             imagepage.put(imtxt + addTemplate, comment = commentText)
 
     def replaceUsage(self, imagepage, filename):
@@ -696,10 +715,10 @@ class uploader(threading.Thread):
     
 
 def main(args):
-    wikipedia.output(u'WARNING: This is an experimental bot')
-    wikipedia.output(u'WARNING: It will only work on self published work images')
-    wikipedia.output(u'WARNING: This bot is still full of bugs')
-    wikipedia.output(u'WARNING: Use at your own risk!')
+    pywikibot.output(u'WARNING: This is an experimental bot')
+    pywikibot.output(u'WARNING: It will only work on self published work images')
+    pywikibot.output(u'WARNING: This bot is still full of bugs')
+    pywikibot.output(u'WARNING: Use at your own risk!')
 
     generator = None;
     always = False
@@ -708,7 +727,7 @@ def main(args):
     # Load a lot of default generators
     genFactory = pagegenerators.GeneratorFactory()
 
-    for arg in wikipedia.handleArgs():
+    for arg in pywikibot.handleArgs():
         if arg == '-nochecktemplate':
             checkTemplate = False
         else:
@@ -743,4 +762,4 @@ if __name__ == "__main__":
     try:
         main(sys.argv[1:])
     finally:
-        wikipedia.stopme()
+        pywikibot.stopme()
