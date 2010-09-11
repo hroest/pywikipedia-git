@@ -84,14 +84,16 @@ You can include also the text to examine directly on the command line:
 
 from __future__ import generators
 import re, codecs, os, time, urllib, urllib2, httplib
-import wikipedia, pagegenerators, config
+import wikipedia as pywikibot
+import pagegenerators, config
 
 __version__='$Id$'
 
 # Search keywords added to all the queries.
 no_result_with_those_words = '-Wikipedia'
 
-# Performing a search engine query if string length is greater than the given value.
+# Performing a search engine query if string length is greater than the given
+# value.
 min_query_string_len = 120
 
 # Split the text into strings of a specified number of words.
@@ -121,10 +123,11 @@ warn_color = 'lightyellow'
 error_color = 'lightred'
 
 appdir = "copyright"
-output_file = wikipedia.config.datafilepath(appdir, "output.txt")
+output_file = pywikibot.config.datafilepath(appdir, "output.txt")
 
 pages_for_exclusion_database = [
-    ('it', 'Wikipedia:Sospette violazioni di copyright/Lista di esclusione', 'exclusion_list.txt'),
+    ('it', 'Wikipedia:Sospette violazioni di copyright/Lista di esclusione',
+           'exclusion_list.txt'),
     ('en', 'Wikipedia:Mirrors_and_forks/Abc', 'Abc.txt'),
     ('en', 'Wikipedia:Mirrors_and_forks/Def', 'Def.txt'),
     ('en', 'Wikipedia:Mirrors_and_forks/Ghi', 'Ghi.txt'),
@@ -273,9 +276,9 @@ else:
 
 def _output(text, prefix = None, color = ''):
     if prefix:
-        wikipedia.output('%s%s: %s%s' % (color, prefix, default_color, text))
+        pywikibot.output('%s%s: %s%s' % (color, prefix, default_color, text))
     else:
-        wikipedia.output('%s%s' % (color, text))
+        pywikibot.output('%s%s' % (color, text))
 
 def warn(text, prefix = None):
     _output(text, prefix = prefix, color = warn_color)
@@ -284,7 +287,7 @@ def error(text ,prefix = None):
     _output(text, prefix = prefix, color = error_color)
 
 def skip_section(text):
-    sect_titles = '|'.join(sections_to_skip[wikipedia.getSite().lang])
+    sect_titles = '|'.join(sections_to_skip[pywikibot.getSite().lang])
     sectC = re.compile('(?mi)^==\s*(' + sect_titles + ')\s*==')
     while True:
         newtext = cut_section(text, sectC)
@@ -311,9 +314,9 @@ class URLExclusion:
 
     def pages_list(self):
         for i in pages_for_exclusion_database:
-            path = wikipedia.config.datafilepath(appdir, i[0], i[2])
-            wikipedia.config.makepath(path)
-            page = wikipedia.Page(wikipedia.getSite(i[0]), i[1])
+            path = pywikibot.config.datafilepath(appdir, i[0], i[2])
+            pywikibot.config.makepath(path)
+            page = pywikibot.Page(pywikibot.getSite(i[0]), i[1])
             yield page, path
 
     def download(self, force_update = False):
@@ -321,14 +324,14 @@ class URLExclusion:
             download = force_update
             try:
                 if not os.path.exists(path):
-                    print 'Creating file \'%s\' (%s)' % (wikipedia.config.shortpath(path),
+                    print 'Creating file \'%s\' (%s)' % (pywikibot.config.shortpath(path),
                                                          page.aslink())
                     download = True
                 else:
                     file_age = time.time() - os.path.getmtime(path)
                     if download or file_age > 24 * 60 * 60:
                         print 'Updating file \'%s\' (%s)' % (
-                        wikipedia.config.shortpath(path), page.aslink())
+                        pywikibot.config.shortpath(path), page.aslink())
                         download = True
             except OSError:
                 raise
@@ -339,7 +342,7 @@ class URLExclusion:
                     data = page.get()
                 except KeyboardInterrupt:
                     raise
-                except wikipedia.IsRedirectPage:
+                except pywikibot.IsRedirectPage:
                     data = page.getRedirectTarget().get()
                 except:
                     error('Getting page failed')
@@ -402,7 +405,7 @@ class URLExclusion:
                     result_list.append(entry)
 
         result_list += read_file(
-                            wikipedia.config.datafilepath(appdir, 'exclusion_list.txt'),
+                            pywikibot.config.datafilepath(appdir, 'exclusion_list.txt'),
                             cut_comment = True, cut_newlines = True
                        ).splitlines()
 
@@ -418,7 +421,7 @@ class URLExclusion:
                 print "** " + entry
 
     def dump(self):
-        f = open(wikipedia.config.datafilepath(appdir, 'exclusion_list.dump'), 'w')
+        f = open(pywikibot.config.datafilepath(appdir, 'exclusion_list.dump'), 'w')
         f.write('\n'.join(self.URLlist))
         f.close()
         print "Exclusion list dump saved."
@@ -472,7 +475,7 @@ def economize_query(text):
 # 'Wikipedia'.
 
 def join_family_data(reString, namespace):
-    for s in wikipedia.Family().namespaces[namespace].itervalues():
+    for s in pywikibot.Family().namespaces[namespace].itervalues():
         if type (s) == list:
             for e in s:
                 reString += '|' + e
@@ -858,7 +861,7 @@ class SearchEngine:
         return result_list
 
     def print_stats(self):
-        wikipedia.output('\n'
+        pywikibot.output('\n'
                          'Search engine | number of queries\n'
                          '---------------------------------\n'
                          'Google        | %s\n'
@@ -876,6 +879,7 @@ class NoWebPage(Exception):
 class URL_exclusion(Exception):
     """URL in exclusion list"""
 
+
 class WebPage(object):
     """
     """
@@ -890,7 +894,7 @@ class WebPage(object):
         self._url = url
 
         try:
-            self._urldata = urllib2.urlopen(urllib2.Request(self._url, None, { 'User-Agent': wikipedia.useragent }))
+            self._urldata = urllib2.urlopen(urllib2.Request(self._url, None, { 'User-Agent': pywikibot.useragent }))
         #except httplib.BadStatusLine, line:
         #    print 'URL: %s\nBad status line: %s' % (url, line)
         except urllib2.HTTPError, err:
@@ -947,10 +951,10 @@ class WebPage(object):
             return True
 
     def check_in_source(self):
-        """
-        Sources may be different from search engine database and include mentions of
-        Wikipedia. This function avoid also errors in search results that can occurs
-        either with Google and Yahoo! service.
+        """ Sources may be different from search engine database and include
+        mentions of Wikipedia. This function avoid also errors in search results
+        that can occurs either with Google and Yahoo! service.
+
         """
         global source_seen
 
@@ -1005,13 +1009,13 @@ def exceeded_in_queries(engine):
         raise 'Got a queries exceeded error.'
 
 def get_by_id(title, id):
-    return wikipedia.getSite().getUrl("/w/index.php?title=%s&oldid=%s&action=raw" % (title, id))
+    return pywikibot.getSite().getUrl("/w/index.php?title=%s&oldid=%s&action=raw" % (title, id))
 
 def checks_by_ids(ids):
     for title, id in ids:
         original_text = get_by_id(title, id)
         if original_text:
-            wikipedia.output(original_text)
+            pywikibot.output(original_text)
             output = query(lines=original_text.splitlines())
             if output:
                 write_log(
@@ -1019,7 +1023,8 @@ def checks_by_ids(ids):
                         % (title.replace(" ", "_").replace("\"", "%22"),
                            id, "author")
                         + output,
-                    wikipedia.config.datafilepath(appdir, "ID_output.txt"))
+                    pywikibot.config.datafilepath(appdir, "ID_output.txt"))
+
 
 class CheckRobot:
     def __init__(self, generator):
@@ -1030,25 +1035,25 @@ class CheckRobot:
         for page in self.generator:
             try:
                 original_text = page.get()
-            except wikipedia.NoPage:
-                wikipedia.output(u'Page %s not found' % page.title())
+            except pywikibot.NoPage:
+                pywikibot.output(u'Page %s not found' % page.title())
                 continue
-            except wikipedia.IsRedirectPage:
+            except pywikibot.IsRedirectPage:
                 newpage = page.getRedirectTarget()
-                wikipedia.output(u'Page %s redirects to \'%s\'' % (page.aslink(), newpage.title()))
+                pywikibot.output(u'Page %s redirects to \'%s\'' % (page.aslink(), newpage.title()))
                 bot = CheckRobot(iter([newpage,]))
                 bot.run()
                 continue
-            except wikipedia.SectionError:
+            except pywikibot.SectionError:
                 error("Page %s has no section %s" % (page.title(), page.section()))
                 continue
 
             if skip_disambig:
                 if page.isDisambig():
-                    wikipedia.output(u'Page %s is a disambiguation page' % page.aslink())
+                    pywikibot.output(u'Page %s is a disambiguation page' % page.aslink())
                     continue
 
-            wikipedia.output(page.title())
+            pywikibot.output(page.title())
 
             if original_text:
                 text = skip_section(original_text)
@@ -1061,6 +1066,7 @@ class CheckRobot:
                    write_log('=== [[' + page.title() + ']] ===' + output + '\n',
                              filename = output_file)
 
+
 def short_url(url):
     return url[url.index('://')+3:]
 
@@ -1069,12 +1075,12 @@ def put(page, text, comment):
         try:
             page.put(text, comment = comment)
             break
-        except wikipedia.SpamfilterError, url:
+        except pywikibot.SpamfilterError, url:
             warn(url, prefix = "Spam filter")
             text = re.sub(url[0], '<blacklist>' + short_url(url[0]), text)
-        except wikipedia.EditConflict:
+        except pywikibot.EditConflict:
             warn("Edit conflict")
-            raise wikipedia.EditConflict
+            raise pywikibot.EditConflict
 
 def check_config(var, license_id, license_name):
     if var:
@@ -1112,7 +1118,7 @@ def main():
     genFactory = pagegenerators.GeneratorFactory()
 
     # Read commandline parameters.
-    for arg in wikipedia.handleArgs():
+    for arg in pywikibot.handleArgs():
         if arg == '-y':
             config.copyright_yahoo = True
         elif arg == '-g':
@@ -1142,7 +1148,7 @@ def main():
               text = arg[6:]
         elif arg.startswith('-page'):
             if len(arg) == 5:
-                PageTitles.append(wikipedia.input(u'Which page do you want to change?'))
+                PageTitles.append(pywikibot.input(u'Which page do you want to change?'))
             else:
                 PageTitles.append(arg[6:])
         elif arg.startswith('-namespace:'):
@@ -1166,7 +1172,7 @@ def main():
             genFactory.handleArg(arg)
 
     if PageTitles:
-        pages = [wikipedia.Page(wikipedia.getSite(), PageTitle) for PageTitle in PageTitles]
+        pages = [pywikibot.Page(pywikibot.getSite(), PageTitle) for PageTitle in PageTitles]
         gen = iter(pages)
 
     config.copyright_yahoo = check_config(config.copyright_yahoo, config.yahoo_appid, "Yahoo AppID")
@@ -1180,12 +1186,12 @@ def main():
         gen = genFactory.getCombinedGenerator()
     if not gen and not ids and not text:
         # syntax error, show help text from the top of this file
-        wikipedia.output(__doc__, 'utf-8')
+        pywikibot.output(__doc__, 'utf-8')
 
     if text:
         output = SearchEngine().query(lines = text.splitlines())
         if output:
-            wikipedia.output(output)
+            pywikibot.output(output)
 
     if not gen:
         return
@@ -1203,4 +1209,4 @@ if __name__ == "__main__":
     try:
         main()
     finally:
-        wikipedia.stopme()
+        pywikibot.stopme()

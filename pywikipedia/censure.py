@@ -11,7 +11,7 @@ __version__ = '$Id$'
 # Author: Balasyum
 # http://hu.wikipedia.org/wiki/User:Balasyum
 
-import wikipedia
+import wikipedia as pywikibot
 import sys
 import thread
 
@@ -31,15 +31,15 @@ badWordList = {
     'hu.wikipedia': u'User:Cenzúrabot/lista',
     }
 
-site = wikipedia.getSite()
+site = pywikibot.getSite()
 if not (site.language() + '.' + site.family.name) in badWordList or not (site.language() + '.' + site.family.name) in logPages:
-    wikipedia.output('Error: your language isn\'t supported, see the source code for further details')
+    pywikibot.output('Error: your language isn\'t supported, see the source code for further details')
     sys.exit(1)
-ownWordPage = wikipedia.Page(site, badWordList[site.language() + '.' + site.family.name])
+ownWordPage = pywikibot.Page(site, badWordList[site.language() + '.' + site.family.name])
 try:
     ownWordList = ownWordPage.get(get_redirect = True)
-except wikipedia.NoPage:
-    wikipedia.output('Error: the page containing the bad word list of your language doesn\'t exist')
+except pywikibot.NoPage:
+    pywikibot.output('Error: the page containing the bad word list of your language doesn\'t exist')
     sys.exit(1)
 ownWordList = ownWordList.split('\n')
 del ownWordList[0]
@@ -68,26 +68,26 @@ def seekepos(str1, str2, bpos):
 def checkPage(title, onlyLastDiff = False):
     if title == logPages[site.language() + '.' + site.family.name]:
         return
-    wikipedia.output(u'Checking %s for bad word list' %title)
-    page = wikipedia.Page(site, title)
+    pywikibot.output(u'Checking %s for bad word list' %title)
+    page = pywikibot.Page(site, title)
     try:
         text = page.get()
         if onlyLastDiff:
             try:
                 oldver = page.getOldVersion(page.previousRevision())
             except IndexError:
-                wikipedia.output(u'Page %s has no version history, skipping' %title)
+                pywikibot.output(u'Page %s has no version history, skipping' %title)
                 return
             if len(text) > len(oldver):
                 bpos = seekbpos(oldver, text) 
                 epos = seekepos(oldver, text, bpos)
                 diff = text[bpos:epos]
                 text = diff
-    except wikipedia.NoPage:
-        wikipedia.output(u'Page %s doesn\'t exist, skipping' %title)
+    except pywikibot.NoPage:
+        pywikibot.output(u'Page %s doesn\'t exist, skipping' %title)
         return
-    except wikipedia.IsRedirectPage:
-        wikipedia.output(u'Page %s is a redirect, skipping' %title)
+    except pywikibot.IsRedirectPage:
+        pywikibot.output(u'Page %s is a redirect, skipping' %title)
         return
 
     report = False
@@ -97,21 +97,21 @@ def checkPage(title, onlyLastDiff = False):
             wordsIn.append(badWord)
             report = True
     if report:
-        logPage = wikipedia.Page(site, logPages[site.language() + '.' + site.family.name])
+        logPage = pywikibot.Page(site, logPages[site.language() + '.' + site.family.name])
         try:
             log = logPage.get()
         except:
             pass
-        wikipedia.output(u'%s matches the bad word list' %title)
+        pywikibot.output(u'%s matches the bad word list' %title)
         log = '* [' + page.permalink()+ ' ' + title + '] - ' + ' '.join(wordsIn) + '\n' + log
         logPage.put(log, title)
     else:
-        wikipedia.output(u'%s doesn\'t match any of the bad word list' %title)
+        pywikibot.output(u'%s doesn\'t match any of the bad word list' %title)
 
 def main():
-    wikipedia.output('Warning: this script should not be run manually/directly, but automatically by maintainer.py')
+    pywikibot.output('Warning: this script should not be run manually/directly, but automatically by maintainer.py')
     if len(sys.argv) == 1:
-        wikipedia.output("Usage: censure.py <article title>")
+        pywikibot.output("Usage: censure.py <article title>")
         sys.exit(1)
     del sys.argv[0]
     checkPage(' '.join(sys.argv).decode('utf-8'))

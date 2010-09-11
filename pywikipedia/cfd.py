@@ -13,7 +13,7 @@ Syntax: python cfd.py
 #
 # Distributed under the terms of the MIT license.
 
-import wikipedia
+import wikipedia as pywikibot
 import re
 import category
 
@@ -48,9 +48,9 @@ class ReCheck:
         return self.result
 
 def main():
-    wikipedia.handleArgs();
+    pywikibot.handleArgs();
 
-    page = wikipedia.Page(wikipedia.getSite(), cfdPage)
+    page = pywikibot.Page(pywikibot.getSite(), cfdPage)
 
     # Variable declarations
     day = "None"
@@ -87,7 +87,7 @@ def main():
             day = "None"
         elif (m.check(dateheader, line)):
             day = m.result.group(1)
-            wikipedia.output("Found day header: %s" % day)
+            pywikibot.output("Found day header: %s" % day)
         elif (m.check(movecat, line)):
             src = m.result.group(1)
             dest = m.result.group(2)
@@ -101,11 +101,11 @@ def main():
             # If the category is redirect, we do NOT want to move articles to
             # it. The safest thing to do here is abort and wait for human
             # intervention.
-            destpage = wikipedia.Page(
-                wikipedia.getSite(), dest, defaultNamespace=14)
+            destpage = pywikibot.Page(
+                pywikibot.getSite(), dest, defaultNamespace=14)
             if destpage.isCategoryRedirect():
                 summary = 'CANCELED. Destination is redirect: ' + summary
-                wikipedia.output(summary, toStdout=True)
+                pywikibot.output(summary, toStdout=True)
                 robot = None
             else:
                 robot = category.CategoryMoveRobot(oldCatTitle=src, newCatTitle=dest, batchMode=True,
@@ -127,7 +127,7 @@ def main():
             # This line does not fit any of our regular expressions, so ignore it.
             pass
         if (summary != "" and robot != None):
-            wikipedia.output(summary, toStdout=True)
+            pywikibot.output(summary, toStdout=True)
             # Run, robot, run!
             robot.run()
         summary = ""
@@ -139,11 +139,11 @@ def main():
 # parameter, which is essentially a fallback that is extracted from the
 # per-day subheadings on the working page.
 def findDay(pageTitle, oldDay):
-    page = wikipedia.Page(wikipedia.getSite(), "Category:" + pageTitle)
+    page = pywikibot.Page(pywikibot.getSite(), "Category:" + pageTitle)
     try:
         pageSrc = page.get()
         m = findday.search(pageSrc)
-    except wikipedia.NoPage:
+    except pywikibot.NoPage:
         m = None
 
     if (m != None):
@@ -171,5 +171,5 @@ if __name__ == "__main__":
     try:
         main()
     finally:
-        wikipedia.stopme()
+        pywikibot.stopme()
 

@@ -9,13 +9,14 @@ __version__ = '$Id$'
 # Distributed under the terms of the MIT license.
 #
 
+import sys
+
 import httplib, socket, re, time
-import config, wikipedia, catlib, pagegenerators, query
+import wikipedia as pywikibot
+import config, catlib, pagegenerators, query
 
 from urllib import urlencode
 from copyright import mysplit, put, reports_cat, join_family_data
-
-import sys
 
 summary_msg = {
     'ar': u'إزالة',
@@ -56,7 +57,7 @@ def old_page_exist(title):
             if pageobjs['pages'][key]['title'] == title:
                 if int(key) >= 0:
                     return True
-    wikipedia.output('* ' + title)
+    pywikibot.output('* ' + title)
     return False
 
 def old_revid_exist(revid):
@@ -66,7 +67,7 @@ def old_revid_exist(revid):
                 if pageobjs['pages'][id]['revisions'][rv]['revid'] == int(revid):
                     # print rv
                     return True
-    wikipedia.output('* ' + revid)
+    pywikibot.output('* ' + revid)
     return False
 
 def page_exist(title):
@@ -74,7 +75,7 @@ def page_exist(title):
         for key in pageobjs['query']['pages']:
             if pageobjs['query']['pages'][key]['title'] == title:
                 if 'missing' in pageobjs['query']['pages'][key]:
-                    wikipedia.output('* ' + title)
+                    pywikibot.output('* ' + title)
                     return False
     return True
 
@@ -84,16 +85,18 @@ def revid_exist(revid):
             for id in pageobjs['query']['badrevids']:
                 if id == int(revid):
                     # print rv
-                    wikipedia.output('* ' + revid)
+                    pywikibot.output('* ' + revid)
                     return False
     return True
 
-cat = catlib.Category(wikipedia.getSite(), 'Category:%s' % wikipedia.translate(wikipedia.getSite(), reports_cat))
+cat = catlib.Category(pywikibot.getSite(),
+                      'Category:%s' % pywikibot.translate(pywikibot.getSite(),
+                                                          reports_cat))
 gen = pagegenerators.CategorizedPageGenerator(cat, recurse = True)
 
 for page in gen:
     data = page.get()
-    wikipedia.output(page.aslink())
+    pywikibot.output(page.aslink())
     output = ''
 
     #
@@ -143,7 +146,8 @@ for page in gen:
         exist = True
         if page_exist(title):
             # check {{botbox}}
-            revid = re.search("{{(?:/box|botbox)\|.*?\|(.*?)\|", data[head.end():stop])
+            revid = re.search("{{(?:/box|botbox)\|.*?\|(.*?)\|",
+                              data[head.end():stop])
             if revid:
                 if not revid_exist(revid.group(1)):
                     exist = False
@@ -151,8 +155,12 @@ for page in gen:
            exist = False
 
         if exist:
-            ctitle = re.sub(u'(?i)=== \[\[%s:' % join_family_data('Image', 6), ur'=== [[:\1:', title)
-            ctitle = re.sub(u'(?i)=== \[\[%s:' % join_family_data('Category', 14), ur'=== [[:\1:', ctitle)
+            ctitle = re.sub(u'(?i)=== \[\[%s:'
+                            % join_family_data('Image', 6),
+                            ur'=== [[:\1:', title)
+            ctitle = re.sub(u'(?i)=== \[\[%s:'
+                            % join_family_data('Category', 14),
+                            ur'=== [[:\1:', ctitle)
             output += "=== [[" + ctitle + "]]" + data[head.end():stop]
         else:
             comment_entry.append("[[%s]]" % title)
@@ -161,23 +169,26 @@ for page in gen:
             output += data[next_head.start():next_head.end()] + '\n'
             add_separator = False
 
-    add_comment = u'%s: %s' % (wikipedia.translate(wikipedia.getSite(), summary_msg),", ".join(comment_entry))
+    add_comment = u'%s: %s' % (pywikibot.translate(pywikibot.getSite(),
+                                                   summary_msg),
+                               ", ".join(comment_entry))
 
     # remove useless newlines
     output = re.sub("(?m)^\n", "", output)
 
     if comment_entry:
-        wikipedia.output(add_comment)
-        if wikipedia.verbose:
-            wikipedia.showDiff(page.get(), output)
+        pywikibot.output(add_comment)
+        if pywikibot.verbose:
+            pywikibot.showDiff(page.get(), output)
 
         if len(sys.argv)!=1:
-            choice = wikipedia.inputChoice(u'Do you want to clean the page?',  ['Yes', 'No'], ['y', 'n'], 'n')
+            choice = pywikibot.inputChoice(u'Do you want to clean the page?',
+                                           ['Yes', 'No'], ['y', 'n'], 'n')
             if choice == 'n':
                continue
         try:
             put(page, output, add_comment)
-        except wikipedia.PageNotSaved:
+        except pywikibot.PageNotSaved:
             raise
 
-wikipedia.stopme()
+pywikibot.stopme()
