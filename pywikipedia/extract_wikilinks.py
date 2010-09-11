@@ -21,15 +21,18 @@ Arguments:
 #
 __version__='$Id$'
 #
-import sys,re,wikipedia,codecs
-wikipedia.stopme() # This bot does not contact the Wiki, so no need to get it on the list
+import sys,re
+import codecs
+import wikipedia as pywikibot
+# This bot does not contact the Wiki, so no need to get it on the list
+pywikibot.stopme()
 R = re.compile('/wiki/(.*?)" *')
 fn = []
 sorted = False
 list = []
 complete = True
 
-for arg in wikipedia.handleArgs():
+for arg in pywikibot.handleArgs():
     if arg.startswith("-sorted"):
         sorted = True
     elif arg.startswith("-bare"):
@@ -43,8 +46,7 @@ if not fn:
     print "No file specified to get the links from"
     sys.exit(1)
 
-mysite = wikipedia.getSite()
-
+mysite = pywikibot.getSite()
 f=open(fn,'r')
 text=f.read()
 f.close()

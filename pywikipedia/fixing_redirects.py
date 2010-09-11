@@ -22,7 +22,7 @@ options -file, -ref, -links, ...
 #
 __version__='$Id$'
 #
-import wikipedia
+import wikipedia as pywikibot
 import pagegenerators
 import re, sys
 
@@ -76,7 +76,7 @@ def treat(text, linkedPage, targetPage):
     """
     Based on the method of the same name in solve_disambiguation.py
     """
-    mysite = wikipedia.getSite()
+    mysite = pywikibot.getSite()
     linktrail = mysite.linktrail()
 
     # make a backup of the original text so we can show the changes later
@@ -90,10 +90,11 @@ def treat(text, linkedPage, targetPage):
         # Make sure that next time around we will not find this same hit.
         curpos = m.start() + 1
         # ignore interwiki links and links to sections of the same page
-        if m.group('title').strip() == '' or mysite.isInterwikiLink(m.group('title')):
+        if m.group('title').strip() == '' or \
+           mysite.isInterwikiLink(m.group('title')):
             continue
         else:
-            actualLinkPage = wikipedia.Page(targetPage.site(), m.group('title'))
+            actualLinkPage = pywikibot.Page(targetPage.site(), m.group('title'))
             # Check whether the link found is to page.
             if actualLinkPage != linkedPage:
                 continue
@@ -102,7 +103,7 @@ def treat(text, linkedPage, targetPage):
         context = 15
         # at the beginning of the link, start red color.
         # at the end of the link, reset the color to default
-        #wikipedia.output(text[max(0, m.start() - context) : m.start()] + '\03{lightred}' + text[m.start() : m.end()] + '\03{default}' + text[m.end() : m.end() + context])
+        #pywikibot.output(text[max(0, m.start() - context) : m.start()] + '\03{lightred}' + text[m.start() : m.end()] + '\03{default}' + text[m.end() : m.end() + context])
         choice = 'y'
 
         # The link looks like this:
@@ -133,7 +134,8 @@ def treat(text, linkedPage, targetPage):
         if link_text[0].isupper():
             new_page_title = targetPage.title()
         else:
-            new_page_title = targetPage.title()[0].lower() + targetPage.title()[1:]
+            new_page_title = targetPage.title()[0].lower() + \
+                             targetPage.title()[1:]
 
         # remove preleading ":"
         if new_page_title[0]==':':
@@ -143,9 +145,14 @@ def treat(text, linkedPage, targetPage):
             newlink = "[[%s%s]]%s" % (new_page_title, section, trailing_chars)
         elif replaceit or (new_page_title == link_text and not section):
             newlink = "[[%s]]" % new_page_title
-        # check if we can create a link with trailing characters instead of a pipelink
-        elif len(new_page_title) <= len(link_text) and firstcap(link_text[:len(new_page_title)]) == firstcap(new_page_title) and re.sub(re.compile(linktrail), '', link_text[len(new_page_title):]) == '' and not section:
-            newlink = "[[%s]]%s" % (link_text[:len(new_page_title)], link_text[len(new_page_title):])
+        # check if we can create a link with trailing characters instead of a
+        # pipelink
+        elif len(new_page_title) <= len(link_text) and \
+             firstcap(link_text[:len(new_page_title)]) == \
+             firstcap(new_page_title) and \
+             re.sub(re.compile(linktrail), '', link_text[len(new_page_title):]) == '' and not section:
+            newlink = "[[%s]]%s" % (link_text[:len(new_page_title)],
+                                    link_text[len(new_page_title):])
         else:
             newlink = "[[%s%s|%s]]" % (new_page_title, section, link_text)
         text = text[:m.start()] + newlink + text[m.end():]
@@ -155,36 +162,37 @@ def treat(text, linkedPage, targetPage):
 pageCache = []
 
 def workon(page):
-    mysite = wikipedia.getSite()
+    mysite = pywikibot.getSite()
     try:
         text = page.get()
-    except wikipedia.IsRedirectPage:
-        wikipedia.output(u'%s is a redirect page. Skipping' % page.aslink())
+    except pywikibot.IsRedirectPage:
+        pywikibot.output(u'%s is a redirect page. Skipping' % page.aslink())
         return
-    except wikipedia.NoPage:
-        wikipedia.output(u'%s does not exist. Skipping' % page.aslink())
+    except pywikibot.NoPage:
+        pywikibot.output(u'%s does not exist. Skipping' % page.aslink())
         return
-    wikipedia.output(u"\n\n>>> \03{lightpurple}%s\03{default} <<<" % page.title())
+    pywikibot.output(u"\n\n>>> \03{lightpurple}%s\03{default} <<<"
+                     % page.title())
     links = page.linkedPages()
     if len(links) > 0:
-        wikipedia.getall(mysite,links)
+        pywikibot.getall(mysite,links)
     else:
-        wikipedia.output('Nothing left to do.')
+        pywikibot.output('Nothing left to do.')
         return
     
     for page2 in links:
         try:
             target = page2.getRedirectTarget()
-        except (wikipedia.Error,wikipedia.SectionError):
+        except (pywikibot.Error,pywikibot.SectionError):
             continue
         text = treat(text, page2, target)
     if text != page.get():
-        comment = wikipedia.translate(mysite, msg)
-        wikipedia.showDiff(page.get() ,text)
+        comment = pywikibot.translate(mysite, msg)
+        pywikibot.showDiff(page.get() ,text)
         try:
             page.put(text, comment)
-        except (wikipedia.Error):
-            wikipedia.output('Error: unable to put %s' % page.aslink())
+        except (pywikibot.Error):
+            pywikibot.output('Error: unable to put %s' % page.aslink())
 
 def main():
     featured = False
@@ -195,20 +203,21 @@ def main():
     # to work on.
     genFactory = pagegenerators.GeneratorFactory()
 
-    for arg in wikipedia.handleArgs():
+    for arg in pywikibot.handleArgs():
         if arg == '-featured':
             featured = True
         else:
             genFactory.handleArg(arg)
 
-    mysite = wikipedia.getSite()
+    mysite = pywikibot.getSite()
     if mysite.sitename() == 'wikipedia:nl':
-        wikipedia.output(u'\03{lightred}There is consensus on the Dutch Wikipedia that bots should not be used to fix redirects.\03{default}')
+        pywikibot.output(
+            u'\03{lightred}There is consensus on the Dutch Wikipedia that bots should not be used to fix redirects.\03{default}')
         sys.exit()
 
     if featured:
-        featuredList = wikipedia.translate(mysite, featured_articles)
-        ref = wikipedia.Page(wikipedia.getSite(), featuredList)
+        featuredList = pywikibot.translate(mysite, featured_articles)
+        ref = pywikibot.Page(pywikibot.getSite(), featuredList)
         gen = pagegenerators.ReferringPageGenerator(ref)
         gen = pagegenerators.NamespaceFilterPageGenerator(gen, [0])
     if not gen:
@@ -217,10 +226,10 @@ def main():
         for page in pagegenerators.PreloadingGenerator(gen):
             workon(page)
     else:
-        wikipedia.showHelp('fixing_redirects')
+        pywikibot.showHelp('fixing_redirects')
 
 if __name__ == "__main__":
     try:
         main()
     finally:
-        wikipedia.stopme()
+        pywikibot.stopme()
