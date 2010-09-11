@@ -1,7 +1,8 @@
 #!/usr/bin/python
 # -*- coding: utf-8  -*-
 """
-This bot appends some text to all unused images and other text to the respective uploaders.
+This bot appends some text to all unused images and other text to the
+respective uploaders.
 
 Parameters:
 
@@ -18,7 +19,7 @@ Parameters:
 __version__ = '$Id$'
 #
 
-import wikipedia
+import wikipedia as pywikibot
 import pagegenerators
 import sys
 
@@ -57,53 +58,59 @@ except_text = {
 #                      #
 #**********************#
 
-def appendtext(page, apptext, always):
-    msg = wikipedia.translate(wikipedia.getSite(), comment)
+def appendtext(page, apptext):
+    global always
     try:
         text = page.get()
-    except wikipedia.IsRedirectPage:
+    except pywikibot.IsRedirectPage:
         return
-    # Here go edit text in whatever way you want. If you find you do not  (he meant "Here you can go editing...")
+    # Here you can go editing. If you find you do not
     # want to edit this page, just return
     text += apptext;
     if text != page.get():
-        wikipedia.showDiff(page.get(),text)
-        if not always==True:
-            choice = wikipedia.inputChoice(u'Do you want to accept these changes?', ['Yes', 'No', 'All'], ['y', 'N', 'a'], 'N')
+        pywikibot.showDiff(page.get(),text)
+        if not always:
+            choice = pywikibot.inputChoice(
+                u'Do you want to accept these changes?', ['Yes', 'No', 'All'],
+                ['y', 'N', 'a'], 'N')
             if choice == 'a':
                 always = True
-                choice = 'y'
-            if choice == 'y':
-                page.put(text, msg)
-        else:
-            page.put(text, msg)
+        if always or choice == 'y':
+            page.put(text, pywikibot.translate(pywikibot.getSite(), comment))
 
 def main():
+    global always
     always = False
-    for arg in wikipedia.handleArgs():
+
+    for arg in pywikibot.handleArgs():
         if arg == '-always':
             always = True
 
-    mysite = wikipedia.getSite()
+    mysite = pywikibot.getSite()
     # If anything needs to be prepared, you can do it here
-    template_image = wikipedia.translate(wikipedia.getSite(), template_to_the_image)
-    template_user = wikipedia.translate(wikipedia.getSite(), template_to_the_user)
-    except_text_translated = wikipedia.translate(wikipedia.getSite(), except_text)
+    template_image = pywikibot.translate(pywikibot.getSite(),
+                                         template_to_the_image)
+    template_user = pywikibot.translate(pywikibot.getSite(),
+                                        template_to_the_user)
+    except_text_translated = pywikibot.translate(pywikibot.getSite(),
+                                                 except_text)
     basicgenerator = pagegenerators.UnusedFilesGenerator()
     generator = pagegenerators.PreloadingGenerator(basicgenerator)
     for page in generator:
-        wikipedia.output(u"\n\n>>> \03{lightpurple}%s\03{default} <<<"% page.title())
-        if except_text_translated not in page.getImagePageHtml() and 'http://' not in page.get():
-            wikipedia.output(u'\n' + page.title())
-            appendtext(page, template_image, always)
+        pywikibot.output(u"\n\n>>> \03{lightpurple}%s\03{default} <<<"
+                         % page.title())
+        if except_text_translated not in page.getImagePageHtml() and \
+           'http://' not in page.get():
+            pywikibot.output(u'\n' + page.title())
+            appendtext(page, template_image)
             uploader = page.getFileVersionHistory().pop()[1]
             usertalkname = u'User Talk:%s' % uploader
-            usertalkpage = wikipedia.Page(mysite,usertalkname)
+            usertalkpage = pywikibot.Page(mysite, usertalkname)
             msg2uploader = template_user % page.title()
-            appendtext(usertalkpage,msg2uploader, always)
+            appendtext(usertalkpage, msg2uploader, always)
 
 if __name__ == "__main__":
     try:
         main()
     finally:
-        wikipedia.stopme()
+        pywikibot.stopme()
