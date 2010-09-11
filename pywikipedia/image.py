@@ -1,27 +1,31 @@
 # -*- coding: utf-8 -*-
 """
-This script can be used to change one image to another or remove an image entirely.
+This script can be used to change one image to another or remove an image
+entirely.
 
 Syntax: python image.py image_name [new_image_name]
 
-If only one command-line parameter is provided then that image will be removed; if
-two are provided, then the first image will be replaced by the second one on all pages.
+If only one command-line parameter is provided then that image will be removed;
+if two are provided, then the first image will be replaced by the second one on
+all pages.
 
 Command line options:
 
--summary:  Provide a custom edit summary.  If the summary includes spaces, surround
-           it with single quotes, such as:  -summary:'My edit summary'
+-summary:  Provide a custom edit summary.  If the summary includes spaces,
+           surround it with single quotes, such as:
+           -summary:'My edit summary'
 -always    Don't prompt to make changes, just do them.
--loose     Do loose replacements.  This will replace all occurences of the name of the
-           image (and not just explicit image syntax).  This should work to catch all
-           instances of the image, including where it is used as a template parameter
-           or in image galleries.  However, it can also make more mistakes.  This only
-           works with image replacement, not image removal.
+-loose     Do loose replacements.  This will replace all occurences of the name
+           of the image (and not just explicit image syntax).  This should work
+           to catch all instances of the image, including where it is used as a
+           template parameter or in image galleries.  However, it can also make
+           more mistakes.  This only works with image replacement, not image
+           removal.
 
 Examples:
 
-The image "FlagrantCopyvio.jpg" is about to be deleted, so let's first remove it from
-everything that displays it:
+The image "FlagrantCopyvio.jpg" is about to be deleted, so let's first remove it
+from everything that displays it:
 
     python image.py FlagrantCopyvio.jpg
 
@@ -34,9 +38,10 @@ __version__ = '$Id$'
 #
 # Distributed under the terms of the MIT license.
 #
-import wikipedia
+import wikipedia as pywikibot
 import replace, pagegenerators
 import re
+
 
 class ImageRobot:
     """
@@ -87,7 +92,8 @@ class ImageRobot:
         'zh': u'機器人：移除圖像 %s',
     }
 
-    def __init__(self, generator, oldImage, newImage = None, summary = '', always = False, loose = False):
+    def __init__(self, generator, oldImage, newImage=None, summary='',
+                 always=False, loose=False):
         """
         Arguments:
             * generator - A page generator.
@@ -104,13 +110,15 @@ class ImageRobot:
         self.loose = loose
 
         # get edit summary message
-        mysite = wikipedia.getSite()
+        mysite = pywikibot.getSite()
         if summary:
             self.editSummary = summary
         elif self.newImage:
-            self.editSummary = wikipedia.translate(mysite, self.msg_replace) % (self.oldImage, self.newImage)
+            self.editSummary = pywikibot.translate(mysite, self.msg_replace) \
+                               % (self.oldImage, self.newImage)
         else:
-            self.editSummary = wikipedia.translate(mysite, self.msg_remove) % self.oldImage
+            self.editSummary = pywikibot.translate(mysite, self.msg_remove) \
+                               % self.oldImage
 
     def run(self):
         """
@@ -123,13 +131,14 @@ class ImageRobot:
         # empty string if there are none.
 
         replacements = []
-        site = wikipedia.getSite()
+        site = pywikibot.getSite()
 
         if not site.nocapitalize:
-            case = re.escape( self.oldImage[0].upper() + self.oldImage[0].lower() )
+            case = re.escape(self.oldImage[0].upper() + \
+                             self.oldImage[0].lower())
             escaped = '[' + case + ']' + re.escape(self.oldImage[1:])
         else:
-            escaped = re.escape( self.oldImage )
+            escaped = re.escape(self.oldImage)
 
         # Be careful, spaces and _ have been converted to '\ ' and '\_'
         escaped = re.sub('\\\\[_ ]', '[_ ]', escaped)
@@ -146,8 +155,11 @@ class ImageRobot:
         else:
             replacements.append((ImageRegex, ''))
 
-        replaceBot = replace.ReplaceRobot(self.generator, replacements, acceptall = self.always, editSummary = self.editSummary)
+        replaceBot = replace.ReplaceRobot(self.generator, replacements,
+                                          acceptall=self.always,
+                                          editSummary=self.editSummary)
         replaceBot.run()
+
 
 def main():
     oldImage = None
@@ -156,14 +168,14 @@ def main():
     always = False
     loose = False
     # read command line parameters
-    for arg in wikipedia.handleArgs():
+    for arg in pywikibot.handleArgs():
         if arg == '-always':
             always = True
         elif arg == '-loose':
             loose = True
         elif arg.startswith('-summary'):
             if len(arg) == len('-summary'):
-                summary = wikipedia.input(u'Choose an edit summary: ')
+                summary = pywikibot.input(u'Choose an edit summary: ')
             else:
                 summary = arg[len('-summary:'):]
         else:
@@ -171,23 +183,20 @@ def main():
                 newImage = arg
             else:
                 oldImage = arg
-
     if not oldImage:
-        wikipedia.showHelp('image')
+        pywikibot.showHelp('image')
     else:
-        mysite = wikipedia.getSite()
+        mysite = pywikibot.getSite()
         ns = mysite.image_namespace()
-
-        oldImagePage = wikipedia.ImagePage(mysite, ns + ':' + oldImage)
-
+        oldImagePage = pywikibot.ImagePage(mysite, ns + ':' + oldImage)
         gen = pagegenerators.FileLinksGenerator(oldImagePage)
         preloadingGen = pagegenerators.PreloadingGenerator(gen)
-
-        bot = ImageRobot(preloadingGen, oldImage, newImage, summary, always, loose)
+        bot = ImageRobot(preloadingGen, oldImage, newImage, summary, always,
+                         loose)
         bot.run()
 
 if __name__ == "__main__":
     try:
         main()
     finally:
-        wikipedia.stopme()
+        pywikibot.stopme()

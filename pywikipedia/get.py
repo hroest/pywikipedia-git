@@ -15,22 +15,22 @@ Example: python get.py Wikipedia | grep MediaWiki > results.txt
 
 __version__='$Id$'
 
-import wikipedia
+import wikipedia as pywikibot
 
 def main():
     singlePageTitleParts = []
-    for arg in wikipedia.handleArgs():
+    for arg in pywikibot.handleArgs():
         singlePageTitleParts.append(arg)
 
     pageTitle = " ".join(singlePageTitleParts)
-    page = wikipedia.Page(wikipedia.getSite(), pageTitle)
+    page = pywikibot.Page(pywikibot.getSite(), pageTitle)
 
     # TODO: catch exceptions
-    wikipedia.output(page.get(), toStdout = True)
+    pywikibot.output(page.get(), toStdout = True)
 
 if __name__ == "__main__":
     try:
         main()
     finally:
-        wikipedia.stopme()
+        pywikibot.stopme()
 

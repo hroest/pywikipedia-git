@@ -7,7 +7,7 @@ the contents of an article
 # (C) Rob W.W. Hooft, 2003
 # (C) Daniel Herding, 2004
 #     Wikiwichtel
-# (C) the PyWikipediabot team, 2008
+# (C) the PyWikipediabot team, 2008-2010
 #
 # Distributed under the terms of the MIT license.
 #
@@ -413,15 +413,15 @@ class ListBoxWindow:
 
 
 if __name__=="__main__":
-    import wikipedia
+    import wikipedia as pywikibot
     try:
         root = Tk()
         root.resizable(width=FALSE, height=FALSE)
         root.title("Pywikipediabot GUI")
-        page = wikipedia.Page(wikipedia.getSite(), u'Wiki')
+        page = pywikibot.Page(pywikibot.getSite(), u'Wiki')
         content = page.get()
         myapp = EditBoxWindow(root)
         myapp.bind("<Control-d>", myapp.debug)
         v = myapp.edit(content, highlight = page.title())
     finally:
-        wikipedia.stopme()
+        pywikibot.stopme()
