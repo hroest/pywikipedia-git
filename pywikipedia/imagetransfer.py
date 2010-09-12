@@ -30,7 +30,8 @@ used on a page reachable via interwiki links.
 __version__='$Id$'
 
 import re, sys, md5, urllib
-import wikipedia, upload, config, pagegenerators
+import wikipedia as pywikibot
+import upload, config, pagegenerators
 
 copy_message = {
     'ar':u"هذه الصورة تم نقلها من %s. الوصف الأصلي كان:\r\n\r\n%s",
@@ -136,6 +137,7 @@ licenseTemplates = {
     },
 }
 
+
 class ImageTransferBot:
     def __init__(self, generator, targetSite = None, interwiki = False):
         self.generator = generator
@@ -149,10 +151,10 @@ class ImageTransferBot:
            This function is used by imagetransfer.py and by copy_table.py
         """
         sourceSite = sourceImagePage.site()
-        if debug: print "--------------------------------------------------"
+        if debug: print "-" * 50
         if debug: print "Found image: %s"% imageTitle
         url = sourceImagePage.fileUrl().encode('utf-8')
-        wikipedia.output(u"URL should be: %s" % url)
+        pywikibot.output(u"URL should be: %s" % url)
         # localize the text that should be printed on the image description page
         try:
             description = sourceImagePage.get()
@@ -161,17 +163,20 @@ class ImageTransferBot:
                 for old, new in licenseTemplates[(sourceSite.sitename(), self.targetSite.sitename())].iteritems():
                     new = '{{%s}}' % new
                     old = re.compile('{{%s}}' % old)
-                    description = wikipedia.replaceExcept(description, old, new, ['comment', 'math', 'nowiki', 'pre'])
+                    description = pywikibot.replaceExcept(description, old, new,
+                                                          ['comment', 'math',
+                                                           'nowiki', 'pre'])
 
-            description = wikipedia.translate(self.targetSite, copy_message) % (sourceSite, description)
+            description = pywikibot.translate(self.targetSite, copy_message) \
+                          % (sourceSite, description)
             description += '\n\n' + sourceImagePage.getFileVersionHistoryTable()
             # add interwiki link
             if sourceSite.family == self.targetSite.family:
                 description += "\r\n\r\n" + sourceImagePage.aslink(forceInterwiki = True)
-        except wikipedia.NoPage:
+        except pywikibot.NoPage:
             description=''
             print "Image does not exist or description page is empty."
-        except wikipedia.IsRedirectPage:
+        except pywikibot.IsRedirectPage:
             description=''
             print "Image description page is redirect."
         else:
@@ -180,14 +185,14 @@ class ImageTransferBot:
             targetFilename = bot.run()
             if targetFilename and self.targetSite.family.name == 'commons' and self.targetSite.lang == 'commons':
                 # upload to Commons was successful
-                reason = wikipedia.translate(sourceSite, nowCommonsMessage)
+                reason = pywikibot.translate(sourceSite, nowCommonsMessage)
                 # try to delete the original image if we have a sysop account
                 if sourceSite.family.name in config.sysopnames and sourceSite.lang in config.sysopnames[sourceSite.family.name]:
                     if sourceImagePage.delete(reason):
                         return
                 if sourceSite.lang in nowCommonsTemplate and sourceSite.family.name in config.usernames and sourceSite.lang in config.usernames[sourceSite.family.name]:
                     # add the nowCommons template.
-                    wikipedia.output(u'Adding nowCommons template to %s' % sourceImagePage.title())
+                    pywikibot.output(u'Adding nowCommons template to %s' % sourceImagePage.title())
                     sourceImagePage.put(sourceImagePage.get() + '\n\n' + nowCommonsTemplate[sourceSite.lang] % targetFilename, comment = nowCommonsMessage[sourceSite.lang])
 
     def showImageList(self, imagelist):
@@ -195,10 +200,10 @@ class ImageTransferBot:
             image = imagelist[i]
             #sourceSite = sourceImagePage.site()
             print "-"*60
-            wikipedia.output(u"%s. Found image: %s"% (i, image.aslink()))
+            pywikibot.output(u"%s. Found image: %s"% (i, image.aslink()))
             try:
                 # Show the image description page's contents
-                wikipedia.output(image.get(throttle=False))
+                pywikibot.output(image.get(throttle=False))
                 # look if page already exists with this name.
                 # TODO: consider removing this: a different image of the same
                 # name may exist on the target wiki, and the bot user may want
@@ -206,21 +211,20 @@ class ImageTransferBot:
                 try:
                     # Maybe the image is on the target site already
                     targetTitle = '%s:%s' % (self.targetSite.image_namespace(), image.title().split(':', 1)[1])
-                    targetImage = wikipedia.Page(self.targetSite, targetTitle)
+                    targetImage = pywikibot.Page(self.targetSite, targetTitle)
                     targetImage.get(throttle=False)
-                    wikipedia.output(u"Image with this name is already on %s." % self.targetSite)
+                    pywikibot.output(u"Image with this name is already on %s." % self.targetSite)
                     print "-"*60
-                    wikipedia.output(targetImage.get(throttle=False))
+                    pywikibot.output(targetImage.get(throttle=False))
                     sys.exit()
-                except wikipedia.NoPage:
+                except pywikibot.NoPage:
                     # That's the normal case
                     pass
-                except wikipedia.IsRedirectPage:
-                    wikipedia.output(u"Description page on target wiki is redirect?!")
+                except pywikibot.IsRedirectPage:
+                    pywikibot.output(u"Description page on target wiki is redirect?!")
 
-            except wikipedia.NoPage:
+            except pywikibot.NoPage:
                 break
-
         print "="*60
 
     def run(self):
@@ -230,7 +234,7 @@ class ImageTransferBot:
                 for linkedPage in page.interwiki():
                     imagelist += linkedPage.imagelinks(followRedirects = True)
             elif page.isImage():
-                imagePage = wikipedia.ImagePage(page.site(), page.title())
+                imagePage = pywikibot.ImagePage(page.site(), page.title())
                 imagelist = [imagePage]
             else:
                 imagelist = page.imagelinks(followRedirects = True)
@@ -241,20 +245,21 @@ class ImageTransferBot:
                     # no need to query the user, only one possibility
                     todo = 0
                 else:
-                    wikipedia.output(u"Give the number of the image to transfer.")
-                    todo = wikipedia.input(u"To end uploading, press enter:")
+                    pywikibot.output(u"Give the number of the image to transfer.")
+                    todo = pywikibot.input(u"To end uploading, press enter:")
                     if not todo:
                         break
                     todo = int(todo)
                 if todo in range(len(imagelist)):
                     if imagelist[todo].fileIsOnCommons():
-                        wikipedia.output(u'The image is already on Wikimedia Commons.')
+                        pywikibot.output(u'The image is already on Wikimedia Commons.')
                     else:
                         self.transferImage(imagelist[todo], debug = False)
                     # remove the selected image from the list
                     imagelist = imagelist[:todo] + imagelist[todo + 1:]
                 else:
-                    wikipedia.output(u'No such image number.')
+                    pywikibot.output(u'No such image number.')
+
 
 def main():
     # if -file is not used, this temporary array is used to read the page title.
@@ -265,7 +270,7 @@ def main():
     targetLang = None
     targetFamily = None
 
-    for arg in wikipedia.handleArgs():
+    for arg in pywikibot.handleArgs():
         if arg == '-interwiki':
             interwiki = True
         elif arg.startswith('-tolang:'):
@@ -274,7 +279,7 @@ def main():
             targetFamily = arg[10:]
         elif arg.startswith('-file'):
             if len(arg) == 5:
-                filename = wikipedia.input(u'Please enter the list\'s filename: ')
+                filename = pywikibot.input(u'Please enter the list\'s filename: ')
             else:
                 filename = arg[6:]
             gen = pagegenerators.TextfilePageGenerator(filename)
@@ -286,23 +291,23 @@ def main():
         # connect the title's parts with spaces
         if pageTitle != []:
             pageTitle = ' '.join(pageTitle)
-            page = wikipedia.Page(wikipedia.getSite(), pageTitle)
+            page = pywikibot.Page(pywikibot.getSite(), pageTitle)
         # if no page title was given as an argument, and none was
         # read from a file, query the user
         if not page:
-            pageTitle = wikipedia.input(u'Which page to check:')
-            page = wikipedia.Page(wikipedia.getSite(), pageTitle)
+            pageTitle = pywikibot.input(u'Which page to check:')
+            page = pywikibot.Page(pywikibot.getSite(), pageTitle)
             # generator which will yield only a single Page
         gen = iter([page])
 
     if not targetLang and not targetFamily:
-        targetSite = wikipedia.getSite('commons', 'commons')
+        targetSite = pywikibot.getSite('commons', 'commons')
     else:
         if not targetLang:
-            targetLang = wikipedia.getSite().language
+            targetLang = pywikibot.getSite().language
         if not targetFamily:
-            targetFamily = wikipedia.getSite().family
-        targetSite = wikipedia.Site(targetLang, targetFamily)
+            targetFamily = pywikibot.getSite().family
+        targetSite = pywikibot.Site(targetLang, targetFamily)
     bot = ImageTransferBot(gen, interwiki = interwiki, targetSite = targetSite)
     bot.run()
 
@@ -310,4 +315,4 @@ if __name__ == "__main__":
     try:
         main()
     finally:
-        wikipedia.stopme()
+        pywikibot.stopme()

@@ -24,13 +24,14 @@ will only touch a single page.
 
 __version__='$Id$'
 
-import wikipedia, pagegenerators, catlib, weblinkchecker, upload
 import sys, re
+import wikipedia as pywikibot
+import pagegenerators, catlib, weblinkchecker, upload
 
 # This is required for the text that is shown when you run this script
 # with the parameter -help.
 docuReplacements = {
-    '&params;':     pagegenerators.parameterHelp,
+    '&params;': pagegenerators.parameterHelp,
 }
 
 msg = {
@@ -58,9 +59,10 @@ class InlineImagesRobot:
                 # depends on the variable self.touch_redirects.
                 text = page.get()
                 originalText = text
-                for url in weblinkchecker.weblinksIn(text, withoutBracketed = True):
+                for url in weblinkchecker.weblinksIn(text,
+                                                     withoutBracketed=True):
                     filename = url.split('/')[-1]
-                    description = wikipedia.translate(wikipedia.getSite(), msg) % url
+                    description = pywikibot.translate(pywikibot.getSite(), msg) % url
                     bot = upload.UploadRobot(url, description = description)
                     # TODO: check duplicates
                     #filename = bot.uploadImage()
@@ -69,11 +71,11 @@ class InlineImagesRobot:
                 # only save if there were changes
                 #if text != originalText:
                 #    page.put(text)
-            except wikipedia.NoPage:
+            except pywikibot.NoPage:
                 print "Page %s does not exist?!" % page.aslink()
-            except wikipedia.IsRedirectPage:
+            except pywikibot.IsRedirectPage:
                 print "Page %s is a redirect; skipping." % page.aslink()
-            except wikipedia.LockedPage:
+            except pywikibot.LockedPage:
                 print "Page %s is locked?!" % page.aslink()
 
 def main():
@@ -88,18 +90,18 @@ def main():
     # to work on.
     genFactory = pagegenerators.GeneratorFactory()
 
-    for arg in wikipedia.handleArgs():
+    for arg in pywikibot.handleArgs():
         if not genFactory.handleArg(arg):
             pageTitle.append(arg)
 
     if pageTitle:
         # work on a single page
-        page = wikipedia.Page(wikipedia.getSite(), ' '.join(pageTitle))
+        page = pywikibot.Page(pywikibot.getSite(), ' '.join(pageTitle))
         gen = iter([page])
     if not gen:
         gen = genFactory.getCombinedGenerator()
     if not gen:
-        wikipedia.showHelp('inline_images')
+        pywikibot.showHelp('inline_images')
     else:
         preloadingGen = pagegenerators.PreloadingGenerator(gen)
         bot = InlineImagesRobot(preloadingGen)
@@ -109,4 +111,4 @@ if __name__ == "__main__":
     try:
         main()
     finally:
-        wikipedia.stopme()
+        pywikibot.stopme()
