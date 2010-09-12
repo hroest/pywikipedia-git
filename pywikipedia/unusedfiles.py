@@ -39,9 +39,9 @@ comment = {
     }
 
 template_to_the_image = {
-    'en': u'\n\n{{subst:No-use2}}',
-    'it': u'\n\n{{immagine orfana}}',
-    'fa': u'\n\n{{تصاویر بدون استفاده}}',
+    'en': u'{{subst:No-use2}}',
+    'it': u'{{immagine orfana}}',
+    'fa': u'{{تصاویر بدون استفاده}}',
     }
 template_to_the_user = {
     'en': u'\n\n{{img-sem-uso|%s}}',
@@ -106,7 +106,7 @@ def main():
             if template_image in page.get():
                 pywikibot.output(u"%s done already" % page.aslink())
                 continue
-            appendtext(page, template_image)
+            appendtext(page, u"\n\n"+template_image)
             uploader = page.getFileVersionHistory().pop()[1]
             usertalkname = u'User Talk:%s' % uploader
             usertalkpage = pywikibot.Page(mysite, usertalkname)
