@@ -432,15 +432,47 @@ not supported by PyWikipediaBot!"""
         """Return the character encoding used on this Page's wiki Site."""
         return self._site.encoding()
 
-    def title(self, underscore = False, savetitle = False, decode=False):
+    def title(self, underscore=False, savetitle=False, decode=False,
+              withNamespace=True,
+              withSection=True, asUrl=False, asLink=False,
+              allowInterwiki=True, forceInterwiki=False, textlink=False,
+              as_filename=False):
         """Return the title of this Page, as a Unicode string.
+
+        @param underscore: if true, replace all ' ' characters with '_'
+        @param withNamespace: - not implemented yet -
+        @param withSection: - not implemented yet -
+        @param asUrl: - not implemented yet -
+        @param asLink: if true, return the title in the form of a wikilink
+        @param allowInterwiki: (only used if asLink is true) if true, format
+            the link as an interwiki link if necessary
+        @param forceInterwiki: (only used if asLink is true) if true, always
+            format the link as an interwiki link
+        @param textlink: (only used if asLink is true) if true, place a ':'
+            before Category: and Image: links
+        @param as_filename:  - not implemented yet -
 
         If underscore is True, replace all ' ' characters with '_'.
         If savetitle is True, encode any wiki syntax in the title.
         If decode is True, decodes the section title
         """
         title = self._title
-        if decode:
+        if asLink:
+            if allowInterwiki and (forceInterwiki or self._site != getSite()):
+                colon = ""
+                if textlink:
+                    colon = ":"
+                if  self._site.family != getSite().family \
+                        and self._site.family.name != self._site.lang:
+                    return u'[[%s%s:%s:%s]]' % (colon, self._site.family.name,
+                                                self._site.lang, title)
+                else:
+                    return u'[[%s%s:%s]]' % (colon, self._site.lang, title)
+            elif textlink and (self.isImage() or self.isCategory()):
+                    return u'[[:%s]]' % title
+            else:
+                return u'[[%s]]' % title
+        if decode or asLink:
             begin = title.find('#')
             if begin != -1:
                 anchor = self.section(underscore = underscore, decode = True)
@@ -449,7 +481,7 @@ not supported by PyWikipediaBot!"""
                 except TypeError:
                     print title, begin, anchor
                     raise
-        if savetitle:
+        if savetitle or asLink:
             # Ensure there's no wiki syntax in the title
             title = title.replace(u"''", u'%27%27')
         if underscore:
@@ -514,6 +546,7 @@ not supported by PyWikipediaBot!"""
         """Return a more complete string representation."""
         return "%s{%s}" % (self.__class__.__name__, str(self))
 
+    #@deprecated("Page.title(asLink=True)")
     def aslink(self, forceInterwiki=False, textlink=False, noInterwiki=False):
         """Return a string representation in the form of a wikilink.
 
@@ -525,24 +558,11 @@ not supported by PyWikipediaBot!"""
         interwiki links and internal links to the Category: and Image:
         namespaces will be preceded by a : character).
 
+        DEPRECATED to merge to rewrite branch:
+        use self.title(asLink=True) instead.
         """
-        if not noInterwiki and (forceInterwiki or self._site != getSite()):
-            colon = ""
-            if textlink:
-                colon = ":"
-            if  self._site.family != getSite().family \
-                    and self._site.family.name != self._site.lang:
-                return u'[[%s%s:%s:%s]]' % (colon, self._site.family.name,
-                                          self._site.lang,
-                                          self.title(savetitle=True,
-                                                     decode=True))
-            else:
-                return u'[[%s%s:%s]]' % (colon, self._site.lang,
-                                       self.title(savetitle=True, decode=True))
-        elif textlink and (self.isImage() or self.isCategory()):
-                return u'[[:%s]]' % self.title(savetitle=True, decode=True)
-        else:
-            return u'[[%s]]' % self.title(savetitle=True, decode=True)
+        return self.title(asLink=True, forceInterwiki=forceInterwiki,
+                          allowInterwiki=not noInterwiki, textlink=textlink)
 
     def autoFormat(self):
         """Return (dictName, value) if title is in date.autoFormat dictionary.
