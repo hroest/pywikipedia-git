@@ -1,6 +1,6 @@
 # -*- coding: utf-8  -*- 
 
-#Usable example module: Use of pywikipedia as a
+# Usable example module: Use of pywikipedia as a
 # library.
 # 
 # Looks up the path to pywikipedia (pywikipedia_path)
@@ -22,7 +22,8 @@ if settings.pywikipedia_path not in sys.path:
 # for now, we live with it.
 cwd=os.getcwd()
 os.chdir(settings.pywikipedia_path)
-import wikipedia, login
+import wikipedia as pywikibot
+import login
 from simple_family import Family
 os.chdir(cwd)
 
@@ -30,14 +31,26 @@ class LoginData:
     """An example class that uses pywikipedia as a library.
     usage example: 
     
-    from logindata import LoginData, wikipedia
+    from logindata import LoginData, pywikibot
     target_wiki=LoginData( ... ) # for example, fill in from a settings file, or use code to generate, or ... 
     site=target_wiki.login()
-    page=wikipedia.Page(site,"Main Page")
+    page=pywikibot.Page(site,"Main Page")
     """
 
-
     def __init__(
+        self,
+        name='MY_NAME_FOR_THIS_SERVER',
+        protocol='http',
+        server='www.my_server.com',
+        scriptpath='/my/script/path/',
+        version='1.13.2',
+        lang='en',
+        encoding='utf-8',
+        user='MY_BOT_USER',
+        password='MY_SECRET_PASSWORD',
+        RversionTab=None,
+        api_supported=False    
+        ):
         """
         paramaters:
         name: arbitrary name. Pick something easy to remember
@@ -54,20 +67,6 @@ class LoginData:
         password: password for this user
         """
 
-
-        self,
-        name='MY_NAME_FOR_THIS_SERVER',
-        protocol='http',
-        server='www.my_server.com',
-        scriptpath='/my/script/path/',
-        version='1.13.2',
-        lang='en',
-        encoding='utf-8',
-        user='MY_BOT_USER',
-        password='MY_SECRET_PASSWORD',
-        RversionTab=None,
-        api_supported=False    
-        ):
         self.lang=lang
         self.user=user
         self.password=password
@@ -86,7 +85,7 @@ class LoginData:
     def login(self):
         """Attempt to log in on the site described
         by this class. Returns a pywikipedia site object"""
-        self.site=wikipedia.Site(
+        self.site=pywikibot.Site(
             code=self.lang,
             fam=self.family,
             user=self.user
