@@ -111,7 +111,7 @@ def main():
             usertalkname = u'User Talk:%s' % uploader
             usertalkpage = pywikibot.Page(mysite, usertalkname)
             msg2uploader = template_user % page.title()
-            appendtext(usertalkpage, msg2uploader, always)
+            appendtext(usertalkpage, msg2uploader)
 
 if __name__ == "__main__":
     try:
