@@ -19,7 +19,8 @@ Other options:
 __version__='$Id$'
 
 import re, sys, os
-import wikipedia, upload
+import wikipedia as pywikibot
+import upload
 
 def get_imagelinks(url):
     # Given a URL, get all images linked to by the page at that URL.
@@ -31,7 +32,7 @@ def get_imagelinks(url):
         relativepath=relativepath[:len(relativepath)-1]
         relativepath="/".join(relativepath)
     links = []
-    uo = wikipedia.MyURLopener
+    uo = pywikibot.MyURLopener
     file = uo.open(url)
     text = file.read()
     file.close()
@@ -56,22 +57,26 @@ def main(give_url, image_url, desc):
 
     if url == '':
         if image_url:
-            url = wikipedia.input(u"What URL range should I check (use $ for the part that is changeable)")
+            url = pywikibot.input(
+                u"What URL range should I check (use $ for the part that is changeable)")
         else:
-            url = wikipedia.input(u"From what URL should I get the images?")
+            url = pywikibot.input(
+                u"From what URL should I get the images?")
 
     if image_url:
         minimum=1
         maximum=99
-        answer= wikipedia.input(u"What is the first number to check (default: 1)")
+        answer= pywikibot.input(
+            u"What is the first number to check (default: 1)")
         if answer:
             minimum=int(answer)
-        answer= wikipedia.input(u"What is the last number to check (default: 99)")
+        answer= pywikibot.input(
+            u"What is the last number to check (default: 99)")
         if answer:
             maximum=int(answer)
 
     if not desc:
-        basicdesc = wikipedia.input(
+        basicdesc = pywikibot.input(
             u"What text should be added at the end of the description of each image from this url?")
     else:
         basicdesc = desc
@@ -86,18 +91,22 @@ def main(give_url, image_url, desc):
         ilinks = get_imagelinks(url)
 
     for image in ilinks:
-        answer = wikipedia.inputChoice(u'Include image %s?' % image, ['yes', 'no', 'stop'], ['y', 'N', 's'], 'N')
+        answer = pywikibot.inputChoice(u'Include image %s?'
+                                       % image, ['yes', 'no', 'stop'],
+                                       ['y', 'N', 's'], 'N')
         if answer == 'y':
-            desc = wikipedia.input(u"Give the description of this image:")
+            desc = pywikibot.input(u"Give the description of this image:")
             categories = []
             while True:
-                cat = wikipedia.input(u"Specify a category (or press enter to end adding categories)")
+                cat = pywikibot.input(
+                    u"Specify a category (or press enter to end adding categories)")
                 if not cat.strip(): break
                 if ":" in cat:
                     categories.append("[["+cat+"]]")
                 else:
                     categories.append("[["+mysite.namespace(14)+":"+cat+"]]")
-            desc = desc + "\r\n\r\n" + basicdesc + "\r\n\r\n" + "\r\n".join(categories)
+            desc = desc + "\r\n\r\n" + basicdesc + "\r\n\r\n" + \
+                   "\r\n".join(categories)
             uploadBot = upload.UploadRobot(image, description = desc)
             uploadBot.run()
         elif answer == 's':
@@ -108,7 +117,7 @@ try:
     shown = False
     desc = []
 
-    for arg in wikipedia.handleArgs():
+    for arg in pywikibot.handleArgs():
         if arg == "-pattern":
             image_url = True
         elif arg == "-shown":
@@ -122,7 +131,7 @@ try:
     desc = ' '.join(desc)
 
     fileformats = ('jpg', 'jpeg', 'png', 'gif', 'svg', 'ogg')
-    mysite = wikipedia.getSite()
+    mysite = pywikibot.getSite()
     main(url, image_url, desc)
 finally:
-    wikipedia.stopme()
+    pywikibot.stopme()
