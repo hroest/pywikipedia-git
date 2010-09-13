@@ -201,21 +201,6 @@ class CommonscatBot:
         else:
             (status, always) = self.addCommonscat(page)
         return
-        #####
-        text = self.load(page)
-        if not text:
-            return
-
-        ################################################################
-        # NOTE: Here you can modify the text in whatever way you want. #
-        ################################################################
-
-        # If you find out that you do not want to edit this page, just return.
-        # Example: This puts the text 'Test' at the beginning of the page.
-        text = 'Test ' + text
-
-        if not self.save(text, page, self.summary):
-            pywikibot.output(u'Page %s not saved.' % page.title(asLink=True))
 
     def load(self, page):
         """
@@ -457,10 +442,6 @@ u'Cannot change %s because of spam blacklist entry %s'
                         commonscatNote = template[1][2]
                 else:
                     commonscatTarget = wikipediaPage.titleWithoutNamespace()
-                print commonscatTemplate
-                print commonscatTarget
-                print commonscatLinktext
-                print commonscatNote
                 return (commonscatTemplate, commonscatTarget, commonscatLinktext,
                         commonscatNote)
 
