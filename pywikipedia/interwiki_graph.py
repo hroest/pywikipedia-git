@@ -96,7 +96,7 @@ class GraphDrawer:
             elif self.graph.get_edge(sourceLabel, targetLabel):
                 pywikibot.output(
                     u'BUG: Tried to create duplicate edge from %s to %s'
-                    % (refPage.aslink(), page.aslink()))
+                    % (refPage.title(asLink=True), page.title(asLink=True)))
                 # duplicate edges would be bad because then get_edge() would
                 # give a list of edges, not a single edge when we handle the
                 # opposite edge.
