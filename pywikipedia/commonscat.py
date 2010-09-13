@@ -326,7 +326,6 @@ u'Cannot change %s because of spam blacklist entry %s'
         When all the interwiki's links are checked and a proper category is found
         add it to the page.
         '''
-        always = self.always
         pywikibot.output(u'Working on ' + page.title());
         #Get the right templates for this page
         primaryCommonscat, commonscatAlternatives = self.getCommonscatTemplate(
@@ -341,13 +340,13 @@ u'Cannot change %s because of spam blacklist entry %s'
                 #The current commonscat link is good
                 pywikibot.output(u'Commonscat link at %s to Category:%s is ok'
                                  % (page.title() , currentCommonscatTarget));
-                return (True, always)
+                return (True, self.always)
             elif checkedCommonscatTarget!=u'':
                 #We have a new Commonscat link, replace the old one
                 self.changeCommonscat(page, currentCommonscatTemplate,
                                  currentCommonscatTarget, primaryCommonscat,
                                  checkedCommonscatTarget, LinkText, Note)
-                return (True, always)
+                return (True, self.always)
             else:
                 #Commonscat link is wrong
                 commonscatLink = self.findCommonscatLink(page)
@@ -364,16 +363,19 @@ u'Cannot change %s because of spam blacklist entry %s'
         else:
             commonscatLink = self.findCommonscatLink(page)
             if (commonscatLink!=u''):
-                textToAdd = u'{{' + primaryCommonscat + u'|' + commonscatLink + u'}}'
-                (success, status, always) = add_text.add_text(page, textToAdd,
-                                                              self.summary, None, None,
-                                                              self.always);
-                return (True, always);
+                textToAdd = u'{{%s|%s}}' % (primaryCommonscat, commonscatLink)
+                (success, status, self.always) = add_text.add_text(page,
+                                                                   textToAdd,
+                                                                   self.summary,
+                                                                   None, None,
+                                                                   self.always)
+                return (True, self.always);
 
-        return (True, always);
+        return (True, self.always);
 
-    def changeCommonscat (self, page=None, oldtemplate=u'', oldcat=u'', newtemplate=u'',
-                          newcat=u'', linktitle=u'', description=u''):
+    def changeCommonscat (self, page=None, oldtemplate=u'', oldcat=u'',
+                          newtemplate=u'', newcat=u'', linktitle=u'',
+                          description=u''):
         ''' Change the current commonscat template and target. '''
         if not linktitle and (page.title().lower() in oldcat.lower() or
                               oldcat.lower() in page.title().lower()):
