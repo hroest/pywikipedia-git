@@ -173,10 +173,7 @@ class CommonscatBot:
         self.generator = generator
         self.always = always
         self.dry = False
-        if summary == None:
-            self.summary = pywikibot.translate(pywikibot.getSite(), msg_change)
-        else:
-            self.summary = summary
+        self.summary = summary
 
     def run(self):
         for page in self.generator:
@@ -363,7 +360,11 @@ u'Cannot change %s because of spam blacklist entry %s'
         else:
             commonscatLink = self.findCommonscatLink(page)
             if (commonscatLink!=u''):
-                textToAdd = u'{{%s|%s}}' % (primaryCommonscat, commonscatLink)
+                if commonscatLink == page.title():
+                    textToAdd = u'{{%s}}' % primaryCommonscat
+                else:
+                    textToAdd = u'{{%s|%s}}' % (primaryCommonscat,
+                                                commonscatLink)
                 (success, status, self.always) = add_text.add_text(page,
                                                                    textToAdd,
                                                                    self.summary,
@@ -395,8 +396,11 @@ u'Cannot change %s because of spam blacklist entry %s'
                              %oldtemplate,
                              u'{{%s|%s}}' % (newtemplate, newcat),
                              page.get())
-        comment = pywikibot.translate(page.site(), msg_change) \
-                  % {'oldcat':oldcat, 'newcat':newcat}
+        if self.summary:
+            comment = self.summary
+        else:
+            comment = pywikibot.translate(page.site(), msg_change) \
+                      % {'oldcat':oldcat, 'newcat':newcat}
         self.save(newtext, page, comment)
 
     def findCommonscatLink (self, page=None):
@@ -446,7 +450,6 @@ u'Cannot change %s because of spam blacklist entry %s'
                     commonscatTarget = wikipediaPage.titleWithoutNamespace()
                 return (commonscatTemplate, commonscatTarget, commonscatLinktext,
                         commonscatNote)
-
         return None
 
     def checkCommonscatLink (self, name = ""):
