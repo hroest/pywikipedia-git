@@ -233,7 +233,7 @@ class CommonscatBot:
                         ['Yes', 'No', 'Always', 'Quit'],
                         ['y', 'N', 'a', 'q'], 'N')
                     if choice == 'a':
-                        always = True
+                        self.always = True
                     elif choice == 'q':
                         import sys
                         sys.exit()
