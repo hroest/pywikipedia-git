@@ -6,26 +6,31 @@ Arguments:
 
   -keep         Keep the filename as is
   -filename     Target filename
-  -noverify     Do not ask for verification of the upload description if one is given
+  -noverify     Do not ask for verification of the upload description if one
+                is given
 
-If any other arguments are given, the first is the URL or filename
-to upload, and the rest is a proposed description to go with the
-upload. If none of these are given, the user is asked for the
-file or URL to upload. The bot will then upload the image to the wiki.
+If any other arguments are given, the first is the URL or filename to upload,
+and the rest is a proposed description to go with the upload. If none of these
+are given, the user is asked for the file or URL to upload. The bot will then
+upload the image to the wiki.
 
 The script will ask for the location of an image, if not given as a parameter,
 and for a description.
 """
 #
 # (C) Rob W.W. Hooft, Andre Engels 2003-2004
+# (C) Pywikipedia bot team, 2003-2010
 #
 # Distributed under the terms of the MIT license.
 #
 __version__='$Id$'
+#
 
 import os, sys, time
-import urllib, mimetypes
-import wikipedia, config, query
+import urllib
+import mimetypes
+import wikipedia as pywikibot
+import config, query
 
 def post_multipart(site, address, fields, files, cookies):
     """
@@ -76,6 +81,7 @@ class UploadRobot:
         ignoreWarning - Set this to True if you want to upload even if another
                         file would be overwritten or another mistake would be
                         risked.
+
         """
         self._retrieved = False
         self.url = url
@@ -86,33 +92,33 @@ class UploadRobot:
         self.verifyDescription = verifyDescription
         self.ignoreWarning = ignoreWarning
         if config.upload_to_commons:
-            self.targetSite = targetSite or wikipedia.getSite('commons', 'commons')
+            self.targetSite = targetSite or pywikibot.getSite('commons', 'commons')
         else:
-            self.targetSite = targetSite or wikipedia.getSite()
+            self.targetSite = targetSite or pywikibot.getSite()
         self.targetSite.forceLogin()
         self.uploadByUrl = uploadByUrl
 
     def urlOK(self):
-        '''
-        Returns true iff the URL references an online site or an
-        existing local file.
-        '''
-        return self.url != '' and ('://' in self.url or os.path.exists(self.url))
+        """Return true if self.url looks like an URL or an existing local file.
+
+        """
+        return "://" in self.url or os.path.exists(self.url)
 
     def read_file_content(self):
+        """Return name of temp file in which remote file is saved."""
         if not self._retrieved or self.uploadByUrl:
             # Get file contents
-            wikipedia.output(u'Reading file %s' % self.url)
+            pywikibot.output(u'Reading file %s' % self.url)
             if '://' in self.url:
                 resume = False
                 dt = 15
 
                 while not self._retrieved:
-                    uo = wikipedia.MyURLopener
-                    headers = [('User-agent', wikipedia.useragent)]
+                    uo = pywikibot.MyURLopener
+                    headers = [('User-agent', pywikibot.useragent)]
 
                     if resume:
-                        wikipedia.output(u"Resume download...")
+                        pywikibot.output(u"Resume download...")
                         headers.append(('Range', 'bytes=%s-' % rlen))
                     uo.addheaders = headers
 
@@ -138,18 +144,18 @@ class UploadRobot:
                         content_len = int(content_len)
                         if rlen < content_len:
                             self._retrieved = False
-                            wikipedia.output(u"Connection closed at byte %s (%s left)" % (rlen, content_len))
+                            pywikibot.output(u"Connection closed at byte %s (%s left)" % (rlen, content_len))
                             if accept_ranges and rlen > 0:
                                 resume = True
-                            wikipedia.output(u"Sleeping for %d seconds..." % dt)
+                            pywikibot.output(u"Sleeping for %d seconds..." % dt)
                             time.sleep(dt)
                             if dt <= 60:
                                 dt += 15
                             elif dt < 360:
                                 dt += 60
                     else:
-                        if wikipedia.verbose:
-                            wikipedia.output(u"WARNING: No check length to retrieved data is possible.")
+                        if pywikibot.verbose:
+                            pywikibot.output(u"WARNING: No check length to retrieved data is possible.")
             else:
                 # Opening local files with MyURLopener would be possible, but we
                 # don't do it because it only accepts ASCII characters in the
@@ -159,9 +165,10 @@ class UploadRobot:
                 file.close()
     
     def process_filename(self):
+        """Return base filename portion of self.url"""
         # Isolate the pure name
         filename = self.url
-        
+        # Filename may be either a local file path or a URL
         if '/' in filename:
             filename = filename.split('/')[-1]
         
@@ -174,15 +181,19 @@ class UploadRobot:
         if self.useFilename:
             filename = self.useFilename
         if not self.keepFilename:
-            wikipedia.output(u"The filename on the target wiki will default to: %s" % filename)
-            # ask newfn until it's valid
+            pywikibot.output(
+                u"The filename on the target wiki will default to: %s"
+                % filename)
             ok = False
             # FIXME: these 2 belong somewhere else, presumably in family
             forbidden = '/' # to be extended
-            allowed_formats = (u'gif', u'jpg', u'jpeg', u'mid', u'midi', u'ogg', u'png', u'svg', u'xcf', u'djvu')
+            allowed_formats = (u'gif', u'jpg', u'jpeg', u'mid', u'midi',
+                               u'ogg', u'png', u'svg', u'xcf', u'djvu')
+            # ask until it's valid
             while not ok:
                 ok = True
-                newfn = wikipedia.input(u'Enter a better name, or press enter to accept:')
+                newfn = pywikibot.input(
+                            u'Enter a better name, or press enter to accept:')
                 if newfn == "":
                     newfn = filename
                 ext = os.path.splitext(newfn)[1].lower().strip('.')
@@ -191,7 +202,7 @@ class UploadRobot:
                         print "Invalid character: %s. Please try again" % c
                         ok = False
                 if ext not in allowed_formats and ok:
-                    choice = wikipedia.inputChoice(u"File format is not one of [%s], but %s. Continue?" % (u' '.join(allowed_formats), ext), ['yes', 'no'], ['y', 'N'], 'N')
+                    choice = pywikibot.inputChoice(u"File format is not one of [%s], but %s. Continue?" % (u' '.join(allowed_formats), ext), ['yes', 'no'], ['y', 'N'], 'N')
                     if choice == 'n':
                         ok = False
             if newfn != '':
@@ -200,25 +211,29 @@ class UploadRobot:
         # Replace them here to avoid an extra confirmation form
         filename = filename.replace(' ', '_')
         # A proper description for the submission.
-        wikipedia.output(u"The suggested description is:")
-        wikipedia.output(self.description)
+        pywikibot.output(u"The suggested description is:")
+        pywikibot.output(self.description)
         if self.verifyDescription:
-                newDescription = u''
-                choice = wikipedia.inputChoice(u'Do you want to change this description?', ['Yes', 'No'], ['y', 'N'], 'n')
-                if choice == 'y':
-                        import editarticle
-                        editor = editarticle.TextEditor()
-                        newDescription = editor.edit(self.description)
-                # if user saved / didn't press Cancel
-                if newDescription:
-                        self.description = newDescription
+            newDescription = u''
+            choice = pywikibot.inputChoice(
+                u'Do you want to change this description?',
+                ['Yes', 'No'], ['y', 'N'], 'n')
+            if choice == 'y':
+                import editarticle
+                editor = editarticle.TextEditor()
+                newDescription = editor.edit(self.description)
+            # if user saved / didn't press Cancel
+            if newDescription:
+                self.description = newDescription
         return filename
-    
-    def upload_image(self, debug=False, sessionKey = 0):
-        """Gets the image at URL self.url, and uploads it to the target wiki.
-           Returns the filename which was used to upload the image.
-           If the upload fails, the user is asked whether to try again or not.
-           If the user chooses not to retry, returns null.
+
+    def upload_image(self, debug=False, sessionKey=0):
+        """Upload the image at self.url to the target wiki.
+
+        Return the filename that was used to upload the image.
+        If the upload fails, ask the user whether to try again or not.
+        If the user chooses not to retry, return null.
+
         """
         if not self.targetSite.has_api() or self.targetSite.versionnumber() < 16:
             return self._uploadImageOld(debug)
@@ -245,46 +260,46 @@ class UploadRobot:
         if self.ignoreWarning:
             params['ignorewarnings'] = 1
         
-        wikipedia.output(u'Uploading file to %s via API....' % self.targetSite)
+        pywikibot.output(u'Uploading file to %s via API....' % self.targetSite)
         
         data = query.GetData(params, self.targetSite)
         
-        if wikipedia.verbose:
-            wikipedia.output("%s" % data)
+        if pywikibot.verbose:
+            pywikibot.output("%s" % data)
         
         if 'error' in data: # error occured
             errCode = data['error']['code']
-            wikipedia.output("%s" % data)
+            pywikibot.output("%s" % data)
         else:
             data = data['upload']
             if data['result'] == u'Warning': #upload success but return warning.
-                wikipedia.output("Got warning message:")
+                pywikibot.output("Got warning message:")
                 for k,v in data['warnings'].iteritems():
                     if k == 'duplicate-archive':
-                        wikipedia.output("\tThe file is duplicate a deleted file %s." % v)
+                        pywikibot.output("\tThe file is duplicate a deleted file %s." % v)
                     elif k == 'was-deleted':
-                        wikipedia.output("\tThis file was deleted for %s." % v)
+                        pywikibot.output("\tThis file was deleted for %s." % v)
                     elif k == 'emptyfile':
-                        wikipedia.output("\tFile %s is an empty file." % v)
+                        pywikibot.output("\tFile %s is an empty file." % v)
                     elif k == 'exists':
-                        wikipedia.output("\tFile %s is exists." % v)
+                        pywikibot.output("\tFile %s is exists." % v)
                     elif k == 'duplicate':
-                        wikipedia.output("\tUploaded file is duplicate with %s." % v)
+                        pywikibot.output("\tUploaded file is duplicate with %s." % v)
                     elif k == 'badfilename':
-                        wikipedia.output("\tTarget filename is invalid.")
+                        pywikibot.output("\tTarget filename is invalid.")
                     elif k == 'filetype-unwanted-type':
-                        wikipedia.output("\tFile %s type is unwatched type." % v)
-                answer = wikipedia.inputChoice(u"Do you want to ignore?", ['Yes', 'No'], ['y', 'N'], 'N')
+                        pywikibot.output("\tFile %s type is unwatched type." % v)
+                answer = pywikibot.inputChoice(u"Do you want to ignore?", ['Yes', 'No'], ['y', 'N'], 'N')
                 if answer == "y":
                     self.ignoreWarning = 1
                     self.keepFilename = True
                     return self.upload_image(debug, sessionKey = data['sessionkey'])
                 else:
-                    wikipedia.output("Upload aborted.")
+                    pywikibot.output("Upload aborted.")
                     return
                 
             elif data['result'] == u'Success': #No any warning, upload and online complete.
-                wikipedia.output(u"Upload successful.")
+                pywikibot.output(u"Upload successful.")
                 return filename #data['filename']
         
 
@@ -322,11 +337,11 @@ class UploadRobot:
             try:
                 formdata[key] = formdata[key].encode(self.targetSite.encoding())
             except (UnicodeEncodeError, UnicodeDecodeError):
-                formdata[key] = wikipedia.UnicodeToAsciiHtml(formdata[key]).encode(self.targetSite.encoding())
+                formdata[key] = pywikibot.UnicodeToAsciiHtml(formdata[key]).encode(self.targetSite.encoding())
 
         # don't upload if we're in debug mode
         if not debug:
-            wikipedia.output(u'Uploading file to %s...' % self.targetSite)
+            pywikibot.output(u'Uploading file to %s...' % self.targetSite)
 
             if self.uploadByUrl:
                 # Just do a post with all the fields filled out
@@ -342,16 +357,16 @@ class UploadRobot:
             # an English interface, this detection will fail!
             success_msg = self.targetSite.mediawiki_message('successfulupload')
             if success_msg in returned_html or response.code == 302:
-                 wikipedia.output(u"Upload successful.")
+                 pywikibot.output(u"Upload successful.")
             # The following is not a good idea, because the server also gives a 200 when
             # something went wrong.
             #if response.code in [200, 302]:
-            #    wikipedia.output(u"Upload successful.")
+            #    pywikibot.output(u"Upload successful.")
 
             elif response.code == 301:
-                wikipedia.output(u"Following redirect...")
+                pywikibot.output(u"Following redirect...")
                 address = response.getheader('Location')
-                wikipedia.output(u"Changed upload address to %s. Please update %s.py" % (address, self.targetSite.family.__module__))
+                pywikibot.output(u"Changed upload address to %s. Please update %s.py" % (address, self.targetSite.family.__module__))
                 exec('self.targetSite.upload_address = lambda: %r' % address, locals(), globals())
                 return self.upload_image(debug)
             else:
@@ -361,17 +376,17 @@ class UploadRobot:
                     returned_html = returned_html[returned_html.index('<!-- start content -->') + 22: returned_html.index('<!-- end content -->')]
                 except:
                     pass
-                wikipedia.output(u'%s\n\n' % returned_html)
-                wikipedia.output(u'%i %s' % (response.code, response.msg))
+                pywikibot.output(u'%s\n\n' % returned_html)
+                pywikibot.output(u'%i %s' % (response.code, response.msg))
 
                 if self.targetSite.mediawiki_message('uploadwarning') in returned_html:
-                    answer = wikipedia.inputChoice(u"You have recevied an upload warning message. Ignore?", ['Yes', 'No'], ['y', 'N'], 'N')
+                    answer = pywikibot.inputChoice(u"You have recevied an upload warning message. Ignore?", ['Yes', 'No'], ['y', 'N'], 'N')
                     if answer == "y":
                         self.ignoreWarning = 1
                         self.keepFilename = True
                         return self._uploadImageOld(debug)
                 else:
-                    answer = wikipedia.inputChoice(u'Upload of %s probably failed. Above you see the HTML page which was returned by MediaWiki. Try again?' % filename, ['Yes', 'No'], ['y', 'N'], 'N')
+                    answer = pywikibot.inputChoice(u'Upload of %s probably failed. Above you see the HTML page which was returned by MediaWiki. Try again?' % filename, ['Yes', 'No'], ['y', 'N'], 'N')
                     if answer == "y":
                         return self._uploadImageOld(debug)
                     else:
@@ -381,24 +396,23 @@ class UploadRobot:
     def run(self):
         while not self.urlOK():
             if not self.url:
-                wikipedia.output(u'No input filename given')
+                pywikibot.output(u'No input filename given')
             else:
-                wikipedia.output(u'Invalid input filename given. Try again.')
-            self.url = wikipedia.input(u'File or URL where image is now:')
+                pywikibot.output(u'Invalid input filename given. Try again.')
+            self.url = pywikibot.input(u'File or URL where image is now:')
         return self.upload_image()
 
-def main(args):
+
+def main(*args):
     url = u''
     description = []
     keepFilename = False
     useFilename = None
     verifyDescription = True
 
-    # call wikipedia.py function to process all global wikipedia args
+    # process all global bot args
     # returns a list of non-global args, i.e. args for upload.py
-    args = wikipedia.handleArgs()
-
-    for arg in args:
+    for arg in pywikibot.handleArgs(*args):
         if arg:
             if arg.startswith('-keep'):
                 keepFilename = True
@@ -411,11 +425,13 @@ def main(args):
             else:
                 description.append(arg)
     description = u' '.join(description)
-    bot = UploadRobot(url, description=description, useFilename=useFilename, keepFilename=keepFilename, verifyDescription=verifyDescription)
+    bot = UploadRobot(url, description=description, useFilename=useFilename,
+                      keepFilename=keepFilename,
+                      verifyDescription=verifyDescription)
     bot.run()
 
 if __name__ == "__main__":
     try:
-        main(sys.argv[1:])
+        main()
     finally:
-        wikipedia.stopme()
+        pywikibot.stopme()
