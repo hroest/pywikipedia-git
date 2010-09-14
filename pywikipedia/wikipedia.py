@@ -2525,9 +2525,10 @@ not supported by PyWikipediaBot!"""
         Return value is a list of tuples, where each tuple represents one
         edit and is built of revision id, edit date/time, user name, and
         edit summary. Starts with the most current revision, unless
-        reverseOrder is True. Defaults to getting the first revCount edits,
-        unless getAll is True.
+        reverseOrder is True.
+        Defaults to getting the first revCount edits, unless getAll is True.
 
+        @param revCount: iterate no more than this number of revisions in total
         """
 
         # regular expression matching one edit in the version history.
@@ -2581,8 +2582,8 @@ not supported by PyWikipediaBot!"""
             return self._versionhistory[:revCount]
         return self._versionhistory
 
-    def _getVersionHistory(self, getAll = False, skipFirst = False, reverseOrder = False,
-                               revCount=500):
+    def _getVersionHistory(self, getAll=False, skipFirst=False, reverseOrder=False,
+                           revCount=500):
         """Load history informations by API query.
            Internal use for self.getVersionHistory(), don't use this function directly.
         """
@@ -2594,8 +2595,8 @@ not supported by PyWikipediaBot!"""
             'action': 'query',
             'prop': 'revisions',
             'titles': self.title(),
+            'rvprop': 'ids|timestamp|flags|comment|user|size|tags',
             'rvlimit': revCount,
-            #'': '',
         }
         while not thisHistoryDone:
             if reverseOrder:
@@ -2625,11 +2626,15 @@ not supported by PyWikipediaBot!"""
                         timestampStrr = r['timestamp']
                     if 'user' in r:
                         userStrr = r['user']
-                    dataQ.append((revidStrr, timestampStrr, userStrr, c))
-            
+                    s=-1 #Will return -1 if not found
+                    if 'size' in r:
+                        s = r['size']
+                    tags=[]
+                    if 'tags' in r:
+                        tags = r['tags']
+                    dataQ.append((revidStrr, timestampStrr, userStrr, c, s, tags))
                 if len(result['query']['pages'].values()[0]['revisions']) < revCount:
                     thisHistoryDone = True
-
         return dataQ
     
     def _getVersionHistoryOld(self, getAll = False, skipFirst = False, 
@@ -2697,26 +2702,30 @@ not supported by PyWikipediaBot!"""
                 dataQ.extend(edits)
                 if len(edits) < revCount:
                     thisHistoryDone = True
-        
         return dataQ
 
     def getVersionHistoryTable(self, forceReload=False, reverseOrder=False,
                                getAll=False, revCount=500):
         """Return the version history as a wiki table."""
+
         result = '{| class="wikitable"\n'
-        result += '! oldid || date/time || username || edit summary\n'
-        for oldid, time, username, summary in self.getVersionHistory(forceReload = forceReload, reverseOrder = reverseOrder, getAll = getAll, revCount = revCount):
+        result += '! oldid || date/time || size || username || edit summary\n'
+        for oldid, time, username, summary, size, tags \
+                in self.getVersionHistory(forceReload=forceReload,
+                                          reverseOrder=reverseOrder,
+                                          getAll=getAll, revCount=revCount):
             result += '|----\n'
-            result += '| %s || %s || %s || <nowiki>%s</nowiki>\n' % (oldid, time, username, summary)
+            result += '| %s || %s || %d || %s || <nowiki>%s</nowiki>\n' \
+                      % (oldid, time, size, username, summary)
         result += '|}\n'
         return result
 
     def fullVersionHistory(self):
-        """
-        Return all previous versions including wikitext.
+        """Iterate previous versions including wikitext.
 
         Gives a list of tuples consisting of revision ID, edit date/time, user name and
         content
+
         """
         address = self.site().export_address()
         predata = {
@@ -2738,9 +2747,17 @@ not supported by PyWikipediaBot!"""
                    unescape(match.group('content')))
                 for match in r.finditer(data)  ]
 
-    def contributingUsers(self):
-        """Return a set of usernames (or IPs) of users who edited this page."""
-        edits = self.getVersionHistory()
+    def contributingUsers(self, step=None, total=None):
+        """Return a set of usernames (or IPs) of users who edited this page.
+
+        @param step: limit each API call to this number of revisions
+                     - not used yet, only in rewrite branch -
+        @param total: iterate no more than this number of revisions in total
+
+        """
+        it total == None:
+            total = 500 #set to default of getVersionHistory
+        edits = self.getVersionHistory(revCount=total)
         users = set([edit[2] for edit in edits])
         return users
 
@@ -2749,7 +2766,17 @@ not supported by PyWikipediaBot!"""
         """Move this page to new title given by newtitle. If safe, don't try
         to move and delete if not directly requested.
 
-        * fixredirects has no effect in MW < 1.13"""
+        * fixredirects has no effect in MW < 1.13
+
+        @param newtitle: The new page title.
+        @param reason: The edit summary for the move.
+        @param movetalkpage: If true, move this page's talk page (if it exists)
+        @param sysop: Try to move using sysop account, if available
+        @param deleteAndMove: if move succeeds, delete the old page
+            (usually requires sysop privileges, depending on wiki settings)
+        @param safe: If false, attempt to delete existing page at newtitle
+            (if there is one) and then move this page to that title
+        """
         if not self.site().has_api() or self.site().versionnumber() < 12:
             return self._moveOld(newtitle, reason, movetalkpage, sysop,
               throttle, deleteAndMove, safe, fixredirects, leaveRedirect)
@@ -2769,6 +2796,8 @@ not supported by PyWikipediaBot!"""
         if throttle:
             put_throttle()
         if reason is None:
+            pywikibot.output(u'Moving %s to [[%s]].'
+                             % (self.title(asLink=True), newtitle))
             reason = input(u'Please enter a reason for the move:')
         if self.isTalkPage():
             movetalkpage = False
@@ -2779,7 +2808,6 @@ not supported by PyWikipediaBot!"""
             'to': newtitle,
             'token': self.site().getToken(sysop=sysop),
             'reason': reason,
-            #'': '',
         }
         if movesubpages:
             params['movesubpages'] = 1
