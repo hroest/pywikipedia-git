@@ -767,7 +767,7 @@ class StoredPage(pywikibot.Page):
             StoredPage.SPpath = path
             StoredPage.SPstore = shelve.open(path)
 
-        self.SPkey = self.aslink().encode('utf-8')
+        self.SPkey = self.title(asLink=True).encode('utf-8')
         self.SPcontentSet = False
 
     def SPgetContents(self):
@@ -1072,7 +1072,7 @@ class Subject(object):
             if page == self.originPage:
                 try:
                     pywikibot.output(u"%s has a backlink from %s."
-                                     % (page.aslink(), linkingPage.aslink()))
+                                     % (page.title(asLink=True), linkingPage.title(asLink=True)))
                 except UnicodeDecodeError:
                     pywikibot.output(u"Found a backlink for a page.")
                 self.makeForcedStop(counter)
@@ -1147,10 +1147,10 @@ class Subject(object):
     def wiktionaryMismatch(self, page):
         if globalvar.same=='wiktionary':
             if page.title().lower() != self.originPage.title().lower():
-                pywikibot.output(u"NOTE: Ignoring %s for %s in wiktionary mode" % (page.aslink(), self.originPage.aslink()))
+                pywikibot.output(u"NOTE: Ignoring %s for %s in wiktionary mode" % (page.title(asLink=True), self.originPage.title(asLink=True)))
                 return True
             elif page.title() != self.originPage.title() and self.originPage.site().nocapitalize and page.site().nocapitalize:
-                pywikibot.output(u"NOTE: Ignoring %s for %s in wiktionary mode because both languages are uncapitalized." % (page.aslink(), self.originPage.aslink()))
+                pywikibot.output(u"NOTE: Ignoring %s for %s in wiktionary mode because both languages are uncapitalized." % (page.title(asLink=True), self.originPage.title(asLink=True)))
                 return True
         return False
 
@@ -1205,10 +1205,10 @@ class Subject(object):
 
     def isIgnored(self, page):
         if page.site().language() in globalvar.neverlink:
-            pywikibot.output(u"Skipping link %s to an ignored language" % page.aslink())
+            pywikibot.output(u"Skipping link %s to an ignored language" % page.title(asLink=True))
             return True
         if page in globalvar.ignore:
-            pywikibot.output(u"Skipping link %s to an ignored page" % page.aslink())
+            pywikibot.output(u"Skipping link %s to an ignored page" % page.title(asLink=True))
             return True
         return False
 
@@ -1343,12 +1343,12 @@ class Subject(object):
                     if self.addIfNew(redirectTargetPage, counter, page):
                         if config.interwiki_shownew or pywikibot.verbose:
                             pywikibot.output(u"%s: %s gives new %sredirect %s"
-                                             %  (self.originPage.aslink(), page.aslink(True), redir, redirectTargetPage.aslink(True)))
+                                             %  (self.originPage.title(asLink=True), page.aslink(True), redir, redirectTargetPage.aslink(True)))
                 continue
 
             # must be behind the page.isRedirectPage() part
             # otherwise a redirect error would be raised
-            if page.isEmpty() and not page.isCategory():
+            elif page.isEmpty() and not page.isCategory():
                 globalvar.remove.append(page.aslink(forceInterwiki=True))
                 if not globalvar.quiet or pywikibot.verbose:
                     pywikibot.output(u"NOTE: %s is empty. Skipping." % page.aslink(True))
@@ -1434,7 +1434,7 @@ class Subject(object):
             for linkedPage in iw:
                 if globalvar.hintsareright:
                     if linkedPage.site in self.hintedsites:
-                        pywikibot.output(u"NOTE: %s: %s extra interwiki on hinted site ignored %s" % (self.originPage.aslink(), page.aslink(True), linkedPage.aslink(True)))
+                        pywikibot.output(u"NOTE: %s: %s extra interwiki on hinted site ignored %s" % (self.originPage.title(asLink=True), page.aslink(True), linkedPage.aslink(True)))
                         break
                 if not self.skipPage(page, linkedPage, counter):
                     if globalvar.followinterwiki or page == self.originPage:
@@ -1450,7 +1450,7 @@ class Subject(object):
                                     break
                             else:
                                 if config.interwiki_shownew or pywikibot.verbose:
-                                    pywikibot.output(u"%s: %s gives new interwiki %s"% (self.originPage.aslink(), page.aslink(True), linkedPage.aslink(True)))
+                                    pywikibot.output(u"%s: %s gives new interwiki %s"% (self.originPage.title(asLink=True), page.aslink(True), linkedPage.aslink(True)))
 
         # These pages are no longer 'in progress'
         self.pending = PageTree()
@@ -1803,10 +1803,10 @@ u'NOTE: number of edits are restricted at %s'
             try:
                 if (new[ignorepage.site()] == ignorepage) and (ignorepage.site() != page.site()):
                     if (ignorepage not in interwikis):
-                        pywikibot.output(u"Ignoring link to %(to)s for %(from)s" % {'to': ignorepage.aslink(), 'from': page.aslink()})
+                        pywikibot.output(u"Ignoring link to %(to)s for %(from)s" % {'to': ignorepage.title(asLink=True), 'from': page.title(asLink=True)})
                         new.pop(ignorepage.site())
                     else:
-                        pywikibot.output(u"NOTE: Not removing interwiki from %(from)s to %(to)s (exists both commented and non-commented)" % {'to': ignorepage.aslink(), 'from': page.aslink()})
+                        pywikibot.output(u"NOTE: Not removing interwiki from %(from)s to %(to)s (exists both commented and non-commented)" % {'to': ignorepage.title(asLink=True), 'from': page.title(asLink=True)})
             except KeyError:
                 pass
 
@@ -1874,7 +1874,7 @@ u'NOTE: number of edits are restricted at %s'
             return False
         pywikibot.showDiff(oldtext, newtext)
 
-        # pywikibot.output(u"NOTE: Replace %s" % page.aslink())
+        # pywikibot.output(u"NOTE: Replace %s" % page.title(asLink=True))
         # Determine whether we need permission to submit
         ask = False
         if removing and removing != [page.site()]:   # Allow for special case of a self-pointing interwiki link
