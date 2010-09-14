@@ -109,11 +109,14 @@ def replaceExcept(text, old, new, exceptions, caseInsensitive=False,
             if exc in exceptionRegexes:
                 dontTouchRegexes.append(exceptionRegexes[exc])
             else:
-                # nowiki, noinclude, includeonly, timeline, math ond other extensions
-                dontTouchRegexes.append(re.compile(r'(?is)<%s>.*?</%s>' % (exc, exc)))
+                # nowiki, noinclude, includeonly, timeline, math ond other
+                # extensions
+                dontTouchRegexes.append(re.compile(r'(?is)<%s>.*?</%s>'
+                                                   % (exc, exc)))
             # handle alias
             if exc == 'source':
-                dontTouchRegexes.append(re.compile(r'(?is)<syntaxhighlight .*?</syntaxhighlight>'))
+                dontTouchRegexes.append(re.compile(
+                    r'(?is)<syntaxhighlight .*?</syntaxhighlight>'))
         else:
             # assume it's a regular expression
             dontTouchRegexes.append(exc)
@@ -167,8 +170,11 @@ def replaceExcept(text, old, new, exceptions, caseInsensitive=False,
                     groupMatch = groupR.search(replacement)
                     if not groupMatch:
                         break
-                    groupID = groupMatch.group('name') or int(groupMatch.group('number'))
-                    replacement = replacement[:groupMatch.start()] + match.group(groupID) + replacement[groupMatch.end():]
+                    groupID = groupMatch.group('name') or \
+                              int(groupMatch.group('number'))
+                    replacement = replacement[:groupMatch.start()] + \
+                                  match.group(groupID) + \
+                                  replacement[groupMatch.end():]
             text = text[:match.start()] + replacement + text[match.end():]
 
             # continue the search on the remaining text
@@ -193,6 +199,7 @@ def removeDisabledParts(text, tags = ['*']):
 
     The exact set of parts which should be removed can be passed as the
     'parts' parameter, which defaults to all.
+
     """
     regexes = {
             'comments' :       r'<!--.*?-->',
@@ -247,7 +254,9 @@ def expandmarker(text, marker = '', separator = ''):
         striploopcontinue = True
         while firstinseparator > 0 and striploopcontinue:
             striploopcontinue = False
-            if (firstinseparator >= lenseparator) and (separator == text[firstinseparator-lenseparator:firstinseparator]):
+            if (firstinseparator >= lenseparator) and \
+               (separator == text[firstinseparator - \
+                                  lenseparator : firstinseparator]):
                 firstinseparator -= lenseparator
                 striploopcontinue = True
             elif text[firstinseparator-1] < ' ':
@@ -266,7 +275,7 @@ def expandmarker(text, marker = '', separator = ''):
 #        or change links to a different project, or any that are formatted
 #        as in-line interwiki links (e.g., "[[:es:Articulo]]".  (CONFIRM)
 
-def getLanguageLinks(text, insite = None, pageLink = "[[]]", template_subpage=False):
+def getLanguageLinks(text, insite=None, pageLink="[[]]", template_subpage=False):
     """
     Return a dict of interlanguage links found in text.
 
@@ -303,7 +312,7 @@ def getLanguageLinks(text, insite = None, pageLink = "[[]]", template_subpage=Fa
             # we want the actual page objects rather than the titles
             site = insite.getSite(code = lang)
             try:
-                result[site] = pywikibot.Page(site, pagetitle, insite = insite)
+                result[site] = pywikibot.Page(site, pagetitle, insite=insite)
             except pywikibot.InvalidTitle:
                 pywikibot.output(
         u"[getLanguageLinks] Text contains invalid interwiki link [[%s:%s]]."
@@ -336,7 +345,7 @@ def removeLanguageLinks(text, site = None, marker = ''):
     return text.strip()
 
 
-def removeLanguageLinksAndSeparator(text, site = None, marker = '', separator = ''):
+def removeLanguageLinksAndSeparator(text, site=None, marker='', separator=''):
     """
     Return text with all interlanguage links, plus any preceeding whitespace
     and separateor occurrences removed.
@@ -356,8 +365,8 @@ def removeLanguageLinksAndSeparator(text, site = None, marker = '', separator = 
         return removeLanguageLinks(text, site, marker)
 
 
-def replaceLanguageLinks(oldtext, new, site = None, addOnly = False,
-    template = False, template_subpage = False):
+def replaceLanguageLinks(oldtext, new, site=None, addOnly=False,
+    template=False, template_subpage=False):
     """Replace interlanguage links in the text with a new set of links.
 
     'new' should be a dict with the Site objects as keys, and Page or Link
@@ -402,9 +411,12 @@ def replaceLanguageLinks(oldtext, new, site = None, addOnly = False,
                          site) + separator + s
                 newtext = replaceCategoryLinks(s2, cats, site=site,
                                                addOnly=True)
-            elif site.family.name == 'wikitravel':     # for Wikitravel's language links position.
+            # for Wikitravel's language links position.
+            # (not supported by rewrite - no API)
+            elif site.family.name == 'wikitravel':
                 s = separator + s + separator
-                newtext = s2[:firstafter].replace(marker,'') + s + s2[firstafter:]
+                newtext = s2[:firstafter].replace(marker,'') + s + \
+                          s2[firstafter:]
             else:
                 if template or template_subpage:
                     if template_subpage:
@@ -423,7 +435,8 @@ def replaceLanguageLinks(oldtext, new, site = None, addOnly = False,
                         newtext = regexp.sub(s + includeOff, s2)
                     else:
                         # Put the langlinks at the end, inside noinclude's
-                        newtext = s2.replace(marker,'').strip() + separator + u'%s\n%s%s\n' % (includeOn, s, includeOff)
+                        newtext = s2.replace(marker,'').strip() + separator + \
+                                  u'%s\n%s%s\n' % (includeOn, s, includeOff)
                 else:
                     newtext = s2.replace(marker,'').strip() + separator + s
     else:
@@ -492,7 +505,7 @@ def interwikiSort(sites, insite = None):
 # Functions dealing with category links
 #---------------------------------------
 
-def getCategoryLinks(text, site = None):
+def getCategoryLinks(text, site=None):
     import catlib
     """Return a list of category links found in text.
 
@@ -501,15 +514,15 @@ def getCategoryLinks(text, site = None):
 
     """
     result = []
-
     if site is None:
         site = pywikibot.getSite()
-        
     # Ignore category links within nowiki tags, pre tags, includeonly tags,
     # and HTML comments
     text = removeDisabledParts(text)
     catNamespace = '|'.join(site.category_namespaces())
-    R = re.compile(r'\[\[\s*(?P<namespace>%s)\s*:\s*(?P<catName>.+?)(?:\|(?P<sortKey>.+?))?\s*\]\]' % catNamespace, re.I)
+    R = re.compile(r'\[\[\s*(?P<namespace>%s)\s*:\s*(?P<catName>.+?)'
+                   r'(?:\|(?P<sortKey>.+?))?\s*\]\]'
+                   % catNamespace, re.I)
     for match in R.finditer(text):
         cat = catlib.Category(site,
                                  '%s:%s' % (match.group('namespace'),
@@ -519,7 +532,7 @@ def getCategoryLinks(text, site = None):
     return result
 
 
-def removeCategoryLinks(text, site = None, marker = ''):
+def removeCategoryLinks(text, site=None, marker=''):
     """Return text with all category links removed.
 
     Put the string marker after the last replacement (at the end of the text
@@ -530,10 +543,8 @@ def removeCategoryLinks(text, site = None, marker = ''):
     # interwiki link, plus trailing whitespace. The language code is grouped.
     # NOTE: This assumes that language codes only consist of non-capital
     # ASCII letters and hyphens.
-
     if site is None:
         site = pywikibot.getSite()
-    
     catNamespace = '|'.join(site.category_namespaces())
     categoryR = re.compile(r'\[\[\s*(%s)\s*:.*?\]\]\s*' % catNamespace, re.I)
     text = replaceExcept(text, categoryR, '',
@@ -555,10 +566,8 @@ def removeCategoryLinksAndSeparator(text, site=None, marker='', separator=''):
     if there is no replacement).
 
     """
-
     if site is None:
         site = pywikibot.getSite()
-
     if separator:
         mymarker = findmarker(text, u'@C@')
         newtext = removeCategoryLinks(text, site, mymarker)
@@ -620,7 +629,8 @@ def replaceCategoryLinks(oldtext, new, site = None, addOnly = False):
 The PyWikipediaBot is no longer allowed to touch categories on the German
 Wikipedia on pages that contain the Personendaten template because of the
 non-standard placement of that template.
-See http://de.wikipedia.org/wiki/Hilfe_Diskussion:Personendaten/Archiv/bis_2006#Position_der_Personendaten_am_.22Artikelende.22""")
+See http://de.wikipedia.org/wiki/Hilfe_Diskussion:Personendaten/Archiv/bis_2006#Position_der_Personendaten_am_.22Artikelende.22
+""")
     separator = site.family.category_text_separator
     iseparator = site.family.interwiki_text_separator
     separatorstripped = separator.strip()
@@ -646,12 +656,16 @@ See http://de.wikipedia.org/wiki/Hilfe_Diskussion:Personendaten/Archiv/bis_2006#
             if "</noinclude>" in s2[firstafter:]:
                 if separatorstripped:
                     s = separator + s
-                newtext = s2[:firstafter].replace(marker,'') + s + s2[firstafter:]
+                newtext = s2[:firstafter].replace(marker, '') + s + \
+                          s2[firstafter:]
             elif site.language() in site.family.categories_last:
                 newtext = s2.replace(marker,'').strip() + separator + s
             else:
                 interwiki = getLanguageLinks(s2)
-                s2 = removeLanguageLinksAndSeparator(s2.replace(marker,''), site, '', iseparatorstripped) + separator + s
+                s2 = removeLanguageLinksAndSeparator(s2.replace(marker, ''),
+                                                     site, '',
+                                                     iseparatorstripped
+                                                     ) + separator + s
                 newtext = replaceLanguageLinks(s2, interwiki, site=site,
                                                addOnly=True)
     else:
@@ -671,7 +685,7 @@ def categoryFormat(categories, insite = None):
         return ''
     if insite is None:
         insite = pywikibot.getSite()
-    catLinks = [category.aslink(noInterwiki = True) for category in categories]
+    catLinks = [category.aslink(noInterwiki=True) for category in categories]
     if insite.category_on_one_line():
         sep = ' '
     else:
@@ -717,7 +731,7 @@ def compileLinkR(withoutBracketed=False, onlyBracketed=False):
 # Functions dealing with templates
 #----------------------------------
 
-def extract_templates_and_params(text, get_redirect=False):
+def extract_templates_and_params(text):
     """Return list of template calls found in text.
 
     Return value is a list of tuples. There is one tuple for each use of a
@@ -954,10 +968,11 @@ def _altlang(code):
     if code == 'ckb':
         return ['ku', 'ar']
     #Chinese
-    if code in ['minnan', 'zh', 'zh-classical', 'zh-min-nan', 'zh-tw', 'zh-hans', 'zh-hant']:
+    if code in ['minnan', 'zh', 'zh-classical', 'zh-min-nan', 'zh-tw',
+                'zh-hans', 'zh-hant']:
         return ['zh', 'zh-tw', 'zh-cn', 'zh-classical']
-    if code in ['cdo', 'gan', 'hak', 'ii', 'wuu', 'za', 'zh-cdo', 'zh-classical',
-                'zh-cn', 'zh-yue']:
+    if code in ['cdo', 'gan', 'hak', 'ii', 'wuu', 'za', 'zh-cdo',
+                'zh-classical', 'zh-cn', 'zh-yue']:
         return ['zh', 'zh-cn', 'zh-tw', 'zh-classical']
     #Scandinavian languages
     if code in ['da', 'sv']:
