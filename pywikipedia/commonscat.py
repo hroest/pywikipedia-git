@@ -472,7 +472,7 @@ u'Cannot change %s because of spam blacklist entry %s'
             elif commonsPage.isRedirectPage():
                 if pywikibot.verbose:
                     pywikibot.output(u"getCommonscat: The category is a redirect")
-                return checkCommonscatLink(
+                return self.checkCommonscatLink(
                     commonsPage.getRedirectTarget().titleWithoutNamespace())
             elif "Category redirect" in commonsPage.templates():
                 if pywikibot.verbose:
