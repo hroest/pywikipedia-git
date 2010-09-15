@@ -585,7 +585,7 @@ not supported by PyWikipediaBot!"""
         return self.autoFormat()[0] is not None
 
     def get(self, force=False, get_redirect=False, throttle=True,
-            sysop=False, change_edit_time=True):
+            sysop=False, change_edit_time=True, expandtemplates=False):
         """Return the wiki-text of the page.
 
         This will retrieve the page from the server if it has not been
@@ -604,6 +604,8 @@ not supported by PyWikipediaBot!"""
         If change_edit_time is False, do not check this version for changes
         before saving. This should be used only if the page has been loaded
         previously.
+        If expandtemplates is True, all templates in the page content are
+        fully resolved too (if API is used).
 
         """
         # NOTE: The following few NoPage exceptions could already be thrown at
@@ -622,7 +624,7 @@ not supported by PyWikipediaBot!"""
         if self.site().isInterwikiLink(self.title()):
             raise NoPage('%s is not a local page on %s!'
                          % (self.aslink(), self.site()))
-        if force:
+        if force or expandtemplates:
             # When forcing, we retry the page no matter what. Old exceptions
             # and contents do not apply any more.
             for attr in ['_redirarg', '_getexception', '_contents']:
@@ -640,7 +642,8 @@ not supported by PyWikipediaBot!"""
         # Make sure we did try to get the contents once
         if not hasattr(self, '_contents'):
             try:
-                self._contents = self._getEditPage(get_redirect = get_redirect, throttle = throttle, sysop = sysop)
+                self._contents = self._getEditPage(get_redirect=get_redirect, throttle=throttle, sysop=sysop,
+                                                   expandtemplates = expandtemplates)
                 hn = self.section()
                 if hn:
                     m = re.search("=+ *%s *=+" % hn, self._contents)
@@ -669,7 +672,7 @@ not supported by PyWikipediaBot!"""
         return self._contents
 
     def _getEditPage(self, get_redirect=False, throttle=True, sysop=False,
-                     oldid=None, change_edit_time=True):
+                     oldid=None, change_edit_time=True, expandtemplates=False):
         """Get the contents of the Page via API query
 
         Do not use this directly, use get() instead.
@@ -677,6 +680,8 @@ not supported by PyWikipediaBot!"""
         Arguments:
             oldid - Retrieve an old revision (by id), not the current one
             get_redirect  - Get the contents, even if it is a redirect page
+        expandtemplates - Fully resolve templates within page content
+                          (if API is used)
 
         This method returns the raw wiki text as a unicode string.
         """
@@ -694,6 +699,8 @@ not supported by PyWikipediaBot!"""
         }
         if oldid:
             params['rvstartid'] = oldid
+        if expandtemplates:
+            params[u'rvexpandtemplates'] = u''
 
         if throttle:
             get_throttle()
