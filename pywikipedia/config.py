@@ -578,11 +578,13 @@ if __name__ == "__main__":
     for _name in _k:
         if _name[0] != '_':
             if not type(globals()[_name]) in [types.FunctionType, types.ModuleType]:
-                if _all or _glv[_name] != globals()[_name]:
-                    print _name, "=", repr(globals()[_name])
+                try: 
+                    if _all or _glv[_name] != globals()[_name]:
+                        print _name, "=", repr(globals()[_name])
+                except KeyError:
+                    print _name, "=(new)=", repr(globals()[_name])
 
 # cleanup all locally-defined variables
-
 for __var in globals().keys():
     if __var.startswith("_") and not __var.startswith("__"):
         del __sys.modules[__name__].__dict__[__var]
