@@ -2559,8 +2559,11 @@ not supported by PyWikipediaBot!"""
                 dataQuery = self._versionhistoryearliest
             else:
                 thisHistoryDone = True
-        elif not hasattr(self, '_versionhistory') or forceReload:
+        elif not hasattr(self, '_versionhistory') or forceReload or \
+             len(self._versionhistory) < revCount:
             self._versionhistory = []
+        # ?? does not load if len(self._versionhistory) > revCount
+        # shouldn't it
         elif getAll and len(self._versionhistory) == revCount:
             # Cause a reload, or at least make the loop run
             thisHistoryDone = False
@@ -3907,7 +3910,7 @@ class _GetAll(object):
         successful = False
         for page2 in self.pages:
             if page2.sectionFreeTitle() == page.sectionFreeTitle():
-                if not (hasattr(page2,'_contents') or hasattr(page2,'_getexception')) or self.force:
+                if not (hasattr(page2,'_contents') or hasattr(page2, '_getexception')) or self.force:
                     page2.editRestriction = entry.editRestriction
                     page2.moveRestriction = entry.moveRestriction
                     if editRestriction == 'autoconfirmed':
@@ -3917,6 +3920,7 @@ class _GetAll(object):
                     page2._ipedit = ipedit
                     page2._revisionId = revisionId
                     page2._editTime = timestamp
+                    page2._versionhistory = [(revisionId, str(Timestamp.fromtimestampformat(timestamp)), username, entry.comment)]
                     section = page2.section()
                     # Store the content
                     page2._contents = text
