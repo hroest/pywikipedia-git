@@ -3920,7 +3920,8 @@ class _GetAll(object):
                     page2._ipedit = ipedit
                     page2._revisionId = revisionId
                     page2._editTime = timestamp
-                    page2._versionhistory = [(revisionId, str(Timestamp.fromtimestampformat(timestamp)), username, entry.comment)]
+##                    leads to a bug with python 2.4.3 tracker 3066934
+##                    page2._versionhistory = [(revisionId, str(Timestamp.fromtimestampformat(timestamp)), username, entry.comment)]
                     section = page2.section()
                     # Store the content
                     page2._contents = text
