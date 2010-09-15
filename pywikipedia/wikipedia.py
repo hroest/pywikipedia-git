@@ -2755,7 +2755,7 @@ not supported by PyWikipediaBot!"""
         @param total: iterate no more than this number of revisions in total
 
         """
-        it total == None:
+        if total == None:
             total = 500 #set to default of getVersionHistory
         edits = self.getVersionHistory(revCount=total)
         users = set([edit[2] for edit in edits])
