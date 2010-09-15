@@ -6448,20 +6448,24 @@ u"""WARNING: Could not open '%s'. Maybe the server or\n your connection is down.
             params['apfilterredir'] = 'redirects'
 
         while True:
-
             if throttle:
                 get_throttle()
             data = query.GetData(params, self)
+            if verbose:
+                print 'DEBUG allpages>>> data.keys()', data.keys()
             if 'warnings' in data:
                 warning = data['warnings']['allpages']['*']
                 raise str(warning)
+            if 'error' in data:
+                raise RuntimeError("API query error: %s" % data)
+            if not 'allpages' in data['query']:
+                raise RuntimeError("API query error, no pages found: %s" % data)
             count = 0
             for p in data['query']['allpages']:
                 count += 1
                 yield Page(self, p['title'])
                 if count >= config.special_page_limit:
                     break
-
             if 'query-continue' in data and count < params['aplimit']:
                 params['apfrom'] = data['query-continue']['allpages']['apfrom']
             else:
