@@ -3910,7 +3910,8 @@ class _GetAll(object):
         successful = False
         for page2 in self.pages:
             if page2.sectionFreeTitle() == page.sectionFreeTitle():
-                if not (hasattr(page2,'_contents') or hasattr(page2, '_getexception')) or self.force:
+                if not (hasattr(page2,'_contents') or \
+                        hasattr(page2, '_getexception')) or self.force:
                     page2.editRestriction = entry.editRestriction
                     page2.moveRestriction = entry.moveRestriction
                     if editRestriction == 'autoconfirmed':
@@ -3920,8 +3921,12 @@ class _GetAll(object):
                     page2._ipedit = ipedit
                     page2._revisionId = revisionId
                     page2._editTime = timestamp
-##                    leads to a bug with python 2.4.3 tracker 3066934
-##                    page2._versionhistory = [(revisionId, str(Timestamp.fromtimestampformat(timestamp)), username, entry.comment)]
+                    page2._versionhistory = [
+                        (revisionId,
+                         time.strftime("%Y-%m-%dT%H:%M:%SZ",
+                                       time.strptime(str(timestamp),
+                                                     "%Y%m%d%H%M%S")),
+                         username, entry.comment)]
                     section = page2.section()
                     # Store the content
                     page2._contents = text
@@ -3936,13 +3941,16 @@ class _GetAll(object):
 
                     # This is used for checking deletion conflict.
                     # Use the data loading time.
-                    page2._startTime = time.strftime('%Y%m%d%H%M%S', time.gmtime())
+                    page2._startTime = time.strftime('%Y%m%d%H%M%S',
+                                                     time.gmtime())
                     if section:
-                        m = re.search("\.3D\_*(\.27\.27+)?(\.5B\.5B)?\_*%s\_*(\.5B\.5B)?(\.27\.27+)?\_*\.3D" % re.escape(section), sectionencode(text,page2.site().encoding()))
+                        m = re.search("\.3D\_*(\.27\.27+)?(\.5B\.5B)?\_*%s\_*(\.5B\.5B)?(\.27\.27+)?\_*\.3D"
+                                      % re.escape(section), sectionencode(text,page2.site().encoding()))
                         if not m:
                             try:
                                 page2._getexception
-                                output(u"WARNING: Section not found: %s" % page2.aslink(forceInterwiki = True))
+                                output(u"WARNING: Section not found: %s"
+                                       % page2.aslink(forceInterwiki = True))
                             except AttributeError:
                                 # There is no exception yet
                                 page2._getexception = SectionError
@@ -3950,8 +3958,10 @@ class _GetAll(object):
                 # Note that there is no break here. The reason is that there
                 # might be duplicates in the pages list.
         if not successful:
-            output(u"BUG>> title %s (%s) not found in list" % (title, page.aslink(forceInterwiki=True)))
-            output(u'Expected one of: %s' % u','.join([page2.aslink(forceInterwiki=True) for page2 in self.pages]))
+            output(u"BUG>> title %s (%s) not found in list"
+                   % (title, page.aslink(forceInterwiki=True)))
+            output(u'Expected one of: %s'
+                   % u','.join([page2.aslink(forceInterwiki=True) for page2 in self.pages]))
             raise PageNotFound
 
     def headerDone(self, header):
