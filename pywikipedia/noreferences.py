@@ -33,9 +33,10 @@ a list of affected articles
 
 __version__='$Id$'
 
-import wikipedia, pagegenerators, catlib
-import editarticle
 import re, sys
+import wikipedia as pywikibot
+import pagegenerators, catlib
+import editarticle
 
 # This is required for the text that is shown when you run this script
 # with the parameter -help.
@@ -45,25 +46,26 @@ docuReplacements = {
 
 # Summary messages in different languages
 msg = {
-    'ar':u'روبوت: إضافة وسم <references /> مفقود',
-    'cs':u'Robot doplnil chybějící <references />',
-    'de':u'Bot: Trage fehlendes <references /> nach',
-    'en':u'Robot: Adding missing <references /> tag',
-    'ru':u'Robot: Добавлен отсутствующий тег <references />',
-    'eo':u'Roboto: Aldono de "<references />"',
-    'fa':u'ربات: برچسب <references /> فراموش شده‌است',
-    'fi':u'Botti lisäsi puuttuvan {{viitteet}}-mallineen',
-    'he':u'בוט: מוסיף תגית <references /> חסרה',
-    'hu':u'Hiányzó {{Források}} pótlása',
-    'it':u'Bot: Aggiungo il tag <references /> mancante',
-    'ja':u'ロボットによる: <references /> タグの補完。',
-    'ko':u'봇: 이전에 없던 <references /> 추가',
-    'lt':u'robotas: Pridedama trūkstama <references /> žymė',
-    'nl':u'Bot: toevoeging ontbrekende <references /> tag',
-    'pl':u'Robot dodaje szablon {{przypisy}}',
-    'pt':u'Bot: Adicionando a tag <references />',
-    'zh':u'機器人: 增加遺失的 <references /> 標籤',
-    'fr':u'Robot: Ajout de la balise <references /> manquante',
+    'ar': u'روبوت: إضافة وسم <references /> مفقود',
+    'cs': u'Robot doplnil chybějící <references />',
+    'de': u'Bot: Trage fehlendes <references /> nach',
+    'en': u'Robot: Adding missing <references /> tag',
+    'eo': u'Roboto: Aldono de "<references />"',
+    'fa': u'ربات: برچسب <references /> فراموش شده‌است',
+    'fi': u'Botti lisäsi puuttuvan {{viitteet}}-mallineen',
+    'fr': u'Robot: Ajout de la balise <references /> manquante',
+    'he': u'בוט: מוסיף תגית <references /> חסרה',
+    'hu': u'Hiányzó {{Források}} pótlása',
+    'it': u'Bot: Aggiungo il tag <references /> mancante',
+    'ja': u'ロボットによる: <references /> タグの補完。',
+    'ko': u'봇: 이전에 없던 <references /> 추가',
+    'lt': u'robotas: Pridedama trūkstama <references /> žymė',
+    'nl': u'Bot: toevoeging ontbrekende <references /> tag',
+    'pdc':u'Waddefresse: Fehlendes <references /> dezu geduh',
+    'pl': u'Robot dodaje szablon {{przypisy}}',
+    'pt': u'Bot: Adicionando a tag <references />',
+    'ru': u'Robot: Добавлен отсутствующий тег <references />',
+    'zh': u'機器人: 增加遺失的 <references /> 標籤',
 }
 
 # References sections are usually placed before further reading / external
@@ -161,6 +163,15 @@ placeBeforeSections = {
         u'Externe verwijzingen',
         u'Externe verwijzing',
     ],
+    'pdc': [
+        u'Beweisunge',
+        u'Quelle unn Literatur',
+        u'Gwelle',
+        u'Gwuelle',
+        u'Auswenniche Gleecher',
+        u'Gewebbgleecher',
+        u'Guckt mol aa',
+        u'Seh aa',
     'pl': [
         u'Źródła',
         u'Bibliografia',
@@ -269,6 +280,9 @@ referencesSections = {
         u'Noten',
         u'Bronvermelding',
     ],
+    'pdc': [
+        u'Aamarrickunge',
+    ],
     'pl': [
         u'Przypisy',
         u'Ogólne przypisy',
@@ -338,6 +352,7 @@ referencesSubstitute = {
     },
 }
 
+
 class XmlDumpNoReferencesPageGenerator:
     """
     Generator which will yield Pages that might lack a references tag.
@@ -351,32 +366,37 @@ class XmlDumpNoReferencesPageGenerator:
         """
         self.xmlFilename = xmlFilename
         self.refR = re.compile('</ref>', re.IGNORECASE)
-        # The references tab can contain additional spaces and a group attribute.
+        # The references tab can contain additional spaces and a group
+        # attribute.
         self.referencesR = re.compile('<references.*?/>', re.IGNORECASE)
 
     def __iter__(self):
         import xmlreader
         dump = xmlreader.XmlDump(self.xmlFilename)
         for entry in dump.parse():
-            text = wikipedia.removeDisabledParts(entry.text)
+            text = pywikibot.removeDisabledParts(entry.text)
             if self.refR.search(text) and not self.referencesR.search(text):
-                yield wikipedia.Page(wikipedia.getSite(), entry.title)
+                yield pywikibot.Page(pywikibot.getSite(), entry.title)
+
 
 class NoReferencesBot:
 
     def __init__(self, generator, always = False):
         self.generator = generator
         self.always = always
-        self.site = wikipedia.getSite()
+        self.site = pywikibot.getSite()
         self.refR = re.compile('</ref>', re.IGNORECASE)
         self.referencesR = re.compile('<references.*?/>', re.IGNORECASE)
-        self.referencesTagR = re.compile('<references>.*?</references>', re.IGNORECASE|re.DOTALL)
+        self.referencesTagR = re.compile('<references>.*?</references>',
+                                         re.IGNORECASE|re.DOTALL)
         try:
-            self.referencesTemplates = referencesTemplates[wikipedia.getSite().family.name][wikipedia.getSite().lang]
+            self.referencesTemplates = referencesTemplates[
+                pywikibot.getSite().family.name][pywikibot.getSite().lang]
         except KeyError:
             self.referencesTemplates = []
         try:
-            self.referencesText = referencesSubstitute[wikipedia.getSite().family.name][wikipedia.getSite().lang]
+            self.referencesText = referencesSubstitute[
+                pywikibot.getSite().family.name][pywikibot.getSite().lang]
         except KeyError:
             self.referencesText = u'<references />'
 
@@ -384,25 +404,26 @@ class NoReferencesBot:
         """
         Checks whether or not the page is lacking a references tag.
         """
-        oldTextCleaned = wikipedia.removeDisabledParts(text)
+        oldTextCleaned = pywikibot.removeDisabledParts(text)
         if self.referencesR.search(oldTextCleaned) or \
            self.referencesTagR.search(oldTextCleaned):
             if verbose:
-                wikipedia.output(u'No changes necessary: references tag found.')
+                pywikibot.output(u'No changes necessary: references tag found.')
             return False
         elif self.referencesTemplates:
             templateR = u'{{(' + u'|'.join(self.referencesTemplates) + ')'
             if re.search(templateR, oldTextCleaned, re.IGNORECASE|re.UNICODE):
                 if verbose:
-                    wikipedia.output(u'No changes necessary: references template found.')
+                    pywikibot.output(
+                        u'No changes necessary: references template found.')
                 return False
         if not self.refR.search(oldTextCleaned):
             if verbose:
-                wikipedia.output(u'No changes necessary: no ref tags found.')
+                pywikibot.output(u'No changes necessary: no ref tags found.')
             return False
         else:
             if verbose:
-                wikipedia.output(u'Found ref without references.')
+                pywikibot.output(u'Found ref without references.')
             return True
 
     def addReferences(self, oldText):
@@ -411,38 +432,47 @@ class NoReferencesBot:
         into. If there is no such section, creates a new section containing
         the references tag.
         * Returns : The modified pagetext
-        """
 
+        """
         # Is there an existing section where we can add the references tag?
-        for section in wikipedia.translate(self.site, referencesSections):
+        for section in pywikibot.translate(self.site, referencesSections):
             sectionR = re.compile(r'\r\n=+ *%s *=+ *\r\n' % section)
             index = 0
             while index < len(oldText):
                 match = sectionR.search(oldText, index)
                 if match:
-                    if wikipedia.isDisabled(oldText, match.start()):
-                        wikipedia.output('Existing  %s section is commented out, skipping.' % section)
+                    if pywikibot.isDisabled(oldText, match.start()):
+                        pywikibot.output(
+                            'Existing  %s section is commented out, skipping.'
+                            % section)
                         index = match.end()
                     else:
-                        wikipedia.output(u'Adding references tag to existing %s section...\n' % section)
+                        pywikibot.output(
+                            u'Adding references tag to existing %s section...\n'
+                            % section)
                         newText = oldText[:match.end()] + u'\n' + self.referencesText + u'\n' + oldText[match.end():]
                         return newText
                 else:
                     break
 
         # Create a new section for the references tag
-        for section in wikipedia.translate(self.site, placeBeforeSections):
+        for section in pywikibot.translate(self.site, placeBeforeSections):
             # Find out where to place the new section
-            sectionR = re.compile(r'\r\n(?P<ident>=+) *%s *(?P=ident) *\r\n' % section)
+            sectionR = re.compile(r'\r\n(?P<ident>=+) *%s *(?P=ident) *\r\n'
+                                  % section)
             index = 0
             while index < len(oldText):
                 match = sectionR.search(oldText, index)
                 if match:
-                    if wikipedia.isDisabled(oldText, match.start()):
-                        wikipedia.output('Existing  %s section is commented out, won\'t add the references in front of it.' % section)
+                    if pywikibot.isDisabled(oldText, match.start()):
+                        pywikibot.output(
+                            'Existing  %s section is commented out, won\'t add the references in front of it.'
+                            % section)
                         index = match.end()
                     else:
-                        wikipedia.output(u'Adding references section before %s section...\n' % section)
+                        pywikibot.output(
+                            u'Adding references section before %s section...\n'
+                            % section)
                         index = match.start()
                         ident = match.group('ident')
                         return self.createReferenceSection(oldText, index, ident)
@@ -461,9 +491,13 @@ class NoReferencesBot:
         categoryPattern  = r'\[\[\s*(%s)\s*:[^\n]*\]\]\s*' % catNamespaces
         interwikiPattern = r'\[\[([a-zA-Z\-]+)\s?:([^\[\]\n]*)\]\]\s*'
         # won't work with nested templates
-        templatePattern  = r'{{((?!}}).)+?}}\s*' # the negative lookahead assures that we'll match the last template occurence in the temp text.
+        # the negative lookahead assures that we'll match the last template
+        # occurence in the temp text.
+        templatePattern  = r'{{((?!}}).)+?}}\s*'
         commentPattern   = r'<!--((?!-->).)*?-->\s*'
-        metadataR = re.compile(r'(\r\n)?(%s|%s|%s|%s)$' % (categoryPattern, interwikiPattern, templatePattern, commentPattern), re.DOTALL)
+        metadataR = re.compile(r'(\r\n)?(%s|%s|%s|%s)$'
+                               % (categoryPattern, interwikiPattern,
+                                  templatePattern, commentPattern), re.DOTALL)
         tmpText = oldText
         while True:
             match = metadataR.search(tmpText)
@@ -471,21 +505,24 @@ class NoReferencesBot:
                 tmpText = tmpText[:match.start()]
             else:
                 break
-        wikipedia.output(u'Found no section that can be preceeded by a new references section. Placing it before interwiki links, categories, and bottom templates.')
+        pywikibot.output(
+            u'Found no section that can be preceeded by a new references section. Placing it before interwiki links, categories, and bottom templates.')
         index = len(tmpText)
         return self.createReferenceSection(oldText, index)
 
     def createReferenceSection(self, oldText, index, ident = '=='):
-        newSection = u'\n%s %s %s\n%s\n' % (ident, wikipedia.translate(self.site, referencesSections)[0], ident, self.referencesText)
+        newSection = u'\n%s %s %s\n%s\n' % (ident, pywikibot.translate(self.site, referencesSections)[0], ident, self.referencesText)
         return oldText[:index] + newSection + oldText[index:]
 
     def save(self, page, newText):
         """
         Saves the page to the wiki, if the user accepts the changes made.
         """
-        wikipedia.showDiff(page.get(), newText)
+        pywikibot.showDiff(page.get(), newText)
         if not self.always:
-            choice = wikipedia.inputChoice(u'Do you want to accept these changes?', ['Yes', 'No', 'Always yes'], ['y', 'N', 'a'], 'Y')
+            choice = pywikibot.inputChoice(
+                u'Do you want to accept these changes?',
+                ['Yes', 'No', 'Always yes'], ['y', 'N', 'a'], 'Y')
             if choice == 'n':
                 return
             elif choice == 'a':
@@ -494,38 +531,46 @@ class NoReferencesBot:
         if self.always:
             try:
                 page.put(newText)
-            except wikipedia.EditConflict:
-                wikipedia.output(u'Skipping %s because of edit conflict' % (page.title(),))
-            except wikipedia.SpamfilterError, e:
-                wikipedia.output(u'Cannot change %s because of blacklist entry %s' % (page.title(), e.url))
-            except wikipedia.LockedPage:
-                wikipedia.output(u'Skipping %s (locked page)' % (page.title(),))
+            except pywikibot.EditConflict:
+                pywikibot.output(u'Skipping %s because of edit conflict'
+                                 % (page.title(),))
+            except pywikibot.SpamfilterError, e:
+                pywikibot.output(
+                    u'Cannot change %s because of blacklist entry %s'
+                    % (page.title(), e.url))
+            except pywikibot.LockedPage:
+                pywikibot.output(u'Skipping %s (locked page)' % (page.title(),))
         else:
             # Save the page in the background. No need to catch exceptions.
             page.put_async(newText)
         return
 
     def run(self):
-        comment = wikipedia.translate(self.site, msg)
-        wikipedia.setAction(comment)
+        comment = pywikibot.translate(self.site, msg)
+        pywikibot.setAction(comment)
 
         for page in self.generator:
             # Show the title of the page we're working on.
             # Highlight the title in purple.
-            wikipedia.output(u"\n\n>>> \03{lightpurple}%s\03{default} <<<" % page.title())
+            pywikibot.output(u"\n\n>>> \03{lightpurple}%s\03{default} <<<"
+                             % page.title())
             try:
                 text = page.get()
-            except wikipedia.NoPage:
-                wikipedia.output(u"Page %s does not exist?!" % page.aslink())
+            except pywikibot.NoPage:
+                pywikibot.output(u"Page %s does not exist?!"
+                                 % page.title(asLink=True))
                 continue
-            except wikipedia.IsRedirectPage:
-                wikipedia.output(u"Page %s is a redirect; skipping." % page.aslink())
+            except pywikibot.IsRedirectPage:
+                pywikibot.output(u"Page %s is a redirect; skipping."
+                                 % page.title(asLink=True))
                 continue
-            except wikipedia.LockedPage:
-                wikipedia.output(u"Page %s is locked?!" % page.aslink())
+            except pywikibot.LockedPage:
+                pywikibot.output(u"Page %s is locked?!"
+                                 % page.title(asLink=True))
                 continue
-            if wikipedia.getSite().sitename() == 'wikipedia:en' and page.isIpEdit():
-                wikipedia.output(u"Page %s is edited by IP. Possible vandalized" % page.aslink())
+            if pywikibot.getSite().sitename() == 'wikipedia:en' and page.isIpEdit():
+                pywikibot.output(
+                    u"Page %s is edited by IP. Possible vandalized" % page.title(asLink=True))
                 continue
             if self.lacksReferences(text):
                 newText = self.addReferences(text)
@@ -547,10 +592,10 @@ def main():
     # to work on.
     genFactory = pagegenerators.GeneratorFactory()
 
-    for arg in wikipedia.handleArgs():
+    for arg in pywikibot.handleArgs():
         if arg.startswith('-xml'):
             if len(arg) == 4:
-                xmlFilename = wikipedia.input(u'Please enter the XML dump\'s filename:')
+                xmlFilename = pywikibot.input(u'Please enter the XML dump\'s filename:')
             else:
                 xmlFilename = arg[5:]
             gen = XmlDumpNoReferencesPageGenerator(xmlFilename)
@@ -566,12 +611,12 @@ def main():
                 pageTitle.append(arg)
 
     if pageTitle:
-        page = wikipedia.Page(wikipedia.getSite(), ' '.join(pageTitle))
+        page = pywikibot.Page(pywikibot.getSite(), ' '.join(pageTitle))
         gen = iter([page])
     if not gen:
         gen = genFactory.getCombinedGenerator()
     if not gen:
-        wikipedia.showHelp('noreferences')
+        pywikibot.showHelp('noreferences')
     else:
         if namespaces != []:
             gen =  pagegenerators.NamespaceFilterPageGenerator(gen, namespaces)
@@ -583,5 +628,5 @@ if __name__ == "__main__":
     try:
         main()
     finally:
-        wikipedia.stopme()
+        pywikibot.stopme()
 
