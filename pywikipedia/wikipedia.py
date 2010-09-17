@@ -2615,6 +2615,13 @@ not supported by PyWikipediaBot!"""
             result = query.GetData(params, self.site())
             if 'error' in result:
                 raise RuntimeError("%s" % result['error'])
+            pageInfo = result['query']['pages'].values()[0]
+            if result['query']['pages'].keys()[0] == "-1":
+                if 'missing' in pageInfo:
+                    raise NoPage(self.site(), self.aslink(forceInterwiki=True),
+                                 "Page does not exist.")
+                elif 'invalid' in pageInfo:
+                    raise BadTitle('BadTitle: %s' % self)
 
             if 'query-continue' in result and getAll:
                 params['rvstartid'] = result['query-continue']['revisions']['rvstartid']
@@ -2624,7 +2631,7 @@ not supported by PyWikipediaBot!"""
             if skipFirst:
                 skipFirst = False
             else:
-                for r in result['query']['pages'].values()[0]['revisions']:
+                for r in pageInfo['revisions']:
                     c = ''
                     if 'comment' in r:
                         c = r['comment']
