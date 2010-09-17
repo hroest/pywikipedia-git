@@ -172,6 +172,7 @@ placeBeforeSections = {
         u'Gewebbgleecher',
         u'Guckt mol aa',
         u'Seh aa',
+    ],
     'pl': [
         u'Źródła',
         u'Bibliografia',
