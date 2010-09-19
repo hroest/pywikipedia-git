@@ -129,6 +129,7 @@ msg_standalone = {
 # Summary message  that will be appended to the normal message when
 # cosmetic changes are made on the fly
 msg_append = {
+    'commons': u'; [[Commons talk:Tools/pywiki file description cleanup|desc page fmt]]',
     'als':u'; chleineri Änderige',
     'ar': u'; تغييرات تجميلية',
     'be-x-old': u'; касмэтычныя зьмены',
@@ -261,6 +262,8 @@ class CosmeticChangesToolkit:
         Given a wiki source code text, return the cleaned up version.
         """
         oldText = text
+        if self.site.sitename()== u'commons:commons' and self.namespace == 6:
+            text = self.commonsfiledesc(text)
         text = self.fixSelfInterwiki(text)
         text = self.standardizePageFooter(text)
         text = self.cleanUpLinks(text)
@@ -726,8 +729,59 @@ class CosmeticChangesToolkit:
                 text = pywikibot.replaceExcept(text, str(i), u'٠١٢٣٤٥٦٧٨٩'[i], exceptions)
         return text
 
+    # Retrieved from "http://commons.wikimedia.org/wiki/Commons:Tools/pywiki_file_description_cleanup"
+    def commonsfiledesc(self, text):
+        # section headers to {{int:}} versions
+        exceptions = ['comment', 'includeonly', 'math', 'noinclude', 'nowiki',
+                      'pre', 'source', 'ref', 'timeline']
+        text = pywikibot.replaceExcept(text,
+                                       r"([\r\n]|^)\=\= *Summary *\=\=",
+                                       r"\1== {{int:filedesc}} ==",
+                                       exceptions, True)
+        text = pywikibot.replaceExcept(
+            text,
+            r"([\r\n])\=\= *\[\[Commons:Copyright tags\|Licensing\]\]: *\=\=",
+            r"\1== {{int:license}} ==", exceptions, True)
+        text = pywikibot.replaceExcept(
+            text,
+            r"([\r\n])\=\= *(Licensing|License information|{{int:license-header}}) *\=\=",
+            r"\1== {{int:license}} ==", exceptions, True)
+ 
+        # frequent field values to {{int:}} versions
+        text = pywikibot.replaceExcept(
+            text,
+            r'([\r\n]\|[Ss]ource *\= *)(?:[Oo]wn work by uploader|[Oo]wn work|[Ee]igene [Aa]rbeit) *([\r\n])',
+            r'\1{{own}}\2', exceptions, True)
+        text = pywikibot.replaceExcept(
+            text,
+            r'(\| *Permission *\=) *(?:[Ss]ee below|[Ss]iehe unten) *([\r\n])',
+            r'\1\2', exceptions, True)
+ 
+        # added to transwikied pages
+        text = pywikibot.replaceExcept(text, r'__NOTOC__', '', exceptions, True)
+ 
+        # tracker element for js upload form
+        text = pywikibot.replaceExcept(
+            text,
+            r'<!-- *{{ImageUpload\|(?:full|basic)}} *-->',
+            '', exceptions[1:], True)
+        text = pywikibot.replaceExcept(text, r'{{ImageUpload\|(?:basic|full)}}',
+                                       '', exceptions, True)
+ 
+        # duplicated section headers
+        text = pywikibot.replaceExcept(
+            text,
+            r'([\r\n]|^)\=\= *{{int:filedesc}} *\=\=(?:[\r\n ]*)\=\= *{{int:filedesc}} *\=\=',
+            r'\1== {{int:filedesc}} ==', exceptions, True)
+        text = pywikibot.replaceExcept(
+            text,
+            r'([\r\n]|^)\=\= *{{int:license}} *\=\=(?:[\r\n ]*)\=\= *{{int:license}} *\=\=',
+            r'\1== {{int:license}} ==', exceptions, True)
+        return text
+
 class CosmeticChangesBot:
-    def __init__(self, generator, acceptall = False, comment=u'Robot: Cosmetic changes'):
+    def __init__(self, generator, acceptall = False,
+                 comment=u'Robot: Cosmetic changes'):
         self.generator = generator
         self.acceptall = acceptall
         self.comment = comment
@@ -737,13 +791,17 @@ class CosmeticChangesBot:
         try:
             # Show the title of the page we're working on.
             # Highlight the title in purple.
-            pywikibot.output(u"\n\n>>> \03{lightpurple}%s\03{default} <<<" % page.title())
-            ccToolkit = CosmeticChangesToolkit(page.site(), debug = True, namespace = page.namespace(), pageTitle=page.title())
+            pywikibot.output(u"\n\n>>> \03{lightpurple}%s\03{default} <<<"
+                             % page.title())
+            ccToolkit = CosmeticChangesToolkit(page.site(), debug=True,
+                                               namespace=page.namespace(),
+                                               pageTitle=page.title())
             changedText = ccToolkit.change(page.get())
             if changedText.strip() != page.get().strip():
                 if not self.acceptall:
-                    choice = pywikibot.inputChoice(u'Do you want to accept these changes?',
-                                                   ['Yes', 'No', 'All', 'Quit'], ['y', 'N', 'a', 'q'], 'N')
+                    choice = pywikibot.inputChoice(
+                        u'Do you want to accept these changes?',
+                        ['Yes', 'No', 'All', 'Quit'], ['y', 'N', 'a', 'q'], 'N')
                     if choice == 'a':
                         self.acceptall = True
                     elif choice == 'q':
@@ -752,15 +810,19 @@ class CosmeticChangesBot:
                 if self.acceptall or choice == 'y':
                     page.put(changedText, comment=self.comment)
             else:
-                pywikibot.output('No changes were necessary in %s' % page.title())
+                pywikibot.output('No changes were necessary in %s'
+                                 % page.title())
         except pywikibot.NoPage:
-            pywikibot.output("Page %s does not exist?!" % page.aslink())
+            pywikibot.output("Page %s does not exist?!"
+                             % page.title(asLink=True))
         except pywikibot.IsRedirectPage:
-            pywikibot.output("Page %s is a redirect; skipping." % page.aslink())
+            pywikibot.output("Page %s is a redirect; skipping."
+                             % page.title(asLink=True))
         except pywikibot.LockedPage:
-            pywikibot.output("Page %s is locked?!" % page.aslink())
+            pywikibot.output("Page %s is locked?!" % page.title(asLink=True))
         except pywikibot.EditConflict:
-            pywikibot.output("An edit conflict has occured at %s." % page.aslink())
+            pywikibot.output("An edit conflict has occured at %s."
+                             % page.title(asLink=True))
 
     def run(self):
         try:
@@ -793,16 +855,6 @@ def main():
     if editSummary == '':
         # Load default summary message.
         editSummary = pywikibot.translate(pywikibot.getSite(), msg_standalone)
-
-    # Disabled this check. Although the point is still valid, there
-    # is now a warning and a prompt (see below).
-    #if pywikibot.getSite() == pywikibot.getSite('nl','wikipedia'):
-        #print "Deze bot is op WikipediaNL niet gewenst."
-        #print "Het toevoegen van cosmetic changes bij andere wijzigingen is toegestaan,"
-        #print "maar cosmetic_changes als stand-alone bot niet."
-        #print "Zoek alstublieft een nuttig gebruik voor uw bot."
-        #sys.exit()
-
     if pageTitle:
         page = pywikibot.Page(pywikibot.getSite(), ' '.join(pageTitle))
         gen = iter([page])
@@ -811,11 +863,14 @@ def main():
     if not gen:
         pywikibot.showHelp()
     elif not always:
-        answer = pywikibot.inputChoice(warning + '\nDo you really want to continue?', ['yes', 'no'], ['y', 'N'], 'N')
+        answer = pywikibot.inputChoice(
+            warning + '\nDo you really want to continue?',
+            ['yes', 'no'], ['y', 'N'], 'N')
 
     if answer == 'y':
         preloadingGen = pagegenerators.PreloadingGenerator(gen)
-        bot = CosmeticChangesBot(preloadingGen, acceptall=always, comment=editSummary)
+        bot = CosmeticChangesBot(preloadingGen, acceptall=always,
+                                 comment=editSummary)
         bot.run()
 
 if __name__ == "__main__":
