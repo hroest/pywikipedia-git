@@ -6484,7 +6484,7 @@ u"""WARNING: Could not open '%s'. Maybe the server or\n your connection is down.
                 print 'DEBUG allpages>>> data.keys()', data.keys()
             if 'warnings' in data:
                 warning = data['warnings']['allpages']['*']
-                raise str(warning)
+                raise RuntimeError("API query warning: %s" % warning)
             if 'error' in data:
                 raise RuntimeError("API query error: %s" % data)
             if not 'allpages' in data['query']:
