@@ -940,7 +940,7 @@ not supported by PyWikipediaBot!"""
                                        self.latestRevision())
 
     def latestRevision(self):
-        """Return the latest revision id for this page."""
+        """Return the current revision id for this page."""
         if not self._permalink:
             # When we get the page with getall, the permalink is received
             # automatically
@@ -949,6 +949,30 @@ not supported by PyWikipediaBot!"""
             if hasattr(self, '_getexception'):
                 raise self._getexception
         return int(self._permalink)
+    def userName(self):
+        """Return name or IP address of last user to edit page.
+
+        Returns None unless page was retrieved with getAll().
+
+        """
+        return self._userName
+
+    def isIpEdit(self):
+        """Return True if last editor was unregistered.
+
+        Returns None unless page was retrieved with getAll() or _getEditPage().
+
+        """
+        return self._ipedit
+
+    def editTime(self):
+        """Return timestamp (in MediaWiki format) of last revision to page.
+
+        Returns None if last edit time is unknown.
+
+        """
+        return self._editTime
+
 
     def previousRevision(self):
         """Return the revision id for the previous revision of this Page."""
@@ -1052,127 +1076,19 @@ not supported by PyWikipediaBot!"""
 
     def isStaticRedirect(self, force=False):
         """Return True if this is a redirect containing the magic word
-        __STATICREDIRECT__, False if not or not existing."""
+        __STATICREDIRECT__, False if not or not existing.
+
+        """
+        found = False
         if self.isRedirectPage():
             staticKeys = self.site().getmagicwords('staticredirect')
             text = self.get(get_redirect=True, force=force)
             if staticKeys:
-                found = False
                 for key in staticKeys:
                     if key in text:
                         found = True
                         break
-                if found: return True
-        return False
-
-    def isEmpty(self):
-        """Return True if the page text has less than 4 characters.
-
-        Character count ignores language links and category links.
-        Can raise the same exceptions as get().
-
-        """
-        txt = self.get()
-        txt = removeLanguageLinks(txt, site = self.site())
-        txt = removeCategoryLinks(txt, site = self.site())
-        if len(txt) < 4:
-            return True
-        else:
-            return False
-
-    def isTalkPage(self):
-        """Return True if this page is in any talk namespace."""
-        ns = self.namespace()
-        return ns >= 0 and ns % 2 == 1
-
-    def botMayEdit(self, username):
-        """Return True if this page allows bots to edit it.
-
-        This will be True if the page doesn't contain {{bots}} or
-        {{nobots}}, or it contains them and the active bot is allowed to
-        edit this page. (This method is only useful on those sites that
-        recognize the bot-exclusion protocol; on other sites, it will always
-        return True.)
-
-        The framework enforces this restriction by default. It is possible
-        to override this by setting ignore_bot_templates=True in
-        user_config.py, or using page.put(force=True).
-
-        """
-
-        if self.site().family.name == 'wikitravel':        # Wikitravel's bot control.
-            self.site().family.bot_control(self.site())
-
-        if config.ignore_bot_templates: #Check the "master ignore switch"
-            return True
-
-        try:
-            templates = self.templatesWithParams(get_redirect=True);
-        except (NoPage, IsRedirectPage, SectionError):
-            return True
-
-        for template in templates:
-            if template[0].lower() == 'nobots':
-                return False
-            elif template[0].lower() == 'bots':
-                if len(template[1]) == 0:
-                    return True
-                else:
-                    (type, bots) = template[1][0].split('=', 1)
-                    bots = bots.split(',')
-                    if type == 'allow':
-                        if 'all' in bots or username in bots:
-                            return True
-                        else:
-                            return False
-                    if type == 'deny':
-                        if 'all' in bots or username in bots:
-                            return False
-                        else:
-                            return True
-        # no restricting template found
-        return True
-
-    def userName(self):
-        """Return name or IP address of last user to edit page.
-
-        Returns None unless page was retrieved with getAll().
-
-        """
-        return self._userName
-
-    def isIpEdit(self):
-        """Return True if last editor was unregistered.
-
-        Returns None unless page was retrieved with getAll() or _getEditPage().
-
-        """
-        return self._ipedit
-
-    def editTime(self):
-        """Return timestamp (in MediaWiki format) of last revision to page.
-
-        Returns None if last edit time is unknown.
-
-        """
-        return self._editTime
-
-    def namespace(self):
-        """Return the number of the namespace of the page.
-
-        Only recognizes those namespaces defined in family.py.
-        If not defined, it will return 0 (the main namespace).
-
-        """
-        return self._namespace
-
-    def isCategory(self):
-        """Return True if the page is a Category, False otherwise."""
-        return self.namespace() == 14
-
-    def isImage(self):
-        """Return True if this is an image description page, False otherwise."""
-        return self.namespace() == 6
+        return found
 
     def isCategoryRedirect(self, text=None):
         """Return True if this is a category redirect page, False otherwise."""
@@ -1203,6 +1119,55 @@ not supported by PyWikipediaBot!"""
             import catlib
             return catlib.Category(self.site(), self._catredirect)
         raise IsNotRedirectPage
+
+    def isEmpty(self):
+        """Return True if the page text has less than 4 characters.
+
+        Character count ignores language links and category links.
+        Can raise the same exceptions as get().
+
+        """
+        txt = self.get()
+        txt = removeLanguageLinks(txt, site = self.site())
+        txt = removeCategoryLinks(txt, site = self.site())
+        if len(txt) < 4:
+            return True
+        else:
+            return False
+
+    def isTalkPage(self):
+        """Return True if this page is in any talk namespace."""
+        ns = self.namespace()
+        return ns >= 0 and ns % 2 == 1
+
+    def toggleTalkPage(self):
+        """Return other member of the article-talk page pair for this Page.
+
+        If self is a talk page, returns the associated content page;
+        otherwise, returns the associated talk page.
+        Returns None if self is a special page.
+
+        """
+        ns = self.namespace()
+        if ns < 0: # Special page
+            return None
+        if self.isTalkPage():
+            ns -= 1
+        else:
+            ns += 1
+
+        if ns == 6:
+            return ImagePage(self.site(), self.titleWithoutNamespace())
+
+        return Page(self.site(), self.titleWithoutNamespace(), defaultNamespace=ns)
+
+    def isCategory(self):
+        """Return True if the page is a Category, False otherwise."""
+        return self.namespace() == 14
+
+    def isImage(self):
+        """Return True if this is an image description page, False otherwise."""
+        return self.namespace() == 6
 
     def isDisambig(self):
         """Return True if this is a disambiguation page, False otherwise.
@@ -1238,6 +1203,87 @@ not supported by PyWikipediaBot!"""
             disambigInPage = self._site._disambigtemplates.intersection(self.templates())
             self._isDisambig = self.namespace() != 10 and len(disambigInPage) > 0
         return self._isDisambig
+
+    def canBeEdited(self):
+        """Return bool indicating whether this page can be edited.
+
+        This returns True if and only if:
+          - page is unprotected, and bot has an account for this site, or
+          - page is protected, and bot has a sysop account for this site.
+
+        """
+        try:
+            self.get()
+        except:
+            pass
+        if self.editRestriction == 'sysop':
+            userdict = config.sysopnames
+        else:
+            userdict = config.usernames
+        try:
+            userdict[self.site().family.name][self.site().lang]
+            return True
+        except:
+            # We don't have a user account for that wiki, or the
+            # page is locked and we don't have a sysop account.
+            return False
+
+    def botMayEdit(self, username):
+        """Return True if this page allows bots to edit it.
+
+        This will be True if the page doesn't contain {{bots}} or
+        {{nobots}}, or it contains them and the active bot is allowed to
+        edit this page. (This method is only useful on those sites that
+        recognize the bot-exclusion protocol; on other sites, it will always
+        return True.)
+
+        The framework enforces this restriction by default. It is possible
+        to override this by setting ignore_bot_templates=True in
+        user_config.py, or using page.put(force=True).
+
+        """
+
+        if self.site().family.name == 'wikitravel':        # Wikitravel's bot control.
+            self.site().family.bot_control(self.site())
+
+        if config.ignore_bot_templates: #Check the "master ignore switch"
+            return True
+
+        try:
+            templates = self.templatesWithParams(get_redirect=True);
+        except (NoPage, IsRedirectPage, SectionError):
+            return True
+
+        for template in templates:
+            if template[0].lower() == 'nobots':
+                return False
+            elif template[0].lower() == 'bots':
+                if len(template[1]) == 0:
+                    return True
+                else:
+                    (ttype, bots) = template[1][0].split('=', 1)
+                    bots = bots.split(',')
+                    if ttype == 'allow':
+                        if 'all' in bots or username in bots:
+                            return True
+                        else:
+                            return False
+                    if ttype == 'deny':
+                        if 'all' in bots or username in bots:
+                            return False
+                        else:
+                            return True
+        # no restricting template found
+        return True
+
+    def namespace(self):
+        """Return the number of the namespace of the page.
+
+        Only recognizes those namespaces defined in family.py.
+        If not defined, it will return 0 (the main namespace).
+
+        """
+        return self._namespace
 
     def getReferences(self, follow_redirects=True, withTemplateInclusion=True,
             onlyTemplateInclusion=False, redirectsOnly=False, internal = False):
@@ -2138,29 +2184,6 @@ not supported by PyWikipediaBot!"""
 
             return response.code, response.msg, data
 
-    def canBeEdited(self):
-        """Return bool indicating whether this page can be edited.
-
-        This returns True if and only if:
-          * page is unprotected, and bot has an account for this site, or
-          * page is protected, and bot has a sysop account for this site.
-        """
-        try:
-            self.get()
-        except:
-            pass
-        if self.editRestriction == 'sysop':
-            userdict = config.sysopnames
-        else:
-            userdict = config.usernames
-        try:
-            userdict[self.site().family.name][self.site().lang]
-            return True
-        except:
-            # We don't have a user account for that wiki, or the
-            # page is locked and we don't have a sysop account.
-            return False
-
     def protection(self):
         """Return list of dicts of this page protection level. like:
         [{u'expiry': u'2010-05-26T14:41:51Z', u'type': u'edit', u'level': u'autoconfirmed'}, {u'expiry': u'2010-05-26T14:41:51Z', u'type': u'move', u'level': u'sysop'}]
@@ -2178,28 +2201,6 @@ not supported by PyWikipediaBot!"""
         datas = query.GetData(params, self.site())
         data=datas['query']['pages'].values()[0]['protection']
         return data
-
-
-    def toggleTalkPage(self):
-        """Return the other member of the article-talk page pair for this Page.
-
-        If self is a talk page, returns the associated content page; otherwise,
-        returns the associated talk page.
-        Returns None if self is a special page.
-
-        """
-        ns = self.namespace()
-        if ns < 0: # Special page
-            return None
-        if self.isTalkPage():
-            ns -= 1
-        else:
-            ns += 1
-
-        if ns == 6:
-            return ImagePage(self.site(), self.titleWithoutNamespace())
-
-        return Page(self.site(), self.titleWithoutNamespace(), defaultNamespace=ns)
 
     def interwiki(self):
         """Return a list of interwiki links in the page text.
