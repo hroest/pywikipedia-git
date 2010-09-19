@@ -51,7 +51,8 @@ your user-config.py:
 """
 __version__ = '$Id$'
 import wikipedia as pywikibot
-import pagegenerators, isbn
+import isbn
+import pagegenerators
 import sys
 import re
 
@@ -67,6 +68,7 @@ docuReplacements = {
 
 # Summary message when using this module as a stand-alone script
 msg_standalone = {
+    'commons': u'Bot: [[Commons talk:Tools/pywiki file description cleanup|desc page fmt]]',
     'als':u'Bötli: chleineri Änderige',
     'ar': u'روبوت: تغييرات تجميلية',
     'be-x-old': u'Робат: касмэтычныя зьмены',
@@ -856,7 +858,8 @@ def main():
         # Load default summary message.
         editSummary = pywikibot.translate(pywikibot.getSite(), msg_standalone)
     if pageTitle:
-        page = pywikibot.Page(pywikibot.getSite(), ' '.join(pageTitle))
+        site = pywikibot.getSite()
+        page = pywikibot.Page(site, ' '.join(pageTitle))
         gen = iter([page])
     if not gen:
         gen = genFactory.getCombinedGenerator()
