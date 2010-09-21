@@ -183,7 +183,7 @@ sd_template = {
     'ga': u'{{scrios|Athsheoladh briste}}',
     'hu': u'{{azonnali|Hibás átirányítás|~~~~}}',
     'it': u'{{Cancella subito|9}}',
-    'ja': u'{{即時削除|壊れたリダイレクト}}',
+##    'ja': u'{{即時削除|壊れたリダイレクト}}', ## tracker no 3072733
     'ksh':u'{{Schmieß fott}}Di Ömlëijdong jeiht noh nörjendwoh hen.<br />--~~~~~\n\n',
     'nds':u'{{delete}}Kaputte Wiederleiden, wat nich brukt ward.<br />--~~~~\n\n',
     'pdc':u'{{lesche|Kaputte Weiderleiding --~~~~}}',
