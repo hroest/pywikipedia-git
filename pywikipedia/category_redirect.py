@@ -219,32 +219,33 @@ liên kết thể loại:
             # an update due to changes in a transcluded template
             article.put(newtext, comment)
             if newtext == oldtext:
-                pywikibot.output(
-                    u'No changes in made in page %s.' % article.aslink())
+                pywikibot.output(u'No changes in made in page %s.'
+                                 % article.title(asLink=True))
                 return False
             return True
         except pywikibot.EditConflict:
-            pywikibot.output(
-                u'Skipping %s because of edit conflict' % article.aslink())
+            pywikibot.output(u'Skipping %s because of edit conflict'
+                             % article.title(asLink=True))
         except pywikibot.LockedPage:
-            pywikibot.output(u'Skipping locked page %s' % article.aslink())
-            self.edit_requests.append((article.aslink(),
+            pywikibot.output(u'Skipping locked page %s'
+                             % article.title(asLink=True))
+            self.edit_requests.append((article.title(asLink=True),
                                        oldCat.aslink(textlink=True),
                                        newCat.aslink(textlink=True)))
         except pywikibot.SpamfilterError, error:
             pywikibot.output(
                 u'Changing page %s blocked by spam filter (URL=%s)'
-                             % (article.aslink(), error.url))
+                             % (article.title(asLink=True), error.url))
         except pywikibot.NoUsername:
             pywikibot.output(
                 u"Page %s not saved; sysop privileges required."
-                             % article.aslink())
+                             % article.title(asLink=True))
             self.edit_requests.append((article.aslink(textlink=True),
                                        oldCat.aslink(textlink=True),
                                        newCat.aslink(textlink=True)))
         except pywikibot.PageNotSaved, error:
             pywikibot.output(u"Saving page %s failed: %s"
-                             % (article.aslink(), error.message))
+                             % (article.title(asLink=True), error.message))
         return False
 
     def move_contents(self, oldCatTitle, newCatTitle, editSummary):

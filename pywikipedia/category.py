@@ -419,15 +419,15 @@ class AddCategory:
         except pywikibot.NoPage:
             if self.create:
                 pywikibot.output(u"Page %s doesn't exist yet; creating."
-                                 % (page.aslink()))
+                                 % (page.title(asLink=True)))
                 text = ''
             else:
                 pywikibot.output(u"Page %s does not exist; skipping."
-                                 % page.aslink())
+                                 % page.title(asLink=True))
         except pywikibot.IsRedirectPage:
             redirTarget = pywikibot.Page(site, arg.args[0])
             pywikibot.output(u"WARNING: Page %s is a redirect to %s; skipping."
-                             % (page.aslink(), redirTarget.aslink()))
+                             % (page.title(asLink=True), redirTarget.title(asLink=True)))
         else:
             return text
         return None
@@ -460,7 +460,7 @@ Are you sure?""", ['Yes', 'No'], ['y', 'n'], 'n')
                                  minorEdit=minorEdit, botflag=botflag)
                     except pywikibot.LockedPage:
                         pywikibot.output(u"Page %s is locked; skipping."
-                                         % page.aslink())
+                                         % page.title(asLink=True))
                     except pywikibot.EditConflict:
                         pywikibot.output(
                             u'Skipping %s because of edit conflict'
@@ -493,11 +493,12 @@ u'Cannot change %s because of spam blacklist entry %s'
         else:
             if self.sort:
                 catpl = self.sorted_by_last_name(catpl, page)
-            pywikibot.output(u'Adding %s' % catpl.aslink())
+            pywikibot.output(u'Adding %s' % catpl.title(asLink=True))
             cats.append(catpl)
             text = pywikibot.replaceCategoryLinks(text, cats)
             if not self.save(text, page, self.editSummary):
-                pywikibot.output(u'Page %s not saved.' % page.aslink())
+                pywikibot.output(u'Page %s not saved.'
+                                 % page.title(asLink=True))
 
 
 class CategoryMoveRobot:
