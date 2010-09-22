@@ -93,7 +93,7 @@ class BlockreviewBot:
                     self.treat(page)
                 else:
                     pywikibot.output(u'Ignoring %s, user namespace required'
-                                     % page.aslink())
+                                     % page.title(asLink=True))
 
     def treat(self, userPage):
         """
@@ -241,10 +241,10 @@ class BlockreviewBot:
             text = page.get()
         except pywikibot.NoPage:
             pywikibot.output(u"Page %s does not exist; skipping."
-                             % page.aslink())
+                             % page.title(asLink=True))
         except pywikibot.IsRedirectPage:
             pywikibot.output(u"Page %s is a redirect; skipping."
-                             % page.aslink())
+                             % page.title(asLink=True))
         else:
             return text
         return None
@@ -259,14 +259,17 @@ class BlockreviewBot:
             pywikibot.showDiff(page.get(), text)
             pywikibot.output(u'Comment: %s' %comment)
             if not self.dry:
-                choice = pywikibot.inputChoice(u'Do you want to accept these changes?', ['Yes', 'No'], ['y', 'N'], 'N')
+                choice = pywikibot.inputChoice(
+                    u'Do you want to accept these changes?',
+                    ['Yes', 'No'], ['y', 'N'], 'N')
                 if choice == 'y':
                     try:
                         # Save the page
-                        page.put(text, comment=comment, minorEdit=minorEdit, botflag=botflag)
+                        page.put(text, comment=comment, minorEdit=minorEdit,
+                                 botflag=botflag)
                     except pywikibot.LockedPage:
                         pywikibot.output(u"Page %s is locked; skipping."
-                                         % page.aslink())
+                                         % page.title(asLink=True))
                     except pywikibot.EditConflict:
                         pywikibot.output(
                             u'Skipping %s because of edit conflict'

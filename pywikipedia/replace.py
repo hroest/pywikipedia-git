@@ -364,29 +364,29 @@ class ReplaceRobot:
             if self.isTitleExcepted(page.title()):
                 pywikibot.output(
                     u'Skipping %s because the title is on the exceptions list.'
-                    % page.aslink())
+                    % page.title(asLink=True))
                 continue
             try:
                 # Load the page's text from the wiki
                 original_text = page.get(get_redirect=True)
                 if not page.canBeEdited():
                     pywikibot.output(u"You can't edit page %s"
-                                     % page.aslink())
+                                     % page.title(asLink=True))
                     continue
             except pywikibot.NoPage:
-                pywikibot.output(u'Page %s not found' % page.aslink())
+                pywikibot.output(u'Page %s not found' % page.title(asLink=True))
                 continue
             new_text = original_text
             while True:
                 if self.isTextExcepted(new_text):
                     pywikibot.output(
     u'Skipping %s because it contains text that is on the exceptions list.'
-                        % page.aslink())
+                                     % page.title(asLink=True))
                     break
                 new_text = self.doReplacements(new_text)
                 if new_text == original_text:
                     pywikibot.output(u'No changes were necessary in %s'
-                                      % page.aslink())
+                                     % page.title(asLink=True))
                     break
                 if self.recursive:
                     newest_text = self.doReplacements(new_text)
@@ -711,7 +711,8 @@ LIMIT 200""" % (whereClause, exceptClause)
                                             pageNumber=20, lookahead=100)
     else:
         preloadingGen = pagegenerators.PreloadingGenerator(gen, pageNumber=maxquerysize)
-    bot = ReplaceRobot(preloadingGen, replacements, exceptions, acceptall, allowoverlap, recursive, add_cat, sleep, editSummary)
+    bot = ReplaceRobot(preloadingGen, replacements, exceptions, acceptall,
+                       allowoverlap, recursive, add_cat, sleep, editSummary)
     bot.run()
 
 

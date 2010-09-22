@@ -77,7 +77,7 @@ class CapitalizeBot:
             page_cap = pywikibot.Page(self.site, page_t.capitalize())
         if page_cap.exists():
             pywikibot.output(u'%s already exists, skipping...\n'
-                             % page_cap.aslink())
+                             % page_cap.title(asLink=True))
         else:
             pywikibot.output(u'[[%s]] doesn\'t exist' % page_cap.title())
             if not self.acceptall:

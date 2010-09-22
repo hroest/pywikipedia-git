@@ -269,7 +269,7 @@ def main():
     # Main Loop
     preloadingGen = pagegenerators.PreloadingGenerator(generator, pageNumber = 60)
     for page in preloadingGen:
-        pagename = page.aslink()
+        pagename = page.title(asLink=True)
         pywikibot.output('Loading %s...' % pagename)
         try:
             text = page.get()

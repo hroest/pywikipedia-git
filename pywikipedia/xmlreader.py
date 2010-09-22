@@ -26,7 +26,7 @@ __version__='$Id$'
 import threading
 import xml.sax
 import codecs, re
-import wikipedia
+import wikipedia as pywikibot
 
 try:
     from xml.etree.cElementTree import iterparse
@@ -282,7 +282,7 @@ class XmlDump(object):
         """Return a generator that will yield XmlEntry objects"""
         print 'Reading XML dump...'
         if not 'iterparse' in globals():
-            wikipedia.output(
+            pywikibot.output(
 u'''WARNING: cElementTree not found. Using slower fallback solution.
 Consider installing the python-celementtree package.''')
             return self.regex_parse()
@@ -397,7 +397,7 @@ Consider installing the python-celementtree package.''')
             '</revision>\s*'+
             '</page>',
                 re.DOTALL)
-        f = codecs.open(self.filename, 'r', encoding = wikipedia.getSite().encoding(),
+        f = codecs.open(self.filename, 'r', encoding = pywikibot.getSite().encoding(),
                         errors='replace')
         eof = False
         lines = u''

@@ -166,10 +166,12 @@ def workon(page):
     try:
         text = page.get()
     except pywikibot.IsRedirectPage:
-        pywikibot.output(u'%s is a redirect page. Skipping' % page.aslink())
+        pywikibot.output(u'%s is a redirect page. Skipping'
+                         % page.title(asLink=True))
         return
     except pywikibot.NoPage:
-        pywikibot.output(u'%s does not exist. Skipping' % page.aslink())
+        pywikibot.output(u'%s does not exist. Skipping'
+                         % page.title(asLink=True))
         return
     pywikibot.output(u"\n\n>>> \03{lightpurple}%s\03{default} <<<"
                      % page.title())
@@ -192,7 +194,8 @@ def workon(page):
         try:
             page.put(text, comment)
         except (pywikibot.Error):
-            pywikibot.output('Error: unable to put %s' % page.aslink())
+            pywikibot.output('Error: unable to put %s'
+                             % page.title(asLink=True))
 
 def main():
     featured = False
