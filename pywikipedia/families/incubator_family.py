@@ -17,7 +17,7 @@ class Family(family.Family):
             self.langs['incubator'] = None
 
         self.namespaces[4] = {
-            '_default': [u'Incubator', self.namespaces[4]['_default']],
+            '_default': [u'Incubator', u'I', self.namespaces[4]['_default']],
         }
         self.namespaces[5] = {
             '_default': [u'Incubator talk', self.namespaces[5]['_default']],
