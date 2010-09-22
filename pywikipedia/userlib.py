@@ -11,7 +11,7 @@ __version__ = '$Id$'
 
 import re
 import wikipedia as pywikibot
-import query
+import query, config
 
 class AutoblockUser(pywikibot.Error):
     """
@@ -85,7 +85,9 @@ class User(object):
         return ip_regexp.match(self.username) is not None
 
     def __str__(self):
-        return u'%s:%s' % (self.site() , self.name())
+        return (u'%s:%s'
+                % (self.site(), self.name())).encode(config.console_encoding,
+                                                     'replace')
 
     def __repr__(self):
         return self.__str__()
