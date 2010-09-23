@@ -85,10 +85,10 @@ placeBeforeSections = {
         u'Poznámky',
     ],
     'de': [              # no explicit policy on where to put the references
-        u'Literatur',
-        u'Weblinks',
-        u'Siehe auch',
-        u'Weblink',      # bad, but common singular form of Weblinks
+##        u'Literatur',
+##        u'Weblinks',
+##        u'Siehe auch',
+##        u'Weblink',      # bad, but common singular form of Weblinks
     ],
     'en': [              # no explicit policy on where to put the references
         u'Further reading',
