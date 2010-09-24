@@ -34,6 +34,12 @@ class Family(family.Family):
         self.namespaces[103] = {
             '_default': [u'TimedText talk'],
         }
+        self.namespaces[104] = {
+            '_default': [u'Sequence'],
+        }
+        self.namespaces[105] = {
+            '_default': [u'Sequence talk'],
+        }
 
         self.interwiki_forward = 'wikipedia'
 
