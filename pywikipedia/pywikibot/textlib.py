@@ -375,7 +375,7 @@ def replaceLanguageLinks(oldtext, new, site=None, addOnly=False,
 
     """
     # Find a marker that is not already in the text.
-    marker = findmarker( oldtext, u'@@')
+    marker = findmarker(oldtext, u'@@')
     if site is None:
         site = pywikibot.getSite()
     separator = site.family.interwiki_text_separator
@@ -389,7 +389,9 @@ def replaceLanguageLinks(oldtext, new, site=None, addOnly=False,
                                              separator=separatorstripped)
     s = interwikiFormat(new, insite = site)
     if s:
-        if site.language() in site.family.interwiki_attop:
+        
+        if site.language() in site.family.interwiki_attop or \
+           u'<!-- interwiki at top -->' in oldtext:
             newtext = s + separator + s2.replace(marker,'').strip()
         else:
             # calculate what was after the language links on the page
