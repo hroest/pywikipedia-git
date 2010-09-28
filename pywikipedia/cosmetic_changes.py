@@ -727,9 +727,9 @@ class CosmeticChangesToolkit:
             # do not change digits inside html-tags
             pattern = re.compile(u'<[/]*?[^</]+?[/]*?>', re.UNICODE)
             exceptions.append(pattern)
-## disabled for now: some problems with wring picture size
-##            for i in range(0,10):
-##                text = pywikibot.replaceExcept(text, str(i), u'٠١٢٣٤٥٦٧٨٩'[i], exceptions)
+            exceptions.append('table') #exclude tables for now
+            for i in range(0,10):
+                text = pywikibot.replaceExcept(text, str(i), u'٠١٢٣٤٥٦٧٨٩'[i], exceptions)
         return text
 
     # Retrieved from "http://commons.wikimedia.org/wiki/Commons:Tools/pywiki_file_description_cleanup"
