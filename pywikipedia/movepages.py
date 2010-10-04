@@ -33,6 +33,7 @@ Furthermore, the following command line parameters are supported:
 #
 # (C) Leonardo Gregianin, 2006
 # (C) Andreas J. Schwab, 2007
+# (C) Pywikipedia bot team, 2006-2010
 #
 # Distributed under the terms of the MIT license.
 #
@@ -65,8 +66,10 @@ summary={
     'pl': u'Przeniesienie artykułu przez robota',
     'pt': u'Bot: Página movida',
     'ru': u'Переименование страницы при помощи робота',
+    'uk': u'Робот:перейменування сторінки',
     'zh': u'機器人:移動頁面',
 }
+
 
 class MovePagesBot:
     def __init__(self, generator, addprefix, noredirect, always, skipredirects, summary):
@@ -194,6 +197,7 @@ class MovePagesBot:
         self.noNamespace = False
         for page in self.generator:
             self.treat(page)
+
 
 def main():
     gen = None
