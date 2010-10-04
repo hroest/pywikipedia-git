@@ -389,7 +389,6 @@ def replaceLanguageLinks(oldtext, new, site=None, addOnly=False,
                                              separator=separatorstripped)
     s = interwikiFormat(new, insite = site)
     if s:
-        
         if site.language() in site.family.interwiki_attop or \
            u'<!-- interwiki at top -->' in oldtext:
             newtext = s + separator + s2.replace(marker,'').strip()
