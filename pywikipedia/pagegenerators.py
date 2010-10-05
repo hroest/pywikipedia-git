@@ -573,7 +573,7 @@ class GeneratorFactory(object):
                 regex = pywikibot.input(u'What page names are you looking for?')
             else:
                 regex = arg[12:]
-            gen = RegexFilterPageGenerator(site.allpages(), regex)
+            gen = RegexFilterPageGenerator(site.allpages(), [regex])
         elif arg.startswith('-yahoo'):
             gen = YahooSearchPageGenerator(arg[7:])
         elif arg.startswith('-'):
@@ -1160,16 +1160,35 @@ def DuplicateFilterPageGenerator(generator):
             seenPages[_page] = True
             yield page
 
-def RegexFilterPageGenerator(generator, regex):
+def RegexFilterPageGenerator(generator, regex, inverse=False):
     """
     Wraps around another generator. Yields only those pages, the titles of
-    which are positively matched to regex.
+    which are positively matched to any regex in list. If invert is False,
+    yields all pages matched by any regex, if True, yields all pages matched
+    none of the regex.
+
     """
-    reg = re.compile(regex, re.I)
+    # test for backwards compatibility
+    if isinstance(regex, basestring):
+        regex = [regex]
+    reg = [ re.compile(r, re.I) for r in regex ]
 
     for page in generator:
-        if reg.match(page.titleWithoutNamespace()):
-            yield page
+        if inverse:
+            # yield page if NOT matched by all regex
+            skip = False
+            for r in reg:
+                if r.match(page.titleWithoutNamespace()):
+                    skip = True
+                    break
+            if not skip:
+                yield page
+        else:
+            # yield page if matched by any regex
+            for r in reg:
+                if r.match(page.titleWithoutNamespace()):
+                    yield page
+                    break
 
 def CombinedPageGenerator(generators):
     """
