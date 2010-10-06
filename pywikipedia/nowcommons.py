@@ -272,7 +272,7 @@ class NowCommonsDeleteBot:
                 return filenameOnCommons
 
     # Function stolen from wikipedia.py and modified. Really needed?
-    def urlname(talk_page):
+    def urlname(self, talk_page):
         """The name of the page this Page refers to, in a form suitable for the
         URL of the page.
 
