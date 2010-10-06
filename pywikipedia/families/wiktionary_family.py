@@ -489,6 +489,7 @@ class Family(family.Family):
         # after those, in code-alphabetical order.
 
         self.interwiki_putfirst = {
+            'da': self.alphabetic,
             'en': self.alphabetic,
             'et': self.alphabetic,
             'fi': self.alphabetic,
