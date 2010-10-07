@@ -282,7 +282,7 @@ u'Cannot change %s because of spam blacklist entry %s'
                 else:
                     for (inPageTemplate, param) in templatesWithParams:
                         if inPageTemplate == template[0] \
-                           and template[1] in param[0]:
+                           and template[1] in param[0].replace(' ',''):
                             return True
         return False
 
