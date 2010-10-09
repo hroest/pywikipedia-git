@@ -1962,7 +1962,7 @@ u'NOTE: number of edits are restricted at %s'
             while True:
                 try:
                     if globalvar.async:
-                        page.put_async(newtext, comment = mcomment)
+                        page.put_async(newtext, comment=mcomment)
                         status = 302
                     else:
                         status, reason, data = page.put(newtext, comment=mcomment)
@@ -2315,6 +2315,8 @@ def compareLanguages(old, new, insite):
         fmt = lambda d, site: site.lang
 
     head, add, rem, mod = pywikibot.translate(insite.lang, msg)
+    if insite.lang=='de' and not globalvar.autonomous:
+        head = u'Halbautomatischer %s' % head #prevents abuse filter blocking for hi-wiki
 
     colon = u': '
     comma = u', '
