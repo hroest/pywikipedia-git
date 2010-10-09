@@ -638,7 +638,7 @@ class SearchEngine:
                             consecutive = False
                             continue
                     n_query += 1
-                    #wikipedia.output(search_words)
+                    #pywikibot.output(search_words)
                     if config.copyright_max_query_for_page and n_query > config.copyright_max_query_for_page:
                         warn(u"Max query limit for page reached")
                         return output
@@ -845,7 +845,7 @@ class SearchEngine:
     def get_results(self, query, numresults = 10):
         result_list = list()
         query = re.sub("[()\"<>]", "", query)
-        # wikipedia.output(query)
+        # pywikibot.output(query)
         if config.copyright_google:
             self.soap('google', query, result_list)
         if config.copyright_yahoo:

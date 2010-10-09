@@ -36,15 +36,19 @@ Unprotect all pages listed in text file "unprotect.txt" without prompting.
     python protect.py -file:unprotect.txt -unprotect
 """
 
+#
 # Written by http://it.wikisource.org/wiki/Utente:Qualc1
 # Created by modifying delete.py
-__version__ = '$Id$'
-
+#
+# (C) Pywikipedia bot team, 2008-2010
 #
 # Distributed under the terms of the MIT license.
 #
+__version__ = '$Id$'
+#
 
-import wikipedia, catlib
+import wikipedia as pywikibot
+import catlib
 import pagegenerators
 
 # Summary messages for protecting from a category.
@@ -121,7 +125,7 @@ class ProtectionRobot:
         """
         #Loop through everything in the page generator and (un)protect it.
         for page in self.generator:
-            wikipedia.output(u'Processing page %s' % page.title())
+            pywikibot.output(u'Processing page %s' % page.title())
             print self.edit, self.move#, self.create
             page.protect(unprotect=self.unprotect, reason=self.summary, prompt=self.always,
                         editcreate=self.edit, move=self.move)
@@ -131,7 +135,7 @@ class ProtectionRobot:
 def choiceProtectionLevel(operation, default):
     default = default[0]
     firstChar = map(lambda level: level[0], protectionLevels)
-    choiceChar = wikipedia.inputChoice('Choice a protection level to %s:' % operation,
+    choiceChar = pywikibot.inputChoice('Choice a protection level to %s:' % operation,
                             protectionLevels, firstChar, default = default)
     for level in protectionLevels:
         if level.startswith(choiceChar):
@@ -157,23 +161,23 @@ def main():
     defaultProtection = 'sysop'
 
     # read command line parameters
-    for arg in wikipedia.handleArgs():
+    for arg in pywikibot.handleArgs():
         if arg == '-always':
             always = True
         elif arg.startswith('-file'):
             if len(arg) == len('-file'):
-                fileName = wikipedia.input(u'Enter name of file to protect pages from:')
+                fileName = pywikibot.input(u'Enter name of file to protect pages from:')
             else:
                 fileName = arg[len('-file:'):]
         elif arg.startswith('-summary'):
             if len(arg) == len('-summary'):
-                summary = wikipedia.input(u'Enter a reason for the protection:')
+                summary = pywikibot.input(u'Enter a reason for the protection:')
             else:
                 summary = arg[len('-summary:'):]
         elif arg.startswith('-cat'):
             doCategory = True
             if len(arg) == len('-cat'):
-                pageName = wikipedia.input(u'Enter the category to protect from:')
+                pageName = pywikibot.input(u'Enter the category to protect from:')
             else:
                 pageName = arg[len('-cat:'):]
         elif arg.startswith('-nosubcats'):
@@ -181,25 +185,25 @@ def main():
         elif arg.startswith('-links'):
             doLinks = True
             if len(arg) == len('-links'):
-                pageName = wikipedia.input(u'Enter the page to protect from:')
+                pageName = pywikibot.input(u'Enter the page to protect from:')
             else:
                 pageName = arg[len('-links:'):]
         elif arg.startswith('-ref'):
             doRef = True
             if len(arg) == len('-ref'):
-                pageName = wikipedia.input(u'Enter the page to protect from:')
+                pageName = pywikibot.input(u'Enter the page to protect from:')
             else:
                 pageName = arg[len('-ref:'):]
         elif arg.startswith('-page'):
             doSinglePage = True
             if len(arg) == len('-page'):
-                pageName = wikipedia.input(u'Enter the page to protect:')
+                pageName = pywikibot.input(u'Enter the page to protect:')
             else:
                 pageName = arg[len('-page:'):]
         elif arg.startswith('-images'):
             doImages = True
             if len(arg) == len('-images'):
-                pageName = wikipedia.input(u'Enter the page with the images to protect:')
+                pageName = pywikibot.input(u'Enter the page with the images to protect:')
             else:
                 pageName = arg[len('-images:'):]
         elif arg.startswith('-unprotect'):
@@ -217,40 +221,40 @@ def main():
             if create not in protectionLevels:
                 create = choiceProtectionLevel('create', defaultProtection)
 
-    mysite = wikipedia.getSite()
+    mysite = pywikibot.getSite()
 
     if doSinglePage:
         if not summary:
-            summary = wikipedia.input(u'Enter a reason for the protection:')
-        page = wikipedia.Page(mysite, pageName)
+            summary = pywikibot.input(u'Enter a reason for the protection:')
+        page = pywikibot.Page(mysite, pageName)
         gen = iter([page])
     elif doCategory:
         if not summary:
-            summary = wikipedia.translate(mysite, msg_protect_category) % pageName
+            summary = pywikibot.translate(mysite, msg_protect_category) % pageName
         ns = mysite.category_namespace()
         categoryPage = catlib.Category(mysite, ns + ':' + pageName)
         gen = pagegenerators.CategorizedPageGenerator(categoryPage, recurse = protectSubcategories)
     elif doLinks:
         if not summary:
-            summary = wikipedia.translate(mysite, msg_protect_links) % pageName
-        linksPage = wikipedia.Page(mysite, pageName)
+            summary = pywikibot.translate(mysite, msg_protect_links) % pageName
+        linksPage = pywikibot.Page(mysite, pageName)
         gen = pagegenerators.LinkedPageGenerator(linksPage)
     elif doRef:
         if not summary:
-            summary = wikipedia.translate(mysite, msg_protect_ref) % pageName
-        refPage = wikipedia.Page(mysite, pageName)
+            summary = pywikibot.translate(mysite, msg_protect_ref) % pageName
+        refPage = pywikibot.Page(mysite, pageName)
         gen = pagegenerators.ReferringPageGenerator(refPage)
     elif fileName:
         if not summary:
-            summary = wikipedia.translate(mysite, msg_simple_protect)
+            summary = pywikibot.translate(mysite, msg_simple_protect)
         gen = pagegenerators.TextfilePageGenerator(fileName)
     elif doImages:
         if not summary:
-            summary = wikipedia.translate(mysite, msg_protect_images) % pageName
-        gen = pagegenerators.ImagesPageGenerator(wikipedia.Page(mysite, pageName))
+            summary = pywikibot.translate(mysite, msg_protect_images) % pageName
+        gen = pagegenerators.ImagesPageGenerator(pywikibot.Page(mysite, pageName))
 
     if gen:
-        wikipedia.setAction(summary)
+        pywikibot.setAction(summary)
         # We are just protecting pages, so we have no need of using a preloading page generator
         # to actually get the text of those pages.
         if not edit: edit = defaultProtection
@@ -258,10 +262,10 @@ def main():
         bot = ProtectionRobot(gen, summary, always, edit=edit, move=move)
         bot.run()
     else:
-        wikipedia.showHelp(u'protect')
+        pywikibot.showHelp(u'protect')
 
 if __name__ == "__main__":
     try:
         main()
     finally:
-        wikipedia.stopme()
+        pywikibot.stopme()

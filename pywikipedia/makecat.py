@@ -32,14 +32,17 @@ L(ist) - show current list of pages to include or to check
 """
 
 # (C) Andre Engels, 2004
+# (C) Pywikipedia bot team 2005-2010
 #
 # Distributed under the terms of the MIT license.
 #
-
 __version__='$Id$'
+#
 
 import sys, codecs, re
-import wikipedia, date, catlib
+import date
+import wikipedia as pywikibot
+import catlib
 
 msg={
     'ar':u'إنشاء أو تحديث التصنيف:',
@@ -60,12 +63,12 @@ msg={
 def rawtoclean(c):
     #Given the 'raw' category, provides the 'clean' category
     c2 = c.title().split('|')[0]
-    return wikipedia.Page(mysite,c2)
+    return pywikibot.Page(mysite,c2)
 
 def isdate(s):
     """returns true iff s is a date or year
     """
-    dict,val = date.getAutoFormat( wikipedia.getSite().language(), s )
+    dict,val = date.getAutoFormat( pywikibot.getSite().language(), s )
     return dict is not None
 
 def needcheck(pl):
@@ -82,15 +85,16 @@ def needcheck(pl):
 def include(pl,checklinks=True,realinclude=True,linkterm=None):
     cl = checklinks
     if linkterm:
-        actualworkingcat = catlib.Category(mysite,workingcat.title(),sortKey=linkterm)
+        actualworkingcat = catlib.Category(mysite,workingcat.title(),
+                                           sortKey=linkterm)
     else:
         actualworkingcat = workingcat
     if realinclude:
         try:
             text = pl.get()
-        except wikipedia.NoPage:
+        except pywikibot.NoPage:
             pass
-        except wikipedia.IsRedirectPage:
+        except pywikibot.IsRedirectPage:
             cl = True
             pass
         else:
@@ -103,7 +107,8 @@ def include(pl,checklinks=True,realinclude=True,linkterm=None):
                             catlib.change_category(pl,c,actualworkingcat)
                             break
                 else:
-                    pl.put(wikipedia.replaceCategoryLinks(text, cats + [actualworkingcat]))
+                    pl.put(pywikibot.replaceCategoryLinks(
+                        text, cats + [actualworkingcat]))
     if cl:
         if checkforward:
             for page2 in pl.linkedPages():
@@ -130,8 +135,8 @@ def asktoadd(pl):
             checked[pl2]=pl2
         return
     ctoshow = 500
-    wikipedia.output(u'')
-    wikipedia.output(u"==%s=="%pl.title())
+    pywikibot.output(u'')
+    pywikibot.output(u"==%s=="%pl.title())
     while 1:
         answer = raw_input("y(es)/n(o)/i(gnore)/(o)ther options? ")
         if answer=='y':
@@ -143,7 +148,8 @@ def asktoadd(pl):
         if answer=='z':
             if pl.exists():
                 if not pl.isRedirectPage():
-                    linkterm = wikipedia.input(u"In what manner should it be alphabetized?")
+                    linkterm = pywikibot.input(
+                        u"In what manner should it be alphabetized?")
                     include(pl,linkterm=linkterm)
                     break
             include(pl)
@@ -155,42 +161,46 @@ def asktoadd(pl):
             exclude(pl,real_exclude=False)
             break
         elif answer=='o':
-            wikipedia.output(u"t: Give the beginning of the text of the page")
-            wikipedia.output(u"z: Add under another title (as [[Category|Title]])")
-            wikipedia.output(u"x: Add the page, but do not check links to and from it")
-            wikipedia.output(u"c: Do not add the page, but do check links")
-            wikipedia.output(u"a: Add another page")
-            wikipedia.output(u"l: Give a list of the pages to check")
+            pywikibot.output(u"t: Give the beginning of the text of the page")
+            pywikibot.output(
+                u"z: Add under another title (as [[Category|Title]])")
+            pywikibot.output(
+                u"x: Add the page, but do not check links to and from it")
+            pywikibot.output(u"c: Do not add the page, but do check links")
+            pywikibot.output(u"a: Add another page")
+            pywikibot.output(u"l: Give a list of the pages to check")
         elif answer=='a':
             pagetitle = raw_input("Specify page to add:")
-            page=wikipedia.Page(wikipedia.getSite(),pagetitle)
+            page=pywikibot.Page(pywikibot.getSite(),pagetitle)
             if not page in checked.keys():
                 include(page)
         elif answer=='x':
             if pl.exists():
                 if pl.isRedirectPage():
-                    wikipedia.output(u"Redirect page. Will be included normally.")
+                    pywikibot.output(
+                        u"Redirect page. Will be included normally.")
                     include(pl,realinclude=False)
                 else:
                     include(pl,checklinks=False)
             else:
-                wikipedia.output(u"Page does not exist; not added.")
+                pywikibot.output(u"Page does not exist; not added.")
                 exclude(pl,real_exclude=False)
             break
         elif answer=='l':
-            wikipedia.output(u"Number of pages still to check: %s"%len(tocheck))
-            wikipedia.output(u"Pages to be checked:")
-            wikipedia.output(u" - ".join(page.title() for page in tocheck))
-            wikipedia.output(u"==%s=="%pl.title())
+            pywikibot.output(u"Number of pages still to check: %s"
+                             % len(tocheck))
+            pywikibot.output(u"Pages to be checked:")
+            pywikibot.output(u" - ".join(page.title() for page in tocheck))
+            pywikibot.output(u"==%s=="%pl.title())
         elif answer=='t':
-            wikipedia.output(u"==%s=="%pl.title())
+            pywikibot.output(u"==%s=="%pl.title())
             try:
-                wikipedia.output(u''+pl.get(get_redirect=True)[0:ctoshow])
-            except wikipedia.NoPage:
-                wikipedia.output(u"Page does not exist.")
+                pywikibot.output(u''+pl.get(get_redirect=True)[0:ctoshow])
+            except pywikibot.NoPage:
+                pywikibot.output(u"Page does not exist.")
             ctoshow += 500
         else:
-            wikipedia.output(u"Not understood.")
+            pywikibot.output(u"Not understood.")
 
 try:
     checked = {}
@@ -202,7 +212,7 @@ try:
     main = True
     workingcatname = []
     tocheck = []
-    for arg in wikipedia.handleArgs():
+    for arg in pywikibot.handleArgs():
         if arg.startswith('-nodate'):
             skipdates = True
         elif arg.startswith('-forward'):
@@ -221,11 +231,14 @@ try:
         workingcatname = raw_input("Which page to start with? ")
     else:
         workingcatname = ' '.join(workingcatname)
-    mysite = wikipedia.getSite()
-    wikipedia.setAction(wikipedia.translate(mysite,msg) + ' ' + workingcatname)
-    workingcat = catlib.Category(mysite,mysite.category_namespace()+':'+workingcatname)
-    filename = wikipedia.config.datafilepath('category',
-                   wikipedia.UnicodeToAsciiHtml(workingcatname) + '_exclude.txt')
+    mysite = pywikibot.getSite()
+    pywikibot.setAction(pywikibot.translate(mysite,msg) + ' ' + workingcatname)
+    workingcat = catlib.Category(mysite,
+                                 u'%s:%s'
+                                 % (mysite.category_namespace(),
+                                    workingcatname))
+    filename = pywikibot.config.datafilepath('category',
+                   pywikibot.UnicodeToAsciiHtml(workingcatname) +'_exclude.txt')
     try:
         f = codecs.open(filename, 'r', encoding = mysite.encoding())
         for line in f.readlines():
@@ -236,7 +249,7 @@ try:
             except IndexError:
                 pass
             exclude(line,real_exclude=False)
-            pl = wikipedia.Page(mysite,line)
+            pl = pywikibot.Page(mysite,line)
             checked[pl] = pl
         f.close()
         excludefile = codecs.open(filename, 'a', encoding = mysite.encoding())
@@ -245,12 +258,12 @@ try:
         excludefile = codecs.open(filename, 'w', encoding = mysite.encoding())
     try:
         parentcats = workingcat.categories()
-    except wikipedia.Error:
+    except pywikibot.Error:
         parentcats = []
     # Do not include articles already in subcats; only checking direct subcats
     subcatlist = workingcat.subcategoriesList()
     if subcatlist:
-        wikipedia.getall(mysite,subcatlist)
+        pywikibot.getall(mysite,subcatlist)
         for cat in subcatlist:
             list = cat.articlesList()
             for page in list:
@@ -260,16 +273,18 @@ try:
     if list:
         for pl in list:
             checked[pl]=pl
-        wikipedia.getall(mysite,list)
+        pywikibot.getall(mysite,list)
         for pl in list:
             include(pl)
     else:
-        wikipedia.output(u"Category %s does not exist or is empty. Which page to start with?"%workingcatname)
-        answer = wikipedia.input(u"(Default is [[%s]]):"%workingcatname)
+        pywikibot.output(
+            u"Category %s does not exist or is empty. Which page to start with?"
+            % workingcatname)
+        answer = pywikibot.input(u"(Default is [[%s]]):" % workingcatname)
         if not answer:
             answer = workingcatname
-        wikipedia.output(u''+answer)
-        pl = wikipedia.Page(mysite,answer)
+        pywikibot.output(u''+answer)
+        pl = pywikibot.Page(mysite,answer)
         tocheck = []
         checked[pl] = pl
         include(pl)
@@ -280,7 +295,7 @@ try:
                 loaded = len(tocheck)
             else:
                 loaded = 50
-            wikipedia.getall(mysite,tocheck[:loaded])
+            pywikibot.getall(mysite,tocheck[:loaded])
         if not checkbroken:
             if not tocheck[0].exists():
                 pass
@@ -290,8 +305,9 @@ try:
             asktoadd(tocheck[0])
         tocheck = tocheck[1:]
         loaded -= 1
+
 finally:
-    wikipedia.stopme()
+    pywikibot.stopme()
     try:
         excludefile.close()
     except:

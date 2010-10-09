@@ -13,9 +13,9 @@ Command line options:
                e.g. "l" or "m".
 
     -start:XY  goes through all misspellings in the category on your wiki
-               that is defined (to the bot) as the category containing misspelling
-               pages, starting at XY. If the -start argument is not given, it starts
-               at the beginning.
+               that is defined (to the bot) as the category containing
+               misspelling pages, starting at XY. If the -start argument is not
+               given, it starts at the beginning.
 
    -main       only check pages in the main namespace, not in the talk,
                wikipedia, user, etc. namespaces.
@@ -26,7 +26,9 @@ __version__ = '$Id$'
 #
 # Distributed under the terms of the MIT license.
 
-import wikipedia, solve_disambiguation, catlib, pagegenerators
+import wikipedia as pywikibot
+import catlib, pagegenerators
+import solve_disambiguation
 
 class MisspellingRobot(solve_disambiguation.DisambiguationRobot):
 
@@ -64,19 +66,27 @@ class MisspellingRobot(solve_disambiguation.DisambiguationRobot):
     }
 
     def __init__(self, always, firstPageTitle, main_only):
-        solve_disambiguation.DisambiguationRobot.__init__(self, always, [], True, self.createPageGenerator(firstPageTitle), False, main_only)
+        solve_disambiguation.DisambiguationRobot.__init__(
+            self, always, [], True, self.createPageGenerator(firstPageTitle),
+            False, main_only)
 
     def createPageGenerator(self, firstPageTitle):
-        if wikipedia.getSite().lang in self.misspellingCategory:
-            misspellingCategoryTitle = self.misspellingCategory[wikipedia.getSite().lang]
-            misspellingCategory = catlib.Category(wikipedia.getSite(), misspellingCategoryTitle)
-            generator = pagegenerators.CategorizedPageGenerator(misspellingCategory, recurse = True, start = firstPageTitle)
+        if pywikibot.getSite().lang in self.misspellingCategory:
+            misspellingCategoryTitle = self.misspellingCategory[pywikibot.getSite().lang]
+            misspellingCategory = catlib.Category(pywikibot.getSite(),
+                                                  misspellingCategoryTitle)
+            generator = pagegenerators.CategorizedPageGenerator(
+                misspellingCategory, recurse = True, start=firstPageTitle)
         else:
-            misspellingTemplateName = 'Template:%s' % self.misspellingTemplate[wikipedia.getSite().lang]
-            misspellingTemplate = wikipedia.Page(wikipedia.getSite(), misspellingTemplateName)
-            generator = pagegenerators.ReferringPageGenerator(misspellingTemplate, onlyTemplateInclusion = True)
+            misspellingTemplateName = 'Template:%s' \
+                                      % self.misspellingTemplate[pywikibot.getSite().lang]
+            misspellingTemplate = pywikibot.Page(pywikibot.getSite(),
+                                                 misspellingTemplateName)
+            generator = pagegenerators.ReferringPageGenerator(
+                misspellingTemplate, onlyTemplateInclusion=True)
             if firstPageTitle:
-                wikipedia.output(u'-start parameter unsupported on this wiki because there is no category for misspellings.')
+                pywikibot.output(
+                    u'-start parameter unsupported on this wiki because there is no category for misspellings.')
         preloadingGen = pagegenerators.PreloadingGenerator(generator)
         return preloadingGen
 
@@ -87,7 +97,7 @@ class MisspellingRobot(solve_disambiguation.DisambiguationRobot):
             return True
         elif self.misspellingTemplate[disambPage.site().lang] is not None:
             for templateName, params in disambPage.templatesWithParams():
-                if templateName in self.misspellingTemplate[wikipedia.getSite().lang]:
+                if templateName in self.misspellingTemplate[pywikibot.getSite().lang]:
                     # The correct spelling is in the last paramter.
                     correctSpelling = params[-1]
                     # On de.wikipedia, there are some cases where the
@@ -106,8 +116,9 @@ class MisspellingRobot(solve_disambiguation.DisambiguationRobot):
     def setSummaryMessage(self, disambPage, new_targets, unlink):
         # TODO: setSummaryMessage() in solve_disambiguation now has parameters
         # new_targets and unlink. Make use of these here.
-        comment = wikipedia.translate(self.mysite, self.msg) % disambPage.title()
-        wikipedia.setAction(comment)
+        comment = pywikibot.translate(self.mysite, self.msg) \
+                  % disambPage.title()
+        pywikibot.setAction(comment)
 
 def main():
     # the option that's always selected when the bot wonders what to do with
@@ -116,12 +127,13 @@ def main():
     main_only = False
     firstPageTitle = None
 
-    for arg in wikipedia.handleArgs():
+    for arg in pywikibot.handleArgs():
         if arg.startswith('-always:'):
             always = arg[8:]
         elif arg.startswith('-start'):
             if len(arg) == 6:
-                firstPageTitle = wikipedia.input(u'At which page do you want to start?')
+                firstPageTitle = pywikibot.input(
+                    u'At which page do you want to start?')
             else:
                 firstPageTitle = arg[7:]
         elif arg == '-main':
@@ -135,4 +147,4 @@ if __name__ == "__main__":
     try:
         main()
     finally:
-        wikipedia.stopme()
+        pywikibot.stopme()

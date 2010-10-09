@@ -1,17 +1,26 @@
 #!/usr/bin/python
 # -*- coding: utf-8  -*-
-# A tool to see the recentchanges ordered by user instead of by date. This
-# is meant to be run as a CGI script.
-# Apart from the normal options of the recent changes page, you can add an option
-# ?newbies=true which will make the bot go over recently registered users only.
-# Currently only works on Dutch Wikipedia, I do intend to make it more generally
-# usable.
-# Permission has been asked to run this on the toolserver.
+"""
+A tool to see the recentchanges ordered by user instead of by date. This
+is meant to be run as a CGI script.
+Apart from the normal options of the recent changes page, you can add an option
+?newbies=true which will make the bot go over recently registered users only.
+Currently only works on Dutch Wikipedia, I do intend to make it more generally
+usable.
+Permission has been asked to run this on the toolserver.
+"""
+# (C) Pywikipedia bot team, 2007-2010
+#
+# Distributed under the terms of the MIT license.
+#
 __version__ = '$Id$'
+#
 
 import cgi
 import cgitb
 import re
+import wikipedia
+
 cgitb.enable()
 
 form = cgi.FieldStorage()
@@ -21,13 +30,12 @@ print
 print "<html>"
 print "<head>"
 print '<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />'
-print '<style type="text/css" media="screen,projection">/*<![CDATA[*/ @import "http://nl.wikipedia.org/skins-1.5/monobook/main.css?59"; /*]]>*/</style>'
+print '<style type="text/css" media="screen,projection">/*<![CDATA[*/ @import "http://nl.pywikibot.org/skins-1.5/monobook/main.css?59"; /*]]>*/</style>'
 print "</head>"
 print "<body>"
 print "<!--"
-import wikipedia
 print "-->"
-mysite = wikipedia.getSite()
+mysite = pywikibot.getSite()
 
 newbies = 'newbies' in form
 
@@ -63,10 +71,13 @@ for line in text:
             count += 1
             lines.append((user,count,line))
     elif 'rcoptions' in line:
-        print line.replace(mysite.path() + "?title=Speciaal:RecenteWijzigingen&amp;","rcsort.py?")
+        print line.replace(mysite.path() + "?title=Speciaal:RecenteWijzigingen&amp;",
+                           "rcsort.py?")
         rcoptions = True
     elif newbies and 'Nieuwste' in line:
-        line =  line.replace(mysite.path() + "?title=Speciaal:Bijdragen&amp;","rcsort.py?").replace("target=newbies","newbies=true")
+        line =  line.replace(mysite.path() + "?title=Speciaal:Bijdragen&amp;",
+                             "rcsort.py?").replace("target=newbies",
+                                                   "newbies=true")
         if '</fieldset>' in line:
             line = line[line.find('</fieldset>')+11:]
         print line
@@ -80,10 +91,10 @@ for line in lines:
         if line[0] == None:
             print "<h2>Gebruiker onbekend</h2>"
         else:
-            wikipedia.output(u"<h2>%s</h2>"%line[0],toStdout=True)
+            pywikibot.output(u"<h2>%s</h2>"%line[0],toStdout=True)
         print "<ul>"
         last = line[0]
-    wikipedia.output(line[2].replace('href="/w','href="http://nl.wikipedia.org/w'), toStdout = True)
+    pywikibot.output(line[2].replace('href="/w','href="http://nl.wikipedia.org/w'), toStdout = True)
     print
 
 print "</ul>"

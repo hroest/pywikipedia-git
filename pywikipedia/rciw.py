@@ -16,18 +16,24 @@ Params:
 
 Warning: experimental software, use at your own risk
 """
-__version__ = '$Id$'
 
 # Authors: Kisbes
 # http://hu.wikipedia.org/wiki/User:Kisbes
 # License : GFDL
+#
+# (C) Pywikipedia bot team, 2008, 2010
+#
+# Distributed under the terms of the MIT license.
+#
+__version__ = '$Id$'
+#
 
-import interwiki
 import threading
 import re
-import wikipedia
 import time
 from Queue import Queue
+import wikipedia as pywikibot
+import interwiki
 
 class IWRCBot():
     def __init__(self, site, safe = True):
@@ -58,13 +64,13 @@ class IWRCBot():
             if name in self.processed:
                 return
             self.processed.append(name)
-        page = wikipedia.Page(self.site, name)
+        page = pywikibot.Page(self.site, name)
         # the Queue has for now an unlimited size,
         # it is a simple atomic append(), no need to acquire a semaphore
         self.queue.put_nowait(page)
 
 def main():
-    wikipedia.output('Warning: this script can not be run manually/directly, but automatically by maintainer.py')
+    pywikibot.output('Warning: this script can not be run manually/directly, but automatically by maintainer.py')
 
 if __name__ == "__main__":
     main()

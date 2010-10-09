@@ -40,13 +40,13 @@ supported.
 # Distributed under the terms of the MIT license.
 #
 __version__ = '$Id$'
-
-import wikipedia
-import pagegenerators
+#
 
 import os
 import pipes
 import tempfile
+import wikipedia as pywikibot
+import pagegenerators
 
 # This is required for the text that is shown when you run this script
 # with the parameter -help.
@@ -82,7 +82,8 @@ class PiperBot:
     def run(self):
         # Set the edit summary message
         pipes = ', '.join(self.filters)
-        wikipedia.setAction(wikipedia.translate(wikipedia.getSite(), self.msg) % pipes)
+        pywikibot.setAction(pywikibot.translate(pywikibot.getSite(), self.msg)
+                            % pipes)
         for page in self.generator:
             self.treat(page)
 
@@ -118,11 +119,13 @@ class PiperBot:
         try:
             # Load the page
             text = page.get()
-        except wikipedia.NoPage:
-            wikipedia.output(u"Page %s does not exist; skipping." % page.aslink())
+        except pywikibot.NoPage:
+            pywikibot.output(u"Page %s does not exist; skipping."
+                             % page.title(asLink=True))
             return
-        except wikipedia.IsRedirectPage:
-            wikipedia.output(u"Page %s is a redirect; skipping." % page.aslink())
+        except pywikibot.IsRedirectPage:
+            pywikibot.output(u"Page %s is a redirect; skipping."
+                             % page.title(asLink=True))
             return
 
         # Munge!
@@ -133,24 +136,31 @@ class PiperBot:
         if text != page.get():
             # Show the title of the page we're working on.
             # Highlight the title in purple.
-            wikipedia.output(u"\n\n>>> %s <<<" % page.title())
+            pywikibot.output(u"\n\n>>> %s <<<" % page.title())
             # show what was changed
-            wikipedia.showDiff(page.get(), text)
+            pywikibot.showDiff(page.get(), text)
             if not self.dry:
                 if not self.always:
-                    choice = wikipedia.inputChoice(u'Do you want to accept these changes?', ['Yes', 'No'], ['y', 'N'], 'N')
+                    choice = pywikibot.inputChoice(
+                        u'Do you want to accept these changes?',
+                        ['Yes', 'No'], ['y', 'N'], 'N')
                 else:
                     choice = 'y'
                 if choice == 'y':
                     try:
                         # Save the page
                         page.put(text)
-                    except wikipedia.LockedPage:
-                        wikipedia.output(u"Page %s is locked; skipping." % page.aslink())
-                    except wikipedia.EditConflict:
-                        wikipedia.output(u'Skipping %s because of edit conflict' % (page.title()))
-                    except wikipedia.SpamfilterError, error:
-                        wikipedia.output(u'Cannot change %s because of spam blacklist entry %s' % (page.title(), error.url))
+                    except pywikibot.LockedPage:
+                        pywikibot.output(u"Page %s is locked; skipping."
+                                         % page.title(asLink=True))
+                    except pywikibot.EditConflict:
+                        pywikibot.output(
+                            u'Skipping %s because of edit conflict'
+                            % (page.title()))
+                    except pywikibot.SpamfilterError, error:
+                        pywikibot.output(
+                            u'Cannot change %s because of spam blacklist entry %s'
+                            % (page.title(), error.url))
 
 
 def main():
@@ -172,7 +182,7 @@ def main():
     filters = []
 
     # Parse command line arguments
-    for arg in wikipedia.handleArgs():
+    for arg in pywikibot.handleArgs():
         if arg.startswith("-dry"):
             dry = True
         elif arg.startswith("-filter:"):
@@ -189,7 +199,7 @@ def main():
     if pageTitleParts != []:
         # We will only work on a single page.
         pageTitle = ' '.join(pageTitleParts)
-        page = wikipedia.Page(wikipedia.getSite(), pageTitle)
+        page = pywikibot.Page(pywikibot.getSite(), pageTitle)
         gen = iter([page])
 
     if not gen:
@@ -201,10 +211,10 @@ def main():
         bot = PiperBot(gen, dry, filters, always)
         bot.run()
     else:
-        wikipedia.showHelp()
+        pywikibot.showHelp()
 
 if __name__ == "__main__":
     try:
         main()
     finally:
-        wikipedia.stopme()
+        pywikibot.stopme()

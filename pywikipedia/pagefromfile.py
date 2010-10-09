@@ -46,11 +46,12 @@ If the page to be uploaded already exists:
 #
 # Distributed under the terms of the MIT license.
 #
-
 __version__='$Id$'
+#
 
 import re, codecs
-import wikipedia, config
+import wikipedia as pywikibot
+import config
 
 class NoTitle(Exception):
     """No title found"""
@@ -138,7 +139,8 @@ class PageFromFileRobot:
         'zh': u'機器人: 覆寫已存在的文字',
     }
 
-    def __init__(self, reader, force, append, summary, minor, autosummary, debug):
+    def __init__(self, reader, force, append, summary, minor, autosummary,
+                 debug):
         self.reader = reader
         self.force = force
         self.append = append
@@ -152,47 +154,54 @@ class PageFromFileRobot:
             self.put(title, contents)
 
     def put(self, title, contents):
-        mysite = wikipedia.getSite()
+        mysite = pywikibot.getSite()
 
-        page = wikipedia.Page(mysite, title)
+        page = pywikibot.Page(mysite, title)
         # Show the title of the page we're working on.
         # Highlight the title in purple.
-        wikipedia.output(u">>> \03{lightpurple}%s\03{default} <<<" % page.title())
+        pywikibot.output(u">>> \03{lightpurple}%s\03{default} <<<"
+                         % page.title())
 
         if self.summary:
             comment = self.summary
         else:
-            comment = wikipedia.translate(mysite, self.msg)
+            comment = pywikibot.translate(mysite, self.msg)
 
-        comment_top = comment + " - " + wikipedia.translate(mysite, self.msg_top)
-        comment_bottom = comment + " - " + wikipedia.translate(mysite, self.msg_bottom)
-        comment_force = comment + " *** " + wikipedia.translate(mysite, self.msg_force) + " ***"
+        comment_top = comment + " - " + pywikibot.translate(mysite,
+                                                            self.msg_top)
+        comment_bottom = comment + " - " + pywikibot.translate(mysite,
+                                                               self.msg_bottom)
+        comment_force = comment + " *** " + pywikibot.translate(mysite,
+                                                                self.msg_force) + " ***"
 
         # Remove trailing newlines (cause troubles when creating redirects)
         contents = re.sub('^[\r\n]*','', contents)
 
         if page.exists():
             if self.append == "Top":
-                wikipedia.output(u"Page %s already exists, appending on top!" % title)
+                pywikibot.output(u"Page %s already exists, appending on top!"
+                                 % title)
                 contents = contents + page.get()
                 comment = comment_top
             elif self.append == "Bottom":
-                wikipedia.output(u"Page %s already exists, appending on bottom!" % title)
+                pywikibot.output(u"Page %s already exists, appending on bottom!"
+                                 % title)
                 contents = page.get() + contents
                 comment = comment_bottom
             elif self.force:
-                wikipedia.output(u"Page %s already exists, ***overwriting!" % title)
+                pywikibot.output(u"Page %s already exists, ***overwriting!"
+                                 % title)
                 comment = comment_force
             else:
-                wikipedia.output(u"Page %s already exists, not adding!" % title)
+                pywikibot.output(u"Page %s already exists, not adding!" % title)
                 return
         else:
            if self.autosummary:
                 comment = ''
-                wikipedia.setAction('')
+                pywikibot.setAction('')
 
         if self.dry:
-            wikipedia.output("*** Dry mode ***\n" + \
+            pywikibot.output("*** Dry mode ***\n" + \
                 "\03{lightpurple}title\03{default}: " + title + "\n" + \
                 "\03{lightpurple}contents\03{default}:\n" + contents + "\n" \
                 "\03{lightpurple}comment\03{default}: " + comment + "\n")
@@ -200,12 +209,14 @@ class PageFromFileRobot:
 
         try:
             page.put(contents, comment = comment, minorEdit = self.minor)
-        except wikipedia.LockedPage:
-            wikipedia.output(u"Page %s is locked; skipping." % title)
-        except wikipedia.EditConflict:
-            wikipedia.output(u'Skipping %s because of edit conflict' % title)
-        except wikipedia.SpamfilterError, error:
-            wikipedia.output(u'Cannot change %s because of spam blacklist entry %s' % (title, error.url))
+        except pywikibot.LockedPage:
+            pywikibot.output(u"Page %s is locked; skipping." % title)
+        except pywikibot.EditConflict:
+            pywikibot.output(u'Skipping %s because of edit conflict' % title)
+        except pywikibot.SpamfilterError, error:
+            pywikibot.output(
+                u'Cannot change %s because of spam blacklist entry %s'
+                % (title, error.url))
 
 class PageFromFileReader:
     """
@@ -213,7 +224,8 @@ class PageFromFileReader:
 
     The run() method yields a (title, contents) tuple for each found page.
     """
-    def __init__(self, filename, pageStartMarker, pageEndMarker, titleStartMarker, titleEndMarker, include, notitle):
+    def __init__(self, filename, pageStartMarker, pageEndMarker,
+                 titleStartMarker, titleEndMarker, include, notitle):
         self.filename = filename
         self.pageStartMarker = pageStartMarker
         self.pageEndMarker = pageEndMarker
@@ -223,9 +235,10 @@ class PageFromFileReader:
         self.notitle = notitle
 
     def run(self):
-        wikipedia.output('Reading \'%s\'...' % self.filename)
+        pywikibot.output('Reading \'%s\'...' % self.filename)
         try:
-            f = codecs.open(self.filename, 'r', encoding = config.textfile_encoding)
+            f = codecs.open(self.filename, 'r',
+                            encoding=config.textfile_encoding)
         except IOError, err:
             print err
             return
@@ -238,12 +251,12 @@ class PageFromFileReader:
                 length, title, contents = self.findpage(text[position:])
             except AttributeError:
                 if not length:
-                    wikipedia.output(u'\nStart or end marker not found.')
+                    pywikibot.output(u'\nStart or end marker not found.')
                 else:
-                    wikipedia.output(u'End of file.')
+                    pywikibot.output(u'End of file.')
                 break
             except NoTitle, err:
-                wikipedia.output(u'\nNo title found - skipping a page.')
+                pywikibot.output(u'\nNo title found - skipping a page.')
                 position += err.offset
                 continue
 
@@ -270,9 +283,9 @@ class PageFromFileReader:
             return location.end(), title, contents
 
 def main():
-    # Adapt these to the file you are using. 'pageStartMarker' and 'pageEndMarker' are
-    # the beginning and end of each entry. Take text that should be included
-    # and does not occur elsewhere in the text.
+    # Adapt these to the file you are using. 'pageStartMarker' and
+    # 'pageEndMarker' are the beginning and end of each entry. Take text that
+    # should be included and does not occur elsewhere in the text.
 
     # TODO: make config variables for these.
     filename = "dict.txt"
@@ -290,7 +303,7 @@ def main():
     autosummary = False
     dry = False
 
-    for arg in wikipedia.handleArgs():
+    for arg in pywikibot.handleArgs():
         if arg.startswith("-start:"):
             pageStartMarker = arg[7:]
         elif arg.startswith("-end:"):
@@ -323,10 +336,10 @@ def main():
         elif arg == '-autosummary':
             autosummary = True
         else:
-            wikipedia.output(u"Disregarding unknown argument %s." % arg)
+            pywikibot.output(u"Disregarding unknown argument %s." % arg)
 
-    reader = PageFromFileReader(filename, pageStartMarker, pageEndMarker, titleStartMarker, titleEndMarker, include, notitle)
-
+    reader = PageFromFileReader(filename, pageStartMarker, pageEndMarker,
+                                titleStartMarker, titleEndMarker, include, notitle)
     bot = PageFromFileRobot(reader, force, append, summary, minor, autosummary, dry)
     bot.run()
 
@@ -334,4 +347,4 @@ if __name__ == "__main__":
     try:
         main()
     finally:
-        wikipedia.stopme()
+        pywikibot.stopme()
