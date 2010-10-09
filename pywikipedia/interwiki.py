@@ -68,6 +68,10 @@ These command-line arguments can be used to specify which pages to work on:
                    NOTE: For post-processing it always assumes that saving the
                    the pages was sucessful.
 
+    -summary:      Set an additional action summary message for the edit. This
+                   could be used for further explainings of the bot action.
+                   This will only be used in non-autonomous mode.
+
 Additionaly, these arguments can be used to restrict the bot to certain pages:
 
     -namespace:n   Number or name of namespace to process. The parameter can be
@@ -607,6 +611,7 @@ class Global(object):
     quiet  = False
     restoreAll = False
     async  = False
+    summary = u''
 
     def readOptions(self, arg):
         """ Read all commandline parameters for the global container """
@@ -705,6 +710,11 @@ class Global(object):
             self.quiet = True
         elif arg == '-async':
             self.async = True
+        elif arg.startswith('-summary'):
+            if len(arg) == 8:
+                self.summary = pywikibot.input(u'What summary do you want to use?')
+            else:
+                self.summary = arg[9:]
         elif arg.startswith('-lack:'):
             remainder = arg[6:].split(':')
             self.lacklanguage = remainder[0]
@@ -2263,7 +2273,8 @@ def compareLanguages(old, new, insite):
 
     mcomment = mods = u''
 
-    if len(adding) + len(removing) + len(modifying) <= 3:
+    if not globalvar.summary and \
+       len(adding) + len(removing) + len(modifying) <= 3:
         # Use an extended format for the string linking to all added pages.
         fmt = lambda d, site: d[site].aslink(forceInterwiki=True)
     else:
@@ -2285,7 +2296,7 @@ def compareLanguages(old, new, insite):
     if modifying:
         mods += (sep + mod + colon + comma.join([fmt(new, x) for x in modifying]))
     if mods:
-        mcomment = head + mods
+        mcomment = head + globalvar.summary + mods
     return mods, mcomment, adding, removing, modifying
 
 def botMayEdit (page):
@@ -2390,6 +2401,12 @@ def main():
             if not genFactory.handleArg(arg):
                 singlePageTitle.append(arg)
 
+    # Do not us additional summary with autonomous mode
+    if globalvar.autonomous:
+        globalvar.summary = u''
+    elif globalvar.summary:
+        globalvar.summary += u'; '
+    
     # ensure that we don't try to change main page
     try:
         site = pywikibot.getSite()
