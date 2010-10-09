@@ -24,9 +24,10 @@ python unlink.py Foo bar -namespace:0 -namespace:6
 
 __version__='$Id$'
 
-import wikipedia, pagegenerators
-import editarticle
 import re
+import wikipedia as pywikibot
+import pagegenerators
+import editarticle
 
 # Summary messages in different languages
 msg = {
@@ -44,18 +45,16 @@ msg = {
           'pt':u'Bot: Retirando link para "%s"',
        }
 
+
 class UnlinkBot:
 
     def __init__(self, pageToUnlink, namespaces, always):
         self.pageToUnlink = pageToUnlink
-
         gen = pagegenerators.ReferringPageGenerator(pageToUnlink)
-
         if namespaces != []:
             gen =  pagegenerators.NamespaceFilterPageGenerator(gen, namespaces)
         self.generator =  pagegenerators.PreloadingGenerator(gen)
-
-        linktrail = wikipedia.getSite().linktrail()
+        linktrail = pywikibot.getSite().linktrail()
         # The regular expression which finds links. Results consist of four groups:
         # group title is the target page title, that is, everything before | or ].
         # group section is the page section. It'll include the # to make life easier for us.
@@ -65,6 +64,8 @@ class UnlinkBot:
         self.linkR = re.compile(r'\[\[(?P<title>[^\]\|#]*)(?P<section>#[^\]\|]*)?(\|(?P<label>[^\]]*))?\]\](?P<linktrail>' + linktrail + ')')
         self.always = always
         self.done = False
+        self.comment = pywikibot.translate(pywikibot.getSite(), msg) \
+                       % self.pageToUnlink.title()
 
     def handleNextLink(self, text, match, context = 100):
         """
@@ -80,8 +81,8 @@ class UnlinkBot:
            or self.pageToUnlink.site().isInterwikiLink(match.group('title')) \
            or match.group('section'):
             return text, False
-
-        linkedPage = wikipedia.Page(self.pageToUnlink.site(), match.group('title'))
+        linkedPage = pywikibot.Page(self.pageToUnlink.site(),
+                                    match.group('title'))
         # Check whether the link found is to the current page itself.
         if linkedPage != self.pageToUnlink:
             # not a self-link
@@ -92,16 +93,16 @@ class UnlinkBot:
             if self.always:
                 choice = 'a'
             else:
-                wikipedia.output(
+                pywikibot.output(
                     text[max(0, match.start() - context) : match.start()] \
                     + '\03{lightred}' + text[match.start() : match.end()] \
                     + '\03{default}' + text[match.end() : match.end() + context])
-                choice = wikipedia.inputChoice(
+                choice = pywikibot.inputChoice(
                     u'\nWhat shall be done with this link?\n',
                     ['unlink', 'skip', 'edit', 'more context',
                      'unlink all', 'quit'],
                     ['U', 's', 'e', 'm', 'a', 'q'], 'u')
-                wikipedia.output(u'')
+                pywikibot.output(u'')
 
                 if choice == 's':
                     # skip this link
@@ -116,7 +117,8 @@ class UnlinkBot:
                         return text, True
                 elif choice == 'm':
                     # show more context by recursive self-call
-                    return self.handleNextLink(text, match, context = context + 100)
+                    return self.handleNextLink(text, match,
+                                               context=context + 100)
                 elif choice == 'a':
                     self.always = True
                 elif choice == 'q':
@@ -129,7 +131,8 @@ class UnlinkBot:
     def treat(self, page):
         # Show the title of the page we're working on.
         # Highlight the title in purple.
-        wikipedia.output(u"\n\n>>> \03{lightpurple}%s\03{default} <<<" % page.title())
+        pywikibot.output(u"\n\n>>> \03{lightpurple}%s\03{default} <<<"
+                         % page.title())
         try:
             oldText = page.get()
             text = oldText
@@ -138,31 +141,31 @@ class UnlinkBot:
                 match = self.linkR.search(text, pos = curpos)
                 if not match:
                     break
-                # Make sure that next time around we will not find this same hit.
+                # Make sure that next time around we will not find this same
+                # hit.
                 curpos = match.start() + 1
                 text, jumpToBeginning = self.handleNextLink(text, match)
                 if jumpToBeginning:
                     curpos = 0
-
             if oldText == text:
-                wikipedia.output(u'No changes necessary.')
+                pywikibot.output(u'No changes necessary.')
             else:
-                wikipedia.showDiff(oldText, text)
-                page.put(text)
-        except wikipedia.NoPage:
-            wikipedia.output(u"Page %s does not exist?!" % page.aslink())
-        except wikipedia.IsRedirectPage:
-            wikipedia.output(u"Page %s is a redirect; skipping." % page.aslink())
-        except wikipedia.LockedPage:
-            wikipedia.output(u"Page %s is locked?!" % page.aslink())
+                pywikibot.showDiff(oldText, text)
+                page.put(text, self.comment)
+        except pywikibot.NoPage:
+            pywikibot.output(u"Page %s does not exist?!"
+                             % page.title(asLink=True))
+        except pywikibot.IsRedirectPage:
+            pywikibot.output(u"Page %s is a redirect; skipping."
+                             % page.title(asLink=True))
+        except pywikibot.LockedPage:
+            pywikibot.output(u"Page %s is locked?!" % page.title(asLink=True))
 
     def run(self):
-        comment = wikipedia.translate(wikipedia.getSite(), msg) % self.pageToUnlink.title()
-        wikipedia.setAction(comment)
-
         for page in self.generator:
             if self.done: break
             self.treat(page)
+
 
 def main():
     # This temporary array is used to read the page title if one single
@@ -173,7 +176,7 @@ def main():
     namespaces = []
     always = False
 
-    for arg in wikipedia.handleArgs():
+    for arg in pywikibot.handleArgs():
         if arg.startswith('-namespace:'):
             try:
                 namespaces.append(int(arg[11:]))
@@ -185,14 +188,14 @@ def main():
             pageTitle.append(arg)
 
     if pageTitle:
-        page = wikipedia.Page(wikipedia.getSite(), ' '.join(pageTitle))
+        page = pywikibot.Page(pywikibot.getSite(), ' '.join(pageTitle))
         bot = UnlinkBot(page, namespaces, always)
         bot.run()
     else:
-        wikipedia.showHelp('unlink')
+        pywikibot.showHelp('unlink')
 
 if __name__ == "__main__":
     try:
         main()
     finally:
-        wikipedia.stopme()
+        pywikibot.stopme()

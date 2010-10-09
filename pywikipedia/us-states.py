@@ -14,14 +14,17 @@ Specific arguments:
 -force: Don't ask whether to create pages, just create them.
 
 """
-__version__ = '$Id$'
 #
 # (C) Andre Engels, 2004
+# (C) Pywikipedia bot team, 2004-2010
 #
 # Distributed under the terms of the MIT license.
 #
+__version__ = '$Id$'
+#
 
-import re,wikipedia,sys
+import re, sys
+import wikipedia as pywikibot
 
 def main():
     start = '0'
@@ -84,48 +87,60 @@ def main():
         'Wyoming': 'WY'
     }
 
-    for arg in wikipedia.handleArgs():
+    for arg in pywikibot.handleArgs():
         if arg.startswith('-start:'):
             start = arg[7:]
         elif arg == '-force':
             force = True
         else:
-            wikipedia.output(u'Warning: argument "%s" not understood; ignoring.'%arg)
+            pywikibot.output(
+                u'Warning: argument "%s" not understood; ignoring.' % arg)
 
-    mysite = wikipedia.getSite()
+    mysite = pywikibot.getSite()
     for p in mysite.allpages(start = start):
         for sn in abbrev:
             R=re.compile('[^[]]*' + '\%2C_' + sn)
             for res in R.findall(p.title()):
-                pl=wikipedia.Page(mysite, p.title().replace(sn,abbrev[sn]))
-                # A bit hacking here - the real work is done in the 'except wikipedia.NoPage'
-                # part rather than the 'try'.
+                pl=pywikibot.Page(mysite, p.title().replace(sn,abbrev[sn]))
+                # A bit hacking here - the real work is done in the
+                # 'except pywikibot.NoPage' part rather than the 'try'.
                 try:
                     goal = pl.getRedirectTarget().title()
-                    if wikipedia.Page(mysite, goal):
-                        wikipedia.output(u"Not creating %s - redirect already exists." % goal)
+                    if pywikibot.Page(mysite, goal):
+                        pywikibot.output(
+                            u"Not creating %s - redirect already exists."
+                            % goal)
                     else:
-                        wikipedia.output(u"WARNING!!! %s already exists but redirects elsewhere!" % goal)
-                except wikipedia.IsNotRedirectPage:
-                    wikipedia.output(u"WARNING!!! Page %s already exists and is not a redirect. Please check page!" % goal)
-                except wikipedia.NoPage:
+                        pywikibot.output(
+                            u"WARNING!!! %s already exists but redirects elsewhere!"
+                            % goal)
+                except pywikibot.IsNotRedirectPage:
+                    pywikibot.output(
+                        u"WARNING!!! Page %s already exists and is not a redirect. Please check page!"
+                        % goal)
+                except pywikibot.NoPage:
                     change=''
                     if p.isRedirectPage():
                         p2 = p.getRedirectTarget()
-                        wikipeda.ouput(u'Note: goal page is redirect. Creating redirect to "%s" to avoid double redirect.'%p2.title().replace("%2C",",").replace("_"," "))
+                        wikipeda.ouput(
+                            u'Note: goal page is redirect. Creating redirect to "%s" to avoid double redirect.'
+                            % p2.title().replace("%2C",",").replace("_"," "))
                     else:
                         p2 = p
                     if force:
                         change='y'
                     else:
                         while not change in ['y','n']:
-                            wikipedia.output(u"Create redirect %s"%pl.title().replace("%2C",",").replace("_"," "))
+                            pywikibot.output(
+                                u"Create redirect %s" %
+                                pl.title().replace("%2C",",").replace("_"," "))
                             change = raw_input("(y/n)? ")
                     if change=='y':
                         text = '#REDIRECT [['+p2.title().replace("%2C",",").replace("_"," ")+']]'
-                        pl.put(text, comment = wikipedia.translate(mysite, msg), minorEdit = '0')
+                        pl.put(text, comment=pywikibot.translate(mysite, msg),
+                               minorEdit = '0')
 
 try:
     main()
 finally:
-    wikipedia.stopme()
+    pywikibot.stopme()

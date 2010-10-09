@@ -23,34 +23,34 @@ Examples:
 """
 #
 # (C) Yuri Astrakhan, 2005
+# (C) Pywikipedia bot team, 2006-2010
 #
 # Distributed under the terms of the MIT license.
 #
 __version__ = '$Id$'
 #
 
-import sys, wikipedia, traceback
-
-
-#===========
+import sys
+import wikipedia as pywikibot
+import traceback
 
 def testSite(site):
     try:
-        wikipedia.getall(site, [wikipedia.Page(site, 'Any page name')])
+        pywikibot.getall(site, [pywikibot.Page(site, 'Any page name')])
     except KeyboardInterrupt:
         raise
-    except wikipedia.NoSuchSite:
-        wikipedia.output( u'No such language %s' % site.lang )
+    except pywikibot.NoSuchSite:
+        pywikibot.output( u'No such language %s' % site.lang )
     except:
-        wikipedia.output( u'Error processing language %s' % site.lang )
-        wikipedia.output( u''.join(traceback.format_exception(*sys.exc_info())))
+        pywikibot.output( u'Error processing language %s' % site.lang )
+        pywikibot.output( u''.join(traceback.format_exception(*sys.exc_info())))
 
 def main():
     all = False
     language = None
     fam = None
     wikimedia = False
-    for arg in wikipedia.handleArgs():
+    for arg in pywikibot.handleArgs():
         if arg == '-all':
             all = True
         elif arg[0:7] == '-langs:':
@@ -60,11 +60,13 @@ def main():
         elif arg[0:10] == '-wikimedia':
             wikimedia = True
 
-    mySite = wikipedia.getSite()
+    mySite = pywikibot.getSite()
     if language is None:
         language = mySite.lang
     if wikimedia:
-        families = ['wikipedia', 'wiktionary', 'wikiquote', 'wikisource', 'wikibooks', 'wikinews', 'wikiversity', 'meta', 'commons', 'mediawiki', 'species', 'incubator', 'test']
+        families = ['wikipedia', 'wiktionary', 'wikiquote', 'wikisource',
+                    'wikibooks', 'wikinews', 'wikiversity', 'meta', 'commons',
+                    'mediawiki', 'species', 'incubator', 'test']
     elif fam is not None:
         families = fam.split(',')
     else:
@@ -72,23 +74,24 @@ def main():
 
     for family in families:
         try:
-            fam = wikipedia.Family(family)
+            fam = pywikibot.Family(family)
         except ValueError:
-            wikipedia.output(u'No such family %s' % family)
+            pywikibot.output(u'No such family %s' % family)
             continue
         if all:
             for lang in fam.langs.iterkeys():
-                testSite(wikipedia.getSite(lang, family))
+                testSite(pywikibot.getSite(lang, family))
         else:
             languages = language.split(',')
             for lang in languages:
                 try:
-                    testSite(wikipedia.getSite(lang, family))
-                except wikipedia.NoSuchSite:
-                    wikipedia.output(u'No such language %s in family %s' % (lang, family))
+                    testSite(pywikibot.getSite(lang, family))
+                except pywikibot.NoSuchSite:
+                    pywikibot.output(u'No such language %s in family %s'
+                                     % (lang, family))
 
 if __name__ == "__main__":
     try:
         main()
     finally:
-        wikipedia.stopme()
+        pywikibot.stopme()

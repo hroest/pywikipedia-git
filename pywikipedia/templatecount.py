@@ -1,9 +1,9 @@
 #!/usr/bin/python
 # -*- coding: utf-8  -*-
 """
-This script will display the list of pages transcluding a given list of templates.
-It can also be used to simply count the number of pages (rather than listing each
-individually).
+This script will display the list of pages transcluding a given list of
+templates. It can also be used to simply count the number of pages (rather than
+listing each individually).
 
 Syntax: python templatecount.py command [arguments]
 
@@ -34,10 +34,11 @@ Lists all the category pages that transclude {{cfd}} and {{cfdu}}.
 #
 __version__ = '$Id$'
 
-import wikipedia, config
-import replace, pagegenerators
 import re, sys, string
 import datetime
+import wikipedia as pywikibot
+import config
+import replace, pagegenerators
 
 templates = ['ref', 'note', 'ref label', 'note label', 'reflist']
 
@@ -45,16 +46,20 @@ class TemplateCountRobot:
     #def __init__(self):
         #Nothing
     def countTemplates(self, templates, namespaces):
-        mysite = wikipedia.getSite()
+        mysite = pywikibot.getSite()
         mytpl  = mysite.template_namespace()+':'
-        finalText = [u'Number of transclusions per template',u'------------------------------------']
+        finalText = [u'Number of transclusions per template', u'-' * 36]
         total = 0
-        # The names of the templates are the keys, and the numbers of transclusions are the values.
+        # The names of the templates are the keys, and the numbers of
+        # transclusions are the values.
         templateDict = {}
         for template in templates:
-            gen = pagegenerators.ReferringPageGenerator(wikipedia.Page(mysite, mytpl + template), onlyTemplateInclusion = True)
+            gen = pagegenerators.ReferringPageGenerator(
+                pywikibot.Page(mysite, mytpl + template),
+                onlyTemplateInclusion = True)
             if namespaces:
-                gen = pagegenerators.NamespaceFilterPageGenerator(gen, namespaces)
+                gen = pagegenerators.NamespaceFilterPageGenerator(gen,
+                                                                  namespaces)
             count = 0
             for page in gen:
                 count += 1
@@ -62,25 +67,32 @@ class TemplateCountRobot:
             finalText.append(u'%s: %d' % (template, count))
             total += count
         for line in finalText:
-            wikipedia.output(line, toStdout=True)
-        wikipedia.output(u'TOTAL: %d' % total, toStdout=True)
-        wikipedia.output(u'Report generated on %s' % datetime.datetime.utcnow().isoformat(), toStdout=True)
+            pywikibot.output(line, toStdout=True)
+        pywikibot.output(u'TOTAL: %d' % total, toStdout=True)
+        pywikibot.output(u'Report generated on %s'
+                         % datetime.datetime.utcnow().isoformat(),
+                         toStdout=True)
         return templateDict
 
     def listTemplates(self, templates, namespaces):
-        mysite = wikipedia.getSite()
+        mysite = pywikibot.getSite()
         count = 0
-        # The names of the templates are the keys, and lists of pages transcluding templates are the values.
+        # The names of the templates are the keys, and lists of pages
+        # transcluding templates are the values.
         templateDict = {}
         finalText = [u'List of pages transcluding templates:']
         for template in templates:
             finalText.append(u'* %s' % template)
-        finalText.append(u'------------------------------------')
+        finalText.append(u'-' * 36)
         for template in templates:
             transcludingArray = []
-            gen = pagegenerators.ReferringPageGenerator(wikipedia.Page(mysite, mysite.template_namespace() + ':' + template), onlyTemplateInclusion = True)
+            gen = pagegenerators.ReferringPageGenerator(
+                pywikibot.Page(mysite,
+                               mysite.template_namespace() + ':' + template),
+                onlyTemplateInclusion=True)
             if namespaces:
-                gen = pagegenerators.NamespaceFilterPageGenerator(gen, namespaces)
+                gen = pagegenerators.NamespaceFilterPageGenerator(gen,
+                                                                  namespaces)
             for page in gen:
                 finalText.append(u'%s' % page.title())
                 count += 1
@@ -88,8 +100,10 @@ class TemplateCountRobot:
             templateDict[template] = transcludingArray;
         finalText.append(u'Total page count: %d' % count)
         for line in finalText:
-            wikipedia.output(line, toStdout=True)
-        wikipedia.output(u'Report generated on %s' % datetime.datetime.utcnow().isoformat(), toStdout=True)
+            pywikibot.output(line, toStdout=True)
+        pywikibot.output(u'Report generated on %s'
+                         % datetime.datetime.utcnow().isoformat(),
+                         toStdout=True)
         return templateDict
 
 def main():
@@ -97,7 +111,7 @@ def main():
     argsList = []
     namespaces = []
 
-    for arg in wikipedia.handleArgs():
+    for arg in pywikibot.handleArgs():
         if arg == '-count':
             operation = "Count"
         elif arg == '-list':
@@ -111,15 +125,17 @@ def main():
             argsList.append(arg)
 
     if operation == None:
-        wikipedia.showHelp('templatecount')
+        pywikibot.showHelp('templatecount')
     else:
         robot = TemplateCountRobot()
         if not argsList:
             argsList = templates
         choice = ''
         if 'reflist' in argsList:
-            wikipedia.output(u'NOTE: it will take a long time to count "reflist".')
-            choice = wikipedia.inputChoice(u'Proceed anyway?', ['yes', 'no', 'skip'], ['y', 'n', 's'], 'y')
+            pywikibot.output(
+                u'NOTE: it will take a long time to count "reflist".')
+            choice = pywikibot.inputChoice(
+                u'Proceed anyway?', ['yes', 'no', 'skip'], ['y', 'n', 's'], 'y')
             if choice == 's':
                 argsList.remove('reflist')
         if choice == 'n':
@@ -133,4 +149,4 @@ if __name__ == "__main__":
     try:
         main()
     finally:
-        wikipedia.stopme()
+        pywikibot.stopme()
