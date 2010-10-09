@@ -54,7 +54,7 @@ Please fix these if you are capable and motivated:
 __version__ = '$Id$'
 #
 
-import sys, re, webbrowser
+import sys, re, webbrowser, urllib
 import wikipedia as pywikibot
 import pagegenerators
 import image
@@ -264,11 +264,25 @@ class NowCommonsDeleteBot:
                 if params == []:
                     filenameOnCommons = localImagePage.titleWithoutNamespace()
                 elif self.site.lang in namespaceInTemplate:
+                    skip = False
+                    filenameOnCommons = None
                     for par in params:
-                        if ':' in par:
+                        val = par.split('=')
+                        if len(val) == 1 and not skip:
                             filenameOnCommons = par[par.index(':') + 1:]
+                            break
+                        if val[0].strip() == '1':
+                            filenameOnCommons = val[1].strip()[val[1].strip().index(':') + 1:]
+                            break
+                        skip = True
+                    if not filenameOnCommons:
+                        filenameOnCommons = localImagePage.titleWithoutNamespace()
                 else:
-                    filenameOnCommons = params[0]
+                    val = params[0].split('=')
+                    if len(val) == 1:
+                        filenameOnCommons = params[0].strip()
+                    else:
+                        filenameOnCommons = val[1].strip()
                 return filenameOnCommons
 
     # Function stolen from wikipedia.py and modified. Really needed?
