@@ -2401,7 +2401,7 @@ def main():
             if not genFactory.handleArg(arg):
                 singlePageTitle.append(arg)
 
-    # Do not us additional summary with autonomous mode
+    # Do not use additional summary with autonomous mode
     if globalvar.autonomous:
         globalvar.summary = u''
     elif globalvar.summary:
