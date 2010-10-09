@@ -13,13 +13,16 @@ Example:
 """
 #
 # (C) Rob W.W. Hooft, 2003
+# (C) Pywikipedia bot team, 2003-2010
 #
 # Distributed under the terms of the MIT license.
 #
 __version__ = '$Id$'
 #
 import sys, os, re
-import wikipedia, interwiki
+import wikipedia as pywikibot
+import interwiki
+
 
 class WarnfileReader:
     def __init__(self, filename):
@@ -27,24 +30,27 @@ class WarnfileReader:
 
     def getHints(self):
         print "Parsing warnfile..."
-        R=re.compile(r'WARNING: (?P<family>.+?): \[\[(?P<locallang>.+?):(?P<localtitle>.+?)\]\](?P<warningtype>.+?)\[\[(?P<targetlang>.+?):(?P<targettitle>.+?)\]\]')
+        R=re.compile(
+            r'WARNING: (?P<family>.+?): \[\[(?P<locallang>.+?):(?P<localtitle>.+?)\]\](?P<warningtype>.+?)\[\[(?P<targetlang>.+?):(?P<targettitle>.+?)\]\]')
         import codecs
         f = codecs.open(self.filename, 'r', 'utf-8')
         hints={}
         removeHints={}
-        mysite=wikipedia.getSite()
+        mysite=pywikibot.getSite()
         for line in f.readlines():
             m=R.search(line)
             if m:
                 #print "DBG>",line
-                if m.group('locallang') == mysite.lang and m.group('family') == mysite.family.name:
-                    #wikipedia.output(u' '.join([m.group('locallang'), m.group('localtitle'), m.group('warningtype'), m.group('targetsite'), m.group('targettitle')]))
+                if m.group('locallang') == mysite.lang and \
+                   m.group('family') == mysite.family.name:
+                    #pywikibot.output(u' '.join([m.group('locallang'), m.group('localtitle'), m.group('warningtype'), m.group('targetsite'), m.group('targettitle')]))
                     #print m.group(3)
-                    page = wikipedia.Page(mysite, m.group('localtitle'))
+                    page = pywikibot.Page(mysite, m.group('localtitle'))
                     removing = (m.group('warningtype') == ' links to incorrect ')
                     try:
-                        targetSite = mysite.getSite(code = m.group('targetlang'))
-                        targetPage = wikipedia.Page(targetSite, m.group('targettitle'))
+                        targetSite = mysite.getSite(code=m.group('targetlang'))
+                        targetPage = pywikibot.Page(targetSite,
+                                                    m.group('targettitle'))
                         if removing:
                             if page not in removeHints:
                                 removeHints[page]=[]
@@ -53,7 +59,7 @@ class WarnfileReader:
                             if page not in hints:
                                 hints[page]=[]
                             hints[page].append(targetPage)
-                    except wikipedia.Error:
+                    except pywikibot.Error:
                         print "DBG> Failed to add", line
         f.close()
         return hints, removeHints
@@ -72,11 +78,13 @@ class WarnfileRobot:
             try:
                 for page2 in page.interwiki():
                     old[page2.site()] = page2
-            except wikipedia.IsRedirectPage:
-                wikipedia.output(u"%s is a redirect page; not changing" % page.aslink())
+            except pywikibot.IsRedirectPage:
+                pywikibot.output(u"%s is a redirect page; not changing"
+                                 % page.title(asLink=True))
                 continue
-            except wikipedia.NoPage:
-                wikipedia.output(u"Page %s not found; skipping" % page.aslink())
+            except pywikibot.NoPage:
+                pywikibot.output(u"Page %s not found; skipping"
+                                 % page.title(asLink=True))
                 continue
             new={}
             new.update(old)
@@ -91,38 +99,43 @@ class WarnfileRobot:
                         del new[site]
                     except KeyError:
                         pass
-            mods, adding, removing, modifying = interwiki.compareLanguages(old, new, insite = page.site())
+            mods, adding, removing, modifying = interwiki.compareLanguages(old,
+                                                                           new,
+                                                                           insite=page.site())
             if mods:
-                wikipedia.output(page.aslink() + mods)
+                pywikibot.output(page.title(asLink=True) + mods)
                 oldtext = page.get()
-                newtext = wikipedia.replaceLanguageLinks(oldtext, new)
+                newtext = pywikibot.replaceLanguageLinks(oldtext, new)
                 if 1:
-                    wikipedia.showDiff(oldtext, newtext)
+                    pywikibot.showDiff(oldtext, newtext)
                     try:
-                        status, reason, data = page.put(newtext, comment='warnfile '+mods)
-                    except wikipedia.LockedPage:
-                        wikipedia.output(u"Page is locked. Skipping.")
+                        status, reason, data = page.put(newtext,
+                                                        comment='warnfile '+mods)
+                    except pywikibot.LockedPage:
+                        pywikibot.output(u"Page is locked. Skipping.")
                         continue
-                    except wikipedia.SpamfilterError, e:
-                        wikipedia.output(u'Cannot change %s because of blacklist entry %s' % (page.title(), e.url))
+                    except pywikibot.SpamfilterError, e:
+                        pywikibot.output(
+                            u'Cannot change %s because of blacklist entry %s'
+                            % (page.title(), e.url))
                         continue
-                    except wikipedia.Error:
-                        wikipedia.output(u"Error while saving page.")
+                    except pywikibot.Error:
+                        pywikibot.output(u"Error while saving page.")
                         continue
                     if str(status) != '302':
                         print status, reason
 
 def main():
     filename = None
-    for arg in wikipedia.handleArgs():
+    for arg in pywikibot.handleArgs():
         if os.path.isabs(arg):
             filename = arg
         else:
-            filename = wikipedia.config.datafilepath("logs", arg)
+            filename = pywikibot.config.datafilepath("logs", arg)
 
     if not filename:
-        mysite = wikipedia.getSite()
-        filename = wikipedia.config.datafilepath('logs',
+        mysite = pywikibot.getSite()
+        filename = pywikibot.config.datafilepath('logs',
                        'warning-%s-%s.log' % (mysite.family.name, mysite.lang))
     reader = WarnfileReader(filename)
     bot = WarnfileRobot(reader)
@@ -132,5 +145,5 @@ if __name__ == "__main__":
     try:
         main()
     finally:
-        wikipedia.stopme()
+        pywikibot.stopme()
 
