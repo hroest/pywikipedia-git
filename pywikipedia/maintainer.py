@@ -15,17 +15,18 @@ __version__ = '$Id$'
 from ircbot import SingleServerIRCBot
 from irclib import nm_to_n
 import random
-import wikipedia
 import thread
 import threading
 import time
 import rciw
 import censure
+import wikipedia as pywikibot
 
 ver = 1
 
-site = wikipedia.getSite()
+site = pywikibot.getSite()
 site.forceLogin()
+
 
 class rcFeeder(SingleServerIRCBot):
     def __init__(self, channel, nickname, server, port=6667):
@@ -63,6 +64,7 @@ class rcFeeder(SingleServerIRCBot):
     def on_quit(self, e, cmd):
         pass
 
+
 class MaintcontBot(SingleServerIRCBot):
     def __init__(self, nickname, server, port=6667):
         SingleServerIRCBot.__init__(self, [(server, port)], nickname, nickname)
@@ -71,14 +73,17 @@ class MaintcontBot(SingleServerIRCBot):
         feederThread.start()
 
     def feederBot(self):
-        self.feed = rcFeeder('#' + site.language() + '.' + site.family.name, site.loggedInAs(), "irc.wikimedia.org")
+        self.feed = rcFeeder('#%s.%s' % (site.language(), site.family.name),
+                             site.loggedInAs(), "irc.wikimedia.org")
         self.feed.start()
 
     def on_nicknameinuse(self, c, e):
         c.nick("mainter" + str(random.randrange(100, 999)))
 
     def on_welcome(self, c, e):
-        self.connection.privmsg("maintcont", "workerjoin " + site.language() + '.' + site.family.name + ' ' + str(ver))
+        self.connection.privmsg("maintcont",
+                                "workerjoin %s.%s %s"
+                                % (site.language(), site.family.name, str(ver))
 
     def on_privmsg(self, c, e):
         nick = nm_to_n(e.source())
@@ -102,6 +107,7 @@ class MaintcontBot(SingleServerIRCBot):
             self.connection.privmsg("maintcont", "active")
             time.sleep(10)
 
+
 class Maintainer:
     def __init__(self):
         controllThread = threading.Thread(target=self.controllBot)
@@ -111,8 +117,10 @@ class Maintainer:
             raw_input()
 
     def controllBot(self):
-        bot = MaintcontBot("mainter" + str(random.randrange(100, 999)), "irc.freenode.net")
+        bot = MaintcontBot("mainter%s" % str(random.randrange(100, 999)),
+                           "irc.freenode.net")
         bot.start()
+
 
 if __name__ == "__main__":
     Maintainer()
