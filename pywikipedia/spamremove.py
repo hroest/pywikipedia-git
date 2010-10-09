@@ -23,10 +23,19 @@ Command line options:
 
 """
 
-import sys
-import wikipedia, editarticle, pagegenerators
-
+#
+# (C) Pywikipedia bot team, 2007-2010
+#
+# Distributed under the terms of the MIT license.
+#
 __version__ = '$Id$'
+
+#
+
+import sys
+import wikipedia as pywikibot
+import pagegenerators
+import editarticle
 
 def main():
     automatic = False
@@ -48,7 +57,7 @@ def main():
         'zh': u'機器人: 移除廣告黑名單連結 %s',
     }
     spamSite = ''
-    for arg in wikipedia.handleArgs():
+    for arg in pywikibot.handleArgs():
         if arg.startswith("-automatic"):
             automatic = True
         elif arg.startswith('-namespace:'):
@@ -59,56 +68,61 @@ def main():
         else:
             spamSite = arg
     if not automatic:
-        wikipedia.put_throttle.setDelay(1)
+        pywikibot.put_throttle.setDelay(1)
     if not spamSite:
-        wikipedia.showHelp('spamremove')
-        wikipedia.output(u"No spam site specified.")
+        pywikibot.showHelp('spamremove')
+        pywikibot.output(u"No spam site specified.")
         sys.exit()
-    mysite = wikipedia.getSite()
+    mysite = pywikibot.getSite()
     pages = list(set(mysite.linksearch(spamSite)))
     if namespaces:
-        pages = list(set(pagegenerators.NamespaceFilterPageGenerator(pages, namespaces)))
+        pages = list(set(pagegenerators.NamespaceFilterPageGenerator(pages,
+                                                                     namespaces)))
     if len(pages) == 0:
-        wikipedia.output('No page found.')
+        pywikibot.output('No page found.')
     else:
-        wikipedia.getall(mysite, pages)
+        pywikibot.getall(mysite, pages)
         for p in pages:
             text = p.get()
             if not spamSite in text:
                 continue
             # Show the title of the page we're working on.
             # Highlight the title in purple.
-            wikipedia.output(u"\n\n>>> \03{lightpurple}%s\03{default} <<<" % p.title())
+            pywikibot.output(u"\n\n>>> \03{lightpurple}%s\03{default} <<<"
+                             % p.title())
             lines = text.split('\n')
             newpage = []
             lastok = ""
             for line in lines:
                 if spamSite in line:
                     if lastok:
-                        wikipedia.output(lastok)
-                    wikipedia.output('\03{lightred}%s\03{default}' % line)
+                        pywikibot.output(lastok)
+                    pywikibot.output('\03{lightred}%s\03{default}' % line)
                     lastok = None
                 else:
                     newpage.append(line)
                     if line.strip():
                         if lastok is None:
-                            wikipedia.output(line)
+                            pywikibot.output(line)
                         lastok = line
             if automatic:
                 answer = "y"
             else:
-                answer = wikipedia.inputChoice(u'\nDelete the red lines?',  ['yes', 'no', 'edit'], ['y', 'N', 'e'], 'n')
+                answer = pywikibot.inputChoice(u'\nDelete the red lines?',
+                                               ['yes', 'no', 'edit'],
+                                               ['y', 'N', 'e'], 'n')
             if answer == "n":
                 continue
             elif answer == "e":
                 editor = editarticle.TextEditor()
-                newtext = editor.edit(text, highlight = spamSite, jumpIndex = text.find(spamSite))
+                newtext = editor.edit(text, highlight=spamSite,
+                                      jumpIndex=text.find(spamSite))
             else:
                 newtext = "\n".join(newpage)
             if newtext != text:
-                p.put(newtext, wikipedia.translate(mysite, msg) % spamSite)
+                p.put(newtext, pywikibot.translate(mysite, msg) % spamSite)
 
 try:
     main()
 finally:
-   wikipedia.stopme()
+   pywikibot.stopme()

@@ -51,15 +51,17 @@ Command-line options:
 """
 #
 # (C) Andre Engels, 2005
+# (C) Pywikipedia bot team, 2006-2010
 #
 # Distributed under the terms of the MIT license.
 #
-
 __version__ = '$Id$'
+#
 
 import re, sys
-import wikipedia, pagegenerators
 import string, codecs
+import wikipedia as pywikibot
+import pagegenerators
 
 msg={
     'ar':u'تدقيق إملائي بمساعدة البوت',
@@ -73,8 +75,9 @@ msg={
     'pt':u'Bot de correção ortográfica',
 }
 
+
 class SpecialTerm(object):
-    def __init__(self,text):
+    def __init__(self, text):
         self.style = text
 
 
@@ -102,7 +105,8 @@ def distance(a,b):
 
 def getalternatives(string):
     # Find possible correct words for the incorrect word string
-    basetext = wikipedia.input(u"Give a text that should occur in the words to be checked.\nYou can choose to give no text, but this will make searching slow:")
+    basetext = pywikibot.input(
+        u"Give a text that should occur in the words to be checked.\nYou can choose to give no text, but this will make searching slow:")
     basetext = basetext.lower()
     simwords = {}
     for i in xrange(11):
@@ -140,26 +144,28 @@ def cap(string):
 
 def askAlternative(word,context=None):
     correct = None
-    wikipedia.output(u"="*60)
-    wikipedia.output(u"Found unknown word '%s'"%word)
+    pywikibot.output(u"="*60)
+    pywikibot.output(u"Found unknown word '%s'"%word)
     if context:
-        wikipedia.output(u"Context:")
-        wikipedia.output(u""+context)
-        wikipedia.output(u"-"*60)
+        pywikibot.output(u"Context:")
+        pywikibot.output(u""+context)
+        pywikibot.output(u"-"*60)
     while not correct:
         for i in xrange(len(Word(word).getAlternatives())):
-            wikipedia.output(u"%s: Replace by '%s'"%(i+1,Word(word).getAlternatives()[i].replace('_',' ')))
-        wikipedia.output(u"a: Add '%s' as correct"%word)
+            pywikibot.output(u"%s: Replace by '%s'"
+                             % (i+1,
+                                Word(word).getAlternatives()[i].replace('_',' ')))
+        pywikibot.output(u"a: Add '%s' as correct"%word)
         if word[0].isupper():
-            wikipedia.output(u"c: Add '%s' as correct"%(uncap(word)))
-        wikipedia.output(u"i: Ignore once (default)")
-        wikipedia.output(u"p: Ignore on this page")
-        wikipedia.output(u"r: Replace text")
-        wikipedia.output(u"s: Replace text, but do not save as alternative")
-        wikipedia.output(u"g: Guess (give me a list of similar words)")
-        wikipedia.output(u"*: Edit by hand")
-        wikipedia.output(u"x: Do not check the rest of this page")
-        answer = wikipedia.input(u":")
+            pywikibot.output(u"c: Add '%s' as correct" % (uncap(word)))
+        pywikibot.output(u"i: Ignore once (default)")
+        pywikibot.output(u"p: Ignore on this page")
+        pywikibot.output(u"r: Replace text")
+        pywikibot.output(u"s: Replace text, but do not save as alternative")
+        pywikibot.output(u"g: Guess (give me a list of similar words)")
+        pywikibot.output(u"*: Edit by hand")
+        pywikibot.output(u"x: Do not check the rest of this page")
+        answer = pywikibot.input(u":")
         if answer == "": answer = "i"
         if answer in "aAiIpP":
             correct = word
@@ -169,11 +175,13 @@ def askAlternative(word,context=None):
             elif answer in "pP":
                 pageskip.append(word)
         elif answer in "rRsS":
-            correct = wikipedia.input(u"What should I replace it by?")
+            correct = pywikibot.input(u"What should I replace it by?")
             if answer in "rR":
                 if correct_html_codes:
                     correct = removeHTML(correct)
-                if correct != cap(word) and correct != uncap(word) and correct != word:
+                if correct != cap(word) and \
+                   correct != uncap(word) and \
+                   correct != word:
                     try:
                         knownwords[word] += [correct.replace(' ','_')]
                     except KeyError:
@@ -190,7 +198,7 @@ def askAlternative(word,context=None):
             if possible:
                 print "Found alternatives:"
                 for pos in possible:
-                    wikipedia.output("  %s"%pos)
+                    pywikibot.output("  %s"%pos)
             else:
                 print "No similar words found."
         elif answer=="*":
@@ -204,7 +212,8 @@ def askAlternative(word,context=None):
     return correct
 
 def removeHTML(page):
-    # TODO: Consider removing this; this stuff can be done by cosmetic_changes.py
+    # TODO: Consider removing this; this stuff can be done by
+    # cosmetic_changes.py
     result = page
     result = result.replace('&Auml;',u'Ä')
     result = result.replace('&auml;',u'ä')
@@ -266,13 +275,15 @@ def spellcheck(page, checknames = True, knownonly = False):
         loc += len(match.group(1))
         bigword = Word(match.group(2))
         smallword = bigword.derive()
-        if not Word(smallword).isCorrect(checkalternative = knownonly) and (checknames or not smallword[0].isupper()):
-            replacement = askAlternative(smallword,context=text[max(0,loc-40):loc+len(match.group(2))+40])
+        if not Word(smallword).isCorrect(checkalternative = knownonly) and \
+           (checknames or not smallword[0].isupper()):
+            replacement = askAlternative(smallword,
+                                         context=text[max(0,loc-40):loc + len(match.group(2))+40])
             if replacement == edit:
                 import editarticle
                 editor = editarticle.TextEditor()
                 # TODO: Don't know to which index to jump
-                newtxt = editor.edit(text, jumpIndex = 0, highlight = smallword)
+                newtxt = editor.edit(text, jumpIndex = 0, highlight=smallword)
                 if newtxt:
                     text = newtxt
             elif replacement == endpage:
@@ -290,6 +301,7 @@ def spellcheck(page, checknames = True, knownonly = False):
         text = removeHTML(text)
     pageskip = []
     return text
+
 
 class Word(object):
     def __init__(self,text):
@@ -348,13 +360,16 @@ class Word(object):
         if rep == self.derive():
             return self.word
         if self.derive() not in self.word:
-            return wikipedia.input(u"Please give the result of replacing %s by %s in %s:"%(self.derive(),rep,self.word))
+            return pywikibot.input(
+                u"Please give the result of replacing %s by %s in %s:"
+                % (self.derive(), rep, self.word))
         return self.word.replace(self.derive(),rep)
 
     def isCorrect(self,checkalternative = False):
         # If checkalternative is True, the word will only be found incorrect if
         # it is on the spelling list as a spelling error. Otherwise it will
-        # be found incorrect if it is not on the list as a correctly spelled word.
+        # be found incorrect if it is not on the list as a correctly spelled
+        # word.
         if self.word == "":
             return True
         if self.word in pageskip:
@@ -367,7 +382,7 @@ class Word(object):
         except KeyError:
             pass
         if self.word != uncap(self.word):
-            return Word(uncap(self.word)).isCorrect(checkalternative = checkalternative)
+            return Word(uncap(self.word)).isCorrect(checkalternative=checkalternative)
         else:
             if checkalternative:
                 if checklang == 'nl' and self.word.endswith("'s"):
@@ -424,7 +439,7 @@ try:
     checklang = None
     knownonly = False
 
-    for arg in wikipedia.handleArgs():
+    for arg in pywikibot.handleArgs():
         if arg.startswith("-start:"):
             start = arg[7:]
         elif arg.startswith("-newpages"):
@@ -446,11 +461,11 @@ try:
         else:
             title.append(arg)
 
-    mysite = wikipedia.getSite()
+    mysite = pywikibot.getSite()
     if not checklang:
         checklang = mysite.language()
-    wikipedia.setAction(wikipedia.translate(mysite,msg))
-    filename = wikipedia.config.datafilepath('spelling',
+    pywikibot.setAction(pywikibot.translate(mysite,msg))
+    filename = pywikibot.config.datafilepath('spelling',
                                       'spelling-' + checklang + '.txt')
     print "Getting wordlist"
     try:
@@ -480,40 +495,43 @@ try:
     else:
         print "Wordlist successfully loaded."
     # This is a purely interactive bot, we therefore do not want to put-throttle
-    wikipedia.put_throttle.setDelay(1)
+    pywikibot.put_throttle.setDelay(1)
 except:
-    wikipedia.stopme()
+    pywikibot.stopme()
     raise
 try:
     if newpages:
-        for (page, date, length, loggedIn, user, comment) in wikipedia.getSite().newpages(1000):
+        for (page, date, length, loggedIn, user, comment) in pywikibot.getSite().newpages(1000):
             try:
                 text = page.get()
-            except wikipedia.Error:
+            except pywikibot.Error:
                 pass
             else:
-                text = spellcheck(text,checknames=checknames,knownonly=knownonly)
+                text = spellcheck(text, checknames=checknames,
+                                  knownonly=knownonly)
                 if text != page.get():
                     page.put(text)
     elif start:
         for page in pagegenerators.PreloadingGenerator(pagegenerators.AllpagesPageGenerator(start=start,includeredirects=False)):
             try:
                 text = page.get()
-            except wikipedia.Error:
+            except pywikibot.Error:
                 pass
             else:
-                text = spellcheck(text,checknames=checknames,knownonly=knownonly)
+                text = spellcheck(text, checknames=checknames,
+                                  knownonly=knownonly)
                 if text != page.get():
                     page.put(text)
 
     if longpages:
-        for (page, length) in wikipedia.getSite().longpages(500):
+        for (page, length) in pywikibot.getSite().longpages(500):
             try:
                 text = page.get()
-            except wikipedia.Error:
+            except pywikibot.Error:
                 pass
             else:
-                text = spellcheck(text, checknames = checknames,knownonly=knownonly)
+                text = spellcheck(text, checknames=checknames,
+                                  knownonly=knownonly)
                 if text != page.get():
                     page.put(text)
 
@@ -521,20 +539,20 @@ try:
         title = ' '.join(title)
         while title != '':
             try:
-                page = wikipedia.Page(mysite,title)
+                page = pywikibot.Page(mysite,title)
                 text = page.get()
-            except wikipedia.NoPage:
+            except pywikibot.NoPage:
                 print "Page does not exist."
-            except wikipedia.IsRedirectPage:
+            except pywikibot.IsRedirectPage:
                 print "Page is a redirect page"
             else:
                 text = spellcheck(text,knownonly=knownonly)
                 if text != page.get():
                     page.put(text)
-            title = wikipedia.input(u"Which page to check now? (enter to stop)")
+            title = pywikibot.input(u"Which page to check now? (enter to stop)")
 finally:
-    wikipedia.stopme()
-    filename = wikipedia.config.datafilepath('spelling',
+    pywikibot.stopme()
+    filename = pywikibot.config.datafilepath('spelling',
                                       'spelling-' + checklang + '.txt')
     if rebuild:
         list = knownwords.keys()
@@ -547,7 +565,8 @@ finally:
         if Word(word).isCorrect():
             if word != uncap(word):
                 if Word(uncap(word)).isCorrect():
-                    # Capitalized form of a word that is in the list uncapitalized
+                    # Capitalized form of a word that is in the list
+                    # uncapitalized
                     continue
             f.write("1 %s\n"%word)
         else:

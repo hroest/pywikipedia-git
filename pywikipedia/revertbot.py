@@ -1,12 +1,20 @@
-import wikipedia, query, userlib
-
+#!/usr/bin/python
+# -*- coding: utf-8  -*-
+"""
+"""
+#
+# (C) Bryan Tong Minh, 2008
+# (C) Pywikipedia bot team, 2008-2010
+#
+# Distributed under the terms of the MIT license.
+#
 __version__ = '$Id$'
+#
 
-"""
-    (c) Bryan Tong Minh, 2008
-    (c) Pywikipedia team, 2008-2010
-    Licensed under the terms of the MIT license.
-"""
+import re
+import wikipedia as pywikibot
+import query, userlib
+
 
 class BaseRevertBot(object):
     """ Base revert bot
@@ -94,38 +102,39 @@ class BaseRevertBot(object):
             rev['user'], rev['timestamp'])
         if self.comment: comment += ': ' + self.comment
 
-        page = wikipedia.Page(self.site, item['title'])
-        wikipedia.output(u"\n\n>>> \03{lightpurple}%s\03{default} <<<" % page.aslink(True, True))
+        page = pywikibot.Page(self.site, item['title'])
+        pywikibot.output(u"\n\n>>> \03{lightpurple}%s\03{default} <<<"
+                         % page.aslink(True, True))
         old = page.get()
         new = rev['*']
-        wikipedia.showDiff(old, new)
+        pywikibot.showDiff(old, new)
         page.put(new, comment)
         return comment
 
     def log(self, msg):
-        wikipedia.output(msg)
+        pywikibot.output(msg)
 
-import re
 
 class myRevertBot(BaseRevertBot):
         
     def callback(self, item):
         if 'top' in item:
-            page = wikipedia.Page(self.site, item['title'])
+            page = pywikibot.Page(self.site, item['title'])
             text=page.get()
             pattern = re.compile(u'\[\[.+?:.+?\..+?\]\]', re.UNICODE)
             return pattern.search(text) >= 0
         return False
 
+
 def main():
     item = None
-    for arg in wikipedia.handleArgs():
+    for arg in pywikibot.handleArgs():
         continue
-    bot = myRevertBot(site = wikipedia.getSite())
+    bot = myRevertBot(site = pywikibot.getSite())
     bot.revert_contribs()
 
 if __name__ == "__main__":
     try:
         main()
     finally:
-        wikipedia.stopme()
+        pywikibot.stopme()

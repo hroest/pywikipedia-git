@@ -25,12 +25,18 @@ These command line parameters can be used to specify which pages to work on:
 All other parameters will be regarded as part of the title of a single page,
 and the bot will only work on that single page.
 """
-
+#
+# (C) Pywikipedia bot team, 2006-2010
+#
+# Distributed under the terms of the MIT license.
+#
 __version__='$Id$'
+#
 
-import wikipedia, pagegenerators, catlib
-import editarticle
 import re, sys
+import wikipedia as pywikibot
+import pagegenerators, catlib
+import editarticle
 
 # This is required for the text that is shown when you run this script
 # with the parameter -help.
@@ -78,7 +84,7 @@ class XmlDumpSelflinkPageGenerator:
 
     def __iter__(self):
         import xmlreader
-        mysite = wikipedia.getSite()
+        mysite = pywikibot.getSite()
         dump = xmlreader.XmlDump(self.xmlFilename)
         for entry in dump.parse():
             if mysite.nocapitalize:
@@ -89,14 +95,14 @@ class XmlDumpSelflinkPageGenerator:
                                       re.escape(entry.title[1:]))
             selflinkR = re.compile(r'\[\[' + title + '(\|[^\]]*)?\]\]')
             if selflinkR.search(entry.text):
-                yield wikipedia.Page(mysite, entry.title)
+                yield pywikibot.Page(mysite, entry.title)
                 continue
 
 class SelflinkBot:
 
     def __init__(self, generator, always=False):
         self.generator = generator
-        linktrail = wikipedia.getSite().linktrail()
+        linktrail = pywikibot.getSite().linktrail()
         # The regular expression which finds links. Results consist of four groups:
         # group title is the target page title, that is, everything before | or ].
         # group section is the page section. It'll include the # to make life easier for us.
@@ -122,9 +128,9 @@ class SelflinkBot:
            or match.group('section'):
             return text, False
         try:
-            linkedPage = wikipedia.Page(page.site(), match.group('title'))
-        except wikipedia.InvalidTitle, err:
-            wikipedia.output(u'Warning: %s' % err)
+            linkedPage = pywikibot.Page(page.site(), match.group('title'))
+        except pywikibot.InvalidTitle, err:
+            pywikibot.output(u'Warning: %s' % err)
             return text, False
             
         # Check whether the link found is to the current page itself.
@@ -137,16 +143,16 @@ class SelflinkBot:
             if self.always:
                 choice = 'a'
             else:
-                wikipedia.output(
+                pywikibot.output(
                     text[max(0, match.start() - context) : match.start()] \
                     + '\03{lightred}' + text[match.start() : match.end()] \
                     + '\03{default}' + text[match.end() : match.end() + context])
-                choice = wikipedia.inputChoice(
+                choice = pywikibot.inputChoice(
                     u'\nWhat shall be done with this selflink?\n',
                     ['unlink', 'make bold', 'skip', 'edit', 'more context',
                      'unlink all', 'quit'],
                     ['U', 'b', 's', 'e', 'm', 'a', 'q'], 'u')
-                wikipedia.output(u'')
+                pywikibot.output(u'')
 
                 if choice == 's':
                     # skip this link
@@ -161,7 +167,8 @@ class SelflinkBot:
                         return text, True
                 elif choice == 'm':
                     # show more context by recursive self-call
-                    return self.handleNextLink(page, text, match, context = context + 100)
+                    return self.handleNextLink(page, text, match,
+                                               context=context + 100)
                 elif choice == 'a':
                     self.always = True
                 elif choice == 'q':
@@ -178,14 +185,17 @@ class SelflinkBot:
     def treat(self, page):
         # Show the title of the page we're working on.
         # Highlight the title in purple.
-        wikipedia.output(u"\n\n>>> \03{lightpurple}%s\03{default} <<<" % page.title())
+        pywikibot.output(u"\n\n>>> \03{lightpurple}%s\03{default} <<<"
+                         % page.title())
         try:
             oldText = page.get()
             # Inside image maps, don't touch selflinks, as they're used
             # to create tooltip labels. See for example:
             # http://de.wikipedia.org/w/index.php?title=Innenstadt_%28Bautzen%29&diff=next&oldid=35721641
             if '<imagemap>' in oldText:
-                wikipedia.output(u'Skipping page %s because it contains an image map.' % page.aslink())
+                pywikibot.output(
+                    u'Skipping page %s because it contains an image map.'
+                    % page.title(asLink=True))
                 return
             text = oldText
             curpos = 0
@@ -193,27 +203,30 @@ class SelflinkBot:
                 match = self.linkR.search(text, pos = curpos)
                 if not match:
                     break
-                # Make sure that next time around we will not find this same hit.
+                # Make sure that next time around we will not find this same
+                # hit.
                 curpos = match.start() + 1
                 text, jumpToBeginning = self.handleNextLink(page, text, match)
                 if jumpToBeginning:
                     curpos = 0
 
             if oldText == text:
-                wikipedia.output(u'No changes necessary.')
+                pywikibot.output(u'No changes necessary.')
             else:
-                wikipedia.showDiff(oldText, text)
+                pywikibot.showDiff(oldText, text)
                 page.put_async(text)
-        except wikipedia.NoPage:
-            wikipedia.output(u"Page %s does not exist?!" % page.aslink())
-        except wikipedia.IsRedirectPage:
-            wikipedia.output(u"Page %s is a redirect; skipping." % page.aslink())
-        except wikipedia.LockedPage:
-            wikipedia.output(u"Page %s is locked?!" % page.aslink())
+        except pywikibot.NoPage:
+            pywikibot.output(u"Page %s does not exist?!"
+                             % page.title(asLink=True))
+        except pywikibot.IsRedirectPage:
+            pywikibot.output(u"Page %s is a redirect; skipping."
+                             % page.title(asLink=True))
+        except pywikibot.LockedPage:
+            pywikibot.output(u"Page %s is locked?!" % page.title(asLink=True))
 
     def run(self):
-        comment = wikipedia.translate(wikipedia.getSite(), msg)
-        wikipedia.setAction(comment)
+        comment = pywikibot.translate(pywikibot.getSite(), msg)
+        pywikibot.setAction(comment)
 
         for page in self.generator:
             if self.done: break
@@ -234,10 +247,11 @@ def main():
     genFactory = pagegenerators.GeneratorFactory()
     always = False
 
-    for arg in wikipedia.handleArgs():
+    for arg in pywikibot.handleArgs():
         if arg.startswith('-xml'):
             if len(arg) == 4:
-                xmlFilename = wikipedia.input(u'Please enter the XML dump\'s filename:')
+                xmlFilename = pywikibot.input(
+                    u'Please enter the XML dump\'s filename:')
             else:
                 xmlFilename = arg[5:]
             gen = XmlDumpSelflinkPageGenerator(xmlFilename)
@@ -265,12 +279,12 @@ LIMIT 100"""
                 pageTitle.append(arg)
 
     if pageTitle:
-        page = wikipedia.Page(wikipedia.getSite(), ' '.join(pageTitle))
+        page = pywikibot.Page(pywikibot.getSite(), ' '.join(pageTitle))
         gen = iter([page])
     if not gen:
         gen = genFactory.getCombinedGenerator()
     if not gen:
-        wikipedia.showHelp('selflink')
+        pywikibot.showHelp('selflink')
     else:
         if namespaces != []:
             gen =  pagegenerators.NamespaceFilterPageGenerator(gen, namespaces)
@@ -282,4 +296,4 @@ if __name__ == "__main__":
     try:
         main()
     finally:
-        wikipedia.stopme()
+        pywikibot.stopme()

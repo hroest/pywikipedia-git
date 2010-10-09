@@ -8,7 +8,7 @@ At present it converts to [[Wikipedia:Footnote3]] format (ref/note).
 
 NOTE: This script is not capable of handling the <ref></ref> syntax. It just
 handles the {{ref}} syntax, which is still used, but DEPRECATED on the English
-Wikipedia.
+wikipedia.
 
 You can run the bot with the following commandline parameters:
 
@@ -20,7 +20,8 @@ You can run the bot with the following commandline parameters:
 -page        - Only edit a single page.
                Argument can also be given as "-page:pagename". You can give this
                parameter multiple times to edit multiple pages.
--regex       - Make replacements using regular expressions.  (Obsolete; always True)
+-regex       - Make replacements using regular expressions.
+               (Obsolete; always True)
 -except:XYZ  - Ignore pages which contain XYZ. If the -regex argument is given,
                XYZ will be regarded as a regular expression.
 -namespace:n - Namespace to process. Works only with a sql dump
@@ -41,17 +42,18 @@ NOTE: Only use either -sql or -file or -page, but don't mix them.
 #
 __version__ = '$Id$'
 #
-# 2005-07-15: Find name of section containing citations: doFindRefSection(). (SEWilco)
+# 2005-07-15: Find name of section containing citations: doFindRefSection().
+#             (SEWilco)
 # 2005-07-15: Obey robots.txt restrictions. (SEWilco)
-# 2005-07-15: Build list of all sections which may contain citations: doFindAllCitationSections(). (SEWilco)
+# 2005-07-15: Build list of all sections which may contain citations:
+#             doFindAllCitationSections(). (SEWilco)
 #
 
-#from __future__ import generators
 import subprocess, sys, re, random
 import socket, urllib, robotparser
-import wikipedia, pagegenerators, config
-
 from datetime import date
+import wikipedia as pywikibot
+import pagegenerators, config
 
 # httpcache is optional
 have_httpcache = True
@@ -77,7 +79,8 @@ msg = {
        }
 
 fixes = {
-    # These replacements will convert alternate reference formats to format used by this tool.
+    # These replacements will convert alternate reference formats to format used
+    # by this tool.
     'ALTREFS': {
         'regex': True,
         # We don't want to mess up pages which discuss HTML tags, so we skip
@@ -95,7 +98,8 @@ fixes = {
               },
         'replacements': [
             # Everything case-insensitive (?i)
-            # These translate variations of footnote templates to ref|note format.
+            # These translate variations of footnote templates to ref|note
+            # format.
             (r'(?i){{an\|(.*?)}}',              r"{{ref|\1}}"),
             (r'(?i){{anb\|(.*?)}}',             r"{{note|\1}}"),
             (r'(?i){{endnote\|(.*?)}}',         r"{{note|\1}}"),
@@ -141,50 +145,56 @@ referencesectionnames = [
 
 # news sites for which to generate 'news reference' citations, the org name, and prefix to strip
 newssites = [
-    ( 'abcnews.go.com', 'ABC News', 'ABC News: ' ),
-    ( 'books.guardian.co.uk', 'The Guardian', 'Guardian Unlimited : The Guardian : ' ),
-    ( 'edition.cnn.com', 'CNN', 'CNN.com - ' ),
-    ( 'news.bbc.co.uk', 'BBC', 'BBC NEWS : ' ),
-    ( 'news.scotsman.com', 'The Scotsman', 'Scotsman.com News - ' ),
-    ( 'nyobserver.com', 'New York Observer', '' ),
-    ( 'observer.guardian.co.uk', 'The Guardian', 'The Observer  : ' ),
-    ( 'politics.guardian.co.uk', 'The Guardian', 'Guardian Unlimited Politics : ' ),
-    ( 'seattletimes.nwsource.com', 'The Seattle Times', 'The Seattle Times: ' ),
-    ( 'service.spiegel.de', 'Der Spiegel', '' ),
-    ( 'thescotsman.scotsman.com', 'The Scotsman', 'The Scotsman - ' ),
-    ( 'today.reuters.com', 'Reuters', 'Latest News and Financial Information : ' ),
-    ( 'today.reuters.co.uk', 'Reuters', 'Latest News and Financial Information : ' ),
-    ( 'www.boston.com', 'The Boston Globe', 'Boston.com / ' ),
-    ( 'www.cbsnews.com', 'CBS News', 'CBS News : ' ),
-    ( 'www.cnn.com', 'CNN', 'CNN.com - ' ),
-    ( 'www.cnsnews.com', 'Cybercast News Service', '' ),
-    ( 'www.csmonitor.com', 'Christian Science Monitor', '' ),
-    ( 'www.dallasnews.com', 'The Dallas Morning News', '' ),
-    ( 'www.forbes.com', 'Forbes', '' ),
-    ( 'www.foxnews.com', 'Fox News Channel', 'FOXNews.com - ' ),
-    ( 'www.gnn.com', 'Government News Network', 'GNN - ' ),
-    ( 'www.guardian.co.uk', 'The Guardian', 'Guardian Unlimited : The Guardian : ' ),
-    ( 'www.latimes.com', 'Los Angeles Times', '' ),
-    ( 'www.msnbc.msn.com', 'MSNBC', '' ),
-    ( 'www.nationalreview.com', 'National Review', '' ),
-    ( 'www.nytimes.com', 'The New York Times', '' ),
-    ( 'www.sfgate.com', 'San Francisco Chronicle', '' ),
-    ( 'www.socialistworker.co.uk', 'Socialist Worker', '' ),
-    ( 'www.spectator.org', 'The American Spectator', '' ),
-    ( 'www.telegraph.co.uk', 'The Daily Telegraph', 'Telegraph newspaper online - ' ),
-    ( 'www.time.com', 'TIME', '' ),
-    ( 'www.timesonline.co.uk', 'The Times', 'World news from The Times and the Sunday Times - ' ),
-    ( 'www.usatoday.com', 'USA Today', 'USATODAY.com - ' ),
-    ( 'www.washingtonpost.com', 'The Washington Post', '' ),
-    ( 'www.washtimes.com', 'The Washington Times', '' ),
-    ( 'www.weeklystandard.com', 'The Weekly Standard', '' ),
-    ( 'www.wired.com', 'Wired magazine', 'Wired News: ' ),
-    ( 'wwwimage.cbsnews.com', 'CBS News', 'CBS News : ' ),
+    ('abcnews.go.com', 'ABC News', 'ABC News: '),
+    ('books.guardian.co.uk', 'The Guardian',
+     'Guardian Unlimited : The Guardian : '),
+    ('edition.cnn.com', 'CNN', 'CNN.com - '),
+    ('news.bbc.co.uk', 'BBC', 'BBC NEWS : '),
+    ('news.scotsman.com', 'The Scotsman', 'Scotsman.com News - '),
+    ('nyobserver.com', 'New York Observer', ''),
+    ('observer.guardian.co.uk', 'The Guardian', 'The Observer  : '),
+    ('politics.guardian.co.uk', 'The Guardian',
+     'Guardian Unlimited Politics : '),
+    ('seattletimes.nwsource.com', 'The Seattle Times', 'The Seattle Times: '),
+    ('service.spiegel.de', 'Der Spiegel', ''),
+    ('thescotsman.scotsman.com', 'The Scotsman', 'The Scotsman - '),
+    ('today.reuters.com', 'Reuters', 'Latest News and Financial Information : '),
+    ('today.reuters.co.uk', 'Reuters',
+     'Latest News and Financial Information : '),
+    ('www.boston.com', 'The Boston Globe', 'Boston.com / '),
+    ('www.cbsnews.com', 'CBS News', 'CBS News : '),
+    ('www.cnn.com', 'CNN', 'CNN.com - '),
+    ('www.cnsnews.com', 'Cybercast News Service', ''),
+    ('www.csmonitor.com', 'Christian Science Monitor', ''),
+    ('www.dallasnews.com', 'The Dallas Morning News', ''),
+    ('www.forbes.com', 'Forbes', ''),
+    ('www.foxnews.com', 'Fox News Channel', 'FOXNews.com - '),
+    ('www.gnn.com', 'Government News Network', 'GNN - '),
+    ('www.guardian.co.uk', 'The Guardian',
+     'Guardian Unlimited : The Guardian : '),
+    ('www.latimes.com', 'Los Angeles Times', ''),
+    ('www.msnbc.msn.com', 'MSNBC', ''),
+    ('www.nationalreview.com', 'National Review', ''),
+    ('www.nytimes.com', 'The New York Times', ''),
+    ('www.sfgate.com', 'San Francisco Chronicle', ''),
+    ('www.socialistworker.co.uk', 'Socialist Worker', ''),
+    ('www.spectator.org', 'The American Spectator', ''),
+    ('www.telegraph.co.uk', 'The Daily Telegraph',
+     'Telegraph newspaper online - '),
+    ('www.time.com', 'TIME', ''),
+    ('www.timesonline.co.uk', 'The Times',
+     'World news from The Times and the Sunday Times - '),
+    ('www.usatoday.com', 'USA Today', 'USATODAY.com - '),
+    ('www.washingtonpost.com', 'The Washington Post', ''),
+    ('www.washtimes.com', 'The Washington Times', ''),
+    ('www.weeklystandard.com', 'The Weekly Standard', ''),
+    ('www.wired.com', 'Wired magazine', 'Wired News: '),
+    ('wwwimage.cbsnews.com', 'CBS News', 'CBS News : '),
 ]
 
+
 class ReplacePageGenerator:
-    """
-    Generator which will yield Pages for pages that might contain text to
+    """ Generator which will yield Pages for pages that might contain text to
     replace. These pages might be retrieved from a local SQL dump file or a
     text file, or as a list of pages entered by the user.
 
@@ -205,7 +215,9 @@ class ReplacePageGenerator:
                          will be used when source is 'sqldump'.
         * pagenames    - a list of pages which will be used when source is
                          'userinput'.
+
     """
+
     def __init__(self, source, replacements, exceptions, regex = False, namespace = -1, textfilename = None, sqlfilename = None, categoryname = None, pagenames = None):
         self.source = source
         self.replacements = replacements
@@ -218,8 +230,7 @@ class ReplacePageGenerator:
         self.pagenames = pagenames
 
     def read_pages_from_sql_dump(self):
-        """
-        Generator which will yield Pages to pages that might contain text to
+        """ Generator which will yield Pages to pages that might contain text to
         replace. These pages will be retrieved from a local sql dump file
         (cur table).
 
@@ -229,12 +240,13 @@ class ReplacePageGenerator:
                              are values
             * exceptions   - a list of strings; pages which contain one of these
                              won't be changed.
-            * regex        - if the entries of replacements and exceptions should
-                             be interpreted as regular expressions
+            * regex        - if the entries of replacements and exceptions
+                             should be interpreted as regular expressions
+                             
         """
-        mysite = wikipedia.getSite()
+        mysite = pywikibot.getSite()
         import sqldump
-        dump = sqldump.SQLdump(self.sqlfilename, wikipedia.getSite().encoding())
+        dump = sqldump.SQLdump(self.sqlfilename, pywikibot.getSite().encoding())
         for entry in dump.entries():
             skip_page = False
             if self.namespace != -1 and self.namespace != entry.namespace:
@@ -255,11 +267,11 @@ class ReplacePageGenerator:
                     if self.regex:
                         old = re.compile(old)
                         if old.search(entry.text):
-                            yield wikipedia.Page(mysite, entry.full_title())
+                            yield pywikibot.Page(mysite, entry.full_title())
                             break
                     else:
                         if old in entry.text:
-                            yield wikipedia.Page(mysite, entry.full_title())
+                            yield pywikibot.Page(mysite, entry.full_title())
                             break
 
     def read_pages_from_category(self):
@@ -270,9 +282,10 @@ class ReplacePageGenerator:
 
         Arguments:
             * textfilename - the textfile's path, either absolute or relative
+
         """
         import catlib
-        category = catlib.Category(wikipedia.getSite(), self.categoryname)
+        category = catlib.Category(pywikibot.getSite(), self.categoryname)
         for page in category.articles(recurse = False):
             yield page
 
@@ -284,6 +297,7 @@ class ReplacePageGenerator:
 
         Arguments:
             * textfilename - the textfile's path, either absolute or relative
+
         """
         f = open(self.textfilename, 'r')
         # regular expression which will find [[wiki links]]
@@ -294,7 +308,7 @@ class ReplacePageGenerator:
             # TODO: use findall() instead.
             m=R.match(line)
             if m:
-                yield wikipedia.Page(wikipedia.getSite(), m.group(1))
+                yield pywikibot.Page(pywikibot.getSite(), m.group(1))
         f.close()
 
     def read_pages_from_wiki_page(self):
@@ -305,9 +319,10 @@ class ReplacePageGenerator:
 
         Arguments:
             * pagetitle - the title of a page on the home wiki
+
         '''
-        listpage = wikipedia.Page(wikipedia.getSite(), self.pagetitle)
-        list = wikipedia.get(listpage)
+        listpage = pywikibot.Page(pywikibot.getSite(), self.pagetitle)
+        list = pywikibot.get(listpage)
         # TODO - UNFINISHED
 
     # TODO: Make MediaWiki's search feature available.
@@ -326,7 +341,7 @@ class ReplacePageGenerator:
                 yield pl
         elif self.source == 'userinput':
             for pagename in self.pagenames:
-                yield wikipedia.Page(wikipedia.getSite(), pagename)
+                yield pywikibot.Page(pywikibot.getSite(), pagename)
 
 class ReplaceRobot:
     def __init__(self, generator, replacements, refsequence, references,
@@ -375,35 +390,39 @@ class ReplaceRobot:
                 new_text = new_text.replace(old, new)
 
         # Find name of Notes section.
-        refsectionname = self.doFindRefSection( new_text )
+        refsectionname = self.doFindRefSection(new_text)
         # Get list of all sections which may contain citations.
-        refsectionlist = self.doFindAllCitationSections( new_text, refsectionname )
+        refsectionlist = self.doFindAllCitationSections(new_text,
+                                                        refsectionname)
         # Read existing Notes section contents into references list
-        wikipedia.output( u"Reading existing Notes section" )
+        pywikibot.output(u"Reading existing Notes section")
         self.doReadReferencesSection( new_text, refsectionname )
         while self.references and self.references[len(self.references)-1] == u'\n':
             del self.references[len(self.references)-1]    # delete trailing empty lines
         # Convert any external links to footnote references
-        wikipedia.output( u"Converting external links" )
-        new_text = self.doConvertExternalLinks( new_text )
+        pywikibot.output(u"Converting external links" )
+        new_text = self.doConvertExternalLinks(new_text)
         # Accumulate ordered list of all references
-        wikipedia.output( u"Collecting references" )
+        pywikibot.output(u"Collecting references")
         (duplicatefound, self.refusage) = self.doBuildSequenceListOfReferences( new_text )
         # Rewrite references, including dealing with duplicates.
-        wikipedia.output( u"Rewriting references" )
-        new_text = self.doRewriteReferences( new_text, self.refusage, refsectionname )
+        pywikibot.output(u"Rewriting references")
+        new_text = self.doRewriteReferences(new_text, self.refusage,
+                                            refsectionname)
         # Reorder Notes to match sequence of ordered list
-        wikipedia.output( u"Collating references" )
-        self.references = self.doReorderReferences( self.references, self.refusage)
+        pywikibot.output(u"Collating references")
+        self.references = self.doReorderReferences(self.references,
+                                                   self.refusage)
         # Rebuild Notes section
-        wikipedia.output( u"Rebuilding References section" )
-        new_text = self.doUpdateReferencesSection( new_text, self.refusage, refsectionname )
+        pywikibot.output(u"Rebuilding References section" )
+        new_text = self.doUpdateReferencesSection(new_text, self.refusage,
+                                                  refsectionname)
         return new_text
 
     def doConvertExternalLinks(self, original_text):
-        """
-        Returns the text which is generated by converting external links to References.
-        Adds References to reference list.
+        """ Returns the text which is generated by converting external links to
+        References. Adds References to reference list.
+
         """
         new_text = ''                # Default is no text
         skipsection = False
@@ -422,7 +441,7 @@ class ReplaceRobot:
                 # TODO: recognize {{inline}} invisible footnotes when something can be done with them
                 #
                 # Ignore lines within comments
-                if not text_line.startswith( u'<!--' ):
+                if not text_line.startswith( u'<!--'):
                     # Fix erroneous external links in double brackets
                     Rextlink = re.compile(r'(?i)\[\[(?P<linkname>http://[^\]]+?)\]\]')
                     # TODO: compiling the regex each time might be inefficient
@@ -485,20 +504,17 @@ class ReplaceRobot:
                 m = re.search( r'==+(?P<sectionname>[^=]+)==', text_line )
                 if m:    # if in a section, remember section name
                     sectionname = m.group('sectionname').strip()
-                    wikipedia.output( u'Section: %s' % sectionname )
+                    pywikibot.output( u'Section: %s' % sectionname )
                 else:    # else not a section name so look for reference
                     n = re.search( r'(i?){{(note|ibid)[|]', text_line )
                     if n:    # if reference found
                         refsectionname = sectionname    # found reference section
-                        wikipedia.output( u'Ref section: %s' % refsectionname )
+                        pywikibot.output( u'Ref section: %s' % refsectionname )
                         break    # stop looking
         return refsectionname
 
     def doFindAllCitationSections(self, original_text, refsectionname):
-
-        """
-        Returns list of sections which may contain citations.
-        """
+        """ Returns list of sections which may contain citations. """
         refsectionlist = [ ( refsectionname) ]
         sectionname = ''
         for text_line in original_text.splitlines(True):  # Scan all text line by line
@@ -523,13 +539,13 @@ class ReplaceRobot:
             if m:    # if in a section, check if should skip this section
                 if refsectionname != '':    # if a certain section name has been identified
                     m_section = m.group('sectionname')
-                    wikipedia.output( u'Looking for "%s": "%s"' % (refsectionname,unicode(m_section)) )
+                    pywikibot.output( u'Looking for "%s": "%s"' % (refsectionname,unicode(m_section)) )
                     if unicode(m_section.strip()) == unicode(refsectionname):
-                        wikipedia.output( u'Found Ref section.' )
+                        pywikibot.output( u'Found Ref section.')
                         skipsection = True        # skipsection left True so no further links converted
                 else:                # else grab all possible sections
                     if m.group('sectionname').lower().strip() in referencesectionnames:
-                        wikipedia.output( 'RefSection found by default names: %s' % m.group('sectionname') )
+                        pywikibot.output('RefSection found by default names: %s' % m.group('sectionname') )
                         skipsection = True        # skipsection left True so no further links converted
             if skipsection:
                 new_text = new_text + text_line        # skip section, so retain text.
@@ -543,11 +559,11 @@ class ReplaceRobot:
                 m = Rtext_line.search( text_line )
                 alphabet26 = u'abcdefghijklmnopqrstuvwxyz'
                 while m:    # if found a reference
-                    if m.group('reftype').lower() in ( 'ref', 'ref_num', 'ref_label' ):    # confirm ref
+                    if m.group('reftype').lower() in ('ref', 'ref_num', 'ref_label'):    # confirm ref
                         refkey = m.group('refname').strip()
                         if refkey != '':
                             if refkey in refusage:
-                                # wikipedia.output( u'refusage[%s] = %s' % (refkey,refusage[refkey]) )
+                                # pywikibot.output( u'refusage[%s] = %s' % (refkey,refusage[refkey]) )
                                 if refusage[refkey][2] == 0:    # if first use of reference
                                     text_line=text_line[:m.start(0)] + '{{ref|%s}}' % (refkey) + text_line[m.end(0):]
                                     refusage[refkey][2] += 1    # count use of reference
@@ -574,60 +590,71 @@ class ReplaceRobot:
         urlfile = None
         urlheaders = None
         if len(extlink_linkname) > 5:
-            socket.setdefaulttimeout( 20 )    # timeout in seconds
-            wikipedia.get_throttle()    # throttle down to Wikipedia rate
+            socket.setdefaulttimeout(20)    # timeout in seconds
+            pywikibot.get_throttle()    # throttle down to Wikipedia rate
             # Obey robots.txt restrictions
             rp = robotparser.RobotFileParser()
             rp.set_url( extlink_linkname )
             try:
                 rp.read()    # read robots.txt
             except (IOError, socket.timeout):
-                wikipedia.output( u'Error accessing URL: %s' % unicode(extlink_linkname) )
+                pywikibot.output(u'Error accessing URL: %s'
+                                 % unicode(extlink_linkname))
             else:
                 urlobj = None
                 if not rp.can_fetch( "*", extlink_linkname ):
-                    wikipedia.output( u'Robot prohibited: %s' % unicode(extlink_linkname) )
+                    pywikibot.output(u'Robot prohibited: %s'
+                                     % unicode(extlink_linkname))
                 else:    # else access allowed
                     try:
                         if have_httpcache:
-                            cache = HTTPCache( extlink_linkname )
+                            cache = HTTPCache(extlink_linkname)
                             urlfile = cache.filename()    # filename of cached date
                             urlheaders = cache.info()
                         else:
-                            (urlfile, urlheaders) = urllib.urlretrieve( extlink_linkname )
+                            (urlfile, urlheaders) = urllib.urlretrieve(extlink_linkname)
                     except IOError:
-                        wikipedia.output( u'Error accessing URL. %s' % unicode(extlink_linkname) )
+                        pywikibot.output(u'Error accessing URL. %s'
+                                         % unicode(extlink_linkname))
                     except (socket.herror, socket.gaierror), (err, msg):
-                        wikipedia.output( u'Error %i accessing URL, %s. %s' % (err, unicode(msg), unicode(extlink_linkname)) )
+                        pywikibot.output(u'Error %i accessing URL, %s. %s'
+                                         % (err, unicode(msg),
+                                            unicode(extlink_linkname)))
                     except socket.timeout, msg:
-                        wikipedia.output( u'Error accessing URL, %s. %s' % (unicode(msg), unicode(extlink_linkname)) )
+                        pywikibot.output(u'Error accessing URL, %s. %s'
+                                         % (unicode(msg),
+                                            unicode(extlink_linkname)))
                     except:    # Ignore other errors
                         pass
                 if urlfile != None:
                     urlobj = open( urlfile )
                     if extlink_linkname.lower().endswith('.pdf'):
                         # If file has a PDF suffix
-                        wikipedia.output( u'PDF file.' )
+                        pywikibot.output( u'PDF file.')
                         try:
                             pdfinfo_out = subprocess.Popen([r"pdfinfo","/dev/stdin"], stdin=urlobj, stdout=subprocess.PIPE, shell=False).communicate()[0]
                             for aline in pdfinfo_out.splitlines():
                                 if aline.lower().startswith('title'):
                                     urltitle = aline.split(None)[1:]
                                     urltitle = ' '.join(urltitle)
-                                    if urltitle != '': wikipedia.output(u'title: ' +urltitle )
+                                    if urltitle:
+                                        pywikibot.output(u'title: %s'
+                                                         % urltitle)
                                 else:
                                     if aline.lower().startswith('author'):
                                         urlauthor = aline.split(None)[1:]
                                         urlauthor = ' '.join(urlauthor)
-                                        if urlauthor != '': wikipedia.output(u'author: ' +urlauthor )
+                                        if urlauthor:
+                                            pywikibot.output(u'author: %s'
+                                                             % urlauthor )
                         except ValueError:
-                            wikipedia.output( u'pdfinfo value error.' )
+                            pywikibot.output( u'pdfinfo value error.')
                         except OSError:
-                            wikipedia.output( u'pdfinfo OS error.' )
+                            pywikibot.output( u'pdfinfo OS error.')
                         except:    # Ignore errors
-                            wikipedia.output( u'PDF processing error.' )
+                            pywikibot.output( u'PDF processing error.')
                             pass
-                        wikipedia.output( u'PDF done.' )
+                        pywikibot.output( u'PDF done.')
                         if urlobj:
                             urlobj.close()
                     else:
@@ -643,14 +670,16 @@ class ReplaceRobot:
                                 except:
                                     urltitle = u' '    # error, no title
                                 urltitle = u' '.join(urltitle.split())    # merge whitespace
-                                wikipedia.output( u'::::Title: %s' % urltitle )
+                                pywikibot.output( u'::::Title: %s' % urltitle )
                                 break    # found a title so stop looking
                             else:
                                 if maxalines < 1:
-                                    wikipedia.output( u'No title in URL. %s' % unicode(extlink_linkname) )
+                                    pywikibot.output(
+                                        u'No title in URL. %s'
+                                        % unicode(extlink_linkname) )
                         else:
                             if urlobj != None:
-                                wikipedia.output( u'::+URL: ' + extlink_linkname )
+                                pywikibot.output( u'::+URL: ' + extlink_linkname )
                                 # urlinfo = urlobj.info()
                                 aline = urlobj.read()
                                 full_page = ''
@@ -664,7 +693,7 @@ class ReplaceRobot:
                                             try:
                                                 urltitle = unicode(titleRE.group('HTMLtitle'), 'utf-8')
                                                 urltitle = u' '.join(urltitle.split())    # merge whitespace
-                                                wikipedia.output( u'::::Title: %s' % urltitle )
+                                                pywikibot.output( u'::::Title: %s' % urltitle )
                                             except:
                                                 aline = urlobj.read()
                                                 continue
@@ -676,7 +705,7 @@ class ReplaceRobot:
                                             aline = urlobj.read()
                                     else:
                                         aline = urlobj.read()
-                                if urltitle != '': wikipedia.output( u'title: ' + urltitle )
+                                if urltitle != '': pywikibot.output( u'title: ' + urltitle )
                                 # Try a more advanced search
                                 ##from nltk.parser.probabilistic import *
                                 ##from nltk.tokenizer import *
@@ -698,17 +727,17 @@ class ReplaceRobot:
                                 #for tok in train_tokens: britaggerrules.train(tok, max_rules=200, min_score=2)
                                 # brittaggerrul = britaggerrules.train(train_tokens, max_rules=200, min_score=2)
                                 #britaggerrul = ()
-                                #britagger = BrillTagger(initial_tagger=unitagger, rules=britaggerrul, SUBTOKENS='WORDS' )
+                                #britagger = BrillTagger(initial_tagger=unitagger, rules=britaggerrul, SUBTOKENS='WORDS')
                                 # Training completed
                                 # Examine text
                                 ##text_token = Token(TEXT=full_page)
                                 ##WhitespaceTokenizer(SUBTOKENS='WORDS').tokenize(text_token)
                                 #unitagger.tag(text_token)
                                 #britagger.tag(text_token)
-                                ### wikipedia.output( unicode(text_token) )
+                                ### pywikibot.output( unicode(text_token) )
                 else:
-                    wikipedia.output( u'No data retrieved.' )
-            socket.setdefaulttimeout( 200 )    # timeout in seconds
+                    pywikibot.output( u'No data retrieved.')
+            socket.setdefaulttimeout(200)
             urltitle = urltitle.replace(u'|',u':')
         return urltitle.strip()
 
@@ -731,11 +760,11 @@ class ReplaceRobot:
         new_text = u''
         now = date.today()
         if extlink_linktext == None or len(extlink_linktext.strip()) < 20:
-            wikipedia.output( u'Fetching URL: %s' % unicode(extlink_linkname) )
+            pywikibot.output( u'Fetching URL: %s' % unicode(extlink_linkname) )
             urltitle = self.doGetTitleFromURL( extlink_linkname )    # try to get title from URL
             if urltitle == None or urltitle == '':
-                urltitle = extlink_linkname    # Assume linkname for title
-            wikipedia.output( u'Title is: %s' % urltitle )
+                urltitle = extlink_linkname
+            pywikibot.output( u'Title is: %s' % urltitle )
             extlink_linktext = urltitle
             for newref in self.references:        # scan through all references
                 if extlink_linkname in newref:        # if undescribed linkname same as a previous entry
@@ -750,7 +779,7 @@ class ReplaceRobot:
         for (sitename, newscompany, stripprefix) in newssites:
             if refname.startswith( sitename ):
             # If there is a prefix to strip from the title
-                if stripprefix and extlink_linktext.startswith( stripprefix ):
+                if stripprefix and extlink_linktext.startswith(stripprefix):
                     extlink_linktext = extlink_linktext[len(stripprefix):]
                     new_text = u'{{news reference | title=%s | url=%s | urldate=%s | org=%s }}' % ( extlink_linktext, extlink_linkname, now.isoformat(), newscompany ) + '\n'
                     break
@@ -764,12 +793,14 @@ class ReplaceRobot:
         a format suitable for the Notes section.
         """
         # TODO: look up DOI info and create full reference
-        urltitle = self.doGetTitleFromURL( 'http://dx.doi.org/' + doi_linktext ) # try to get title from URL
+        urltitle = self.doGetTitleFromURL('http://dx.doi.org/' + doi_linktext ) # try to get title from URL
         refname = 'refbot%d' % refsequence
         if urltitle:
-            new_text = '# {{note|%s}} %s {{doi|%s}}' % (refname, urltitle, doi_linktext) + '\n'
+            new_text = '# {{note|%s}} %s {{doi|%s}}\n' \
+                       % (refname, urltitle, doi_linktext)
         else:
-            new_text = '# {{note|%s}} {{doi|%s}}' % (refname, doi_linktext) + '\n'
+            new_text = '# {{note|%s}} {{doi|%s}}\n' \
+                       % (refname, doi_linktext)
         return (refname, new_text)
 
     def doBuildSequenceListOfReferences(self, original_text):
@@ -777,14 +808,14 @@ class ReplaceRobot:
         Returns a list with all found references and sequence numbers.
         """
         duplicatefound = False
-        refusage = {}        # Nothing found yet
+        refusage = {}
         # Data structure: refusage[reference_key] = [ sequence_in_document, count, count_during_dup_handling ]
         for text_line in original_text.splitlines(True):  # Scan all text line by line
             # Check for various references
             Rtext_line = re.compile(r'(?i){{(?P<reftype>ref|ref_num|ref_label)\|(?P<refname>[^}|]+?)}}')
             m = Rtext_line.search( text_line )
             while m:    # if found a reference
-                if m.group('reftype').lower() in ( 'ref', 'ref_num', 'ref_label' ):    # confirm ref
+                if m.group('reftype').lower() in ('ref', 'ref_num', 'ref_label'):    # confirm ref
                     refkey = m.group('refname').strip()
                     if refkey != '':
                         if refkey in refusage:
@@ -793,7 +824,7 @@ class ReplaceRobot:
                         else:
                             refusage[refkey] = [len(refusage),0,0]    # remember this reference
                 m = Rtext_line.search( text_line, m.end() )
-        wikipedia.output( u'Number of refs: %d' % (len(refusage)) )
+        pywikibot.output( u'Number of refs: %d' % (len(refusage)) )
         return (duplicatefound, refusage)
 
     def doReadReferencesSection(self, original_text, refsectionname):
@@ -803,7 +834,7 @@ class ReplaceRobot:
         Contents of all Notes sections will be read.
         """
         # TODO: support subsections within Notes
-        new_text = ''        # Default is no text
+        new_text = ''
         intargetsection = False
         for text_line in original_text.splitlines(True):  # Scan all text line by line
             # Check for target section
@@ -811,19 +842,20 @@ class ReplaceRobot:
             if m:    # if in a section, check if Notes section
                 if refsectionname != '':    # if a certain section name has been identified
                     m_section = m.group('sectionname')
-                    wikipedia.output( u'Looking for "%s": "%s"' % (refsectionname,m_section) )
+                    pywikibot.output(u'Looking for "%s": "%s"'
+                                    % (refsectionname,m_section) )
                     if unicode(m_section.strip()) == unicode(refsectionname):
-                        wikipedia.output( u'Read Ref section.' )
-                        intargetsection = True            # flag as being in section
+                        pywikibot.output(u'Read Ref section.')
+                        intargetsection = True
                         new_text = new_text + text_line
                     else:
-                        intargetsection = False            # flag as not being in section
+                        intargetsection = False
                 else:                # else grab all possible sections
                     if m.group('sectionname').lower().strip() in referencesectionnames:
-                        intargetsection = True            # flag as being in section
+                        intargetsection = True
                         new_text = new_text + text_line
                     else:
-                        intargetsection = False            # flag as not being in section
+                        intargetsection = False
             else:
                 if intargetsection:    # if inside target section, remember this reference line
                     if text_line.strip() != '':
@@ -837,8 +869,8 @@ class ReplaceRobot:
                     if intargetsection:    # if still inside target section
                         # Convert any # wiki list to *; will be converted later if a reference
                         if text_line[0] == '#':
-                            text_line = '*' + text_line[1:]    # replace # with * wiki
-                        self.references.append( text_line.rstrip() + u'\n' )    # Append line to references
+                            text_line = '*' + text_line[1:]
+                        self.references.append(text_line.rstrip() + u'\n')
                         new_text = new_text + text_line.rstrip() + u'\n'
         return new_text
 
@@ -891,7 +923,7 @@ class ReplaceRobot:
         Returns the text which is generated by rebuilding the Notes section.
         Rewrite Notes section from references list.
         """
-        new_text = ''        # Default is no text
+        new_text = ''
         intargetsection = False
         for text_line in original_text.splitlines(True):  # Scan all text line by line
             # Check for target section
@@ -899,9 +931,9 @@ class ReplaceRobot:
             if m:    # if in a section, check if Notes section
                 if refsectionname != '':    # if a certain section name has been identified
                     m_section = m.group('sectionname')
-                    wikipedia.output( u'Looking for "%s": "%s"' % (refsectionname,m_section) )
+                    pywikibot.output( u'Looking for "%s": "%s"' % (refsectionname,m_section) )
                     if unicode(m_section.strip()) == unicode(refsectionname):
-                        wikipedia.output( u'Updating Ref section.' )
+                        pywikibot.output( u'Updating Ref section.')
                         intargetsection = True        # flag as being in section
                     else:
                         intargetsection = False        # flag as not being in section
@@ -933,7 +965,7 @@ class ReplaceRobot:
                 if not intargetsection:            # if not in Notes section, remember line
                     new_text = new_text + text_line    # append new line to new text
         # If references list not emptied, there was no Notes section found
-        if self.references != []:            # empty references
+        if self.references != []:
             # New Notes section needs to be created at bottom.
             text_line_counter = 0        # current line
             last_text_line_counter_value = 0    # number of last line of possible text
@@ -978,26 +1010,29 @@ class ReplaceRobot:
                 # Load the page's text from the wiki
                 original_text = pl.get()
                 if pl.editRestriction:
-                    wikipedia.output(u'Skipping locked page %s' % pl.title())
+                    pywikibot.output(u'Skipping locked page %s' % pl.title())
                     continue
-            except wikipedia.NoPage:
-                wikipedia.output(u'Page %s not found' % pl.title())
+            except pywikibot.NoPage:
+                pywikibot.output(u'Page %s not found' % pl.title())
                 continue
-            except wikipedia.IsRedirectPage:
+            except pywikibot.IsRedirectPage:
                 continue
             match = self.checkExceptions(original_text)
             # skip all pages that contain certain texts
             if match:
-                wikipedia.output(u'Skipping %s because it contains %s' % (pl.title(), match))
+                pywikibot.output(u'Skipping %s because it contains %s'
+                                 % (pl.title(), match))
             else:
                 new_text = self.doReplacements(original_text)
                 if new_text == original_text:
-                    wikipedia.output('No changes were necessary in %s' % pl.title())
+                    pywikibot.output('No changes were necessary in %s'
+                                     % pl.title())
                 else:
-                    wikipedia.output(u'>>> %s <<<' % pl.title())
-                    wikipedia.showDiff(original_text, new_text)
+                    pywikibot.output(u'>>> %s <<<' % pl.title())
+                    pywikibot.showDiff(original_text, new_text)
                     if not self.acceptall:
-                        choice = wikipedia.input(u'Do you want to accept these changes? [y|n|a(ll)]')
+                        choice = pywikibot.input(
+                            u'Do you want to accept these changes? [y|n|a(ll)]')
                         if choice in ['a', 'A']:
                             self.acceptall = True
                     if self.acceptall or choice in ['y', 'Y']:
@@ -1034,7 +1069,7 @@ def main():
     # default to -1 which means all namespaces will be processed
     namespace = -1
     # Load default summary message.
-    editSummary = wikipedia.translate(wikipedia.getSite(), msg)
+    editSummary = pywikibot.translate(pywikibot.getSite(), msg)
     # List of references in Notes section
     references = []
     # Notes sequence number
@@ -1043,31 +1078,33 @@ def main():
     refusage = {}
 
     # Read commandline parameters.
-    for arg in wikipedia.handleArgs():
+    for arg in pywikibot.handleArgs():
         if arg == '-regex':
             regex = True
         elif arg.startswith('-file'):
             if len(arg) == 5:
-                textfilename = wikipedia.input(u'Please enter the filename:')
+                textfilename = pywikibot.input(u'Please enter the filename:')
             else:
                 textfilename = arg[6:]
             source = 'textfile'
         elif arg.startswith('-cat'):
             if len(arg) == 4:
-                categoryname = wikipedia.input(u'Please enter the category name:')
+                categoryname = pywikibot.input(
+                    u'Please enter the category name:')
             else:
                 categoryname = arg[5:]
             source = 'category'
         elif arg.startswith('-sql'):
             if len(arg) == 4:
-                sqlfilename = wikipedia.input(u'Please enter the SQL dump\'s filename:')
+                sqlfilename = pywikibot.input(
+                    u'Please enter the SQL dump\'s filename:')
             else:
                 sqlfilename = arg[5:]
             source = 'sqldump'
         elif arg.startswith('-page'):
             if len(arg) == 5:
                 pagenames.append(
-                    wikipedia.input(u'Which page do you want to change?'))
+                    pywikibot.input(u'Which page do you want to change?'))
             else:
                 pagenames.append(arg[6:])
             source = 'userinput'
@@ -1085,16 +1122,19 @@ def main():
 
     if source == None or len(commandline_replacements) not in [0, 2]:
         # syntax error, show help text from the top of this file
-        wikipedia.output(__doc__, 'utf-8')
+        pywikibot.output(__doc__, 'utf-8')
         return
     if (len(commandline_replacements) == 2):
         replacements[commandline_replacements[0]] = commandline_replacements[1]
-        editSummary = wikipedia.translate(wikipedia.getSite(), msg ) % ' (-' + commandline_replacements[0] + ' +' + commandline_replacements[1] + ')'
+        editSummary = pywikibot.translate(pywikibot.getSite(), msg)
+        % ' (-' + commandline_replacements[0] + ' +' + commandline_replacements[1] + ')'
     else:
         change = ''
-        default_summary_message =  wikipedia.translate(wikipedia.getSite(), msg) % change
-        wikipedia.output(u'The summary message will default to: %s' % default_summary_message)
-        summary_message = wikipedia.input(u'Press Enter to use this default message, or enter a description of the changes your bot will make:')
+        default_summary_message =  pywikibot.translate(pywikibot.getSite(), msg) % change
+        pywikibot.output(u'The summary message will default to: %s'
+                         % default_summary_message)
+        summary_message = pywikibot.input(
+            u'Press Enter to use this default message, or enter a description of the changes your bot will make:')
         if summary_message == '':
             summary_message = default_summary_message
         editSummary = summary_message
@@ -1103,18 +1143,20 @@ def main():
         try:
             fix = fixes['ALTREFS']
         except KeyError:
-            wikipedia.output(u'Available predefined fixes are: %s' % fixes.keys())
+            pywikibot.output(u'Available predefined fixes are: %s'
+                             % fixes.keys())
             return
         if 'regex' in fix:
             regex = fix['regex']
         if 'msg' in fix:
-            editSummary = wikipedia.translate(wikipedia.getSite(), fix['msg'])
+            editSummary = pywikibot.translate(pywikibot.getSite(), fix['msg'])
         if 'exceptions' in fix:
             exceptions = fix['exceptions']
         replacements = fix['replacements']
 
-    gen = ReplacePageGenerator(source, replacements, exceptions, regex, namespace,
-                               textfilename, sqlfilename, categoryname, pagenames)
+    gen = ReplacePageGenerator(source, replacements, exceptions, regex,
+                               namespace, textfilename, sqlfilename,
+                               categoryname, pagenames)
     preloadingGen = pagegenerators.PreloadingGenerator(gen, pageNumber = 20)
     bot = ReplaceRobot(preloadingGen, replacements, refsequence, references,
                        refusage, exceptions, regex, acceptall, editSummary)
@@ -1125,4 +1167,4 @@ if __name__ == "__main__":
     try:
         main()
     finally:
-        wikipedia.stopme()
+        pywikibot.stopme()

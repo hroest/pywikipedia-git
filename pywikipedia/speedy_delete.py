@@ -19,19 +19,24 @@ article.  The onus is on you to avoid making these mistakes.
 NOTE: This script currently only works for the Wikipedia project.
 
 """
-__version__ = '$Id$'
+
+#
+# (C) Pywikipedia bot team, 2007-2010
 #
 # Distributed under the terms of the MIT license.
 #
-import wikipedia
+__version__ = '$Id$'
+#
+
+import wikipedia as pywikibot
 import pagegenerators, catlib
 import time
 
 class SpeedyRobot:
-    """
-    This robot will load a list of pages from the category of candidates for speedy
-    deletion on the language's wiki and give the user an interactive prompt to decide
-    whether each should be deleted or not.
+    """ This robot will load a list of pages from the category of candidates for
+    speedy deletion on the language's wiki and give the user an interactive
+    prompt to decide whether each should be deleted or not.
+
     """
 
     csd_cat={
@@ -452,28 +457,32 @@ class SpeedyRobot:
         Arguments:
             none yet
         """
-        self.mySite = wikipedia.getSite()
-        self.csdCat = catlib.Category(self.mySite, wikipedia.translate(self.mySite, self.csd_cat))
+        self.mySite = pywikibot.getSite()
+        self.csdCat = catlib.Category(self.mySite,
+                                      pywikibot.translate(self.mySite,
+                                                          self.csd_cat))
         self.savedProgress = None
         self.preloadingGen = None
 
     def guessReasonForDeletion(self, page):
         reason = None
-        # TODO: The following check loads the page 2 times. Find a better way to do it.
-        if page.isTalkPage() and (page.toggleTalkPage().isRedirectPage() or not page.toggleTalkPage().exists()):
+        # TODO: The following check loads the page 2 times. Find a better way to
+        # do it.
+        if page.isTalkPage() and (page.toggleTalkPage().isRedirectPage() or
+                                  not page.toggleTalkPage().exists()):
             # This is probably a talk page that is orphaned because we
             # just deleted the associated article.
-            reason = wikipedia.translate(self.mySite, self.talk_deletion_msg)
+            reason = pywikibot.translate(self.mySite, self.talk_deletion_msg)
         else:
             # Try to guess reason by the template used
             templateNames = page.templates()
-            reasons = wikipedia.translate(self.mySite, self.deletion_messages)
+            reasons = pywikibot.translate(self.mySite, self.deletion_messages)
 
             for templateName in templateNames:
                 if templateName in reasons:
                     if type(reasons[templateName]) is not unicode:
                         #Make alias to delete_reasons
-                        reason = wikipedia.translate(self.mySite, self.delete_reasons)[reasons[templateName]]
+                        reason = pywikibot.translate(self.mySite, self.delete_reasons)[reasons[templateName]]
                     else:
                         reason = reasons[templateName]
                     break
@@ -484,26 +493,32 @@ class SpeedyRobot:
 
     def getReasonForDeletion(self, page):
         suggestedReason = self.guessReasonForDeletion(page)
-        wikipedia.output(u'The suggested reason is: \03{lightred}%s\03{default}' % suggestedReason)
+        pywikibot.output(
+            u'The suggested reason is: \03{lightred}%s\03{default}'
+            % suggestedReason)
 
-        # We don't use wikipedia.translate() here because for some languages the
+        # We don't use pywikibot.translate() here because for some languages the
         # entry is intentionally left out.
         if self.mySite.family.name in self.delete_reasons:
             if page.site().lang in self.delete_reasons[self.mySite.family.name]:
-                localReasons = wikipedia.translate(page.site().lang, self.delete_reasons)
-                wikipedia.output(u'')
+                localReasons = pywikibot.translate(page.site().lang,
+                                                   self.delete_reasons)
+                pywikibot.output(u'')
                 localReasoneKey = localReasons.keys()
                 localReasoneKey.sort()
                 for key in localReasoneKey:
-                    wikipedia.output((key + ':').ljust(8) + localReasons[key])
-                wikipedia.output(u'')
-                reason = wikipedia.input(u'Please enter the reason for deletion, choose a default reason, or press enter for the suggested message:')
+                    pywikibot.output((key + ':').ljust(8) + localReasons[key])
+                pywikibot.output(u'')
+                reason = pywikibot.input(
+                    u'Please enter the reason for deletion, choose a default reason, or press enter for the suggested message:')
                 if reason.strip() in localReasons:
                     reason = localReasons[reason]
             else:
-                reason = wikipedia.input(u'Please enter the reason for deletion, or press enter for the suggested message:')
+                reason = pywikibot.input(
+                    u'Please enter the reason for deletion, or press enter for the suggested message:')
         else:
-            reason = wikipedia.input(u'Please enter the reason for deletion, or press enter for the suggested message:')
+            reason = pywikibot.input(
+                u'Please enter the reason for deletion, or press enter for the suggested message:')
 
         if not reason:
             reason = suggestedReason
@@ -525,56 +540,69 @@ class SpeedyRobot:
                 try:
                     pageText = page.get(get_redirect = True).split("\n")
                     count += 1
-                except wikipedia.NoPage:
-                    wikipedia.output(u'Page %s does not exist or has already been deleted, skipping.' % page.aslink())
+                except pywikibot.NoPage:
+                    pywikibot.output(
+                        u'Page %s does not exist or has already been deleted, skipping.'
+                        % page.title(asLink=True))
                     continue
                 # Show the title of the page we're working on.
                 # Highlight the title in purple.
-                wikipedia.output(u"\n\n>>> \03{lightpurple}%s\03{default} <<<" % page.title())
-                wikipedia.output(u'-  -  -  -  -  -  -  -  -  ')
+                pywikibot.output(u"\n\n>>> \03{lightpurple}%s\03{default} <<<"
+                                 % page.title())
+                pywikibot.output(u'-  -  -  -  -  -  -  -  -  ')
                 if len(pageText) > 75:
-                    wikipedia.output('The page detail is too many lines, only output first 50 lines:')
-                    wikipedia.output(u'-  -  -  -  -  -  -  -  -  ')
-                    wikipedia.output(u'\n'.join(pageText[:50]))
+                    pywikibot.output(
+                        'The page detail is too many lines, only output first 50 lines:')
+                    pywikibot.output(u'-  -  -  -  -  -  -  -  -  ')
+                    pywikibot.output(u'\n'.join(pageText[:50]))
                 else:
-                    wikipedia.output(u'\n'.join(pageText))
-                wikipedia.output(u'-  -  -  -  -  -  -  -  -  ')
-                choice = wikipedia.inputChoice(u'Input action?', ['delete', 'skip', 'update', 'quit'], ['d', 'S', 'u', 'q'], 'S')
+                    pywikibot.output(u'\n'.join(pageText))
+                pywikibot.output(u'-  -  -  -  -  -  -  -  -  ')
+                choice = pywikibot.inputChoice(u'Input action?',
+                                               ['delete', 'skip', 'update',
+                                                'quit'],
+                                               ['d', 'S', 'u', 'q'], 'S')
                 if choice == 'q':
                     keepGoing = False
                     break
                 elif choice == 'u':
-                    wikipedia.output(u'Updating from CSD category.')
+                    pywikibot.output(u'Updating from CSD category.')
                     self.savedProgress = page.title()
                     startFromBeginning = False
                     break
                 elif choice == 'd':
                     reason = self.getReasonForDeletion(page)
-                    wikipedia.output(u'The chosen reason is: \03{lightred}%s\03{default}' % reason)
+                    pywikibot.output(
+                        u'The chosen reason is: \03{lightred}%s\03{default}'
+                        % reason)
                     page.delete(reason, prompt = False)
                 else:
-                    wikipedia.output(u'Skipping page %s' % page.title())
+                    pywikibot.output(u'Skipping page %s' % page.title())
                 startFromBeginning = True
             if count == 0:
                 if startFromBeginning:
-                    wikipedia.output(u'There are no pages to delete.\nWaiting for 30 seconds or press Ctrl+C to quit...')
+                    pywikibot.output(
+                        u'There are no pages to delete.\nWaiting for 30 seconds or press Ctrl+C to quit...')
                     try:
                         time.sleep(30)
                     except KeyboardInterrupt:
                         keepGoing = False
                 else:
                     startFromBeginning = True
-        wikipedia.output(u'Quitting program.')
+        pywikibot.output(u'Quitting program.')
 
     def refreshGenerator(self):
-        generator = pagegenerators.CategorizedPageGenerator(self.csdCat, start = self.savedProgress)
-        # wrap another generator around it so that we won't produce orphaned talk pages.
+        generator = pagegenerators.CategorizedPageGenerator(
+            self.csdCat, start=self.savedProgress)
+        # wrap another generator around it so that we won't produce orphaned
+        # talk pages.
         generator2 = pagegenerators.PageWithTalkPageGenerator(generator)
-        self.preloadingGen = pagegenerators.PreloadingGenerator(generator2, pageNumber = 20)
+        self.preloadingGen = pagegenerators.PreloadingGenerator(generator2,
+                                                                pageNumber=20)
 
 def main():
     # read command line parameters
-    for arg in wikipedia.handleArgs():
+    for arg in pywikibot.handleArgs():
         pass #No args yet
 
     bot = SpeedyRobot()
@@ -584,4 +612,4 @@ if __name__ == "__main__":
     try:
         main()
     finally:
-        wikipedia.stopme()
+        pywikibot.stopme()
