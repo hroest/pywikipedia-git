@@ -1787,20 +1787,21 @@ u'NOTE: number of edits are restricted at %s'
             # In this case only continue on the Page we started with
             if page != self.originPage:
                 raise SaveError
-
         if page.title() != page.sectionFreeTitle():
             # This is not a page, but a subpage. Do not edit it.
-            pywikibot.output(u"Not editing %s: not doing interwiki on subpages" % page.aslink(True))
+            pywikibot.output(u"Not editing %s: not doing interwiki on subpages"
+                             % page.aslink(True))
             raise SaveError
         try:
             pagetext = page.get()
         except pywikibot.NoPage:
-            pywikibot.output(u"Not editing %s: page does not exist" % page.aslink(True))
+            pywikibot.output(u"Not editing %s: page does not exist"
+                             % page.aslink(True))
             raise SaveError
 
-        # clone original newPages dictionary, so that we can modify it to the local page's needs
+        # clone original newPages dictionary, so that we can modify it to the
+        # local page's needs
         new = dict(newPages)
-
         interwikis = page.interwiki()
 
         # remove interwiki links to ignore
@@ -1809,23 +1810,32 @@ u'NOTE: number of edits are restricted at %s'
                 ignorepage = pywikibot.Page(page.site(), iw.groups()[0])
             except (pywikibot.NoSuchSite, pywikibot.InvalidTitle):
                 continue
-
             try:
-                if (new[ignorepage.site()] == ignorepage) and (ignorepage.site() != page.site()):
+                if (new[ignorepage.site()] == ignorepage) and \
+                   (ignorepage.site() != page.site()):
                     if (ignorepage not in interwikis):
-                        pywikibot.output(u"Ignoring link to %(to)s for %(from)s" % {'to': ignorepage.title(asLink=True), 'from': page.title(asLink=True)})
+                        pywikibot.output(
+                            u"Ignoring link to %(to)s for %(from)s"
+                            % {'to': ignorepage.title(asLink=True),
+                               'from': page.title(asLink=True)})
                         new.pop(ignorepage.site())
                     else:
-                        pywikibot.output(u"NOTE: Not removing interwiki from %(from)s to %(to)s (exists both commented and non-commented)" % {'to': ignorepage.title(asLink=True), 'from': page.title(asLink=True)})
+                        pywikibot.output(
+                            u"NOTE: Not removing interwiki from %(from)s to %(to)s (exists both commented and non-commented)"
+                            % {'to': ignorepage.title(asLink=True),
+                               'from': page.title(asLink=True)})
             except KeyError:
                 pass
 
-        # sanity check - the page we are fixing must be the only one for that site.
+        # sanity check - the page we are fixing must be the only one for that
+        # site.
         pltmp = new[page.site()]
         if pltmp != page:
-            s = "None"
+            s = u"None"
             if pltmp is not None: s = pltmp.aslink(True)
-            pywikibot.output(u"BUG>>> %s is not in the list of new links! Found %s." % (page.aslink(True), s))
+            pywikibot.output(
+                u"BUG>>> %s is not in the list of new links! Found %s."
+                % (page.aslink(True), s))
             raise SaveError
 
         # Avoid adding an iw link back to itself
@@ -1837,7 +1847,9 @@ u'NOTE: number of edits are restricted at %s'
             old[page2.site()] = page2
 
         # Check what needs to get done
-        mods, mcomment, adding, removing, modifying = compareLanguages(old, new, insite = page.site())
+        mods, mcomment, adding, removing, modifying = compareLanguages(old,
+                                                                       new,
+                                                                       insite=page.site())
 
         # When running in autonomous mode without -force switch, make sure we
         # don't remove any items, but allow addition of the new ones
@@ -1851,14 +1863,16 @@ u'NOTE: number of edits are restricted at %s'
                 #put it to new means don't delete it
                 if not globalvar.cleanup or \
                    rmPage.aslink(forceInterwiki=True) not in globalvar.remove or \
-                   rmPage.site().sitename() == 'wikipedia:hi': #work-arround for bug #3081100 (do not remove hi-pages)
+                   rmPage.site().sitename() == 'wikipedia:hi' and \
+                   page.site().sitename() != 'wikipedia:de': #work-arround for bug #3081100 (do not remove hi-pages)
                     new[rmsite] = rmPage
                     pywikibot.output(
                         u"WARNING: %s is either deleted or has a mismatching disambiguation state."
                         % rmPage.aslink(True))
             # Re-Check what needs to get done
-            mods, mcomment, adding, removing, modifying = compareLanguages(old, new, insite=page.site())
-
+            mods, mcomment, adding, removing, modifying = compareLanguages(old,
+                                                                           new,
+                                                                           insite=page.site())
         if not mods:
             if not globalvar.quiet or pywikibot.verbose:
                 pywikibot.output(u'No changes needed on page %s'
@@ -1866,20 +1880,26 @@ u'NOTE: number of edits are restricted at %s'
             return False
 
         # Show a message in purple.
-        pywikibot.output(u"\03{lightpurple}Updating links on page %s.\03{default}" % page.aslink(True))
-
+        pywikibot.output(
+            u"\03{lightpurple}Updating links on page %s.\03{default}"
+            % page.aslink(True))
         pywikibot.output(u"Changes to be made: %s" % mods)
         oldtext = page.get()
         template = (page.namespace() == 10)
         newtext = pywikibot.replaceLanguageLinks(oldtext, new,
-                                                 site = page.site(),
-                                                 template = template)
-        # This is for now. Later there should be different funktions for each kind
+                                                 site=page.site(),
+                                                 template=template)
+        # This is for now. Later there should be different funktions for each
+        # kind
         if not botMayEdit(page):
             if template:
-                pywikibot.output(u'SKIPPING: %s should have interwiki links on subpage.' % page.aslink(True))
+                pywikibot.output(
+                    u'SKIPPING: %s should have interwiki links on subpage.'
+                    % page.aslink(True))
             else:
-                pywikibot.output(u'SKIPPING: %s is under construction or to be deleted.' % page.aslink(True))
+                pywikibot.output(
+                    u'SKIPPING: %s is under construction or to be deleted.'
+                    % page.aslink(True))
             return False
         if newtext == oldtext:
             return False
@@ -1888,8 +1908,12 @@ u'NOTE: number of edits are restricted at %s'
         # pywikibot.output(u"NOTE: Replace %s" % page.title(asLink=True))
         # Determine whether we need permission to submit
         ask = False
-        if removing and removing != [page.site()]:   # Allow for special case of a self-pointing interwiki link
-            self.problem(u'Found incorrect link to %s in %s'% (",".join([x.lang for x in removing]), page.aslink(True)), createneed = False)
+
+        # Allow for special case of a self-pointing interwiki link
+        if removing and removing != [page.site()]:
+            self.problem(u'Found incorrect link to %s in %s'
+                         % (",".join([x.lang for x in removing]),
+                            page.aslink(True)), createneed=False)
             ask = True
         if globalvar.force or globalvar.cleanup:
             ask = False
@@ -1901,9 +1925,10 @@ u'NOTE: number of edits are restricted at %s'
                 # If we cannot ask, deny permission
                 answer = 'n'
             else:
-                answer = pywikibot.inputChoice(u'Submit?', 
-                            ['Yes', 'No', 'open in Browser', 'Give up', 'Always'],
-                            ['y', 'n', 'b', 'g', 'a'])
+                answer = pywikibot.inputChoice(u'Submit?',
+                                               ['Yes', 'No', 'open in Browser',
+                                                'Give up', 'Always'],
+                                               ['y', 'n', 'b', 'g', 'a'])
                 if answer == 'b':
                     webbrowser.open("http://%s%s" % (
                         page.site().hostname(),
@@ -1925,7 +1950,8 @@ u'NOTE: number of edits are restricted at %s'
             if bot:
                 while pywikibot.get_throttle.waittime() + 2.0 < pywikibot.put_throttle.waittime():
                     if not globalvar.quiet or pywikibot.verbose:
-                        pywikibot.output(u"NOTE: Performing a recursive query first to save time....")
+                        pywikibot.output(
+                            u"NOTE: Performing a recursive query first to save time....")
                     qdone = bot.oneQuery()
                     if not qdone:
                         # Nothing more to do
@@ -1939,16 +1965,19 @@ u'NOTE: number of edits are restricted at %s'
                         page.put_async(newtext, comment = mcomment)
                         status = 302
                     else:
-                        status, reason, data = page.put(newtext, comment = mcomment)
+                        status, reason, data = page.put(newtext, comment=mcomment)
                 except pywikibot.LockedPage:
                     pywikibot.output(u'Page %s is locked. Skipping.'
                                      % page.aslink(True))
                     raise SaveError
                 except pywikibot.EditConflict:
-                    pywikibot.output(u'ERROR putting page: An edit conflict occurred. Giving up.')
+                    pywikibot.output(
+                        u'ERROR putting page: An edit conflict occurred. Giving up.')
                     raise SaveError
                 except (pywikibot.SpamfilterError), error:
-                    pywikibot.output(u'ERROR putting page: %s blacklisted by spamfilter. Giving up.' % (error.url,))
+                    pywikibot.output(
+                        u'ERROR putting page: %s blacklisted by spamfilter. Giving up.'
+                        % (error.url,))
                     raise SaveError
                 except (pywikibot.PageNotSaved), error:
                     pywikibot.output(u'ERROR putting page: %s' % (error.args,))
@@ -1957,14 +1986,16 @@ u'NOTE: number of edits are restricted at %s'
                     if timeout>3600:
                         raise
                     pywikibot.output(u'ERROR putting page: %s' % (error.args,))
-                    pywikibot.output(u'Sleeping %i seconds before trying again.' % (timeout,))
+                    pywikibot.output(u'Sleeping %i seconds before trying again.'
+                                     % (timeout,))
                     timeout *= 2
                     time.sleep(timeout)
                 except pywikibot.ServerError:
                     if timeout > 3600:
                         raise
                     pywikibot.output(u'ERROR putting page: ServerError.')
-                    pywikibot.output(u'Sleeping %i seconds before trying again.' % (timeout,))
+                    pywikibot.output(u'Sleeping %i seconds before trying again.'
+                                     % (timeout,))
                     timeout *= 2
                     time.sleep(timeout)
                 else:
@@ -1977,7 +2008,9 @@ u'NOTE: number of edits are restricted at %s'
         elif answer == 'g':
             raise GiveUpOnPage
         else:
-            raise LinkMustBeRemoved(u'Found incorrect link to %s in %s'% (",".join([x.lang for x in removing]), page.aslink(True)))
+            raise LinkMustBeRemoved(u'Found incorrect link to %s in %s'
+                                    % (",".join([x.lang for x in removing]),
+                                       page.aslink(True)))
 
     def reportBacklinks(self, new, updatedSites):
         """
