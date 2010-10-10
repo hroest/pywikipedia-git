@@ -2,7 +2,7 @@
 """ Script to create user files (user-config.py, user-fixes.py) """
 __version__ = '$Id$'
 
-import os, sys, codecs, re
+import codecs, os, re, sys
 
 base_dir = ''
 console_encoding = sys.stdout.encoding
@@ -44,19 +44,31 @@ def file_exists(filename):
 def create_user_config():
     _fnc = os.path.join(base_dir, "user-config.py")
     if not file_exists(_fnc):
-        know_families = re.findall(r'(.+)_family.py\b', '\n'.join(os.listdir(os.path.join(base_dir, "families"))))
-        fam = listchoice(know_families, "Select family of sites we are working on", default = 'wikipedia')
-        mylang = raw_input("The language code of the site we're working on (default: 'en'): ") or 'en'
-        username = raw_input("Username (%s %s): " % (mylang, fam)) or 'UnnamedBot'
+        known_families = re.findall(r'(.+)_family.py\b',
+                                   '\n'.join(os.listdir(
+                                       os.path.join(base_dir,
+                                                    "families"))))
+        fam = listchoice(known_families,
+                         "Select family of sites we are working on",
+                         default='wikipedia')
+        mylang = raw_input(
+"The language code of the site we're working on (default: 'en'): ") or 'en'
+        username = raw_input("Username (%s %s): "
+                             % (mylang, fam)) or 'UnnamedBot'
         username = unicode(username, console_encoding)
         while True:
-            choice = raw_input("Which variant of user_config.py:\n[S]mall or [E]xtended (with further informations)? ").upper()
-            if choice in ['S','E']:
+            choice = raw_input(
+"Which variant of user_config.py:\n[S]mall or [E]xtended (with further information)? "
+                               ).upper()
+            if choice in "SE":
                 break
 
         #
         # I don't like this solution. Temporary for me.
-        f = codecs.open("config.py", "r", "utf-8") ; cpy = f.read() ; f.close()
+        #
+        f = codecs.open("config.py", "r", "utf-8")
+        cpy = f.read()
+        f.close()
 
         res = re.findall("^(############## (?:LOGFILE|"
                                             "INTERWIKI|"
@@ -67,14 +79,16 @@ def create_user_config():
                                             "DATABASE|"
                                             "SEARCH ENGINE|"
                                             "COPYRIGHT|"
-                                            "FURTHER) SETTINGS .*?)^(?=#####|# =====)", cpy, re.MULTILINE | re.DOTALL)
+                                            "FURTHER) SETTINGS .*?)^(?=#####|# =====)",
+                         cpy, re.MULTILINE | re.DOTALL)
         config_text = '\n'.join(res)
 
         f = codecs.open(_fnc, "w", "utf-8")
         if choice == 'E':
             f.write("""# -*- coding: utf-8  -*-
 
-# This is an automatically generated file. You can find more configuration parameters in 'config.py' file.
+# This is an automatically generated file. You can find more configuration
+# parameters in 'config.py' file.
 
 # The family of sites we are working on. wikipedia.py will import
 # families/xxx_family.py so if you want to change this variable,
@@ -135,5 +149,5 @@ if __name__ == "__main__":
     if choice == "3":
         create_user_config()
         create_user_fixes()
-    if not choice in ["1", "2", "3"]:
+    if not choice in "123":
         print("Nothing to do")
