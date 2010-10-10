@@ -866,16 +866,16 @@ def main():
         gen = genFactory.getCombinedGenerator()
     if not gen:
         pywikibot.showHelp()
-    elif not always:
-        answer = pywikibot.inputChoice(
-            warning + '\nDo you really want to continue?',
-            ['yes', 'no'], ['y', 'N'], 'N')
-
-    if answer == 'y':
-        preloadingGen = pagegenerators.PreloadingGenerator(gen)
-        bot = CosmeticChangesBot(preloadingGen, acceptall=always,
-                                 comment=editSummary)
-        bot.run()
+    else:
+        if not always:
+            answer = pywikibot.inputChoice(
+                warning + '\nDo you really want to continue?',
+                ['yes', 'no'], ['y', 'N'], 'N')
+        if answer == 'y':
+            preloadingGen = pagegenerators.PreloadingGenerator(gen)
+            bot = CosmeticChangesBot(preloadingGen, acceptall=always,
+                                     comment=editSummary)
+            bot.run()
 
 if __name__ == "__main__":
     try:
