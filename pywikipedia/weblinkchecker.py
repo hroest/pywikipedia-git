@@ -207,6 +207,9 @@ ignorelist = [
     re.compile('.*[\./@]gso\.gbv\.de(/.*)?'),  # bot somehow can't handle their redirects
     re.compile('.*[\./@]berlinonline\.de(/.*)?'), # a de: user wants to fix them by hand and doesn't want them to be deleted, see [[de:Benutzer:BLueFiSH.as/BZ]].
     re.compile('.*[\./@]bodo\.kommune\.no(/.*)?'), # bot can't handle their redirects
+    re.compile('.*[\./@]ssd\.jpl\.nasa\.gov(/.*)?'), # bot rejected on the site
+    re.compile('.*[\./@]itis\.gov(/.*)?'), # bot rejected on the site
+    re.compile('.*[\./@]cev\.lu(/.*)?'), # bot rejected on the site
 ]
 
 def weblinksIn(text, withoutBracketed = False, onlyBracketed = False):
