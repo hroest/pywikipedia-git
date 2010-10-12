@@ -1190,7 +1190,10 @@ not supported by PyWikipediaBot!"""
         """
         if not hasattr(self, "_isDisambig"):
             if not hasattr(self._site, "_disambigtemplates"):
-                default = set(self._site.family.disambig('_default'))
+                try:
+                    default = set(self._site.family.disambig('_default'))
+                except KeyError:
+                    default = set(u'Disambig')
                 try:
                     distl = self._site.family.disambig(self._site.lang,
                                                        fallback=False)
