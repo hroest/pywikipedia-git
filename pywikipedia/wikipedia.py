@@ -464,14 +464,14 @@ not supported by PyWikipediaBot!"""
                     colon = ":"
                 if  self._site.family != getSite().family \
                         and self._site.family.name != self._site.lang:
-                    return u'[[%s%s:%s:%s]]' % (colon, self._site.family.name,
+                    title =  u'[[%s%s:%s:%s]]' % (colon, self._site.family.name,
                                                 self._site.lang, title)
                 else:
-                    return u'[[%s%s:%s]]' % (colon, self._site.lang, title)
+                    title = u'[[%s%s:%s]]' % (colon, self._site.lang, title)
             elif textlink and (self.isImage() or self.isCategory()):
-                    return u'[[:%s]]' % title
+                    title = u'[[:%s]]' % title
             else:
-                return u'[[%s]]' % title
+                title = u'[[%s]]' % title
         if decode or asLink:
             begin = title.find('#')
             if begin != -1:
