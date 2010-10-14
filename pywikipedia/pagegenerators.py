@@ -1160,25 +1160,36 @@ def DuplicateFilterPageGenerator(generator):
             seenPages[_page] = True
             yield page
 
-def RegexFilterPageGenerator(generator, regex, inverse=False):
+def RegexFilterPageGenerator(generator, regex, inverse=False, ignore_namespace=True):
     """
     Wraps around another generator. Yields only those pages, the titles of
     which are positively matched to any regex in list. If invert is False,
     yields all pages matched by any regex, if True, yields all pages matched
-    none of the regex.
+    none of the regex. If ignore_namespace is False, the whole page title
+    is compared.
 
     """
     # test for backwards compatibility
     if isinstance(regex, basestring):
         regex = [regex]
-    reg = [ re.compile(r, re.I) for r in regex ]
+    # test if regex is already compiled
+    if isinstance(regex[0], basestring):
+        reg = [ re.compile(r, re.I) for r in regex ]
+    else:
+        reg = regex
 
     for page in generator:
+        # get the page title
+        if ignore_namespace:
+            title = page.titleWithoutNamespace()
+        else:
+            title = page.title()
+
         if inverse:
             # yield page if NOT matched by all regex
             skip = False
             for r in reg:
-                if r.match(page.titleWithoutNamespace()):
+                if r.match(title):
                     skip = True
                     break
             if not skip:
@@ -1186,7 +1197,7 @@ def RegexFilterPageGenerator(generator, regex, inverse=False):
         else:
             # yield page if matched by any regex
             for r in reg:
-                if r.match(page.titleWithoutNamespace()):
+                if r.match(title):
                     yield page
                     break
 
