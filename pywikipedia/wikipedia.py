@@ -3628,16 +3628,13 @@ class ImagePage(Page):
             raise RuntimeError("%s" %data['error'])
         count = 0
         pageInfo = data['query']['pages'].values()[0]
+        self._local = pageInfo["imagerepository"] != "shared"
         if data['query']['pages'].keys()[0] == "-1":
-            if 'missing' in pageInfo:
+            if 'missing' in pageInfo and self._local:
                 raise NoPage(self.site(), self.aslink(forceInterwiki=True),
                              "Page does not exist.")
             elif 'invalid' in pageInfo:
                 raise BadTitle('BadTitle: %s' % self)
-        if pageInfo["imagerepository"] == "shared":
-            self._local = False
-        else:
-            self._local = True
         infos = []
         
         try:
