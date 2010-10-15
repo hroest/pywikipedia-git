@@ -457,6 +457,15 @@ not supported by PyWikipediaBot!"""
         If decode is True, decodes the section title
         """
         title = self._title
+        if decode or asLink:
+            begin = title.find('#')
+            if begin != -1:
+                anchor = self.section(underscore=underscore, decode=True)
+                try:
+                    title = title[:begin + 1] + anchor
+                except TypeError:
+                    print title, begin, anchor
+                    raise
         if asLink:
             if allowInterwiki and (forceInterwiki or self._site != getSite()):
                 colon = ""
@@ -472,15 +481,6 @@ not supported by PyWikipediaBot!"""
                     title = u'[[:%s]]' % title
             else:
                 title = u'[[%s]]' % title
-        if decode or asLink:
-            begin = title.find('#')
-            if begin != -1:
-                anchor = self.section(underscore = underscore, decode = True)
-                try:
-                    title = title[:begin + 1] + anchor
-                except TypeError:
-                    print title, begin, anchor
-                    raise
         if savetitle or asLink:
             # Ensure there's no wiki syntax in the title
             title = title.replace(u"''", u'%27%27')
