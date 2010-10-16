@@ -225,8 +225,7 @@ def followRedirects(categories):
         categoryPage = pywikibot.Page(pywikibot.getSite(u'commons', u'commons'),
                                       cat, defaultNamespace=14)
         if categoryPage.isCategoryRedirect():
-            result.append(getCategoryRedirectTarget(),
-                          categoryPage.titleWithoutNamespace())
+            result.append(categoryPage.getCategoryRedirectTarget().titleWithoutNamespace())
         else:
             result.append(cat)
     return result
