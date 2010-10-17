@@ -3765,13 +3765,13 @@ class Family:
         return '%s?title=%s&action=unprotect&useskin=monobook' % (self.path(code), name)
 
     def block_address(self, code):
-      return '%s?title=%s:Blockip&action=submit&useskin=monobook' % (self.path(code), self.special_namespace_url(code))
+        return '%s?title=%s:Blockip&action=submit&useskin=monobook' % (self.path(code), self.special_namespace_url(code))
 
     def unblock_address(self, code):
-      return '%s?title=%s:Ipblocklist&action=submit&useskin=monobook' % (self.path(code), self.special_namespace_url(code))
+        return '%s?title=%s:Ipblocklist&action=submit&useskin=monobook' % (self.path(code), self.special_namespace_url(code))
 
     def blocksearch_address(self, code, name):
-      return '%s?title=%s:Ipblocklist&action=search&ip=%s&useskin=monobook' % (self.path(code), self.special_namespace_url(code), name)
+        return '%s?title=%s:Ipblocklist&action=search&ip=%s&useskin=monobook' % (self.path(code), self.special_namespace_url(code), name)
 
     def linksearch_address(self, code, link, limit=500, offset=0):
         return '%s?title=%s:Linksearch&limit=%d&offset=%d&target=%s&useskin=monobook' % (self.path(code), self.special_namespace_url(code), limit, offset, link)
@@ -3781,6 +3781,9 @@ class Family:
 
     def export_address(self, code):
         return '%s?title=%s:Export&useskin=monobook' % (self.path(code), self.special_namespace_url('_default'))
+
+    def globalusers_address(self, code, target='', limit=500, offset='', group=''):
+        return '%s?title=%s:GlobalUsers&username=%s&limit=%s&offset=%s&group=%s&useskin=monobook' % (self.path(code), self.special_namespace_url(code), target, limit, offset, group)
 
     def query_address(self, code):
         return '%s?' % self.querypath(code)

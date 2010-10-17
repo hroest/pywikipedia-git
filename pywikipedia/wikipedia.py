@@ -7127,6 +7127,10 @@ u"""WARNING: Could not open '%s'. Maybe the server or\n your connection is down.
         """Return path to Special:Contributions for user 'target'."""
         return self.family.contribs_address(self.lang,target,limit,offset)
 
+    def globalusers_address(self, target='', limit=500, offset='', group=''):
+        """Return path to Special:GlobalUsers for user 'target' and/or group 'group'."""
+        return self.family.globalusers_address(self.lang, target, limit, offset, group)
+
     def __hash__(self):
         return hash(repr(self))
 
