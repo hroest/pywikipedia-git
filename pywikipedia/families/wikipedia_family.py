@@ -994,7 +994,8 @@ class Family(family.Family):
             'lb': self.alphabetic,
             'mk': self.alphabetic,
             'ms': self.alphabetic_revised,
-            'nds': ['nds-nl', 'pdt'], # Note: as of 2008-02-24, pdt: (Plautdietsch) is still in the Incubator.
+            'nds': ['nds-nl', 'pdt'], # Note: as of 2008-02-24, pdt:
+            'nds-nl': ['nds', 'pdt'], # (Plautdietsch) is still in the Incubator.
             'nn': ['no', 'nb', 'sv', 'da'] + self.alphabetic,
             'no': self.alphabetic,
             'pl': self.alphabetic,
