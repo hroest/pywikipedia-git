@@ -333,9 +333,15 @@ msn_appid = ''
 
 # Using the Flickr api
 flickr = {
-    'api_key': None,  # Provide your key!
+    'api_key': u'',  # Provide your key!
     'review': False,  # Do we use automatically make our uploads reviewed?
-    'reviewer': None, # If so, under what reviewer name?
+    'reviewer': u'', # If so, under what reviewer name?
+    }
+
+# Using the Panoramio api
+panoramio = {
+    'review': False,  # Do we use automatically make our uploads reviewed?
+    'reviewer': u'', # If so, under what reviewer name?
     }
 
 # for all connections: proxy handle
