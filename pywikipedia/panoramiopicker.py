@@ -166,10 +166,19 @@ def getDescription(photoInfo=None, panoramioreview=False, reviewer=u'',
             desc = desc + u'{{Panoramioreview}}\n'
         
     desc = desc + u'\n'
+    cats = u''
     if addCategory:
         desc = desc + u'\n[[Category:%s]]\n' % (addCategory,)
-    # Still have to get a bunch of categories based on the location
-    desc = desc + u'{{subst:Unc}}\n'
+        cats = True
+
+    # Get categories based on location
+    if photoInfo.get(u'latitude') and photoInfo.get(u'longitude'):
+        cats=imagerecat.getOpenStreetMapCats(photoInfo.get(u'latitude'), photoInfo.get(u'longitude'))
+        cats=imagerecat.applyAllFilters(cats)
+        for cat in cats:
+            desc = desc + u'[[Category:%s]]\n' % (cat,)
+    if not cats:
+        desc = desc + u'{{subst:Unc}}\n'
     
     return desc % photoInfo
 
