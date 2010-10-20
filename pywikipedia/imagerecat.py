@@ -195,7 +195,7 @@ def getOpenStreetMap(latitude, longitude):
     '''
     result = []
     gotInfo = False
-    parameters = urllib.urlencode({'lat' : latitude, 'lon' : longitude})
+    parameters = urllib.urlencode({'lat' : latitude, 'lon' : longitude, 'accept-language' : 'en'})
     while(not gotInfo):
 	try:
 	    page = urllib.urlopen("http://nominatim.openstreetmap.org/reverse?format=xml&%s" % parameters)
