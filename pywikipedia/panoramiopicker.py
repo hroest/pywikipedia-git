@@ -11,7 +11,16 @@ Tool to copy a Panoramio set to Commons
 #
 __version__ = '$Id$'
 
-import sys, urllib, re,  StringIO, hashlib, base64, time, json
+import sys, urllib, re,  StringIO, hashlib, base64, time
+try:
+    #For Python 2.6 newer
+    import json
+    if not hasattr(json, 'loads'):
+        # 'json' can also be the name in for 
+        # http://pypi.python.org/pypi/python-json
+        raise ImportError
+except ImportError:
+    import simplejson as json
 import wikipedia as pywikibot
 import config, query, imagerecat, upload
 
