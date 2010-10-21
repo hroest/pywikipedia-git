@@ -83,7 +83,29 @@ def refresh(site, sysop=False, witheditsonly=True):
             params['aufrom'] = data['query-continue']['allusers']['aufrom']
         else:
             break
- 
+
+    pywikibot.output(u'Retrieving global bot user list for %s.' % repr(site))
+    pywikibot.put_throttle() # It actually is a get, but a heavy one.
+    m1 = True
+    offset = ''
+    while m1:
+        text = site.getUrl(site.globalusers_address(offset=offset, group='Global_bot'))
+
+        m1 = re.findall(u'<li>.*?</li>', text)
+        for item in m1:
+            m2 = re.search(u'<li>(.*?)\((.*?),\s(.*?)\)</li>', item)
+            (bot, flag_local, flag_global) = m2.groups()
+
+            bot         = bot[:-2]
+            flag_local  = (flag_local[:2] == u'<a')
+            flag_global = True # since group='Global_bot'
+
+            if bot not in botlist:
+                botlist.append( bot )
+
+        #print len(botlist)
+        offset = bot.encode(site.encoding())
+
     # Save the botlist to disk
     # The file is stored in the botlists subdir. Create if necessary.
     if sysop:
