@@ -37,7 +37,7 @@ class Family(family.Family):
             'iu', 'ik', 'chr', 'bi', 'as', 'cdo', 'ee', 'ss', 'om', 'za', 'ti',
             'ts', 've', 'zu', 'ha', 'dz', 'sg', 'ch', 'cr', 'ak', 'xh', 'st',
             'rw', 'tn', 'ki', 'bxr', 'bug', 'ny', 'lbe', 'tw', 'rn', 'ff',
-            'chy', 'lg',
+            'chy', 'lg', 'bjn', 'mrj', 'koi',
         ]
 
         if family.config.SSL_connection:
