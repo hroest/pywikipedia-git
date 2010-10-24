@@ -128,14 +128,14 @@ def getTags(photoInfo = None):
 
 def getFlinfoDescription(photo_id = 0):
     '''
-    Get the description from http://pywikibot.ramselehof.de/flinfo.php
+    Get the description from http://wikipedia.ramselehof.de/flinfo.php
 
     TODO: Add exception handling, try a couple of times
     '''
     parameters = urllib.urlencode({'id' : photo_id, 'raw' : 'on'})
     
     rawDescription = urllib.urlopen(
-        "http://pywikibot.ramselehof.de/flinfo.php?%s" % parameters).read()
+        "http://wikipedia.ramselehof.de/flinfo.php?%s" % parameters).read()
     
     return rawDescription.decode('utf-8')
 
