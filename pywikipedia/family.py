@@ -21,7 +21,7 @@ class Family:
         # Updated from http://meta.wikimedia.org/wiki/Interwiki_sorting_order
         self.alphabetic = [
             'ace', 'af', 'ak', 'als', 'am', 'ang', 'ab', 'ar', 'an', 'arc',
-            'roa-rup', 'frp', 'as', 'ast', 'gn', 'av', 'ay', 'az', 'bm', 'bnj',
+            'roa-rup', 'frp', 'as', 'ast', 'gn', 'av', 'ay', 'az', 'bm', 'bjn',
             'bn', 'zh-min-nan', 'nan', 'map-bms', 'ba', 'be', 'be-x-old', 'bh',
             'bcl', 'bi', 'bar', 'bo', 'bs', 'br', 'bg', 'bxr', 'ca', 'cv',
             'ceb', 'cs', 'ch', 'cbk-zam', 'ny', 'sn', 'tum', 'cho', 'co', 'cy',
