@@ -2564,6 +2564,17 @@ def main():
 globalvar=Global()
 
 if __name__ == "__main__":
+    # TEST for bug #3081100
+    if not __import__('unicodedata').normalize('NFC', u'\u092e\u093e\u0930\u094d\u0915 \u091c\u093c\u0941\u0915\u0947\u0930\u092c\u0930\u094d\u0917') == u'\u092e\u093e\u0930\u094d\u0915 \u091c\u093c\u0941\u0915\u0947\u0930\u092c\u0930\u094d\u0917':
+        pywikibot.output("""
+
+================================================================================
+\03{lightyellow}WARNING:\03{lightred} your python version might trigger issue #3081100\03{default}
+See https://sourceforge.net/tracker/index.php?func=detail&aid=3081100&group_id=93107&atid=603138 for more information.
+\03{lightyellow}Use an older python version (<2.6.5) if you are running on wikimedia sites!\03{default}
+================================================================================
+
+""")
     try:
         main()
     finally:
