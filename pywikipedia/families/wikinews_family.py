@@ -109,10 +109,12 @@ class Family(family.Family):
 
         self.namespaces[100] = {
             'ar': u'بوابة',
+            'ca': u'Transwiki',
             'cs': u'Portál',
             'de': u'Portal',
             'en': u'Portal',
             'es': u'Comentarios',
+            'fa': u'درگاه',
             'he': u'פורטל',
             'it': u'Portale',
             'ja': u'ポータル',
@@ -128,10 +130,12 @@ class Family(family.Family):
 
         self.namespaces[101] = {
             'ar': u'نقاش البوابة',
+            'ca': u'Transwiki talk',
             'cs': u'Diskuse k portálu',
             'de': u'Portal Diskussion',
             'en': u'Portal talk',
             'es': u'Comentarios Discusión',
+            'fa': u'بحث درگاه',
             'he': u'שיחת פורטל',
             'it': u'Discussioni portale',
             'ja': [u'ポータル・トーク', u'ポータル‐ノート'],
@@ -150,6 +154,7 @@ class Family(family.Family):
             'bg': u'Мнения',
             'de': u'Meinungen',
             'en': u'Comments',
+            'fa': u'نظرها',
             'fr': u'Transwiki',
             'hu': u'Portál',
             'pt': u'Efeméride',
@@ -162,6 +167,7 @@ class Family(family.Family):
             'bg': u'Мнения беседа',
             'de': u'Meinungen Diskussion',
             'en': u'Comments talk',
+            'fa': u'بحث نظرها',
             'fr': u'Discussion Transwiki',
             'hu': u'Portálvita',
             'pt': u'Efeméride Discussão',

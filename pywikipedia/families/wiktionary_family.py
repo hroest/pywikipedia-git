@@ -378,11 +378,13 @@ class Family(family.Family):
 
         self.namespaces[108] = {
             'en': u'Transwiki',
+            'fr': u'Projet',
             'pt': u'Citações',
         }
 
         self.namespaces[109] = {
             'en': u'Transwiki talk',
+            'fr': u'Discussion Projet',
             'pt': u'Citações Discussão',
         }
 
