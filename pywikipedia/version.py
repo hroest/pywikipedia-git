@@ -79,3 +79,8 @@ if __name__ == '__main__':
     print 'config-settings:'
     print 'use_api =', config.use_api
     print 'use_api_login =', config.use_api_login
+    if not __import__('unicodedata').normalize('NFC', u'\u092e\u093e\u0930\u094d\u0915 \u091c\u093c\u0941\u0915\u0947\u0930\u092c\u0930\u094d\u0917') == u'\u092e\u093e\u0930\u094d\u0915 \u091c\u093c\u0941\u0915\u0947\u0930\u092c\u0930\u094d\u0917':
+        print u'unicode test: triggers problem #3081100'
+    else:
+        print u'unicode test: ok'
+
