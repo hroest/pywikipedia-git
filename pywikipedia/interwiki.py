@@ -436,6 +436,7 @@ msg = {
     'ka': (u'ბოტის ', u'დამატება', u'წაშლა', u'შეცვლა'),
     'kab': (u'a rubut ', u'ti merniwt', u'a ḍegger', u'a senfel'),
     'ko': (u'로봇이 ', u'더함', u'지움', u'바꿈'),
+    'koi': (u'робот ', u'содтiс', u'чышкис', u'мöдкодьсьöтiс'),
     'kk': (u'Боттың ', u'үстегені', u'аластағаны', u'түзеткені'),
     'kl': (u'Robot ', u'Ilassut', u'Peersineq', u'Inisseeqqinneq'),
     'km': (u'រ៉ូបូ ', u'បន្ថែម', u'ដកចេញ', u'កែសំរួល'),
