@@ -24,6 +24,16 @@ Command line options:
 -namespace:  Only process templates in the given namespace number (may be used
              multiple times).
 
+-user:       Only process pages edited by a given user
+
+-skipuser:   Only process pages not edited by a given user
+
+-timestamp:  (With -user or -skipuser). Only check for a user where his edit is
+             not older than the given timestamp. Timestamp must be writen in
+             MediaWiki timestamp format which is "%Y%m%d%H%M%S"
+             If this parameter is missed, all edits are checked but this is
+             restricted to the last 100 edits.
+
 -summary:    Lets you pick a custom edit summary.  Use quotes if edit summary contains
              spaces.
 
@@ -93,6 +103,35 @@ import wikipedia as pywikibot
 import config
 import replace, pagegenerators
 import re, sys, string, catlib
+
+def UserEditFilterGenerator(generator, username, timestamp=None, skip=False):
+    """
+    Generator which will yield Pages depending of user:username is an Author of
+    that page (only looks at the last 100 editors).
+    If timestamp is set in MediaWiki format JJJJMMDDhhmmss, older edits are
+    ignored
+    If skip is set, pages edited by the given user are ignored otherwise only
+    pages edited by this user are given back
+
+    """
+    if timestamp:
+        ts = pywikibot.Timestamp.fromtimestampformat(timestamp)
+    for page in generator:
+        editors = page.getLatestEditors(limit=100)
+        found = False
+        for ed in editors:
+            uts = pywikibot.Timestamp.fromISOformat(ed['timestamp'])
+            if not timestamp or uts>=ts:
+                if username == ed['user']:
+                    found = True
+                    break
+            else:
+                break
+        if found and not skip or not found and skip:
+            yield page
+        else:
+            pywikibot.output(u'Skipping %s' % page.title(asLink=True))
+
 
 class XmlDumpTemplatePageGenerator:
     """
@@ -381,12 +420,17 @@ def main():
     genFactory = pagegenerators.GeneratorFactory()
     # If xmlfilename is None, references will be loaded from the live wiki.
     xmlfilename = None
+    user = None
+    skip = False
+    timestamp = None
     # read command line parameters
     for arg in pywikibot.handleArgs():
         if arg == '-remove':
             remove = True
         elif arg == '-subst':
             subst = True
+        elif arg == ('-always'):
+            acceptAll = True
         elif arg.startswith('-xml'):
             if len(arg) == 4:
                 xmlfilename = pywikibot.input(u'Please enter the XML dump\'s filename: ')
@@ -401,8 +445,13 @@ def main():
             addedCat = arg[len('-category:'):]
         elif arg.startswith('-summary:'):
             editSummary = arg[len('-summary:'):]
-        elif arg.startswith('-always'):
-            acceptAll = True
+        elif arg.startswith('-user:'):
+            user = arg[len('-user:'):]
+        elif arg.startswith('-skipuser:'):
+            user = arg[len('-skipuser:'):]
+            skip = True
+        elif arg.startswith('-timestamp:'):
+            timestamp = arg[len('-timestamp:'):]
         else:
             if not genFactory.handleArg(arg):
                 templateNames.append(pywikibot.Page(pywikibot.getSite(), arg, defaultNamespace=10).titleWithoutNamespace())
@@ -436,7 +485,8 @@ def main():
 
     if namespaces:
         gen =  pagegenerators.NamespaceFilterPageGenerator(gen, namespaces)
-
+    if user:
+        gen = UserEditFilterGenerator(gen, user, timestamp, skip)
     preloadingGen = pagegenerators.PreloadingGenerator(gen)
 
     bot = TemplateRobot(preloadingGen, templates, subst, remove, editSummary, acceptAll, addedCat)
