@@ -7462,6 +7462,18 @@ def handleArgs(*args):
             # the argument is not global. Let the specific bot script care
             # about it.
             nonGlobalArgs.append(arg)
+    
+    # TEST for bug #3081100
+    if unicode_error and (default_code == 'hi' or moduleName=='interwiki'):
+                output("""
+
+================================================================================
+\03{lightyellow}WARNING:\03{lightred} your python version might trigger issue #3081100\03{default} 
+See https://sourceforge.net/tracker/index.php?func=detail&aid=3081100&group_id=93107&atid=603138 for more information.
+\03{lightyellow}Use an older python version (<2.6.5) if you are running on wikimedia sites!\03{default} 
+================================================================================
+
+""")
     if verbose:
       output(u'Pywikipediabot %s' % (version.getversion()))
       output(u'Python %s' % (sys.version))
@@ -7477,6 +7489,14 @@ exec "import %s_interface as uiModule" % config.userinterface
 ui = uiModule.UI()
 verbose = 0
 debug = False
+
+# TEST for bug #3081100
+unicode_error = __import__('unicodedata').normalize(
+    'NFC',
+    u'\u092e\u093e\u0930\u094d\u0915 \u091c\u093c\u0941\u0915\u0947\u0930\u092c\u0930\u094d\u0917'
+    ) != u'\u092e\u093e\u0930\u094d\u0915 \u091c\u093c\u0941\u0915\u0947\u0930\u092c\u0930\u094d\u0917'
+if unicode_error:
+    print u'unicode test: triggers problem #3081100'
 
 default_family = config.family
 default_code = config.mylang
