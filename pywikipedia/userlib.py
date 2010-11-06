@@ -294,8 +294,9 @@ class User(object):
                 raise pywikibot.Error
             for contrib in result['query']['usercontribs']:
                 ts = pywikibot.parsetime2stamp(contrib['timestamp'])
-                yield (pywikibot.Page(self.site(), contrib['title'], defaultNamespace=contrib['ns']),
-                            contrib['revid'], ts, contrib['comment']
+                yield (pywikibot.Page(self.site(), contrib['title'],
+                                      defaultNamespace=contrib['ns']),
+                       contrib['revid'], ts, contrib.get('comment', None)
                 )
                 nbresults += 1
                 if nbresults >= limit:
@@ -305,7 +306,6 @@ class User(object):
             else:
                 break
         return
-
 
     def uploadedImages(self, number=10):
         """ Yield tuples describing files uploaded by this user.
