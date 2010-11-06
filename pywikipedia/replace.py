@@ -32,6 +32,17 @@ Furthermore, the following command line parameters are supported:
                   before the one specified (may also be given as
                   -xmlstart:Article).
 
+-save             Saves the titles of the articles to a file instead of
+                  modifying the articles. This way you may collect titles to
+                  work on in automatic mode, and process them later with 
+                  -file. Opens the file for append, if exists.
+                  If you insert the contents of the file into a wikipage, it
+                  will appear as a numbered list, and may be used with -links.
+                  Argument may also be given as "-save:filename".
+
+-savenew          Just like -save, except that overwrites the existing file.
+                  Argument may also be given as "-savenew:filename".
+
 -addcat:cat_name  Adds "cat_name" category to every altered page.
 
 -excepttitle:XYZ  Skip pages with titles that contain XYZ. If the -regex
@@ -109,21 +120,30 @@ If you have a page called 'John Doe' and want to fix the format of ISBNs, use:
 
     python replace.py -page:John_Doe -fix:isbn
 
+Let's suppose, you want to change "color" to "colour" manually, but gathering
+the articles is too slow, so you want to save the list while you are sleeping.
+You have Windows, so "python" is not necessary. Use this:
+
+    replace.py -xml -save:color.txt color colour -always
+You may use color.txt later with -file or -links, if you upload it to the wiki.
+
 This command will change 'referer' to 'referrer', but not in pages which
 talk about HTTP, where the typo has become part of the standard:
 
     python replace.py referer referrer -file:typos.txt -excepttext:HTTP
+    
+Please type "replace.py | more" if you can't read the top of the help.
 """
 from __future__ import generators
 #
-# (C) Daniel Herding & the Pywikipedia team, 2004-2009
+# (C) Daniel Herding & the Pywikipedia team, 2004-2010
 #
 __version__='$Id$'
 #
 # Distributed under the terms of the MIT license.
 #
 
-import sys, re, time
+import sys, re, time, codecs
 import wikipedia as pywikibot
 import pagegenerators
 import editarticle
@@ -263,7 +283,7 @@ class ReplaceRobot:
     """
     def __init__(self, generator, replacements, exceptions={},
                  acceptall=False, allowoverlap=False, recursive=False,
-                 addedCat=None, sleep=None, editSummary=''):
+                 addedCat=None, sleep=None, editSummary='', articles=None):
         """
         Arguments:
             * generator    - A generator that yields Page objects.
@@ -278,6 +298,8 @@ class ReplaceRobot:
                              replaced.
             * addedCat     - If set to a value, add this category to every page
                              touched.
+            * articles     - An open file to save the page titles. If None,
+                             we work on our wikisite immediately (default).
 
         Structure of the exceptions dictionary:
         This dictionary can have these keys:
@@ -310,6 +332,11 @@ class ReplaceRobot:
         self.sleep = sleep
         # Some function to set default editSummary should probably be added
         self.editSummary = editSummary
+        self.articles = articles
+        
+        #An edit counter to split the file by 100 titles if -save or -savenew 
+        #is on, and to display the number of edited articles otherwise.
+        self.editcounter = 0
 
     def isTitleExcepted(self, title):
         """
@@ -353,6 +380,31 @@ class ReplaceRobot:
             new_text = pywikibot.replaceExcept(new_text, old, new, exceptions,
                                                allowoverlap=self.allowoverlap)
         return new_text
+
+    def writeEditCounter(self):
+        """ At the end of our work this writes the counter. """
+        if self.articles:
+            pywikibot.output(u'%d title%s saved.'
+                             % (self.editcounter,
+                                (lambda x: bool(x-1) and 's were' or ' was')
+                                (self.editcounter)))
+        else:
+            pywikibot.output(u'%d page%s changed.'
+                             % (self.editcounter,
+                                (lambda x: bool(x-1) and 's were' or ' was')
+                                (self.editcounter)))
+
+    def splitLine(self):
+        """Returns a splitline after every 100th title. Splitline is in HTML
+        comment format in case we want to insert the list into a wikipage.
+        We use it to make the file more readable.
+
+        """
+        if self.editcounter % 100:
+            return ''
+        else:
+            return (u'<!-- ***** %dth title is above this line. ***** -->\n' %
+                    self.editcounter)
 
     def run(self):
         """
@@ -408,7 +460,8 @@ class ReplaceRobot:
                     break
                 choice = pywikibot.inputChoice(
                             u'Do you want to accept these changes?',
-                            ['Yes', 'No', 'Edit', 'open in Browser', 'All', "Quit"],
+                            ['Yes', 'No', 'Edit', 'open in Browser', 'All',
+                             'Quit'],
                             ['y', 'N', 'e', 'b', 'a', 'q'], 'N')
                 if choice == 'e':
                     editor = editarticle.TextEditor()
@@ -427,29 +480,56 @@ class ReplaceRobot:
                     new_text = original_text
                     continue
                 if choice == 'q':
+                    self.writeEditCounter()
                     return
                 if choice == 'a':
                     self.acceptall = True
                 if choice == 'y':
-                    page.put_async(new_text, self.editSummary)
+                    if not self.articles:
+                        #Primary behaviour: working on wiki
+                        page.put_async(new_text, self.editSummary)
+                        self.editcounter += 1 
+                        #Bug: this increments even if put_async fails
+                        #This is separately in two clauses of if for
+                        #future purposes to get feedback form put_async
+                    else:
+                        #Save the title for later processing instead of editing
+                        self.editcounter += 1
+                        self.articles.write(u'#%s\n%s'
+                                            % (page.title(asLink=True),
+                                               self.splitLine()))
+                        self.articles.flush() # For the peace of our soul :-)
                 # choice must be 'N'
                 break
             if self.acceptall and new_text != original_text:
-                try:
-                    page.put(new_text, self.editSummary)
-                except pywikibot.EditConflict:
-                    pywikibot.output(u'Skipping %s because of edit conflict'
-                                     % (page.title(),))
-                except pywikibot.SpamfilterError, e:
-                    pywikibot.output(
-                        u'Cannot change %s because of blacklist entry %s'
-                        % (page.title(), e.url))
-                except pywikibot.PageNotSaved, error:
-                    pywikibot.output(u'Error putting page: %s'
-                                     % (error.args,))
-                except pywikibot.LockedPage:
-                    pywikibot.output(u'Skipping %s (locked page)'
-                                     % (page.title(),))
+                if not self.articles:
+                    #Primary behaviour: working on wiki
+                    try:
+                        page.put(new_text, self.editSummary)
+                        self.editcounter += 1 #increment only on success
+                    except pywikibot.EditConflict:
+                        pywikibot.output(u'Skipping %s because of edit conflict'
+                                         % (page.title(),))
+                    except pywikibot.SpamfilterError, e:
+                        pywikibot.output(
+                            u'Cannot change %s because of blacklist entry %s'
+                            % (page.title(), e.url))
+                    except pywikibot.PageNotSaved, error:
+                        pywikibot.output(u'Error putting page: %s'
+                                         % (error.args,))
+                    except pywikibot.LockedPage:
+                        pywikibot.output(u'Skipping %s (locked page)'
+                                         % (page.title(),))
+                else:
+                    #Save the title for later processing instead of editing
+                    self.editcounter += 1
+                    self.articles.write(u'#%s\n%s'
+                                        % (page.title(asLink=True),
+                                           self.splitLine()))
+                    self.articles.flush()
+
+        #Finally:
+        self.writeEditCounter()
 
 def prepareRegexForMySQL(pattern):
     pattern = pattern.replace('\s', '[:space:]')
@@ -517,6 +597,11 @@ def main(*args):
     # Between a regex and another (using -fix) sleep some time (not to waste
     # too much CPU
     sleep = None
+    # Do not save the page titles, rather work on wiki
+    titlefile = None
+    filename = None
+    # If we save, primary behaviour is append rather then new file
+    append = True
 
     # Read commandline parameters.
     for arg in pywikibot.handleArgs(*args):
@@ -539,9 +624,22 @@ def main(*args):
         elif arg.startswith('-page'):
             if len(arg) == 5:
                 PageTitles.append(pywikibot.input(
-                                    u'Which page do you want to change?'))
+                    u'Which page do you want to change?'))
             else:
                 PageTitles.append(arg[6:])
+        elif arg.startswith('-savenew'):
+            if len(arg) == 8:
+                filename = pywikibot.input(
+u'Please enter the filename to save the titles \n(will be deleted if exists):')
+            else:
+                filename = arg[9:]
+        elif arg.startswith('-save'):
+            append = False
+            if len(arg) == 5:
+                filename = pywikibot.input(
+                    u'Please enter the filename to save the titles:')
+            else:
+                filename = arg[6:]
         elif arg.startswith('-excepttitle:'):
             exceptions['title'].append(arg[13:])
         elif arg.startswith('-requiretitle:'):
@@ -585,8 +683,9 @@ def main(*args):
         replacements.append((commandline_replacements[0],
                              commandline_replacements[1]))
         if not summary_commandline:
-            editSummary = pywikibot.translate(pywikibot.getSite(), msg ) % (' (-' + commandline_replacements[0] + ' +'
-                                   + commandline_replacements[1] + ')')
+            editSummary = pywikibot.translate(pywikibot.getSite(), msg ) % (
+                                   ' (-%s +%s)' % (commandline_replacements[0],
+                                                   commandline_replacements[1]))
     elif (len(commandline_replacements) > 1):
         if (fix is None):
             for i in xrange (0, len(commandline_replacements), 2):
@@ -598,7 +697,8 @@ def main(*args):
                          for i in range(0, len(commandline_replacements), 2)]
                 replacementsDescription = '(%s)' % ', '.join(
                     [('-' + pair[0] + ' +' + pair[1]) for pair in pairs])
-                editSummary = pywikibot.translate(pywikibot.getSite(), msg ) % replacementsDescription
+                editSummary = pywikibot.translate(pywikibot.getSite(), msg ) \
+                              % replacementsDescription
         else:
            raise pywikibot.Error(
                'Specifying -fix with replacements is undefined')
@@ -710,10 +810,30 @@ LIMIT 200""" % (whereClause, exceptClause)
         preloadingGen = pagegenerators.PreloadingGenerator(gen,
                                             pageNumber=20, lookahead=100)
     else:
-        preloadingGen = pagegenerators.PreloadingGenerator(gen, pageNumber=maxquerysize)
+        preloadingGen = pagegenerators.PreloadingGenerator(gen, 
+                        pageNumber=maxquerysize)
+
+    #Finally we open the file for page titles or set article to None
+    if filename:
+        try:
+            #This opens in strict error mode, that means bot will stop
+            #on encoding errors with ValueError. 
+            #See http://docs.python.org/library/codecs.html#codecs.open
+            titlefile = codecs.open(filename, encoding='utf-8',
+                                    mode=(lambda x: x and 'a' or 'w')(append))
+        except IOError:
+            pywikibot.output("%s cannot be opened for writing." %
+                             filename)
+            return
     bot = ReplaceRobot(preloadingGen, replacements, exceptions, acceptall,
-                       allowoverlap, recursive, add_cat, sleep, editSummary)
-    bot.run()
+                       allowoverlap, recursive, add_cat, sleep, editSummary,
+                       titlefile)
+    try:
+        bot.run()
+    finally:
+        if titlefile:
+            #Just for the spirit of programming (it was flushed)
+            titlefile.close() 
 
 
 if __name__ == "__main__":
