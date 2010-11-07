@@ -1210,7 +1210,7 @@ not supported by PyWikipediaBot!"""
                 try:
                     default = set(self._site.family.disambig('_default'))
                 except KeyError:
-                    default = set(u'Disambig')
+                    default = set([u'Disambig'])
                 try:
                     distl = self._site.family.disambig(self._site.lang,
                                                        fallback=False)
