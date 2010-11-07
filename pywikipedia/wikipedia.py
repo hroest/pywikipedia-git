@@ -5164,7 +5164,7 @@ sysopnames['%s']['%s']='name' to your user-config.py"""
                         retry_attempt += 1
                         if retry_attempt > config.maxretries:
                             raise MaxTriesExceededError()
-                        output(u"""WARNING: Could not open '%s'.\nMaybe the server is down. Retrying in %i minutes..."""
+                        output(u"WARNING: Could not open '%s'.\nMaybe the server is down. Retrying in %i minutes..."
                                % (url, retry_idle_time))
                         time.sleep(retry_idle_time * 60)
                         # Next time wait longer, but not longer than half an hour
@@ -5179,7 +5179,10 @@ sysopnames['%s']['%s']='name' to your user-config.py"""
             except Exception, e:
                 output(u'%s' %e)
                 if config.retry_on_fail:
-                    output(u"""WARNING: Could not open '%s'. Maybe the server or\n your connection is down. Retrying in %i minutes..."""
+                    retry_attempt += 1
+                    if retry_attempt > config.maxretries:
+                        raise MaxTriesExceededError()
+                    output(u"WARNING: Could not open '%s'. Maybe the server or\n your connection is down. Retrying in %i minutes..."
                            % (url, retry_idle_time))
                     time.sleep(retry_idle_time * 60)
                     retry_idle_time *= 2
@@ -5287,6 +5290,7 @@ sysopnames['%s']['%s']='name' to your user-config.py"""
         # case the server is down or overloaded).
         # Wait for retry_idle_time minutes (growing!) between retries.
         retry_idle_time = 1
+        retry_attempt = 0
         while True:
             try:
                 request = urllib2.Request(url, data, headers)
@@ -5310,8 +5314,11 @@ u'Page %s could not be retrieved. Check your virus wall.'
                 elif e.code == 504:
                     output(u'HTTPError: %s %s' % (e.code, e.msg))
                     if retry:
+                        retry_attempt += 1
+                        if retry_attempt > config.maxretries:
+                            raise MaxTriesExceededError()
                         output(
-u"""WARNING: Could not open '%s'.Maybe the server or\n your connection is down. Retrying in %i minutes..."""
+u"WARNING: Could not open '%s'.Maybe the server or\n your connection is down. Retrying in %i minutes..."
                                % (url, retry_idle_time))
                         time.sleep(retry_idle_time * 60)
                         # Next time wait longer,
@@ -5327,8 +5334,11 @@ u"""WARNING: Could not open '%s'.Maybe the server or\n your connection is down. 
             except Exception, e:
                 output(u'%s' %e)
                 if retry:
+                    retry_attempt += 1
+                    if retry_attempt > config.maxretries:
+                        raise MaxTriesExceededError()
                     output(
-u"""WARNING: Could not open '%s'. Maybe the server or\n your connection is down. Retrying in %i minutes..."""
+u"WARNING: Could not open '%s'. Maybe the server or\n your connection is down. Retrying in %i minutes..."
                            % (url, retry_idle_time))
                     time.sleep(retry_idle_time * 60)
                     retry_idle_time *= 2
