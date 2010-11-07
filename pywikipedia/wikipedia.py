@@ -1229,7 +1229,7 @@ not supported by PyWikipediaBot!"""
                             regex = re.compile('\(\((.+?)\)\)')
                             content = disambigpages.get()
                             for index in regex.findall(content):
-                                disambigs.add(index)
+                                disambigs.add(index[:1].upper() + index[1:])
                     except NoPage:
                         disambigs = set([self._site.mediawiki_message(
                             'Disambiguationspage').split(':', 1)[1]])

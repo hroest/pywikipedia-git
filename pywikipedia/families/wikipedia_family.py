@@ -741,7 +741,7 @@ class Family(family.Family):
 
         self.disambiguationTemplates = {
             # If no templates are given, retrieve names from  the live wiki
-            # ([[MediaWiki:Disambiguationspage]]
+            # ([[MediaWiki:Disambiguationspage]])
             '_default': [u'Disambig'],
             'ang': [u'Disambig', u'Geodis'],
             'arc': [u'ܕ'],
