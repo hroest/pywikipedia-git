@@ -132,7 +132,7 @@ talk about HTTP, where the typo has become part of the standard:
 
     python replace.py referer referrer -file:typos.txt -excepttext:HTTP
     
-Please type "replace.py | more" if you can't read the top of the help.
+Please type "replace.py -help | more" if you can't read the top of the help.
 """
 from __future__ import generators
 #
