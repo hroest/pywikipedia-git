@@ -54,7 +54,7 @@ python blockpageschecker.py -show -protectedpages:4
 """
 #
 # (C) Monobi a.k.a. Wikihermit, 2007
-# (C) Filnik, 2007-2009
+# (C) Filnik, 2007-2010
 # (C) NicDumZ, 2008-2009
 # (C) Pywikipedia bot team, 2007-2010
 #
@@ -321,8 +321,8 @@ def main():
                 text, changes = re.subn('(%s)' % replaceToPerform, '', text)
             msg = u'The page is editable for all'
             if not moveBlockCheck:
-                msg += ", deleting the template.."
-            pywikibot.output(msg)
+                msg += u', deleting the template..'
+            pywikibot.output(u'%s.' % msg)
 
         elif editRestr[0] == 'sysop':
             # total edit protection
