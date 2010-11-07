@@ -592,20 +592,21 @@ not supported by PyWikipediaBot!"""
         retrieved yet, or if force is True. This can raise the following
         exceptions that should be caught by the calling code:
 
-            NoPage: The page does not exist
-            IsRedirectPage: The page is a redirect. The argument of the
+          - NoPage: The page does not exist
+          - IsRedirectPage: The page is a redirect. The argument of the
                             exception is the title of the page it redirects to.
-            SectionError: The subject does not exist on a page with a # link
+          - SectionError: The section does not exist on a page with a # link
 
-        If get_redirect is True, return the redirect text and save the
-        target of the redirect, do not raise an exception.
-        If force is True, reload all page attributes, including
-        errors.
-        If change_edit_time is False, do not check this version for changes
-        before saving. This should be used only if the page has been loaded
-        previously.
-        If expandtemplates is True, all templates in the page content are
-        fully resolved too (if API is used).
+        @param force: reload all page attributes, including errors.
+        @param get_redirect: return the redirect text, do not follow the
+            redirect, do not raise an exception.
+        @param sysop: if the user has a sysop account, use it to retrieve
+            this page
+        @param change_edit_time: if False, do not check this version for
+            changes before saving. This should be used only if the page has
+            been loaded previously.
+        @param expandtemplates: all templates in the page content are fully
+            resolved too (if API is used).
 
         """
         # NOTE: The following few NoPage exceptions could already be thrown at
@@ -624,12 +625,14 @@ not supported by PyWikipediaBot!"""
         if self.site().isInterwikiLink(self.title()):
             raise NoPage('%s is not a local page on %s!'
                          % (self.aslink(), self.site()))
-        if force or expandtemplates:
-            # When forcing, we retry the page no matter what. Old exceptions
-            # and contents do not apply any more.
-            for attr in ['_redirarg', '_getexception', '_contents']:
+        if force:
+            # When forcing, we retry the page no matter what:
+            # * Old exceptions and contents do not apply any more
+            # * Deleting _contents and _expandcontents to force reload
+            for attr in ['_redirarg', '_getexception',
+                         '_contents', '_expandcontents']:
                 if hasattr(self, attr):
-                    delattr(self,attr)
+                    delattr(self, attr)
         else:
             # Make sure we re-raise an exception we got on an earlier attempt
             if hasattr(self, '_redirarg') and not get_redirect:
@@ -640,10 +643,18 @@ not supported by PyWikipediaBot!"""
                 else:
                     raise self._getexception
         # Make sure we did try to get the contents once
-        if not hasattr(self, '_contents'):
+        if expandtemplates:
+            attr = '_expandcontents'
+        else:
+            attr = '_contents'
+        if not hasattr(self, attr):
             try:
-                self._contents = self._getEditPage(get_redirect=get_redirect, throttle=throttle, sysop=sysop,
-                                                   expandtemplates = expandtemplates)
+                contents = self._getEditPage(get_redirect=get_redirect, throttle=throttle, sysop=sysop,
+                                             expandtemplates = expandtemplates)
+                if expandtemplates:
+                    self._expandcontents = contents
+                else:
+                    self._contents = contents
                 hn = self.section()
                 if hn:
                     m = re.search("=+ *%s *=+" % hn, self._contents)
@@ -669,6 +680,8 @@ not supported by PyWikipediaBot!"""
                         output("The IP address is blocked, retry by login.")
                     self.site().forceLogin(sysop=sysop)
                     return self.get(force, get_redirect, throttle, sysop, change_edit_time)
+        if expandtemplates:
+            return self._expandcontents
         return self._contents
 
     def _getEditPage(self, get_redirect=False, throttle=True, sysop=False,
@@ -920,7 +933,11 @@ not supported by PyWikipediaBot!"""
 
     def getOldVersion(self, oldid, force=False, get_redirect=False,
                       throttle=True, sysop=False, change_edit_time=True):
-        """Return text of an old revision of this page; same options as get()."""
+        """Return text of an old revision of this page; same options as get().
+
+        @param oldid: The revid of the revision desired.
+
+        """
         # TODO: should probably check for bad pagename, NoPage, and other
         # exceptions that would prevent retrieving text, as get() does
 
