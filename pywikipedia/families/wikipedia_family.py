@@ -796,7 +796,7 @@ class Family(family.Family):
                     u'Dp cognomen'],
             'nn':  [u'Fleirtyding', u'Tobokstavforkorting', u'Pekerside',
                     u'Peikar'],
-            'no':  [u'Peker', u'Etternavn' u'Tobokstavsforkortelse',
+            'no':  [u'Peker', u'Etternavn', u'Tobokstavsforkortelse',
                     u'Trebokstavsforkortelse', u'Flertydig', u'Pekerside'],
             'nov': [u'Desambig'],
             'nrm': [u'Page dé frouque'],
