@@ -48,6 +48,7 @@ copy_message = {
     'nl':u"Afbeelding gekopieerd vanaf %s. De beschrijving daar was:\r\n\r\n%s",
     'pl':u"Ten obraz został skopiowany z %s. Oryginalny opis to:\r\n\r\n%s",
     'pt':u"Esta imagem foi copiada de %s. A descrição original foi:\r\n\r\n%s",
+    'ru':u"Изображение было скопировано с %s. Оригинальное описание содержало:\r\n\r\n%s"
     'sr':u"Ова слика је копирана са %s. Оригинални опис је:\r\n\r\n%s",
     'zh':u"本圖像從 %s 複製，原始說明資料：\r\n\r\n%s",
 }
