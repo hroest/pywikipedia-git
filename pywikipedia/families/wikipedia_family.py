@@ -740,8 +740,8 @@ class Family(family.Family):
         }
 
         self.disambiguationTemplates = {
-            # set value to None, instead of a list, to retrieve names from
-            # the live wiki ([[MediaWiki:Disambiguationspage]]
+            # If no templates are given, retrieve names from  the live wiki
+            # ([[MediaWiki:Disambiguationspage]]
             '_default': [u'Disambig'],
             'ang': [u'Disambig', u'Geodis'],
             'arc': [u'ܕ'],
@@ -782,6 +782,7 @@ class Family(family.Family):
             'kg':  [u'Bisongidila'],
             'kn':  [u'ದ್ವಂದ್ವ ನಿವಾರಣೆ'],
             'krc': [u'Кёб магъаналы', u'Disambig'],
+            'la':  [u'Discretiva', u'Disnomen'], #{{Disambig}} is not a disambig
             'lb':  [u'Homonymie', u'Disambig', u'Homonymie Ofkierzungen'],
             'li':  [u'Verdudeliking', u'Verdudelikingpazjena', u'Vp'],
             'lmo': [u'Desambiguació', u'Dezambiguasiú', u'Desambiguazion',
