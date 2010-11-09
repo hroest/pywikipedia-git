@@ -2780,32 +2780,88 @@ not supported by PyWikipediaBot!"""
         result += '|}\n'
         return result
 
-    def fullVersionHistory(self):
+    def fullVersionHistory(self, getAll=False, skipFirst=False, reverseOrder=False,
+                           revCount=500):
         """Iterate previous versions including wikitext.
 
         Gives a list of tuples consisting of revision ID, edit date/time, user name and
         content
 
         """
-        address = self.site().export_address()
-        predata = {
-            'action': 'submit',
-            'pages': self.title()
-        }
-        get_throttle(requestsize = 10)
-        now = time.time()
-        response, data = self.site().postForm(address, predata)
-        data = data.encode(self.site().encoding())
+        if not self.site().has_api() or self.site().versionnumber() < 8:
+            address = self.site().export_address()
+            predata = {
+                'action': 'submit',
+                'pages': self.title()
+            }
+            get_throttle(requestsize = 10)
+            now = time.time()
+            response, data = self.site().postForm(address, predata)
+            data = data.encode(self.site().encoding())
 #        get_throttle.setDelay(time.time() - now)
-        output = []
+            output = []
         # TODO: parse XML using an actual XML parser instead of regex!
-        r = re.compile("\<revision\>.*?\<id\>(?P<id>.*?)\<\/id\>.*?\<timestamp\>(?P<timestamp>.*?)\<\/timestamp\>.*?\<(?:ip|username)\>(?P<user>.*?)\</(?:ip|username)\>.*?\<text.*?\>(?P<content>.*?)\<\/text\>",re.DOTALL)
+            r = re.compile("\<revision\>.*?\<id\>(?P<id>.*?)\<\/id\>.*?\<timestamp\>(?P<timestamp>.*?)\<\/timestamp\>.*?\<(?:ip|username)\>(?P<user>.*?)\</(?:ip|username)\>.*?\<text.*?\>(?P<content>.*?)\<\/text\>",re.DOTALL)
         #r = re.compile("\<revision\>.*?\<timestamp\>(.*?)\<\/timestamp\>.*?\<(?:ip|username)\>(.*?)\<",re.DOTALL)
-        return [  (match.group('id'),
-                   match.group('timestamp'),
-                   unescape(match.group('user')),
-                   unescape(match.group('content')))
-                for match in r.finditer(data)  ]
+            return [  (match.group('id'),
+                       match.group('timestamp'),
+                       unescape(match.group('user')),
+                       unescape(match.group('content')))
+                    for match in r.finditer(data)  ]
+         
+        """Load history informations by API query. """
+
+        dataQ = []
+        thisHistoryDone = False
+        params = {
+            'action': 'query',
+            'prop': 'revisions',
+            'titles': self.title(),
+            'rvprop': 'ids|timestamp|user|content',
+            'rvlimit': revCount,
+        }
+        while not thisHistoryDone:
+            if reverseOrder:
+                params['rvdir'] = 'newer'
+
+            result = query.GetData(params, self.site())
+            if 'error' in result:
+                raise RuntimeError("%s" % result['error'])
+            pageInfo = result['query']['pages'].values()[0]
+            if result['query']['pages'].keys()[0] == "-1":
+                if 'missing' in pageInfo:
+                    raise NoPage(self.site(), self.aslink(forceInterwiki=True),
+                                 "Page does not exist.")
+                elif 'invalid' in pageInfo:
+                    raise BadTitle('BadTitle: %s' % self)
+
+            if 'query-continue' in result and getAll:
+                params['rvstartid'] = result['query-continue']['revisions']['rvstartid']
+            else:
+                thisHistoryDone = True
+            
+            if skipFirst:
+                skipFirst = False
+            else:
+                for r in pageInfo['revisions']:
+                    c = ''
+                    if 'comment' in r:
+                        c = r['comment']
+                    #revision id, edit date/time, user name, edit summary
+                    (revidStrr, timestampStrr, userStrr) = (None, None, None)
+                    if 'revid' in r:
+                        revidStrr = r['revid']
+                    if 'timestamp' in r:
+                        timestampStrr = r['timestamp']
+                    if 'user' in r:
+                        userStrr = r['user']
+                    s='' #Will return -1 if not found
+                    if '*' in r:
+                        s = r['*']
+                    dataQ.append((revidStrr, timestampStrr, userStrr, s))
+                if len(result['query']['pages'].values()[0]['revisions']) < revCount:
+                    thisHistoryDone = True
+        return dataQ
 
     def contributingUsers(self, step=None, total=None):
         """Return a set of usernames (or IPs) of users who edited this page.
