@@ -592,21 +592,23 @@ not supported by PyWikipediaBot!"""
         retrieved yet, or if force is True. This can raise the following
         exceptions that should be caught by the calling code:
 
-          - NoPage: The page does not exist
-          - IsRedirectPage: The page is a redirect. The argument of the
-                            exception is the title of the page it redirects to.
-          - SectionError: The section does not exist on a page with a # link
+        @exception NoPage         The page does not exist
+        @exception IsRedirectPage The page is a redirect. The argument of the
+                                  exception is the title of the page it
+                                  redirects to.
+        @exception SectionError   The section does not exist on a page with
+                                  a # link
 
-        @param force: reload all page attributes, including errors.
-        @param get_redirect: return the redirect text, do not follow the
-            redirect, do not raise an exception.
-        @param sysop: if the user has a sysop account, use it to retrieve
-            this page
-        @param change_edit_time: if False, do not check this version for
-            changes before saving. This should be used only if the page has
-            been loaded previously.
-        @param expandtemplates: all templates in the page content are fully
-            resolved too (if API is used).
+        @param force            reload all page attributes, including errors.
+        @param get_redirect     return the redirect text, do not follow the
+                                redirect, do not raise an exception.
+        @param sysop            if the user has a sysop account, use it to
+                                retrieve this page
+        @param change_edit_time if False, do not check this version for
+                                changes before saving. This should be used only
+                                if the page has been loaded previously.
+        @param expandtemplates  all templates in the page content are fully
+                                resolved too (if API is used).
 
         """
         # NOTE: The following few NoPage exceptions could already be thrown at
@@ -2809,7 +2811,7 @@ not supported by PyWikipediaBot!"""
                        unescape(match.group('content')))
                     for match in r.finditer(data)  ]
          
-        """Load history informations by API query. """
+        # Load history informations by API query.
 
         dataQ = []
         thisHistoryDone = False
@@ -7548,7 +7550,7 @@ def handleArgs(*args):
     
     # TEST for bug #3081100
     if unicode_error and (default_code == 'hi' or moduleName=='interwiki'):
-                output("""
+        output("""
 
 ================================================================================
 \03{lightyellow}WARNING:\03{lightred} your python version might trigger issue #3081100\03{default} 
