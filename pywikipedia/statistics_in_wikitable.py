@@ -38,8 +38,8 @@ class StatisticsBot:
         """
         self.screen = screen
         self.your_page = your_page
-        self.dict = self.getdata() # Try to get data.
         self.site = pywikibot.getSite()
+        self.dict = self.getdata() # Try to get data.
 
     def run(self):
         if self.screen:
