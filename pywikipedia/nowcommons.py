@@ -157,6 +157,14 @@ nowCommons = {
     'ro': [
         u'NowCommons'
     ],
+    'ru': [
+        u'NowCommons',
+        u'NCT',
+        u'Nowcommons',
+        u'Now Commons',
+        u'Db-commons',
+        u'Перенесено на Викисклад',
+    ],
     'zh':[
         u'NowCommons',
         u'Nowcommons',

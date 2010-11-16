@@ -96,6 +96,7 @@ nowCommonsMessage = {
     'nl': u'Dit bestand staat nu op [[w:nl:Wikimedia Commons|Wikimedia Commons]].',
     'pl': u'Plik jest teraz dostępny na Wikimedia Commons.',
     'pt': u'Arquivo está agora na Wikimedia Commons.',
+    'ru': u'[[ВП:КБУ#Ф8|Ф.8]]: доступно на [[Викисклад]]е',
     'sr': u'Слика је сада доступна и на Викимедија Остави.',
     'zh': u'檔案已存在於維基共享資源。',
 }
