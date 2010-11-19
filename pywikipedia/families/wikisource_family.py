@@ -13,9 +13,10 @@ class Family(family.Family):
         self.languages_by_size = [
             'en', 'ru', 'zh', 'pt', 'fr', 'de', 'it', 'es', 'he', 'ar', 'hu',
             'fa', 'pl', 'th', 'cs', 'ro', 'hr', 'te', 'fi', 'bn', 'sv', 'vi',
-            'nl', 'tr', 'sl', 'ko', 'uk', 'sr', 'el', 'ja', 'la', 'li', 'yi',
-            'ml', 'az', 'is', 'ca', 'bs', 'hy', 'mk', 'id', 'ta', 'da', 'no',
+            'nl', 'tr', 'sl', 'ko', 'uk', 'sr', 'el', 'ja', 'la', 'li', 'ml',
+            'yi', 'az', 'is', 'ca', 'bs', 'hy', 'mk', 'id', 'ta', 'da', 'no',
             'et', 'bg', 'lt', 'gl', 'kn', 'cy', 'sk', 'zh-min-nan', 'fo',
+            'br', 'vec',
         ]
 
         if family.config.SSL_connection:
@@ -42,6 +43,7 @@ class Family(family.Family):
             'az': u'VikiMənbə',
             'bg': u'Уикиизточник',
             'bn': u'উইকিসংকলন',
+            'br': u'Wikimammenn',
             'bs': u'Wikizvor',
             'ca': u'Viquitexts',
             'cs': u'Wikizdroje',
@@ -80,6 +82,7 @@ class Family(family.Family):
             'az': u'VikiMənbə müzakirəsi',
             'bg': u'Уикиизточник беседа',
             'bn': u'উইকিসংকলন আলোচনা',
+            'br': u'Kaozeadenn Wikimammenn',
             'bs': u'Razgovor s Wikizvor',
             'ca': u'Viquitexts Discussió',
             'cs': u'Diskuse k Wikizdrojům',
@@ -126,6 +129,7 @@ class Family(family.Family):
             'th': u'คุยเรื่องวิกิซอร์ซ',
             'tr': u'VikiKaynak tartışma',
             'uk': u'Обговорення Wikisource',
+            'vec': u'Discussion Wikisource',
             'vi': u'Thảo luận Wikisource',
             'yi': [u'װיקיביבליאָטעק רעדן', u'וויקיביבליאטעק רעדן'],
             'zh': [u'Wikisource talk', u'维基文库讨论'],
@@ -170,6 +174,7 @@ class Family(family.Family):
             'sr': u'Аутор',
             'te': u'ద్వారము',
             'tr': u'Kişi',
+            'vec': u'Autor',
             'vi': u'Chủ đề',
         }
 
@@ -196,6 +201,7 @@ class Family(family.Family):
             'sr': u'Разговор о аутору',
             'te': u'ద్వారము చర్చ',
             'tr': u'Kişi tartışma',
+            'vec': u'Discussion autor',
             'vi': u'Thảo luận Chủ đề',
         }
 
@@ -222,6 +228,7 @@ class Family(family.Family):
             'pl': u'Indeks',
             'pt': u'Autor',
             'te': u'రచయిత',
+            'vec': u'Pagina',
             'vi': u'Tác gia',
             'zh': u'Author',
         }
@@ -249,6 +256,7 @@ class Family(family.Family):
             'pl': u'Dyskusja indeksu',
             'pt': u'Autor Discussão',
             'te': u'రచయిత చర్చ',
+            'vec': u'Discussion pagina',
             'vi': u'Thảo luận Tác gia',
             'zh': u'Author talk',
         }
@@ -279,6 +287,7 @@ class Family(family.Family):
             'sl': u'Kazalo',
             'sv': u'Sida',
             'te': [u'పుట', u'పేజీ', u'Page'],
+            'vec': u'Indice',
             'vi': u'Trang',
             'zh': u'Page',
         }
@@ -309,6 +318,7 @@ class Family(family.Family):
             'sl': u'Pogovor o kazalu',
             'sv': u'Siddiskussion',
             'te': [u'పుట చర్చ', u'పేజీ చర్చ', u'Page talk'],
+            'vec': u'Discussion indice',
             'vi': u'Thảo luận Trang',
             'zh': u'Page talk',
         }

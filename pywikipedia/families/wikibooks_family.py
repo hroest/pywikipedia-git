@@ -13,12 +13,12 @@ class Family(family.Family):
         self.languages_by_size = [
             'en', 'de', 'fr', 'ja', 'hu', 'pt', 'nl', 'es', 'pl', 'it', 'he',
             'sq', 'fi', 'ca', 'ru', 'vi', 'cs', 'hr', 'zh', 'sv', 'tr', 'da',
-            'th', 'id', 'mk', 'ko', 'fa', 'sr', 'tl', 'ar', 'gl', 'is', 'no',
+            'id', 'th', 'mk', 'ko', 'sr', 'fa', 'tl', 'ar', 'gl', 'is', 'no',
             'ta', 'ka', 'lt', 'eo', 'bg', 'ro', 'sk', 'el', 'uk', 'si', 'la',
-            'ang', 'ia', 'cv', 'sl', 'mr', 'et', 'az', 'ur', 'ml', 'oc', 'ms',
+            'ang', 'ia', 'cv', 'sl', 'mr', 'et', 'az', 'ur', 'oc', 'ms', 'ml',
             'tt', 'eu', 'hi', 'fy', 'ie', 'tg', 'af', 'bn', 'hy', 'pa', 'te',
             'sa', 'bs', 'ky', 'be', 'ne', 'ast', 'zh-min-nan', 'mg', 'cy', 'ku',
-            'co', 'tk', 'als', 'su', 'vo', 'uz', 'mn', 'kk', 'my',
+            'co', 'tk', 'als', 'su', 'vo', 'uz', 'mn', 'kk', 'my', 'li',
         ]
 
         if family.config.SSL_connection:
@@ -60,6 +60,7 @@ class Family(family.Family):
             'kk': u'Уикикітап',
             'ko': u'위키책',
             'la': u'Vicilibri',
+            'li': u'Wikibeuk',
             'ml': u'വിക്കിപാഠശാല',
             'no': u'Wikibøker',
             'oc': u'Wikilibres',
@@ -128,6 +129,7 @@ class Family(family.Family):
             'ku': u'Wikibooks nîqaş',
             'la': u'Disputatio Vicilibrorum',
             'lb': u'Wikibooks Diskussioun',
+            'li': u'Euverlèk Wikibeuk',
             'ln': u'Discussion Wikibooks',
             'lt': u'Wikibooks aptarimas',
             'lv': u'Wikibooks diskusija',

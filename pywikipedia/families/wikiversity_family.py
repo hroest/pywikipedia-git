@@ -11,8 +11,8 @@ class Family(family.Family):
         self.name = 'wikiversity'
 
         self.languages_by_size = [
-            'en', 'fr', 'de', 'cs', 'beta', 'ru', 'es', 'it', 'pt', 'el', 'fi',
-            'ja',
+            'en', 'fr', 'de', 'beta', 'cs', 'ru', 'es', 'it', 'pt', 'el', 'fi',
+            'ja', 'sv',
         ]
 
         if family.config.SSL_connection:
@@ -48,6 +48,7 @@ class Family(family.Family):
             'ja': u'Wikiversity・トーク',
             'pt': u'Wikiversidade Discussão',
             'ru': u'Обсуждение Викиверситета',
+            'sv': u'Wikiversitydiskussion',
         }
 
         self.namespaces[100] = {

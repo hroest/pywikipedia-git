@@ -104,6 +104,7 @@ msg_double={
     'nl': u'Bot: dubbele doorverwijzing gecorrigeerd aan %s',
     'nn': u'robot: retta dobbel omdirigering → %s',
     'no': u'bot: Retter dobbel omdirigering → %s',
+    'pfl': u'Bot: E doppelte Waiterlaitung vabessat zu %s',
     'pl': u'Robot naprawia podwójne przekierowanie → %s',
     'pt': u'Bot: Corrigido duplo redirecionamento → %s',
     'ro': u'Robot: Corectarea dublu redirecţionare în %s',
