@@ -875,7 +875,7 @@ def _altlang(code):
     if code in ['cs', 'sk']:
         return ['cs', 'sk']
     #German
-    if code in ['bar', 'frr', 'ksh', 'pdc']:
+    if code in ['bar', 'frr', 'ksh', 'pdc', 'pfl']:
         return ['de']
     if code in ['als', 'lb']:
         return ['de', 'fr']
@@ -967,6 +967,8 @@ def _altlang(code):
     #Turkish and Kurdish
     if code in ['diq', 'ku']:
         return ['ku', 'tr']
+    if code == 'gag':
+        return ['tr']
     if code == 'ckb':
         return ['ku', 'ar']
     #Chinese
