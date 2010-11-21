@@ -45,6 +45,12 @@ class Family(family.Family):
         self.namespaces[101] = {
             '_default': [u'Portal talk'],
         }
+        self.namespaces[420] = {
+            '_default': [u'Layer'],
+        }
+        self.namespaces[421] = {
+            '_default': [u'Layer talk'],
+        }
         self.namespaces[1102] = {
             '_default': [u'Translating'],
         }
@@ -146,6 +152,12 @@ class Family(family.Family):
         }
         self.namespaces[1229] = {
             '_default': [u'iHRIS talk'],
+        }
+        self.namespaces[1230] = {
+            '_default': [u'Mifos'],
+        }
+        self.namespaces[1231] = {
+            '_default': [u'Mifos talk'],
         }
 
     def version(self, code):
