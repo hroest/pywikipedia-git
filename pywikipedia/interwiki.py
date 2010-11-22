@@ -1867,7 +1867,7 @@ u'NOTE: number of edits are restricted at %s'
                 #put it to new means don't delete it
                 if not globalvar.cleanup or \
                    rmPage.aslink(forceInterwiki=True) not in globalvar.remove or \
-                   rmPage.site().sitename() == 'wikipedia:hi' and \
+                   rmPage.site().lang in ['hi', 'cdo'] and \
                    pywikibot.unicode_error: #work-arround for bug #3081100 (do not remove hi-pages)
                     new[rmsite] = rmPage
                     pywikibot.output(
