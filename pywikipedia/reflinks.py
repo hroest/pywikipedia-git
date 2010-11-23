@@ -35,7 +35,7 @@ Basic pagegenerators commands, -page, etc...
 # (C) 2008 - Nicolas Dumazet ( en:User:NicDumZ )
 # (C) Pywikipedia bot team, 2008-2010
 #
-# Distributed under the terms of the MIT license.
+# Distributed under the terms of the GPL
 #
 __version__ = '$Id$'
 #
