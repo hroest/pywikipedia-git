@@ -402,7 +402,7 @@ msg = {
     'dv': (u'ރޮބޮޓ ', u'އިތުރު ކުރުނ', u'ފޮހެލުނ', u'ބަދަލު ގެނައުނ'),
     'el': (u'Ρομπότ: ', u'Προσθήκη', u'Αφαίρεση', u'Τροποποίηση'),
     'en': (u'robot ', u'Adding', u'Removing', u'Modifying'),
-    'eo': (u'roboto ', u'aldono de', u'forigo de', u'modifo de'),
+    'eo': (u'robota ', u'aldono de', u'forigo de', u'modifo de'),
     'es': (u'robot ', u'Añadido', u'Eliminado', u'Modificado'),
     'et': (u'robot ', u'lisas', u'kustutas', u'muutis'),
     'eu': (u'robota ', u'Erantsia', u'Ezabatua', u'Aldatua'),
