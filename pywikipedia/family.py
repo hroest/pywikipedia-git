@@ -1778,6 +1778,7 @@ class Family:
                 'es': u'Plantilla',
                 'et': u'Mall',
                 'eu': u'Txantiloi',
+                'ext': u'Prantilla',
                 'fa': u'الگو',
                 'ff': u'Modèle',
                 'fi': u'Malline',

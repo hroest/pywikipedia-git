@@ -155,6 +155,7 @@ class Family(family.Family):
             'ar': u'بوابة',
             'bg': u'Автор',
             'bn': u'লেখক',
+            'br': u'Meneger',
             'cs': u'Autor',
             'el': u'Σελίδα',
             'en': u'Portal',
@@ -182,6 +183,7 @@ class Family(family.Family):
             'ar': u'نقاش البوابة',
             'bg': u'Автор беседа',
             'bn': u'লেখক আলাপ',
+            'br': u'Kaozeadenn meneger',
             'cs': u'Diskuse k autorovi',
             'el': u'Συζήτηση σελίδας',
             'en': u'Portal talk',
@@ -207,6 +209,7 @@ class Family(family.Family):
 
         self.namespaces[102] = {
             'ar': u'مؤلف',
+            'br': u'Pajenn',
             'ca': u'Pàgina',
             'da': [u'Forfatter', u'Author'],
             'de': u'Seite',
@@ -235,6 +238,7 @@ class Family(family.Family):
 
         self.namespaces[103] = {
             'ar': u'نقاش المؤلف',
+            'br': u'Kaozeadenn pajenn',
             'ca': u'Pàgina Discussió',
             'da': [u'Forfatterdiskussion', u'Author talk'],
             'de': u'Seite Diskussion',
@@ -264,6 +268,7 @@ class Family(family.Family):
         self.namespaces[104] = {
             '-': u'Page',
             'ar': u'صفحة',
+            'br': u'Oberour',
             'ca': u'Llibre',
             'da': u'Side',
             'de': u'Index',
@@ -295,6 +300,7 @@ class Family(family.Family):
         self.namespaces[105] = {
             '-': u'Page talk',
             'ar': u'نقاش الصفحة',
+            'br': u'Kaozeadenn oberour',
             'ca': u'Llibre Discussió',
             'da': u'Sidediskussion',
             'de': u'Index Diskussion',
