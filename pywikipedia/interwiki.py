@@ -384,7 +384,7 @@ msg = {
     'be-x-old': (u'робат ', u'дадаў', u'выдаліў', u'зьмяніў'),
     'bg': (u'Робот ', u'Добавяне', u'Изтриване', u'Промяна'),
     'bjn': (u'bot ', u'Manambah', u'Mambuang', u"Ma'ubah"),
-    'bn': (u'রোবট ', u'যোগ করছে', u'মুছে ফেলছে', u'পরিবর্তন সাধন করছে'),
+    'bn': (u'রোবট ', u'যোগ করছে', u'মুছে ফেলছে', u'পরিবর্তন করছে'),
     'bo': (u'འཕྲུལ་ཆས་ཀྱི་མི། ', u'ཁ་སྣོན་རྒྱག་པ།', u'བསུབ་པ།', u'བསྐྱར་བཅོས་བྱེད་པ།'),
     'bpy': (u'রোবট ', u'তিলকরের', u'থেইকরের', u'বদালার'),
     'br': (u'Robot ', u'ouzhpennet', u'tennet', u'kemmet'),
@@ -2322,7 +2322,7 @@ def compareLanguages(old, new, insite):
     #Version info marks bots without unicode error
     #This also prevents abuse filter blocking on de-wiki
     if not pywikibot.unicode_error:
-        head = u'[r%s] %s' % (sys.version.split()[0], head)
+        head = u'r%s) (%s' % (sys.version.split()[0], head)
 
     colon = u': '
     comma = u', '
