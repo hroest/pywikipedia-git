@@ -229,6 +229,7 @@ logbook = {
 summary = {
     'commons': {'_default': u'Welcome!', },
     'ar': u'مرحبا!',
+    'bn': u'Welcome!',
     'da': u'Velkommen',
     'de': u'Herzlich willkommen!',
     'en': u'Welcome!',
@@ -285,6 +286,7 @@ netext = {
         'zh': u'{{subst:welcome}} %s',
     },
     'wiktionary':{
+        'bn': u'{{subst:User:Wikitanvir/welcome|firma=%s}}',
         'it': u'{{subst:Utente:Filnik/Benve|firma=%s}}',
     },
     'wikiversity':{
