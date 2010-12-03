@@ -36,9 +36,11 @@ docuReplacements = {
 
 msg = {
     'ar': u'هذه الصورة كانت موصولة داخليا من %s. لا معلومات عن المؤلف، حالة حقوق النشر، أو الترخيص متوفرة.',
+    'de': u'Dieses Bild war inline eingelinkt von %s. Es liegen keine Informationen über den Schöpfer, eventuelle Uheberrechte oder Lizenzen vor.',
     'en': u'This image was inline linked from %s. No information on author, copyright status, or license is available.',
     'fa': u'این تصویر به طور مستقیم از %s پیوند شده بود. اطلاعاتی در مورد مولف، وضعیت حق تکثیر و اجازه‌نامه این تصویر موجودنیست.',
     'he': u'תמונה זו הייתה מקושרת מהדף %s. אין מידע זמין על המחבר, מצב זכויות היוצרים או הרישיון.',
+    'ksh': u'Dat Beld wohr onger däm URL %s noh heh jelink. Mer wesse nix drövver, wä et jamaat hät, Urhävverrääschde draan, un onger wat förn Licenze et ze han es.',
     'pl': u'Obraz ten został dolinkowany z adresu %s. Brak jest informacji o autorze, prawach autorskich czy licencji.',
     'pt': u'Esta imagem foi inserida como linha de %s. Nenhum infomação sobre autor, direitos autorais ou licença foi listada.',
 }
