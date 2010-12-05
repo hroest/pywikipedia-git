@@ -103,7 +103,7 @@ Additionaly, these arguments can be used to restrict the bot to certain pages:
 
     -lack:         used as -lack:xx with xx a language code: only work on pages
                    without links to language xx. You can also add a number nn
-                   lick -lack:xx:nn, so that the bot only works on pages with
+                   like -lack:xx:nn, so that the bot only works on pages with
                    at least n interwiki links (the default value for n is 1).
                        
 These arguments are useful to provide hints to the bot:
@@ -560,7 +560,7 @@ moved_links = {
 }
 
 # A list of template names in different languages.
-# Pages which contains these shouldn't be changed.
+# Pages which contain these shouldn't be changed.
 ignoreTemplates = {
     '_default': [u'delete'],
     'ar' : [u'قيد الاستخدام'],
@@ -960,7 +960,7 @@ class Subject(object):
         # download.
         self.pending = PageTree()
         if globalvar.hintsareright:
-            # This is a set of sites that we got hits to
+            # This is a set of sites that we got hints to
             self.hintedsites = set()
         self.translate(hints, globalvar.hintsareright)
         self.confirm = globalvar.confirm
@@ -1336,7 +1336,7 @@ class Subject(object):
                     if globalvar.initialredirect:
                         if globalvar.contentsondisk:
                             redirectTargetPage = StoredPage(redirectTargetPage)
-                        #don't follow double redirects; it might be a self loop
+                        # don't follow another redirect; it might be a self loop
                         if not redirectTargetPage.isRedirectPage() \
                            and not redirectTargetPage.isCategoryRedirect():
                             self.originPage = redirectTargetPage
@@ -1703,7 +1703,7 @@ class Subject(object):
                 # http://is.wikipedia.org/wiki/Wikipediaspjall:V%C3%A9lmenni
                 # allow edits for the same conditions as -whenneeded
                 # or the last edit wasn't a bot
-                # or the last edit as 1 month ago
+                # or the last edit was 1 month ago
                 smallWikiAllowed = True
                 if globalvar.autonomous and page.site().sitename() == 'wikipedia:is':
                     old={}
