@@ -28,6 +28,7 @@ class Family(family.Family):
         self.namespaces[101] = {
             '_default': u'Lost talk',
         }
+        self.interwiki_forward = 'wikipedia'
         self.cross_projects = [
             'wikipedia', 'wiktionary', 'wikibooks', 'wikiquote', 'wikisource', 'wikinews', 'wikiversity',
             'meta', 'mediawiki', 'test', 'commons', 'species',

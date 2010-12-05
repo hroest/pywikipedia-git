@@ -125,6 +125,7 @@ class Family(family.Family):
         self.namespaces[133] = {
             '_default': u'نقاش المساعدة',
         }
+        self.interwiki_forward = 'wikipedia'
         self.cross_projects = [
             'wikipedia', 'wiktionary', 'wikibooks', 'wikiquote', 'wikisource', 'wikinews', 'wikiversity',
             'meta', 'mediawiki', 'incubator', 'commons', 'species',

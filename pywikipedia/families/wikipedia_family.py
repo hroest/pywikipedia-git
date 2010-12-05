@@ -886,6 +886,16 @@ class Family(family.Family):
             'zh-min-nan': u'Khu-pia̍t-ia̍h',
             }
 
+        # families that redirect their interlanguage links here.
+        self.interwiki_forwarded_from = [
+            'commons',
+            'incubator',
+            'meta',
+            'species',
+            'strategy',
+            'test',
+        ]
+
         # CentralAuth cross avaliable projects.
         self.cross_projects = [
             'wiktionary', 'wikibooks', 'wikiquote', 'wikisource', 'wikinews', 'wikiversity',
