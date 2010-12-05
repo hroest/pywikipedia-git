@@ -108,10 +108,9 @@ Additionaly, these arguments can be used to restrict the bot to certain pages:
                        
 These arguments are useful to provide hints to the bot:
 
-    -hint:         used as -hint:de:Anweisung to give the robot a hint
-                   where to start looking for translations. This is only
-                   useful if you specify a single page to work on. If no
-                   text is given after the second ':', the name of the page
+    -hint:         used as  -hint:de:Anweisung  to give the robot a hint
+                   where to start looking for translations. If no text
+                   is given after the second ':', the name of the page
                    itself is used as the title for the hint, unless the
                    -hintnobracket command line option (see there) is also
                    selected.
@@ -122,11 +121,14 @@ These arguments are useful to provide hints to the bot:
                        * 10:      The 10 largest languages (sites with most
                                   articles). Analogous for any other natural
                                   number.
-                       * arab:    All languages useing the Arabic alphabet.
+                       * arab:    All languages using the Arabic alphabet.
                        * cyril:   All languages that use the Cyrillic alphabet.
                        * chinese: All Chinese dialects.
                        * latin:   All languages using the Latin script.
                        * scand:   All Scandinavian languages.
+
+                   Languages and groups having the same page title can be
+                   combined, as in  -hint:5,scand,sr,pt:New_York 
 
     -hintfile:     similar to -hint, except that hints are taken from the given
                    file, enclosed in [[]] each, instead of the command line.

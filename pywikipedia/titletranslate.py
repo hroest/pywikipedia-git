@@ -13,14 +13,34 @@ import re
 import wikipedia as pywikibot
 import date
 
-def translate(page, hints = None, auto = True, removebrackets = False):
+def _join_to_(result, join):
+    for x in join:
+        if x not in result:
+            result.append(x)
+
+def translate(page, hints = None, auto = True, removebrackets = False, site = None, family = None):
     """
     Please comment your source code! --Daniel
 
     Does some magic stuff. Returns a list of pages.
+
+    Goes through all entries in 'hints'. Returns a list of pages.
+
+    Entries for single page titles list those pages. Page titles for entries
+    such as "all:" or "xyz:" or "20:" are first built from the page title of
+    'page' and then listed. When 'removebrackets' is True, a trailing pair of
+    brackets and the text between them is removed from the page title.
+    If 'auto' is true, known year and date page titles are autotranslated
+    to all known target languages and inserted into the list.
+    
     """
     result = []
-    site = page.site()
+    if site is None and page:
+       site = page.site()
+    if family is None and site:
+       family = site.family
+    if site:
+       sitelang = site.language()
     if hints:
         for h in hints:
             if ':' not in h:
@@ -33,9 +53,11 @@ def translate(page, hints = None, auto = True, removebrackets = False):
                 # if given as -hint:xy or -hint:xy:, assume that there should
                 # be a page in language xy with the same title as the page
                 # we're currently working on ...
+                if page is None:
+                   continue
                 ns = page.namespace()
                 if ns:
-                    newname = u'%s:%s' % (site.family.namespace('_default', ns),
+                    newname = u'%s:%s' % (family.namespace('_default', ns),
                                           page.titleWithoutNamespace())
                 else:
                     # article in the main namespace
@@ -43,45 +65,49 @@ def translate(page, hints = None, auto = True, removebrackets = False):
                 # ... unless we do want brackets
                 if removebrackets:
                     newname = re.sub(re.compile(ur"\W*?\(.*?\)\W*?", re.UNICODE), u" ", newname)
-            try:
-                number = int(codes)
-                codes = site.family.languages_by_size[:number]
-            except ValueError:
-                if codes == 'all':
-                    codes = site.family.languages_by_size
-                elif codes in site.family.language_groups:
-                    codes = site.family.language_groups[codes]
-                else:
-                    codes = codes.split(',')
+            codesplit = codes.split(',')
+            codes = []
+            for code in codesplit:
+                try:
+                    number = int(code)
+                    _join_to_(codes, family.languages_by_size[:number] )
+                except ValueError:
+                    if code == 'all':
+                        _join_to_(codes, family.languages_by_size )
+                    elif code in family.language_groups:
+                        _join_to_(codes, family.language_groups[code] )
+                    elif code:
+                        _join_to_(codes, [ code ] )
             for newcode in codes:
-                if newcode in site.languages():
-                    if newcode != site.language():
-                        x = pywikibot.Page(site.getSite(code=newcode), newname)
-                        if x not in result:
-                            result.append(x)
+                x = None
+                if newcode in family.langs.keys():
+                    if ( page is None ) or ( newcode != sitelang ):
+                        x = pywikibot.Page(pywikibot.getSite(fam=family, code=newcode), newname)
+#                elif newcode in family.interwiki_forwarded_from:
+#                    x = pywikibot.Page(pywikibot.getSite(fam=newcode, code=newcode), newname)
                 else:
                     if pywikibot.verbose:
-                        pywikibot.output(u"Ignoring unknown language code %s"
-                                         % newcode)
+                        pywikibot.output(u"Ignoring the unknown language code %s" % newcode)
+                if x:
+                    _join_to_(result, [ x ] )
 
     # Autotranslate dates into all other languages, the rest will come from
     # existing interwiki links.
-    if auto:
+    if auto and page:
         # search inside all dictionaries for this link
-        dictName, value = date.getAutoFormat(page.site().language(),
-                                             page.title())
+        dictName, value = date.getAutoFormat(sitelang, page.title())
         if dictName:
             if not (dictName == 'yearsBC' and
-                    page.site().language() in date.maxyearBC and
-                    value > date.maxyearBC[page.site().language()]) or \
+                    sitelang in date.maxyearBC and
+                    value > date.maxyearBC[sitelang]) or \
                     (dictName == 'yearsAD' and
-                     page.site().language() in date.maxyearAD and
-                     value > date.maxyearAD[page.site().language()]):
+                     sitelang in date.maxyearAD and
+                     value > date.maxyearAD[sitelang]):
                 pywikibot.output(
                     u'TitleTranslate: %s was recognized as %s with value %d'
                     % (page.title(), dictName, value))
                 for entryLang, entry in date.formats[dictName].iteritems():
-                    if entryLang != page.site().language():
+                    if entryLang != sitelang:
                         if dictName == 'yearsBC' and \
                            entryLang in date.maxyearBC and \
                            value > date.maxyearBC[entryLang]:
@@ -94,9 +120,8 @@ def translate(page, hints = None, auto = True, removebrackets = False):
                             newname = entry(value)
                             x = pywikibot.Page(
                                 pywikibot.getSite(code=entryLang,
-                                                  fam=site.family), newname)
-                            if x not in result:
-                                result.append(x) # add new page
+                                                  fam=family), newname)
+                            _join_to_(result, [ x ] )
     return result
 
 bcDateErrors = [u'[[ko:%d년]]']
