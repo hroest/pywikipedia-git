@@ -268,12 +268,24 @@ def expandmarker(text, marker = '', separator = ''):
 #-------------------------------------------------
 # Functions dealing with interwiki language links
 #-------------------------------------------------
-# Note - MediaWiki supports two kinds of interwiki links; interlanguage and
-#        interproject.  These functions only deal with links to a
-#        corresponding page in another language on the same project (e.g.,
-#        Wikipedia, Wiktionary, etc.) in another language. They do not find
-#        or change links to a different project, or any that are formatted
-#        as in-line interwiki links (e.g., "[[:es:Articulo]]".  (CONFIRM)
+# Note - MediaWiki supports several kinds of interwiki links; two kinds are
+#        interlanguage links. We deal here with those kinds only.
+#        A family has by definition only one kind of interlanguage links:
+#        1 - interlanguage links inside the own family.
+#            They go to a corresponding page in another language in the same
+#            family, such as from 'en.wikipedia' to 'pt.wikipedia', or from 
+#            'es.wiktionary' to 'arz.wiktionary'.
+#            Families with this kind have several language-specific sites.
+#            They have their interwiki_forward attribute set to None
+#        2 - language links forwarding to another family.
+#            They go to a corresponding page in another family, such as from
+#            'commons' to 'zh.wikipedia, or from 'incubator' to 'en.wikipedia'.
+#            Families having those have one member only, and do not have 
+#            language-specific sites. The name of the target family of their
+#            interlanguage links is kept in their interwiki_forward attribute.
+#        These functions only deal with links of these two kinds only.  They
+#        do not find or change links of other kinds, nor any that are formatted
+#        as in-line interwiki links (e.g., "[[:es:Articulo]]".
 
 def getLanguageLinks(text, insite=None, pageLink="[[]]", template_subpage=False):
     """
@@ -286,6 +298,10 @@ def getLanguageLinks(text, insite=None, pageLink="[[]]", template_subpage=False)
     """
     if insite is None:
         insite = pywikibot.getSite()
+    fam = insite.family
+    # when interwiki links forward to another family, retrieve pages & other infos there
+    if fam.interwiki_forward:
+        fam = pywikibot.Family(fam.interwiki_forward)
     result = {}
     # Ignore interwiki links within nowiki tags, includeonly tags, pre tags,
     # and HTML comments
@@ -298,19 +314,21 @@ def getLanguageLinks(text, insite=None, pageLink="[[]]", template_subpage=False)
     # interwiki link.
     # NOTE: language codes are case-insensitive and only consist of basic latin
     # letters and hyphens.
+    #TODO: currently, we do not have any, but BCP 47 allows digits, and underscores.
+    #TODO: There is no semantic difference between hyphens and underscores -> fold them.
     interwikiR = re.compile(r'\[\[([a-zA-Z\-]+)\s?:([^\[\]\n]*)\]\]')
     for lang, pagetitle in interwikiR.findall(text):
         lang = lang.lower()
         # Check if it really is in fact an interwiki link to a known
         # language, or if it's e.g. a category tag or an internal link
-        if lang in insite.family.obsolete:
-            lang = insite.family.obsolete[lang]
-        if lang in insite.validLanguageLinks():
+        if lang in fam.obsolete:
+            lang = fam.obsolete[lang]
+        if lang in fam.langs.keys():
             if '|' in pagetitle:
                 # ignore text after the pipe
                 pagetitle = pagetitle[:pagetitle.index('|')]
             # we want the actual page objects rather than the titles
-            site = insite.getSite(code = lang)
+            site = pywikibot.getSite(code=lang, fam=fam)
             try:
                 result[site] = pywikibot.Page(site, pagetitle, insite=insite)
             except pywikibot.InvalidTitle:
