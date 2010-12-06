@@ -60,18 +60,6 @@ These command-line arguments can be used to specify which pages to work on:
                    against the live wiki is using the warnfile.py
                    script.
 
-    -quiet:        Use this option to get less output
-
-    -async:        Put page on queue to be saved to wiki asynchronously. This
-                   enables loading pages during saving throtteling and gives a
-                   better performance.
-                   NOTE: For post-processing it always assumes that saving the
-                   the pages was sucessful.
-
-    -summary:      Set an additional action summary message for the edit. This
-                   could be used for further explainings of the bot action.
-                   This will only be used in non-autonomous mode.
-
 Additionaly, these arguments can be used to restrict the bot to certain pages:
 
     -namespace:n   Number or name of namespace to process. The parameter can be
@@ -104,8 +92,22 @@ Additionaly, these arguments can be used to restrict the bot to certain pages:
     -lack:         used as -lack:xx with xx a language code: only work on pages
                    without links to language xx. You can also add a number nn
                    like -lack:xx:nn, so that the bot only works on pages with
-                   at least n interwiki links (the default value for n is 1).
-                       
+                   at least nn interwiki links (the default value for nn is 1).
+
+These arguments control miscellanous bot behaviour:
+
+    -quiet:        Use this option to get less output
+
+    -async:        Put page on queue to be saved to wiki asynchronously. This
+                   enables loading pages during saving throtteling and gives a
+                   better performance.
+                   NOTE: For post-processing it always assumes that saving the
+                   the pages was sucessful.
+
+    -summary:      Set an additional action summary message for the edit. This
+                   could be used for further explainings of the bot action.
+                   This will only be used in non-autonomous mode.
+
 These arguments are useful to provide hints to the bot:
 
     -hint:         used as  -hint:de:Anweisung  to give the robot a hint
@@ -206,7 +208,7 @@ These arguments specify in which way the bot should follow interwiki links:
 
     -initialredirect  work on its target if a redirect or category redirect is
                    entered on the command line or by a generator (note: without
-                   ending colon). It is recommended to use this option with
+                   ending colon). It is recommended to use this option with the
                    -movelog pagegenerator.
 
     -neverlink:    used as -neverlink:xx where xx is a language code:
@@ -220,10 +222,10 @@ These arguments specify in which way the bot should follow interwiki links:
     -ignorefile:   similar to -ignore, except that the pages are taken from
                    the given file instead of the command line.
 
-    -localright    do not follow interwiki from other pages than the starting
-                   page. (Warning! Should be used very sparingly, only when
-                   you are sure you have first gotten the interwiki on the
-                   starting page exactly right).
+    -localright    do not follow interwiki links from other pages than the
+                   starting page. (Warning! Should be used very sparingly,
+                   only when you are sure you have first gotten the interwiki
+                   links on the starting page exactly right).
                    (note: without ending colon)
  
     -hintsareright do not follow interwiki links to sites for which hints
@@ -248,23 +250,25 @@ multiple languages, and specify on which sites the bot should modify pages:
     -limittwo      only update two pages - one in the local wiki (if logged-in)
                    and one in the top available one.
                    For example, if the local page has links to de and fr,
-                   this option will make sure that only local and de: (larger)
-                   site is updated. This option is useful to quickly set two
-                   way links without updating all of wiki's sites.
+                   this option will make sure that only the local site and
+                   the de: (larger) sites are  updated. This option is useful
+                   to quickly set two way links without updating all of
+                   wiki families sites.
                    (note: without ending colon)
 
     -whenneeded    works like limittwo, but other languages are changed in the
                    following cases:
-                   * If there are no interwiki at all on the page
-                   * If an interwiki must be removed
-                   * If an interwiki must be changed and there has been a
-                     conflict for this page
+                   * If there are no interwiki links at all on the page
+                   * If an interwiki link must be removed
+                   * If an interwiki link must be changed and there has been
+                     a conflict for this page
                    Optionally, -whenneeded can be given an additional number
                    (for example -whenneeded:3), in which case other languages
                    will be changed if there are that number or more links to
                    change or add. (note: without ending colon)
 
 The following arguments influence how many pages the bot works on at once:
+
     -array:        The number of pages the bot tries to be working on at once.
                    If the number of pages loaded is lower than this number,
                    a new set of pages is loaded from the starting wiki. The
@@ -297,8 +301,8 @@ If interwiki.py is terminated before it is finished, it will write a dump file
 to the interwiki-dumps subdirectory. The program will read it if invoked with
 the "-restore" or "-continue" option, and finish all the subjects in that list.
 After finishing the dump file will be deleted. To run the interwiki-bot on all
-pages on a language, run it with option "-start:!", and if it takes so long you
-have to break it off, use "-continue" next time.
+pages on a language, run it with option "-start:!", and if it takes so long
+ithat you have to break it off, use "-continue" next time.
 
 """
 #
@@ -822,7 +826,7 @@ class PageTree(object):
         # to the original topic than pages found later on, after
         # 3, 4, 5 or more interwiki hops.
 
-        # Keeping this order is hence important to display ordered
+        # Keeping this order is hence important to display an ordered
         # list of pages to the user when he'll be asked to resolve
         # conflicts.
         self.tree = {}
@@ -1130,17 +1134,24 @@ class Subject(object):
             if linkedPage.namespace() in nsmatch:
                 return False
             if globalvar.autonomous:
-                pywikibot.output(u"NOTE: Ignoring link from page %s in namespace %i to page %s in namespace %i." % (linkingPage.aslink(True), linkingPage.namespace(), linkedPage.aslink(True), linkedPage.namespace()))
+                pywikibot.output(u"NOTE: Ignoring link from page %s in namespace %i to page %s in namespace %i."
+                                 % (linkingPage.aslink(True), linkingPage.namespace(),
+                                    linkedPage.aslink(True), linkedPage.namespace()))
                 # Fill up foundIn, so that we will not write this notice
                 self.foundIn[linkedPage] = [linkingPage]
                 return True
             else:
                 preferredPage = self.getFoundInCorrectNamespace(linkedPage.site())
                 if preferredPage:
-                    pywikibot.output(u"NOTE: Ignoring link from page %s in namespace %i to page %s in namespace %i because page %s in the correct namespace has already been found." % (linkingPage.aslink(True), linkingPage.namespace(), linkedPage.aslink(True), linkedPage.namespace(), preferredPage.aslink(True)))
+                    pywikibot.output(u"NOTE: Ignoring link from page %s in namespace %i to page %s in namespace %i because page %s in the correct namespace has already been found."
+                                    % (linkingPage.aslink(True), linkingPage.namespace(), linkedPage.aslink(True),
+                                      linkedPage.namespace(), preferredPage.aslink(True)))
                     return True
                 else:
-                    choice = pywikibot.inputChoice('WARNING: %s is in namespace %i, but %s is in namespace %i. Follow it anyway?' % (self.originPage.aslink(True), self.originPage.namespace(), linkedPage.aslink(True), linkedPage.namespace()), ['Yes', 'No', 'Add an alternative', 'give up'], ['y', 'n', 'a', 'g'])
+                    choice = pywikibot.inputChoice('WARNING: %s is in namespace %i, but %s is in namespace %i. Follow it anyway?'
+                                                   % (self.originPage.aslink(True), self.originPage.namespace(),
+                                                      linkedPage.aslink(True), linkedPage.namespace()),
+                                                     ['Yes', 'No', 'Add an alternative', 'give up'], ['y', 'n', 'a', 'g'])
                     if choice != 'y':
                         # Fill up foundIn, so that we will not ask again
                         self.foundIn[linkedPage] = [linkingPage]
@@ -1186,31 +1197,42 @@ class Subject(object):
         """
         if globalvar.autonomous:
             if self.originPage.isDisambig() and not page.isDisambig():
-                pywikibot.output(u"NOTE: Ignoring link from disambiguation page %s to non-disambiguation %s" % (self.originPage.aslink(True), page.aslink(True)))
+                pywikibot.output(u"NOTE: Ignoring link from disambiguation page %s to non-disambiguation %s"
+                                 % (self.originPage.aslink(True), page.aslink(True)))
                 return (True, None)
             elif not self.originPage.isDisambig() and page.isDisambig():
-                pywikibot.output(u"NOTE: Ignoring link from non-disambiguation page %s to disambiguation %s" % (self.originPage.aslink(True), page.aslink(True)))
+                pywikibot.output(u"NOTE: Ignoring link from non-disambiguation page %s to disambiguation %s"
+                                 % (self.originPage.aslink(True), page.aslink(True)))
                 return (True, None)
         else:
             choice = 'y'
             if self.originPage.isDisambig() and not page.isDisambig():
                 disambig = self.getFoundDisambig(page.site())
                 if disambig:
-                    pywikibot.output(u"NOTE: Ignoring non-disambiguation page %s for %s because disambiguation page %s has already been found." % (page.aslink(True), self.originPage.aslink(True), disambig.aslink(True)))
+                    pywikibot.output(u"NOTE: Ignoring non-disambiguation page %s for %s because disambiguation page %s has already been found."
+                                     % (page.aslink(True), self.originPage.aslink(True), disambig.aslink(True)))
                     return (True, None)
                 else:
-                    choice = pywikibot.inputChoice(u'WARNING: %s is a disambiguation page, but %s doesn\'t seem to be one. Follow it anyway?' % (self.originPage.aslink(True), page.aslink(True)), ['Yes', 'No', 'Add an alternative', 'Give up'], ['y', 'n', 'a', 'g'])
+                    choice = pywikibot.inputChoice(u'WARNING: %s is a disambiguation page, but %s doesn\'t seem to be one. Follow it anyway?'
+                                                   % (self.originPage.aslink(True), page.aslink(True)),
+                                                     ['Yes', 'No', 'Add an alternative', 'Give up'],
+                                                     ['y', 'n', 'a', 'g'])
             elif not self.originPage.isDisambig() and page.isDisambig():
                 nondisambig = self.getFoundNonDisambig(page.site())
                 if nondisambig:
-                    pywikibot.output(u"NOTE: Ignoring disambiguation page %s for %s because non-disambiguation page %s has already been found." % (page.aslink(True), self.originPage.aslink(True), nondisambig.aslink(True)))
+                    pywikibot.output(u"NOTE: Ignoring disambiguation page %s for %s because non-disambiguation page %s has already been found."
+                                     % (page.aslink(True), self.originPage.aslink(True), nondisambig.aslink(True)))
                     return (True, None)
                 else:
-                    choice = pywikibot.inputChoice(u'WARNING: %s doesn\'t seem to be a disambiguation page, but %s is one. Follow it anyway?' % (self.originPage.aslink(True), page.aslink(True)), ['Yes', 'No', 'Add an alternative', 'Give up'], ['y', 'n', 'a', 'g'])
+                    choice = pywikibot.inputChoice(u'WARNING: %s doesn\'t seem to be a disambiguation page, but %s is one. Follow it anyway?'
+                                                   % (self.originPage.aslink(True), page.aslink(True)),
+                                                     ['Yes', 'No', 'Add an alternative', 'Give up'],
+                                                     ['y', 'n', 'a', 'g'])
             if choice == 'n':
                 return (True, None)
             elif choice == 'a':
-                newHint = pywikibot.input(u'Give the alternative for language %s, not using a language code:' % page.site().language())
+                newHint = pywikibot.input(u'Give the alternative for language %s, not using a language code:'
+                                          % page.site().language())
                 alternativePage = pywikibot.Page(page.site(), newHint)
                 return (True, alternativePage)
             elif choice == 'g':
@@ -1288,7 +1310,9 @@ class Subject(object):
             if globalvar.skipauto:
                 dictName, year = page.autoFormat()
                 if dictName is not None:
-                    pywikibot.output(u'WARNING: %s:%s relates to %s:%s, which is an auto entry %s(%s)' % (self.originPage.site().language(), self.originPage.title(), page.site().language(),page.title(),dictName,year))
+                    pywikibot.output(u'WARNING: %s:%s relates to %s:%s, which is an auto entry %s(%s)'
+                                     % (self.originPage.site().language(), self.originPage.title(),
+                                        page.site().language(),page.title(),dictName,year))
 
                     # Abort processing if the bot is running in autonomous mode.
                     if globalvar.autonomous:
@@ -2047,16 +2071,22 @@ u'NOTE: number of edits are restricted at %s'
                         if expectedPage != page:
                             try:
                                 linkedPage = linkedPagesDict[expectedPage.site()]
-                                pywikibot.output(u"WARNING: %s: %s does not link to %s but to %s" % (page.site().family.name, page.aslink(True), expectedPage.aslink(True), linkedPage.aslink(True)))
+                                pywikibot.output(u"WARNING: %s: %s does not link to %s but to %s"
+                                                 % (page.site().family.name, page.aslink(True),
+                                                    expectedPage.aslink(True), linkedPage.aslink(True)))
                             except KeyError:
-                                pywikibot.output(u"WARNING: %s: %s does not link to %s" % (page.site().family.name, page.aslink(True), expectedPage.aslink(True)))
+                                pywikibot.output(u"WARNING: %s: %s does not link to %s"
+                                                 % (page.site().family.name, page.aslink(True),
+                                                    expectedPage.aslink(True)))
                     # Check for superfluous links
                     for linkedPage in linkedPages:
                         if linkedPage not in expectedPages:
                             # Check whether there is an alternative page on that language.
                             # In this case, it was already reported above.
                             if linkedPage.site() not in expectedSites:
-                                pywikibot.output(u"WARNING: %s: %s links to incorrect %s" % (page.site().family.name, page.aslink(True), linkedPage.aslink(True)))
+                                pywikibot.output(u"WARNING: %s: %s links to incorrect %s"
+                                                 % (page.site().family.name, page.aslink(True),
+                                                    linkedPage.aslink(True)))
         except (socket.error, IOError):
             pywikibot.output(u'ERROR: could not report backlinks')
 
