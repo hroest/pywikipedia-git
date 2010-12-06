@@ -96,13 +96,15 @@ Additionaly, these arguments can be used to restrict the bot to certain pages:
 
 These arguments control miscellanous bot behaviour:
 
-    -quiet:        Use this option to get less output
+    -quiet         Use this option to get less output
+                   (note: without ending colon)
 
-    -async:        Put page on queue to be saved to wiki asynchronously. This
+    -async         Put page on queue to be saved to wiki asynchronously. This
                    enables loading pages during saving throtteling and gives a
                    better performance.
                    NOTE: For post-processing it always assumes that saving the
                    the pages was sucessful.
+                   (note: without ending colon)
 
     -summary:      Set an additional action summary message for the edit. This
                    could be used for further explainings of the bot action.
@@ -119,18 +121,28 @@ These arguments are useful to provide hints to the bot:
 
                    There are some special hints, trying a number of languages
                    at once:
-                       * all:     All languages with at least ca. 100 articles.
-                       * 10:      The 10 largest languages (sites with most
-                                  articles). Analogous for any other natural
-                                  number.
-                       * arab:    All languages using the Arabic alphabet.
-                       * cyril:   All languages that use the Cyrillic alphabet.
-                       * chinese: All Chinese dialects.
-                       * latin:   All languages using the Latin script.
-                       * scand:   All Scandinavian languages.
+                       * all:       All languages with at least ca. 100 articles.
+                       * 10:        The 10 largest languages (sites with most
+                                    articles). Analogous for any other natural
+                                    number.
+                       * arab:      All languages using the Arabic alphabet.
+                       * cyril:     All languages that use the Cyrillic alphabet.
+                       * chinese:   All Chinese dialects.
+                       * latin:     All languages using the Latin script.
+                       * scand:     All Scandinavian languages.
 
-                   Languages and groups having the same page title can be
-                   combined, as in  -hint:5,scand,sr,pt:New_York 
+                   Names of families that forward their interlanguage links
+                   to the wiki family being worked upon can be used, they are:
+                     with -family=wikipedia only:
+                       * commons:   Interlanguage links of Mediawiki Commons.
+                       * incubator: Links in pages on the Mediawiki Incubator.
+                       * meta:      Interlanguage links of named pages on Meta.
+                       * species:   Interlanguage links of the wikispecies wiki.
+                       * strategy:  Links in pages on Wikimedias strategy wiki.
+                       * test:      Take interwiki links from Test Wikipedia
+
+                   Languages, groups and families having the same page title
+                   can be combined, as  -hint:5,scand,sr,pt,commons:New_York 
 
     -hintfile:     similar to -hint, except that hints are taken from the given
                    file, enclosed in [[]] each, instead of the command line.
@@ -302,7 +314,7 @@ to the interwiki-dumps subdirectory. The program will read it if invoked with
 the "-restore" or "-continue" option, and finish all the subjects in that list.
 After finishing the dump file will be deleted. To run the interwiki-bot on all
 pages on a language, run it with option "-start:!", and if it takes so long
-ithat you have to break it off, use "-continue" next time.
+that you have to break it off, use "-continue" next time.
 
 """
 #
@@ -1383,7 +1395,8 @@ class Subject(object):
                     if self.addIfNew(redirectTargetPage, counter, page):
                         if config.interwiki_shownew or pywikibot.verbose:
                             pywikibot.output(u"%s: %s gives new %sredirect %s"
-                                             %  (self.originPage.title(asLink=True), page.aslink(True), redir, redirectTargetPage.aslink(True)))
+                                             %  (self.originPage.title(asLink=True), page.aslink(True),
+                                                 redir, redirectTargetPage.aslink(True)))
                 continue
 
             # must be behind the page.isRedirectPage() part
@@ -1528,6 +1541,9 @@ class Subject(object):
         for page in self.done:
             if page.exists() and not page.isRedirectPage() and not page.isCategoryRedirect():
                 site = page.site()
+                if site.family.interwiki_forward:
+                    #TODO: allow these cases to be propagated!
+                    continue # inhibit the forwarding families pages to be updated.
                 if site == self.originPage.site():
                     if page != self.originPage:
                         self.problem(u"Found link to %s" % page.aslink(True) )
@@ -1572,6 +1588,7 @@ class Subject(object):
                     pywikibot.output(u"  (%d) Found link to %s in:" % (i, page2.aslink(True)))
                     self.whereReport(page2, indent = 8)
                 while True:
+                    #TODO: allow answer to repeat previous or go back after a mistake
                     answer = pywikibot.input(u"Which variant should be used? (<number>, [n]one, [g]ive up) ").lower()
                     if answer:
                         if answer == 'g':
@@ -1602,6 +1619,7 @@ class Subject(object):
                     if acceptall:
                         answer = 'a'
                     else:
+                        #TODO: allow answer to repeat previous or go back after a mistake
                         answer = pywikibot.inputChoice(u'What should be done?', ['accept', 'reject', 'give up', 'accept all'], ['a', 'r', 'g', 'l'], 'a')
                     if answer == 'l': # accept all
                         acceptall = True
@@ -1668,6 +1686,7 @@ class Subject(object):
         # Make sure new contains every page link, including the page we are processing
         # replaceLinks will skip the site it's working on.
         if self.originPage.site() not in new:
+          if not self.originPage.site().family.interwiki_forward: #TODO: make this possible as well.
             new[self.originPage.site()] = self.originPage
 
         #self.replaceLinks(self.originPage, new, True, bot)
@@ -1761,8 +1780,7 @@ class Subject(object):
                             if diff > 30*24*60:
                                 smallWikiAllowed = True
                             else:
-                                pywikibot.output(
-u'NOTE: number of edits are restricted at %s'
+                                pywikibot.output( u'NOTE: number of edits are restricted at %s'
                                     % page.site().sitename())
 
                 # if we have an account for this site
@@ -1870,6 +1888,12 @@ u'NOTE: number of edits are restricted at %s'
 
         # Avoid adding an iw link back to itself
         del new[page.site()]
+
+        # Do not add interwiki links to foreign families that page.site() does not forward to
+        for stmp in new.keys():
+            if stmp.family != page.site().family:
+                if stmp.family.name != page.site().family.interwiki_forward:
+                    del new[stmp]
 
         # Put interwiki links into a map
         old={}
