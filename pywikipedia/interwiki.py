@@ -1276,6 +1276,7 @@ class Subject(object):
             # Do not ask hints for pages that we don't work on anyway
             return
         if (self.untranslated or globalvar.askhints) and not self.hintsAsked \
+           and self.originPage and self.originPage.exists() \
            and not self.originPage.isRedirectPage() and not self.originPage.isCategoryRedirect():
             # Only once!
             self.hintsAsked = True
