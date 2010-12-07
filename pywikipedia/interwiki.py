@@ -110,6 +110,18 @@ These arguments control miscellanous bot behaviour:
                    could be used for further explainings of the bot action.
                    This will only be used in non-autonomous mode.
 
+    -hintsonly     The bot does not ask for a page to work on, even if none of
+                   the above page sources was specified.  This will make the
+                   first existing page of -hint or -hinfile slip in as the start
+                   page, determining properties like namespace, disambiguation
+                   state, and so on.  When no existing page is found in the
+                   hints, the bot does nothing.
+                   Hitting return without input on the "Which page to check:"
+                   prompt has the same effect as using -hintsonly.
+                   Options like -back, -same or -wiktionary are in effect only
+                   after a page has been found to work on.
+                   (note: without ending colon)
+
 These arguments are useful to provide hints to the bot:
 
     -hint:         used as  -hint:de:Anweisung  to give the robot a hint
@@ -952,19 +964,21 @@ class Subject(object):
         this Object.
     """
 
-    def __init__(self, originPage, hints = None):
+    def __init__(self, originPage = None, hints = None):
         """Constructor. Takes as arguments the Page on the home wiki
            plus optionally a list of hints for translation"""
 
         if globalvar.contentsondisk:
-            originPage = StoredPage(originPage)
+            if originPage:
+                originPage = StoredPage(originPage)
 
         # Remember the "origin page"
         self.originPage = originPage
         # todo is a list of all pages that still need to be analyzed.
         # Mark the origin page as todo.
         self.todo = PageTree()
-        self.todo.add(originPage)
+        if originPage:
+            self.todo.add(originPage)
 
         # done is a list of all pages that have been analyzed and that
         # are known to belong to this subject.
@@ -973,7 +987,10 @@ class Subject(object):
         # pages are values. It stores where we found each page.
         # As we haven't yet found a page that links to the origin page, we
         # start with an empty list for it.
-        self.foundIn = {self.originPage:[]}
+        if originPage:
+            self.foundIn = {self.originPage:[]}
+        else:
+            self.foundIn = {}
         # This is a list of all pages that are currently scheduled for
         # download.
         self.pending = PageTree()
@@ -1024,23 +1041,25 @@ class Subject(object):
         """
         for tree in [self.done, self.pending, self.todo]:
             for page in tree.filter(site):
-                if page.namespace() == self.originPage.namespace():
+                # -hintsonly: before we have an origin page, any namespace will do.
+                if self.originPage and page.namespace() == self.originPage.namespace():
                     if page.exists() and not page.isRedirectPage() and not page.isCategoryRedirect():
                         return page
         return None
 
     def translate(self, hints = None, keephintedsites = False):
         """Add the given translation hints to the todo list"""
-        if globalvar.same:
+        if globalvar.same and self.originPage:
             if hints:
-                pages = titletranslate.translate(self.originPage, hints = hints + ['all:'], auto = globalvar.auto, removebrackets
-= globalvar.hintnobracket)
+                pages = titletranslate.translate(self.originPage, hints = hints + ['all:'],
+                           auto = globalvar.auto, removebrackets = globalvar.hintnobracket)
             else:
-                pages = titletranslate.translate(self.originPage, hints = ['all:'], auto = globalvar.auto, removebrackets
-= globalvar.hintnobracket)
+                pages = titletranslate.translate(self.originPage, hints = ['all:'],
+                           auto = globalvar.auto, removebrackets = globalvar.hintnobracket)
         else:
-            pages = titletranslate.translate(self.originPage, hints = hints, auto = globalvar.auto, removebrackets
-= globalvar.hintnobracket)
+            pages = titletranslate.translate(self.originPage, hints = hints,
+                           auto = globalvar.auto, removebrackets = globalvar.hintnobracket,
+                           site = pywikibot.getSite() )
         for page in pages:
             if globalvar.contentsondisk:
                 page = StoredPage(page)
@@ -1100,7 +1119,7 @@ class Subject(object):
         """
         if self.forcedStop:
             return False
-        if globalvar.nobackonly:
+        if globalvar.nobackonly and originPage: # cannot check backlink before we have an origin page
             if page == self.originPage:
                 try:
                     pywikibot.output(u"%s has a backlink from %s."
@@ -1138,7 +1157,7 @@ class Subject(object):
         if linkedPage in self.foundIn:
             # We have seen this page before, don't ask again.
             return False
-        elif self.originPage.namespace() != linkedPage.namespace():
+        elif self.originPage and self.originPage.namespace() != linkedPage.namespace():
             # Allow for a mapping between different namespaces
             crossFrom = self.originPage.site().family.crossnamespace.get(self.originPage.namespace(), {})
             crossTo = crossFrom.get(self.originPage.site().language(), crossFrom.get('_default', {}))
@@ -1181,10 +1200,11 @@ class Subject(object):
                         return True
         else:
             # same namespaces, no problem
+            # or no origin page yet, also no problem
             return False
 
     def wiktionaryMismatch(self, page):
-        if globalvar.same=='wiktionary':
+        if self.originPage and globalvar.same=='wiktionary':
             if page.title().lower() != self.originPage.title().lower():
                 pywikibot.output(u"NOTE: Ignoring %s for %s in wiktionary mode" % (page.title(asLink=True), self.originPage.title(asLink=True)))
                 return True
@@ -1207,6 +1227,8 @@ class Subject(object):
         alternativePage is either None, or a page that the user has
         chosen to use instead of the given page.
         """
+        if not self.originPage:
+            return (False, None) # any page matches until we have an origin page
         if globalvar.autonomous:
             if self.originPage.isDisambig() and not page.isDisambig():
                 pywikibot.output(u"NOTE: Ignoring link from disambiguation page %s to non-disambiguation %s"
@@ -1296,8 +1318,8 @@ class Subject(object):
                     elif not newhint:
                         break
                     else:
-                        pages = titletranslate.translate(self.originPage, hints = [newhint], auto = globalvar.auto, removebrackets
-= globalvar.hintnobracket)
+                        pages = titletranslate.translate(self.originPage, hints = [newhint],
+                                   auto = globalvar.auto, removebrackets = globalvar.hintnobracket)
                         for page in pages:
                             self.addIfNew(page, counter, None)
                             if globalvar.hintsareright:
@@ -1323,9 +1345,10 @@ class Subject(object):
             if globalvar.skipauto:
                 dictName, year = page.autoFormat()
                 if dictName is not None:
-                    pywikibot.output(u'WARNING: %s:%s relates to %s:%s, which is an auto entry %s(%s)'
-                                     % (self.originPage.site().language(), self.originPage.title(),
-                                        page.site().language(),page.title(),dictName,year))
+                    if self.originPage:
+                        pywikibot.output(u'WARNING: %s:%s relates to %s:%s, which is an auto entry %s(%s)'
+                                         % (self.originPage.site().language(), self.originPage.title(),
+                                            page.site().language(),page.title(),dictName,year))
 
                     # Abort processing if the bot is running in autonomous mode.
                     if globalvar.autonomous:
@@ -1371,7 +1394,8 @@ class Subject(object):
                 if not globalvar.quiet or pywikibot.verbose:
                     pywikibot.output(u"NOTE: %s is %sredirect to %s"
                                      % (page.aslink(True), redir, redirectTargetPage.aslink(True)))
-                if page == self.originPage:
+                if self.originPage is None or page == self.originPage:
+                    # the 1st existig page becomes the origin page, if none was supplied
                     if globalvar.initialredirect:
                         if globalvar.contentsondisk:
                             redirectTargetPage = StoredPage(redirectTargetPage)
@@ -1396,8 +1420,8 @@ class Subject(object):
                     if self.addIfNew(redirectTargetPage, counter, page):
                         if config.interwiki_shownew or pywikibot.verbose:
                             pywikibot.output(u"%s: %s gives new %sredirect %s"
-                                             %  (self.originPage.title(asLink=True), page.aslink(True),
-                                                 redir, redirectTargetPage.aslink(True)))
+                                             % (self.originPage.title(asLink=True), page.aslink(True),
+                                                redir, redirectTargetPage.aslink(True)))
                 continue
 
             # must be behind the page.isRedirectPage() part
@@ -1410,7 +1434,8 @@ class Subject(object):
                     for site, count in self.todo.siteCounts():
                         counter.minus(site, count)
                     self.todo = PageTree()
-                    self.done = PageTree() 
+                    self.done = PageTree()
+                    self.originPage = None
                 continue
 
             elif page.section():
@@ -1419,6 +1444,9 @@ class Subject(object):
                 continue
 
             # Page exists, isnt a redirect, and is a plain link (no section)
+            if self.originPage is None:
+                # the 1st existig page becomes the origin page, if none was supplied
+                self.originPage = page
             try:
                 iw = page.interwiki()
             except pywikibot.NoSuchSite:
@@ -1665,10 +1693,11 @@ class Subject(object):
         if self.forcedStop: # autonomous with problem
             pywikibot.output(u"======Aborted processing %s======" % self.originPage.aslink(True))
             return
-        if self.originPage.isRedirectPage():
-            return
-        if self.originPage.isCategoryRedirect():
-            return
+        if self.originPage:
+            if self.originPage.isRedirectPage():
+                return
+            if self.originPage.isCategoryRedirect():
+                return
         if not self.untranslated and globalvar.untranslatedonly:
             return
         # The following check is not always correct and thus disabled.
@@ -1677,14 +1706,18 @@ class Subject(object):
 #         if len(self.done) == 1:
 #             # No interwiki at all
 #             return
-        pywikibot.output(u"======Post-processing %s======" % self.originPage.aslink(True))
+        if self.originPage:
+            pywikibot.output(u"======Post-processing %s======" % self.originPage.aslink(True))
         # Assemble list of accepted interwiki links
         new = self.assemble()
         if new is None: # User said give up
             pywikibot.output(u"======Aborted processing %s======" % self.originPage.aslink(True))
             return
+        if not len(new): # nothing else to do
+            return
 
         # Make sure new contains every page link, including the page we are processing
+        # TODO: sould be move to assemble()
         # replaceLinks will skip the site it's working on.
         if self.originPage.site() not in new:
           if not self.originPage.site().family.interwiki_forward: #TODO: make this possible as well.
@@ -2155,7 +2188,8 @@ class InterwikiBot(object):
         else: mode = 'written'
         f = codecs.open(dumpfn, mode[0], 'utf-8')
         for subj in self.subjects:
-            f.write(subj.originPage.aslink(None)+'\n')
+            if subj.originPage:
+                f.write(subj.originPage.aslink(None)+'\n')
         f.close()
         pywikibot.output(u'Dump %s (%s) %s.' % (site.lang, site.family.name, mode))
         return dumpfn
@@ -2430,6 +2464,7 @@ def readWarnfile(filename, bot):
 
 def main():
     singlePageTitle = []
+    opthintsonly = False
     start = None
     # Which namespaces should be processed?
     # default to [] which means all namespaces will be processed
@@ -2485,6 +2520,8 @@ def main():
             optRestore = not globalvar.restoreAll
         elif arg == '-continue':
             optContinue = True
+        elif arg == '-hintsonly':
+            opthintsonly = True
         elif arg.startswith('-namespace:'):
             try:
                 namespaces.append(int(arg[11:]))
@@ -2593,9 +2630,12 @@ def main():
         readWarnfile(warnfile, bot)
     else:
         singlePageTitle = ' '.join(singlePageTitle)
-        if not singlePageTitle:
-            singlePageTitle = pywikibot.input(u'Which page to check:')
-        singlePage = pywikibot.Page(pywikibot.getSite(), singlePageTitle)
+        if not singlePageTitle and not opthintsonly:
+             singlePageTitle = pywikibot.input(u'Which page to check:')
+        if singlePageTitle:
+            singlePage = pywikibot.Page(pywikibot.getSite(), singlePageTitle)
+        else:
+            singlePage = None
         bot.add(singlePage, hints = globalvar.hints)
 
     try:
