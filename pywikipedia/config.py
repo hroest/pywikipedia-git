@@ -1,6 +1,8 @@
 # -*- coding: utf-8 -*-
 #
 # (C) Rob W.W. Hooft, 2003
+#     Purodha Blissenbach (Modifier), 2010
+
 #
 # Distributed under the terms of the MIT license.
 #
@@ -42,12 +44,17 @@ mylang = 'language'
 # sysopnames['wiktionary']['en'] = 'myEnglishUsername'
 usernames = {}
 sysopnames = {}
+
+# See section SOLVE_DISAMBIGUATION SETTINGS for details.
 disambiguation_comment = {}
+# This is currently not used anywhere:
 gdab_namespaces = {}
+# This is currently not used anywhere:
 account_global = False
 
 # Solve captchas in the webbrowser. Setting this to False will result in the
 # exception CaptchaError being thrown if a captcha is encountered.
+#TODO: allow more flexibility, such as runtime choices, skipping, and postponing
 solve_captcha = True
 
 # Some sites will require password authentication to access the HTML pages at
@@ -460,6 +467,16 @@ max_queue_size = 64
 # End of configuration section
 # ============================
 
+
+# is config verbose?
+_verbose = False
+for _arg in __sys.argv[1:]:
+    if _arg == "-v" or _arg == "-verbose":
+        _verbose = True
+        break
+if _verbose:
+    print "Config.py"
+
 # Get the names of all known families, and initialize
 # with empty dictionaries
 import wikipediatools as _wt
@@ -568,6 +585,14 @@ def shortpath(path):
         return path[len(base_dir) + len(os.path.sep) : ]
     return path
 
+
+if _verbose:
+    print "- base_dir: ", base_dir
+
+# Exit message
+if _verbose:
+    print "- done."
+
 #
 # When called as main program, list all configuration variables
 #
@@ -577,6 +602,12 @@ if __name__ == "__main__":
     for _arg in __sys.argv[1:]:
         if _arg == "modified":
             _all = 0
+        elif _arg == "-v":
+            pass
+        elif _arg == "-verbose":
+            pass
+        elif _arg.startswith("-dir:"):
+            pass
         else:
             print "Unknown arg %s ignored"%_arg
     _k = globals().keys()
