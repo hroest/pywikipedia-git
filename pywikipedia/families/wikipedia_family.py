@@ -97,7 +97,7 @@ class Family(family.Family):
             'eo': u'Vikipedio',
             'et': u'Vikipeedia',
             'ext': u'Güiquipeya',
-            'fa': u'ویکی‌پدیا',
+            'fa': [u'ویکی‌پدیا', u'وپ'],
             'fr': [u'Wikipédia', u'Wikipedia'],
             'frp': u'Vouiquipèdia',
             'fur': u'Vichipedie',
