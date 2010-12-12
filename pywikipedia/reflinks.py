@@ -528,7 +528,11 @@ class ReferencesRobot:
                 f = None
                 try:
                     socket.setdefaulttimeout(20)
-                    f = urllib2.urlopen(ref.url)
+                    try:
+                        f = urllib2.urlopen(ref.url.decode("utf8"))
+                    except UnicodeError:
+                        ref.url = urllib2.quote(ref.url.encode("utf8"),"://")
+                        f = urllib2.urlopen(ref.url)
                     #Try to get Content-Type from server
                     headers = f.info()
                     contentType = headers.getheader('Content-Type')
