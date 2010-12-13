@@ -83,8 +83,12 @@ class GraphDrawer:
             sourceLabel = self.getLabel(refPage)
             targetLabel = self.getLabel(page)
             edge = pydot.Edge(sourceLabel, targetLabel)
+
             oppositeEdge = self.graph.get_edge(targetLabel, sourceLabel)
             if oppositeEdge:
+                if isinstance(oppositeEdge, list):
+                    # bugfix for pydot >= 1.0.3
+                    oppositeEdge = oppositeEdge[0]
                 #oppositeEdge.set_arrowtail('normal')
                 oppositeEdge.set_dir('both')
             # workaround for bug [ 1722739 ]: prevent duplicate edges
