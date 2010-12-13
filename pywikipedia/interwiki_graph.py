@@ -49,7 +49,7 @@ class GraphDrawer:
         self.subject = subject
 
     def getLabel(self, page):
-        return (u'"\"%s:%s\""' % (page.site().language(),
+        return (u'"%s:%s"' % (page.site().language(),
                                   page.title())).encode('utf-8')
 
     def addNode(self, page):
