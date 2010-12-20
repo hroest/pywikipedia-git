@@ -466,12 +466,18 @@ not supported by PyWikipediaBot!"""
                 except TypeError:
                     print title, begin, anchor
                     raise
+
         if asLink:
-            if allowInterwiki and (forceInterwiki or self._site != getSite()):
+            iw_target_site = getSite()
+            iw_target_family = getSite().family
+            if iw_target_family.interwiki_forward:
+                iw_target_family = pywikibot.Family(iw_target_family.interwiki_forward)
+
+            if allowInterwiki and (forceInterwiki or self._site != iw_target_site):
                 colon = ""
                 if textlink:
                     colon = ":"
-                if  self._site.family != getSite().family \
+                if  self._site.family != iw_target_family \
                         and self._site.family.name != self._site.lang:
                     title =  u'[[%s%s:%s:%s]]' % (colon, self._site.family.name,
                                                 self._site.lang, title)
