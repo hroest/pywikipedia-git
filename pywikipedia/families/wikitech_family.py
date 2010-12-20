@@ -1,7 +1,10 @@
 # -*- coding: utf-8  -*-
+
+__version__ = '$Id$'
+
 import family
 
-# Wikitech site
+# The Wikitech family
 
 class Family(family.Family):
 
@@ -9,10 +12,9 @@ class Family(family.Family):
         family.Family.__init__(self)
         self.name = 'wikitech'
         self.langs = {
-            'en': 'wikitech.leuksman.com',
+            'en': 'wikitech.wikimedia.org',
         }
 
-        # Namespaces
         self.namespaces[4] = {
             '_default': [u'Wikitech', self.namespaces[4]['_default']],
         }
@@ -21,7 +23,7 @@ class Family(family.Family):
         }
 
     def version(self, code):
-        return "1.12alpha"
+        return '1.16wmf4'
 
     def scriptpath(self, code):
         return ''
