@@ -7381,7 +7381,7 @@ u"WARNING: Could not open '%s'. Maybe the server or\n your connection is down. R
 
     def languages(self):
         """Return list of all valid language codes for this site's Family."""
-        return self.family.langs.keys()
+        return self.family.iwkeys
 
     def validLanguageLinks(self):
         """Return list of language codes that can be used in interwiki links."""

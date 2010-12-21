@@ -247,7 +247,7 @@ class RedirectGenerator:
             if m:
                 target = m.group(1)
                 # There might be redirects to another wiki. Ignore these.
-                for code in self.site.family.langs.keys():
+                for code in self.site.family.iwkeys:
                     if target.startswith('%s:' % code) \
                             or target.startswith(':%s:' % code):
                         if code == self.site.language():

@@ -3539,6 +3539,13 @@ class Family:
         # self.crossnamespace[102] = {
         #     'pt': { '_default': [0]}
         # }
+    
+    @property
+    def iwkeys(self):
+        if self.interwiki_forward:
+            import wikipedia as pywikibot
+            return pywikibot.Family(self.interwiki_forward).langs.keys()
+        return self.langs.keys()
 
     def _addlang(self, code, location, namespaces = {}):
         """Add a new language to the langs and namespaces of the family.
