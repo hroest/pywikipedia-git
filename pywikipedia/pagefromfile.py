@@ -81,6 +81,7 @@ class PageFromFileRobot:
         'no': u'bot: Automatisk import',
         'pl': u'Automatyczny import artykułów',
         'pt': u'Importação automática de artigos',
+        'uk': u'Автоматичний імпорт статей',
         'zh': u'機器人: 自動匯入頁面',
     }
 
@@ -100,6 +101,7 @@ class PageFromFileRobot:
         'no': u'legger til øverst',
         'pl': u'dodaj na górze',
         'pt': u'adicionado no topo',
+        'uk': u'додано зверху',
         'zh': u'機器人: 增加至最上層',
     }
 
@@ -118,6 +120,7 @@ class PageFromFileRobot:
         'no': u'legger til nederst',
         'pl': u'dodaj na dole',
         'pt': u'adicionando no fim',
+        'uk': u'додано знизу',
         'zh': u'機器人: 增加至最底層',
     }
 
@@ -136,6 +139,7 @@ class PageFromFileRobot:
         'no': u'erstatter eksisterende tekst',
         'pl': u'aktualny tekst nadpisany',
         'pt': u'sobrescrever texto',
+        'uk': u'існуючий текст перезаписано',
         'zh': u'機器人: 覆寫已存在的文字',
     }
 
