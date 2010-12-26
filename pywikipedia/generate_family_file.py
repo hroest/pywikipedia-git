@@ -75,12 +75,14 @@ class FamilyFileGenerator(object):
         print "Determining other languages...",
         try:
             iw = json.load(urlopen(w.api + "?action=query&meta=siteinfo&siprop=interwikimap&sifilteriw=local&format=json"))
+            if 'error' in iw:
+                raise RuntimeError ('%s/n%s' % (iw['error']['code'], iw['error']['info']))
             self.langs = [wiki for wiki in iw['query']['interwikimap'] if u'language' in wiki]
             print u' '.join(sorted([wiki[u'prefix'] for wiki in self.langs]))
         except HTTPError, e:
             self.langs = []
             print e, "; continuing..."
-    
+
         if len([lang for lang in self.langs if lang['url'] == w.iwpath]) == 0:
             self.langs.append({u'language': w.lang,
                                u'local': u'',
@@ -220,7 +222,7 @@ class Wiki(object):
                 raise
             data = e.read()
             pass
-          
+
         if not self.REwgEnableApi.search(data):
             print "*** WARNING: Api does not seem to be enabled on %s" % fromurl
         try:
