@@ -323,7 +323,7 @@ class GeneratorFactory(object):
             genToReturn = NamespaceFilterPageGenerator(genToReturn, map(int, self.namespaces))
         return genToReturn
 
-    def getCategoryGen(self, arg, length, recurse = False):
+    def getCategoryGen(self, arg, length, recurse=False):
         site = pywikibot.getSite()
         if len(arg) == length:
             categoryname = pywikibot.input(u'Please enter the category name:')
@@ -463,9 +463,6 @@ class GeneratorFactory(object):
             gen = self.setSubCategoriesGen(arg, 9, recurse = True)
         elif arg.startswith('-subcats'):
             gen = self.setSubCategoriesGen(arg, 8)
-        # This parameter is deprecated, catr should be used instead.
-        elif arg.startswith('-subcat'):
-            gen = self.getCategoryGen(arg, 7, recurse = True)
         elif arg.startswith('-page'):
             if len(arg) == len('-page'):
                 gen = [pywikibot.Page(site,
@@ -699,38 +696,40 @@ def ReferringPageGenerator(referredPage, followRedirects=False,
         yield page
 
 def CategorizedPageGenerator(category, recurse=False, start=None):
-    '''
-    Yields all pages in a specific category.
+    """Yield all pages in a specific category.
 
     If recurse is True, pages in subcategories are included as well; if
     recurse is an int, only subcategories to that depth will be included
     (e.g., recurse=2 will get pages in subcats and sub-subcats, but will
     not go any further).
+
     If start is a string value, only pages whose title comes after start
     alphabetically are included.
-    '''
+
+    """
     # TODO: page generator could be modified to use cmstartsortkey ...
     for a in category.articles(recurse=recurse, startFrom=start):
         if start is None or a.title() >= start:
             yield a
 
 def SubCategoriesPageGenerator(category, recurse=False, start=None):
-    '''
-    Yields all subcategories in a specific category.
+    """Yield all subcategories in a specific category.
 
     If recurse is True, pages in subcategories are included as well; if
     recurse is an int, only subcategories to that depth will be included
     (e.g., recurse=2 will get pages in subcats and sub-subcats, but will
     not go any further).
+
     If start is a string value, only categories whose sortkey comes after
     start alphabetically are included.
-    '''
+
+    """
     # TODO: page generator could be modified to use cmstartsortkey ...
     for s in category.subcategories(recurse=recurse, startFrom=start):
         yield s
 
 def LinkedPageGenerator(linkingPage):
-    """Yields all pages linked from a specific page."""
+    """Yield all pages linked from a specific page."""
     for page in linkingPage.linkedPages():
         yield page
 
@@ -1314,7 +1313,7 @@ class PreloadingGenerator(object):
 
 
 
-if __name__ == "__main__":
+def main(*args):
     try:
         genFactory = GeneratorFactory()
         for arg in pywikibot.handleArgs():
@@ -1332,3 +1331,7 @@ if __name__ == "__main__":
                 pywikibot.showHelp('pagegenerators')
     finally:
         pywikibot.stopme()
+
+
+if __name__=="__main__":
+    main()
