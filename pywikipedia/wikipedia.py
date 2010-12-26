@@ -5757,13 +5757,10 @@ u"WARNING: Could not open '%s'. Maybe the server or\n your connection is down. R
                 for k, v in data.iteritems():
                     self._info[k] = v 
         #data pre-process
-        try:
-            if dump:
-                return self._info
-            else:
-                return self._info[key]
-        except KeyError:
-            return None
+        if dump:
+            return self._info
+        else:
+            return self._info.get(key)
 
     def mediawiki_message(self, key, forceReload = False):
         """Return the MediaWiki message text for key "key" """
