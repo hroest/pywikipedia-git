@@ -136,7 +136,7 @@ msg_add={
     'sr':u'Бот: Додаје [[Категорија:%s]]',
     'sv':u'Robot: Lägger till [[Kategori:%s]]',
     'szl':u'Bot dodowo: [[Kategoria:%s]]',
-    'uk':u'Робот: додано [[Категорія:%s]]',
+    'uk':u'Робот: додавання [[Категорія:%s]]',
     'zh':u'機器人:新增目錄 [[Category:%s]]',
     }
 
@@ -175,7 +175,7 @@ msg_change={
     'sk':u'Robot zmenil [[%(oldcat)s]]→[[%(newcat)s]]',
     'sr':u'Бот: Измена категорије %(oldcat)s',
     'sv':u'Robot: Ändrar %(oldcat)s',
-    'uk':u'Робот: змінено [[Категорія:%(oldcat)s]]',
+    'uk':u'Робот: зміна %(oldcat)s',
     'zh':u'機器人:變更目錄 [[%(oldcat)s]]→[[%(newcat)s]]',
     }
 
@@ -188,6 +188,7 @@ msg_replace={
     'ja':u'ロボットによる: カテゴリ変更 [[%(oldcat)s]]→[[%(newcat)s]]',
     'pdc':u'Waddefresser: Abdeeling von %(oldcat)s nooch %(newcat)s geennert',
     'sk':u'Robot nahradil kategóriu %(oldcat)s za %(newcat)s', 
+    'uk':u'Робот: заміна категорії %(oldcat)s на %(newcat)s',
     'zh':u'機器人:變更目錄 [[%(oldcat)s]]→[[%(newcat)s]]',
     }
 
@@ -982,6 +983,7 @@ class CategoryTreeRobot:
             'pt': u'(também em %s)',
             'ru': u'(также в %s)',
             'sv': u'(också i %s)',
+            'uk': u'(також у %s)',
             'ср': u'(такође у %s)',
             'zh': u'(也在 %s)',
         }
