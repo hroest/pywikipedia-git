@@ -84,6 +84,9 @@ parameterHelp = u"""\
                   pages on several wiki sites, this is not well tested,
                   so check your edits!
 
+-limit:n          When used with any other argument that specifies a set
+                  of pages, work on no more than n pages in total
+
 -links            Work on all pages that are linked from a certain page.
                   Argument can also be given as "-links:linkingpagetitle".
 
@@ -298,6 +301,7 @@ class GeneratorFactory(object):
     def __init__(self):
         self.gens = []
         self.namespaces = []
+        self.limit = None
 
     def getCombinedGenerator(self, gen=None):
         """Returns the combination of all accumulated generators,
@@ -314,7 +318,7 @@ class GeneratorFactory(object):
             gensList = self.gens[0]
         else:
             gensList = CombinedPageGenerator(self.gens)
-        genToReturn = DuplicateFilterPageGenerator(gensList)
+        genToReturn = DuplicateFilterPageGenerator(gensList, total=self.limit)
         if (self.namespaces):
             genToReturn = NamespaceFilterPageGenerator(genToReturn, map(int, self.namespaces))
         return genToReturn
@@ -443,6 +447,12 @@ class GeneratorFactory(object):
             else:
                 self.namespaces.extend(arg[len('-ns:'):].split(","))
             return True
+        elif arg.startswith('-limit'):
+            if len(arg) == len('-limit'):
+                self.limit = int(pywikibot.input("What is the limit value?"))
+            else:
+                self.limit = int(arg[len('-limit:'):])
+            return True
         elif arg.startswith('-catr'):
             gen = self.getCategoryGen(arg, len('-catr'), recurse = True)
         elif arg.startswith('-category'):
@@ -565,7 +575,7 @@ class GeneratorFactory(object):
                 mediawikiQuery = pywikibot.input(
                     u'What do you want to search for?')
             # In order to be useful, all namespaces are required
-            gen = SearchPageGenerator(mediawikiQuery, namespaces = [])
+            gen = SearchPageGenerator(mediawikiQuery, number=None, namespaces=[])
         elif arg.startswith('-google'):
             gen = GoogleSearchPageGenerator(arg[8:])
         elif arg.startswith('-titleregex'):
@@ -1148,16 +1158,21 @@ def RedirectFilterPageGenerator(generator):
         if not page.isRedirectPage():
             yield page
 
-def DuplicateFilterPageGenerator(generator):
+def DuplicateFilterPageGenerator(generator, total=None):
     """
     Wraps around another generator. Yields all pages, but prevents
     duplicates.
     """
     seenPages = dict()
+    count = 0
     for page in generator:
         _page = u"%s:%s:%s" % (page._site.family.name, page._site.lang, page._title)
         if _page not in seenPages:
             seenPages[_page] = True
+            if total:
+                count += 1
+                if count > total:
+                    break
             yield page
 
 def RegexFilterPageGenerator(generator, regex, inverse=False, ignore_namespace=True):
@@ -1309,8 +1324,10 @@ if __name__ == "__main__":
         else:
             gen = genFactory.getCombinedGenerator()
             if gen:
+                i = 0
                 for page in gen:
-                    pywikibot.output(page.title(), toStdout = True)
+                    i+=1
+                    pywikibot.output("%s: %s" % (repr(i).rjust(4), page.title()), toStdout = True)
             else:
                 pywikibot.showHelp('pagegenerators')
     finally:

@@ -5938,7 +5938,7 @@ u"WARNING: Could not open '%s'. Maybe the server or\n your connection is down. R
             
             self._getUserDataOld(text, sysop = sysop, force = force)
 
-    def search(self, key, number = 10, namespaces = None):
+    def search(self, key, number=10, namespaces=None):
         """
         Yield search results for query.
         Use API when enabled use_api and version >= 1.11,
@@ -5950,13 +5950,14 @@ u"WARNING: Could not open '%s'. Maybe the server or\n your connection is down. R
                 'action': 'query',
                 'list': 'search',
                 'srsearch': key,
-                'srlimit': number
             }
+            if number:
+                params['srlimit'] = number
             if namespaces:
                 params['srnamespace'] = namespaces
 
             offset = 0
-            while offset < number:
+            while offset < number or not number:
                 params['sroffset'] = offset
                 data = query.GetData(params, self)['query']
                 if 'error' in data:
