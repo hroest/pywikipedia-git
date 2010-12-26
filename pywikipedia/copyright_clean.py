@@ -24,6 +24,8 @@ summary_msg = {
     'fa': u'حذف',
     'fr': u'Retiré',
     'it': u'Rimozione',
+    'ru': u'Удаление',
+    'uk': u'Видалення',
 }
 
 headC = re.compile("(?m)^=== (?:<strike>)?(?:<s>)?(?:<del>)?\[\[(?::)?(.*?)\]\]")

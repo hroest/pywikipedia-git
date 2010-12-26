@@ -127,6 +127,8 @@ class CategoryRedirectBot(object):
             'ksh': u"Bot: dubbel Ömleidung eruß jemaat.",
             'pl': u"Robot: Poprawia podwójne przekierowanie",
             'pt': u"Bot: Corrigindo redirecionamento duplo",
+            'ru': u"Бот: исправление двойного перенаправления",
+            'uk': u"Бот: виправлення подвійного перенаправлення",
             'vi': u"Robot: sửa thể loại đổi hướng kép",
             'zh': u"Bot: 修复双重重定向",
         }

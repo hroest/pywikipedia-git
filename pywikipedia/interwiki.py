@@ -124,7 +124,7 @@ These arguments control miscellanous bot behaviour:
 
 These arguments are useful to provide hints to the bot:
 
-    -hint:         used as  -hint:de:Anweisung  to give the robot a hint
+    -hint:         used as -hint:de:Anweisung to give the robot a hint
                    where to start looking for translations. If no text
                    is given after the second ':', the name of the page
                    itself is used as the title for the hint, unless the
@@ -275,7 +275,7 @@ multiple languages, and specify on which sites the bot should modify pages:
                    and one in the top available one.
                    For example, if the local page has links to de and fr,
                    this option will make sure that only the local site and
-                   the de: (larger) sites are  updated. This option is useful
+                   the de: (larger) sites are updated. This option is useful
                    to quickly set two way links without updating all of
                    wiki families sites.
                    (note: without ending colon)
@@ -1249,8 +1249,8 @@ class Subject(object):
                 else:
                     choice = pywikibot.inputChoice(u'WARNING: %s is a disambiguation page, but %s doesn\'t seem to be one. Follow it anyway?'
                                                    % (self.originPage.aslink(True), page.aslink(True)),
-                                                     ['Yes', 'No', 'Add an alternative', 'Give up'],
-                                                     ['y', 'n', 'a', 'g'])
+                                                   ['Yes', 'No', 'Add an alternative', 'Give up'],
+                                                   ['y', 'n', 'a', 'g'])
             elif not self.originPage.isDisambig() and page.isDisambig():
                 nondisambig = self.getFoundNonDisambig(page.site())
                 if nondisambig:
@@ -1260,8 +1260,8 @@ class Subject(object):
                 else:
                     choice = pywikibot.inputChoice(u'WARNING: %s doesn\'t seem to be a disambiguation page, but %s is one. Follow it anyway?'
                                                    % (self.originPage.aslink(True), page.aslink(True)),
-                                                     ['Yes', 'No', 'Add an alternative', 'Give up'],
-                                                     ['y', 'n', 'a', 'g'])
+                                                   ['Yes', 'No', 'Add an alternative', 'Give up'],
+                                                   ['y', 'n', 'a', 'g'])
             if choice == 'n':
                 return (True, None)
             elif choice == 'a':
@@ -1318,8 +1318,8 @@ class Subject(object):
                     elif not newhint:
                         break
                     else:
-                        pages = titletranslate.translate(self.originPage, hints = [newhint],
-                                   auto = globalvar.auto, removebrackets = globalvar.hintnobracket)
+                        pages = titletranslate.translate(self.originPage, hints=[newhint],
+                                   auto = globalvar.auto, removebrackets=globalvar.hintnobracket)
                         for page in pages:
                             self.addIfNew(page, counter, None)
                             if globalvar.hintsareright:

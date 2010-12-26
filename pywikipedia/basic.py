@@ -48,17 +48,21 @@ class BasicBot:
         'nl': u'Bot: wijziging ...',
         'pl': u'Bot: zmienia ...',
         'pt': u'Bot: alterando...',
+        'ru': u'Бот: изменил ...',
         'sv': u'Bot: Ändrar ...',
+        'uk': u'Бот: змінив ...',
         'zh': u'機器人：編輯.....',
     }
 
     def __init__(self, generator, dry):
         """
         Constructor. Parameters:
-            * generator - The page generator that determines on which pages
-                          to work on.
-            * dry       - If True, doesn't do any real changes, but only shows
-                          what would have been changed.
+            @param generator: The page generator that determines on which pages
+                              to work on.
+            @type generator: generator.
+            @param dry: If True, doesn't do any real changes, but only shows
+                        what would have been changed.
+            @type dry: boolean.
         """
         self.generator = generator
         self.dry = dry

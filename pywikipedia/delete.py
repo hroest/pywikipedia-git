@@ -44,7 +44,9 @@ msg_simple_delete = {
     'nl': u'Bot: verwijdert een lijst met pagina\'s.',
     'pl': u'Robot usuwa pliki z listy.',
     'pt': u'Bot: Apagando um lista de arquivos.',
+    'ru': u'Бот: Удаление списка файлов.',
     'sv': u'Bot: Tar bort fillista.',
+    'uk': u'Бот: Видалення списку файлів.',
 }
 msg_delete_category = {
     'ar': u'روبوت - حذف كل الصفحات من التصنيف %s',
@@ -59,7 +61,9 @@ msg_delete_category = {
     'nl': u'Bot: verwijdert alle pagina\'s uit categorie %s',
     'pl': u'Robot usuwa wszystkie artykuły z kategorii %s',
     'pt': u'Bot: Apagando todas as páginas da categoria %s',
+    'ru': u'Бот: Удаление всех страниц из категории %s',
     'sv': u'Bot: Tar bort alla sidor i kategori %s',
+    'uk': u'Бот: Видалення усіх сторінок з категорії %s',
 }
 msg_delete_links = {
     'ar': u'روبوت - حذف كل الصفحات الموصولة من %s',
@@ -73,7 +77,9 @@ msg_delete_links = {
     'nl': u'Bot: verwijdert alle pagina\'s met een verwijzing naar %s',
     'pl': u'Robot usuwa wszystkie artykuły zlinkowane z %s',
     'pt': u'Bot: Apagando todas as páginas ligadas a %s',
+    'ru': u'Бот: Удаление всех страниц связанных с %s',
     'sv': u'Bot: Tar bort alla sidor länkade från %s',
+    'uk': u'Бот: Видалення усіх сторінок, пов\'язаних із %s',
 }
 msg_delete_ref = {
     'ar': u'روبوت - حذف كل الصفحات الراجعة من %s',
@@ -87,6 +93,8 @@ msg_delete_ref = {
     'nl': u'Bot: verwijdert alle pagina\'s met referentie van %s',
     'pl': u'Robot usuwa wszystkie artykuły odnoszące się do %s',
     'pt': u'Bot: Apagando todas as páginas afluentes a %s',
+    'ru': u'Бот: Удаление всех страниц, относящихся к %s',
+    'uk': u'Бот: Видалення усіх сторінок, що відносяться до %s',
 }
 msg_delete_images = {
     'ar': u'روبوت -حذف كل الصور في الصفحة %s',
@@ -98,7 +106,9 @@ msg_delete_images = {
     'nl': u'Bot: verwijdert alle media op pagina %s',
     'pl': u'Robot usuwa wszystkie obrazy w artykule %s',
     'pt': u'Bot: Apagando todas as imagens da página %s',
+    'ru': u'Бот: Удаление всех изображений на странице %s',
     'sv': u'Bot: Tar bort alla bilder på sida %s',
+    'uk': u'Бот: Видалення усіх зображень із сторінки %s',
 }
 
 

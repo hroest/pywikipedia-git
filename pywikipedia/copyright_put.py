@@ -35,19 +35,29 @@ msg_table = {
     'fa': {'_default': [u'محتویات جدید', u'محتویات جدید']},
     'it': {'_default': [u'Pagine nuove', u'Nuove voci'],
            'feed': [u'Aggiunte a voci esistenti', u'Testo aggiunto in']},
+    'ru': {'_default': [u'Новые записи', u'Новые записи']},
+    'uk': {'_default': [u'Нові записи', u'Нові записи']},
 }
 
 template_cat = {
-  '_default': [u'This template is used by copyright.py, a script part of [[:m:Using the python wikipediabot|PyWikipediaBot]].', u''],
-  'it': [u'Questo template è usato dallo script copyright.py del [[:m:Using the python wikipediabot|PyWikipediaBot]].', u'Template usati da bot'],
+  '_default': [u'This template is used by copyright.py, a script part of [[:m:Using the python wikipediabot|PyWikipediaBot]].',
+               u''],
+  'it': [u'Questo template è usato dallo script copyright.py del [[:m:Using the python wikipediabot|PyWikipediaBot]].',
+         u'Template usati da bot'],
 }
 
 stat_msg = {
     'ar': [u'إحصاءات', u'صفحة', u'مدخلات', u'حجم', u'إجمالي', 'تحديث'],
     'en': [u'Statistics', u'Page', u'Entries', u'Size', u'Total', 'Update'],
-    'es': [u'Estadísticas', u'Página', u'Entradas', u'Tamaño', u'Total', u'Actualizacion'],
+    'es': [u'Estadísticas', u'Página', u'Entradas', u'Tamaño', u'Total',
+           u'Actualizacion'],
     'fa': [u'آمار', u'صفحه', u'محتویات', u'اندازه', u'مجموع', 'بروزرسانی'],
-    'it': [u'Statistiche', u'Pagina', u'Segnalazioni', u'Lunghezza', u'Totale', u'Ultimo aggiornamento'],
+    'it': [u'Statistiche', u'Pagina', u'Segnalazioni', u'Lunghezza', u'Totale',
+           u'Ultimo aggiornamento'],
+    'ru': [u'Статистика', u'Страница', u'Записи', u'Размер', u'Всего',
+           u'Изменено'],
+    'uk': [u'Статистика', u'Сторінка', u'Записи', u'Розмір', u'Разом',
+           u'Змінено'],
 }
 
 separatorC = re.compile('(?m)^== +')

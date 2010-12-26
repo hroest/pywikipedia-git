@@ -73,7 +73,7 @@ Furthermore, the following command line parameters are supported:
                   the bot will check every regex without waiting using all the
                   resources. This will slow it down between a regex and another
                   in order not to waste too much CPU.
- 
+
 -query:           The maximum number of pages that the bot will load at once.
                   Default value is 60. Ignored when reading an XML file.
 

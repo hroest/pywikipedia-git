@@ -25,6 +25,8 @@ msg = {
     'nl': u'Verandering van redirects op een doorverwijspagina',
     'pl': u'Zmiana przekierowań na stronie ujednoznaczającej',
     'pt': u'Arrumando redirects na página de desambiguação',
+    'ru': u'Изменение перенаправлений на странице неоднозначности',
+    'uk': u'Зміна перенаправлень на сторінці багатозначності',
     'zh': u'機器人: 修改消歧義頁中的重定向連結',
 }
 

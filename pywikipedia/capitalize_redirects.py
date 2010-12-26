@@ -45,7 +45,9 @@ msg = {
      'ksh': u'Bot: oemleidung aanjelaat op [[%s]]',
      'nl': u'Bot: doorverwijzing gemaakt naar [[%s]]',
      'pt': u'Bot: Criando redirecionamento para [[%s]]',
+     'ru': u'Бот: Создано перенаправление на [[%s]]',
      'sv': u'Bot: Omdirigerar till [[%s]]',
+     'uk': u'Бот: Створено перенаправлення на [[%s]]',
      'zh': u'機器人: 建立重定向至[[%s]]',
     }
 
