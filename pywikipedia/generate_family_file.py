@@ -76,7 +76,7 @@ class FamilyFileGenerator(object):
         try:
             iw = json.load(urlopen(w.api + "?action=query&meta=siteinfo&siprop=interwikimap&sifilteriw=local&format=json"))
             if 'error' in iw:
-                raise RuntimeError ('%s/n%s' % (iw['error']['code'], iw['error']['info']))
+                raise RuntimeError ('%s - %s' % (iw['error']['code'], iw['error']['info']))
             self.langs = [wiki for wiki in iw['query']['interwikimap'] if u'language' in wiki]
             print u' '.join(sorted([wiki[u'prefix'] for wiki in self.langs]))
         except HTTPError, e:
