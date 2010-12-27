@@ -1,8 +1,9 @@
 # -*- coding: utf-8 -*-
 #
 # (C) Rob W.W. Hooft, 2003
+#     parts by holger@trillke.net 2002/03/18
 #     Purodha Blissenbach (Modifier), 2010
-
+# (C) Pywikipedia bot team, 2007-2010
 #
 # Distributed under the terms of the MIT license.
 #
@@ -467,6 +468,43 @@ max_queue_size = 64
 # End of configuration section
 # ============================
 
+def makepath(path):
+    """Return a normalized absolute version of the path argument.
+
+    - if the given path already exists in the filesystem
+      the filesystem is not modified.
+
+    - otherwise makepath creates directories along the given path
+      using the dirname() of the path. You may append
+      a '/' to the path if you want it to be a directory path.
+
+    from holger@trillke.net 2002/03/18
+
+    """
+    from os import makedirs
+    from os.path import normpath, dirname, exists, abspath
+
+    dpath = normpath(dirname(path))
+    if not exists(dpath): makedirs(dpath)
+    return normpath(abspath(path))
+
+def datafilepath(*filename):
+    """Return an absolute path to a data file in a standard location.
+
+    Argument(s) are zero or more directory names, optionally followed by a
+    data file name. The return path is offset to config.base_dir. Any
+    directories in the path that do not already exist are created.
+
+    """
+    import os
+    return makepath(os.path.join(base_dir, *filename))
+
+def shortpath(path):
+    """Return a file path relative to config.base_dir."""
+    import os
+    if path.startswith(base_dir):
+        return path[len(base_dir) + len(os.path.sep) : ]
+    return path
 
 # is config verbose?
 _verbose = False
@@ -546,46 +584,6 @@ if console_encoding is None:
 
 # Save base_dir for use by other modules
 base_dir = _base_dir
-
-def makepath(path):
-    """Return a normalized absolute version of the path argument.
-
-    - if the given path already exists in the filesystem
-      the filesystem is not modified.
-
-    - otherwise makepath creates directories along the given path
-      using the dirname() of the path. You may append
-      a '/' to the path if you want it to be a directory path.
-
-    from holger@trillke.net 2002/03/18
-
-    """
-    from os import makedirs
-    from os.path import normpath, dirname, exists, abspath
-
-    dpath = normpath(dirname(path))
-    if not exists(dpath): makedirs(dpath)
-    return normpath(abspath(path))
-
-def datafilepath(*filename):
-    """Return an absolute path to a data file in a standard location.
-
-    Argument(s) are zero or more directory names, optionally followed by a
-    data file name. The return path is offset to config.base_dir. Any
-    directories in the path that do not already exist are created.
-
-    """
-    import os
-    return makepath(os.path.join(base_dir, *filename))
-
-def shortpath(path):
-    """Return a file path relative to config.base_dir."""
-    import os
-    if path.startswith(base_dir):
-        return path[len(base_dir) + len(os.path.sep) : ]
-    return path
-
-
 if _verbose:
     print "- base_dir: ", base_dir
 
@@ -615,7 +613,7 @@ if __name__ == "__main__":
     for _name in _k:
         if _name[0] != '_':
             if not type(globals()[_name]) in [types.FunctionType, types.ModuleType]:
-                try: 
+                try:
                     if _all or _glv[_name] != globals()[_name]:
                         print _name, "=", repr(globals()[_name])
                 except KeyError:
