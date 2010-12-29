@@ -374,9 +374,9 @@ copyright_check_in_source_google = False
 copyright_check_in_source_yahoo = False
 copyright_check_in_source_msn = False
 
-# Web pages may contain a Wikipedia text without the word 'Wikipedia' but with the
-# typical '[edit]' tag as a result of a copy & paste procedure. You want no
-# report for this kind of URLs, even if they are copyright violations.
+# Web pages may contain a Wikipedia text without the word 'Wikipedia' but with
+# the typical '[edit]' tag as a result of a copy & paste procedure. You want
+# no report for this kind of URLs, even if they are copyright violations.
 # However, when enabled, these URLs are logged in a file.
 copyright_check_in_source_section_names = False
 
