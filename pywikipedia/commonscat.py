@@ -103,7 +103,7 @@ commonscatTemplates = {
     'os' : (u'Commonscat', [u'Commons cat']),
     'pt' : (u'Commonscat', [u'Commons cat']),
     'ro' : (u'Commonscat', [u'Commons cat']),
-    'ru' : (u'Commonscat', [u'Викисклад-кат']),
+    'ru' : (u'Commonscat', [u'Викисклад-кат', u'Commons category']),
     'sl' : (u'Kategorija v Zbirki', [u'Commonscat', u'Kategorija v zbirki',
                                      u'Commons cat', u'Katzbirke']),
     'sv' : (u'Commonscat', [u'Commonscat-rad', u'Commonskat', u'Commons cat',
