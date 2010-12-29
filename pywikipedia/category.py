@@ -137,6 +137,7 @@ msg_add={
     'sv':u'Robot: Lägger till [[Kategori:%s]]',
     'szl':u'Bot dodowo: [[Kategoria:%s]]',
     'uk':u'Робот: додавання [[Категорія:%s]]',
+    'vo':u'Bot: läükon: [[Klad:%s]]',
     'zh':u'機器人:新增目錄 [[Category:%s]]',
     }
 
