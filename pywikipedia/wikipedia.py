@@ -376,17 +376,20 @@ not supported by PyWikipediaBot!"""
                     break
 
             sectionStart = t.find(u'#')
-            # Categories does not have sections.
             # But maybe there are magic words like {{#time|}}
             # TODO: recognize magic word and templates inside links
             # see http://la.wikipedia.org/w/index.php?title=997_Priska&diff=prev&oldid=1038880
-            if sectionStart > 0 and self._namespace not in [14]:
-                self._section = t[sectionStart+1 : ].lstrip(" ")
-                self._section = sectionencode(self._section,
-                                              self._site.encoding())
-                if not self._section:
-                    self._section = None
-                t = t[ : sectionStart].rstrip(" ")
+            if sectionStart > 0:
+                # Categories does not have sections.
+                if self._namespace == 14:
+                    raise InvalidTitle(u"Invalid section in category '%s'" % t)
+                else:
+                    self._section = t[sectionStart+1 : ].lstrip(" ")
+                    self._section = sectionencode(self._section,
+                                                  self._site.encoding())
+                    if not self._section:
+                        self._section = None
+                    t = t[ : sectionStart].rstrip(" ")
             elif sectionStart == 0:
                 raise InvalidTitle(u"Invalid title starting with a #: '%s'" % t)
             else:
@@ -2567,8 +2570,9 @@ not supported by PyWikipediaBot!"""
         except NoPage:
             raise
         except IsRedirectPage, err:
-            target = err[0].replace('&amp;quot;', '"') # otherwise it will return error with
-                                                       # pages with " inside.
+            # otherwise it will return error pages with " inside.
+            target = err[0].replace('&amp;quot;', '"')
+
             if '|' in target:
                 warnings.warn("'%s' has a | character, this makes no sense"
                               % target, Warning)
