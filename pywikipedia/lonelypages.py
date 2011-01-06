@@ -40,6 +40,7 @@ python lonelypages.py -enable:User:Bot/CheckBot -always
 #
 # (C) Pietrodn, it.wiki 2006-2007
 # (C) Filnik, it.wiki 2007
+# (C) Pywikipedia bot team, 2008-2011
 #
 # Distributed under the terms of the MIT license.
 #
@@ -65,6 +66,7 @@ docuReplacements = {
 # Template to add in the orphan pages
 Template = {
             'ar':u'{{يتيمة|تاريخ={{نسخ:اسم_شهر}} {{نسخ:عام}}}}',
+            'ca':u'{{Orfe|date={{subst:CURRENTMONTHNAME}} {{subst:CURRENTYEAR}}}}',
             'en':u'{{Orphan|date={{subst:CURRENTMONTHNAME}} {{subst:CURRENTYEAR}}}}',
             'it':u'{{O||mese={{subst:CURRENTMONTHNAME}} {{subst:CURRENTYEAR}}}}',
             'ja':u'{{孤立|{{subst:DATE}}}}',
@@ -74,6 +76,7 @@ Template = {
 # Comment that the Bot will use to put the template
 commento = {
             'ar':u'بوت: صفحة يتيمة، إضافة قالب',
+            'ca':u'Bot:Pàgina orfe, afegint plantilla',
             'en':u'Robot: Orphan page, add template',
             'it':u'Bot: Voce orfana, aggiungo template {{O}}',
             'ja':u'ロボットによる: 孤立したページへのテンプレート貼付け',
@@ -84,6 +87,7 @@ commento = {
 #(if you set disambigPage to None, you can put here nothing)
 commenttodisambig = {
            'ar':u'بوت: إضافة صفحة توضيح',
+           'ca':u'Bot; Afegint una desambiguació',
            'en':u'Robot: Adding a disambig page',
            'it':u'Bot: Aggiungo una disambigua',
            'ja':u'ロボットによる: 曖昧さ回避の追加',
@@ -95,6 +99,7 @@ commenttodisambig = {
 # Warning: put always "()" inside the regex, so the bot will find "something"
 exception = {
             'ar': [ur'\{\{(?:قالب:|)(يتيمة)[\|\}]'],
+            'ca': [r'\{\{(?:template:|)(orfe)[\|\}]'],
             'en': [r'\{\{(?:template:|)(orphan)[\|\}]', r'\{\{(?:template:|)(wi)[\|\}]'],
             'it': [r'\{\{(?:template:|)(o)[\|\}]'],
             'ja': [ur'\{\{(?:template:|)(孤立)[\|\}]'],
