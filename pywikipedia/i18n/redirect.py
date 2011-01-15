@@ -132,9 +132,7 @@ msg = {
 'war': {
 'redirect-fix-double': u'Robot: Gin-ayad in nagduduha nga redirek → %(to)s',
 'redirect-remove-broken': u'Robot: Waray dida an karadto-an han redirek',
-'redirect-broken-redirect-template': u'{{delete}}Nautod o nagbinalikbalik nga redirek.--~~~~
-
-',
+'redirect-broken-redirect-template': u'{{delete}}Nautod o nagbinalikbalik nga redirek.--~~~~',
 },
 'ms': {
 },
@@ -240,9 +238,7 @@ msg = {
 'nds': {
 'redirect-fix-double': u'Bot: Dubbelte Wiederleiden rutmakt → %(to)s',
 'redirect-remove-broken': u'Bot: Kaputte Wiederleiden ward nich brukt',
-'redirect-broken-redirect-template': u'{{delete}}Kaputte Wiederleiden, wat nich brukt ward.<br />--~~~~
-
-',
+'redirect-broken-redirect-template': u'{{delete}}Kaputte Wiederleiden, wat nich brukt ward.<br />--~~~~',
 },
 'ml': {
 },
@@ -283,9 +279,7 @@ msg = {
 'ksh': {
 'redirect-fix-double': u'Bot: [[special:doubleredirects|Dubbel Ömlëijdong]] fottjemaat → %(to)s',
 'redirect-remove-broken': u'Bot: Dė [[Special:BrokenRedirects|Ömlëijdong jingk ennet Liiere]]',
-'redirect-broken-redirect-template': u'{{Schmieß fott}}Di Ömlëijdong jeiht noh nörjendwoh hen.<br />--~~~~~
-
-',
+'redirect-broken-redirect-template': u'{{Schmieß fott}}Di Ömlëijdong jeiht noh nörjendwoh hen.<br />--~~~~~',
 },
 'ne': {
 },
