@@ -192,7 +192,7 @@ reason_loop={
     'lb': u'[[WP:CSD#G8|G8]]: [[Wikipedia:Redirect|Viruleedung]] där hiert Zil zu enger endlos Schleef féiert',
     'mk': u'[[ВП:КББ|О8]]: Одредницата за [[Википедија:Пренасочување|пренасочување]] образува јамка',
     'pl': u'[[WP:CSD#G8|G8]] – pętla [[Wikipedia:Redirect|przekierowań]]',
-    'ru': u'[[ВП:КБУ#П1|критерий быстрого удаления ''П.1'']] — перенаправление в никуда',
+    'ru': u'[[ВП:КБУ#П1|критерий быстрого удаления \'\'П.1\'\']] — перенаправление в никуда',
     'sr': u'[[WP:CSD#G8|G8]]: Циљ [[Wikipedia:Redirect|преусмерења]] гради петљу',
     'sr-el': u'[[WP:CSD#G8|G8]]: Cilj [[Wikipedia:Redirect|preusmerenja]] gradi petlju',
     'uk': u'[[WP:CSD#G8|G8]]: [[Wikipedia:Redirect|Перенаправлення]] формує петлю перенаправлень',
