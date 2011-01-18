@@ -7,7 +7,7 @@ and return a unicode string.
 
 """
 #
-# (C) Pywikipedia bot team, 2010
+# (C) Pywikipedia bot team, 2004-2011
 #
 # Distributed under the terms of the MIT license.
 #
@@ -859,10 +859,8 @@ def extract_templates_and_params(text):
             result.append((name, params))
     return result
 
-#----------------
-# I18N functions
-#----------------
-
+""" Various i18n functions for the internal translation system
+"""
 # Languages to use for comment text after the actual language but before
 # en:. For example, if for language 'xx', you want the preference of
 # languages to be:
@@ -875,8 +873,10 @@ def _altlang(code):
 
     If no translation is available to a specified language, translate() will
     try each of the specified fallback languages, in order, until it finds
-    one with a translation, or '_default' as a last resort.
+    one with a translation, with 'en' and '_default' as a last resort.
 
+    For example, if for language 'xx', you want the preference of languages
+    to be: xx > fr > ru > en, you let altlang return ['fr', 'ru'].
     """
     #Amharic
     if code in ['aa', 'om']:
@@ -980,8 +980,10 @@ def _altlang(code):
     if code == 'kaa':
         return ['uz', 'ru']
     #Serbocroatian
-    if code in ['bs', 'hr', 'sh', 'sr']:
-        return ['sh', 'hr', 'bs', 'sr']
+    if code in ['bs', 'hr', 'sh',]:
+        return ['sh', 'hr', 'bs', 'sr', 'sr-el']
+    if code == 'sr':
+        return ['sr-el', 'sh', 'hr', 'bs']
     #Turkish and Kurdish
     if code in ['diq', 'ku']:
         return ['ku', 'tr']
