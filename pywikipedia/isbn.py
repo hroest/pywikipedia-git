@@ -48,15 +48,20 @@ docuReplacements = {
 
 # Summary messages in different languages
 msg = {
-    'ar': u'روبوت: تهيئة ISBN',
-    'de': 'Bot: Formatiere ISBN',
-    'en': 'Robot: Formatting ISBN',
-    'fa': u'ربات:استانداردسازی شابک',
-    'he': u'בוט: מעצב ISBN',
-    'ja': u'ロボットによる ISBN の書式化',
-    'nl': 'Bot: ISBN opgemaakt',
-    'pt': u'Bot: Formatando ISBN',
-    'zh': u'機器人：ISBN格式化',
+    'ar' : u'روبوت: تهيئة ISBN'
+    'de' : u'Bot: Formatiere ISBN'
+    'en' : u'Robot: Formatting ISBN'
+    'fa' : u'ربات:استانداردسازی شابک'
+    'he' : u'בוט: מעצב ISBN'
+    'ia' : u'Robot: Formatation ISBN'
+    'id' : u'Bot: Memformat ISBN'
+    'ja' : u'ロボットによる ISBN の書式化'
+    'mk' : u'Робот: Форматирам ISBN'
+    'nl' : u'Robot: ISBN opgemaakt'
+    'pt' : u'Bot: Formatando ISBN'
+    'sv' : u'Robot: Formaterar ISBN'
+    'vi' : u'Rôbốt: Định dạng ISBN'
+    'zh' : u'機器人：ISBN格式化'
 }
 
 # Maps each group number to the list of its publisher number ranges.
