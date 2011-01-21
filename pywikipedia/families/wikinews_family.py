@@ -154,6 +154,7 @@ class Family(family.Family):
         self.namespaces[102] = {
             'ar': u'تعليقات',
             'bg': u'Мнения',
+            'ca': u'Secció',
             'de': u'Meinungen',
             'en': u'Comments',
             'fa': u'نظرها',
@@ -167,6 +168,7 @@ class Family(family.Family):
         self.namespaces[103] = {
             'ar': u'نقاش التعليقات',
             'bg': u'Мнения беседа',
+            'ca': u'Secció Discussió',
             'de': u'Meinungen Diskussion',
             'en': u'Comments talk',
             'fa': u'بحث نظرها',
@@ -188,11 +190,13 @@ class Family(family.Family):
         self.namespaces[106] = {
             'fr': u'Dossier',
             'no': u'Portal',
+            'tr': u'Yorum',
         }
 
         self.namespaces[107] = {
             'fr': u'Discussion Dossier',
             'no': u'Portal-diskusjon',
+            'tr': u'Yorum tartışma',
         }
 
         self.namespaces[108] = {
