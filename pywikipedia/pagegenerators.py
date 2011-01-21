@@ -1326,7 +1326,7 @@ def main(*args):
                 i = 0
                 for page in gen:
                     i+=1
-                    pywikibot.output("%s: %s" % (repr(i).rjust(4), page.title()), toStdout = True)
+                    pywikibot.output("%4d: %s" % (i, page.title()), toStdout = True)
             else:
                 pywikibot.showHelp('pagegenerators')
     finally:
