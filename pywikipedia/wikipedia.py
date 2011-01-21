@@ -1540,7 +1540,7 @@ not supported by PyWikipediaBot!"""
         if the user cannot do that.
 
         Parameters:
-        * action - the action done, which is the name of the right
+        * action - the action to be done, which is the name of the right
         * restriction - the restriction level or an empty string for no restriction
         * sysop - initially use sysop user?
         """
