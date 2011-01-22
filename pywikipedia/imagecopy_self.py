@@ -84,57 +84,85 @@ imageMoveMessage = {
     'en': u'[[:File:%s|File]] moved to [[:commons:File:%s|commons]].',
 }
 
-skipTemplates = [u'Db-f1',
-                 u'Db-f2',
-                 u'Db-f3',
-                 u'Db-f7',
-                 u'Db-f8',
-                 u'Db-f9',
-                 u'Db-f10',
-                 u'NowCommons',
-                 u'CommonsNow',
-                 u'Nowcommons',
-                 u'NowCommonsThis',
-                 u'Nowcommons2',
-                 u'NCT',
-                 u'Nowcommonsthis',
-                 u'Moved to commons',
-                 u'Now Commons',
-                 u'Now at commons',
-                 u'Db-nowcommons',
-                 u'WikimediaCommons',
-                 u'Now commons',
-                 u'Di-no source',
-                 u'Di-no license',
-                 u'Di-no permission',
-                 u'Di-orphaned fair use',
-                 u'Di-no source no license',
-                 u'Di-replaceable fair use',
-                 u'Di-no fair use rationale',
-                 u'Di-disputed fair use rationale',
-                 u'Puf',
-                 u'PUI',
-                 u'Pui',
-                 u'Ffd',
-                 u'PD-user', # Only the self templates are supported for now.
-                 u'Ticket Scan',
-                 ]
+skipTemplates = {
+    'en': [u'Db-f1',
+           u'Db-f2',
+           u'Db-f3',
+           u'Db-f7',
+           u'Db-f8',
+           u'Db-f9',
+           u'Db-f10',
+           u'NowCommons',
+           u'CommonsNow',
+           u'Nowcommons',
+           u'NowCommonsThis',
+           u'Nowcommons2',
+           u'NCT',
+           u'Nowcommonsthis',
+           u'Moved to commons',
+           u'Now Commons',
+           u'Now at commons',
+           u'Db-nowcommons',
+           u'WikimediaCommons',
+           u'Now commons',
+           u'Di-no source',
+           u'Di-no license',
+           u'Di-no permission',
+           u'Di-orphaned fair use',
+           u'Di-no source no license',
+           u'Di-replaceable fair use',
+           u'Di-no fair use rationale',
+           u'Di-disputed fair use rationale',
+           u'Puf',
+           u'PUI',
+           u'Pui',
+           u'Ffd',
+           u'PD-user', # Only the self templates are supported for now.
+           u'Ticket Scan',
+           ],
+    }
                  
 
-licenseTemplates = [(u'\{\{(self|self2)\|([^\}]+)\}\}', u'{{Self|\\2|author=[[:%(lang)s:User:%(author)s|%(author)s]] at [http://%(lang)s.%(family)s.org %(lang)s.%(family)s]}}'),
-                    (u'\{\{(GFDL-self|GFDL-self-no-disclaimers)\|([^\}]+)\}\}', u'{{Self|GFDL|\\2|author=[[:%(lang)s:User:%(author)s|%(author)s]] at [http://%(lang)s.%(family)s.org %(lang)s.%(family)s]}}'),
-                    (u'\{\{GFDL-self-with-disclaimers\|([^\}]+)\}\}', u'{{Self|GFDL-with-disclaimers|\\1|author=[[:%(lang)s:User:%(author)s|%(author)s]] at [http://%(lang)s.%(family)s.org %(lang)s.%(family)s]}}'),
-                    (u'\{\{PD-self(\|date=[^\}]+)?\}\}', u'{{PD-user-w|%(lang)s|%(family)s|%(author)s}}'),
-                    #Multilicense replacing placeholder
-                    (u'\{\{Multilicense replacing placeholder(\|[^\}\|=]+=[^\}\|]+)*(?P<migration>\|[^\}\|=]+=[^\}\|]+)(\|[^\}\|=]+=[^\}\|]+)*\}\}', u'{{Self|GFDL|Cc-by-sa-2.5,2.0,1.0\\g<migration>|author=[[:%(lang)s:User:%(author)s|%(author)s]] at [http://%(lang)s.%(family)s.org %(lang)s.%(family)s]}}'),
-                    (u'\{\{Multilicense replacing placeholder new(\|class=[^\}]+)?\}\}', u'{{Self|GFDL|Cc-by-sa-3.0,2.5,2.0,1.0|author=[[:%(lang)s:User:%(author)s|%(author)s]] at [http://%(lang)s.%(family)s.org %(lang)s.%(family)s]}}'),
-                    ]
+licenseTemplates = {
+    'en': [(u'\{\{(self|self2)\|([^\}]+)\}\}', u'{{Self|\\2|author=[[:%(lang)s:User:%(author)s|%(author)s]] at [http://%(lang)s.%(family)s.org %(lang)s.%(family)s]}}'),
+           (u'\{\{(GFDL-self|GFDL-self-no-disclaimers)\|([^\}]+)\}\}', u'{{Self|GFDL|\\2|author=[[:%(lang)s:User:%(author)s|%(author)s]] at [http://%(lang)s.%(family)s.org %(lang)s.%(family)s]}}'),
+           (u'\{\{GFDL-self-with-disclaimers\|([^\}]+)\}\}', u'{{Self|GFDL-with-disclaimers|\\1|author=[[:%(lang)s:User:%(author)s|%(author)s]] at [http://%(lang)s.%(family)s.org %(lang)s.%(family)s]}}'),
+           (u'\{\{PD-self(\|date=[^\}]+)?\}\}', u'{{PD-user-w|%(lang)s|%(family)s|%(author)s}}'),
+           (u'\{\{Multilicense replacing placeholder(\|[^\}\|=]+=[^\}\|]+)*(?P<migration>\|[^\}\|=]+=[^\}\|]+)(\|[^\}\|=]+=[^\}\|]+)*\}\}', u'{{Self|GFDL|Cc-by-sa-2.5,2.0,1.0\\g<migration>|author=[[:%(lang)s:User:%(author)s|%(author)s]] at [http://%(lang)s.%(family)s.org %(lang)s.%(family)s]}}'),
+           (u'\{\{Multilicense replacing placeholder new(\|class=[^\}]+)?\}\}', u'{{Self|GFDL|Cc-by-sa-3.0,2.5,2.0,1.0|author=[[:%(lang)s:User:%(author)s|%(author)s]] at [http://%(lang)s.%(family)s.org %(lang)s.%(family)s]}}'),
+           ],
+    }
 
-sourceGarbage =     [u'==\s*Description\s*==',
-                     u'==\s*Summary\s*==',
-                     u'==\s*Licensing:?\s*==',
-                     u'\{\{(Copy to Wikimedia Commons|Move to Commons|Move to commons|Move to Wikimedia Commons|Copy to commons|Mtc|MtC|MTC|CWC|CtWC|CTWC|Ctwc|Tocommons|Copy to Commons|To Commons|Movetocommons|Move to Wikimedia commons|Move-to-commons|Commons ok|ToCommons|To commons|MoveToCommons|Copy to wikimedia commons|Upload to commons|CopyToCommons|Copytocommons|MITC|MovetoCommons|Do move to Commons)\}\}'
-                    ]
+sourceGarbage = {
+    'en': [u'==\s*Description\s*==',
+           u'==\s*Summary\s*==',
+           u'==\s*Licensing:?\s*==',
+           u'\{\{(Copy to Wikimedia Commons|Move to Commons|Move to commons|Move to Wikimedia Commons|Copy to commons|Mtc|MtC|MTC|CWC|CtWC|CTWC|Ctwc|Tocommons|Copy to Commons|To Commons|Movetocommons|Move to Wikimedia commons|Move-to-commons|Commons ok|ToCommons|To commons|MoveToCommons|Copy to wikimedia commons|Upload to commons|CopyToCommons|Copytocommons|MITC|MovetoCommons|Do move to Commons)\}\}'
+           ],
+    }
+
+def supportedSite():
+    '''
+    Check if this site is supported
+    '''
+    site=pywikibot.getSite()
+    lang=site.language()
+
+    lists = [nowCommonsTemplate,
+             nowCommonsMessage,
+             moveToCommonsTemplate,
+             imageMoveMessage,
+             skipTemplates,
+             licenseTemplates,
+             sourceGarbage,
+             ]
+
+    for l in lists:
+        if not l.get(lang):
+            return False
+
+    return True
+
 
 class Tkdialog:
     def __init__(self, imagepage, description, date, source, author, licensetemplate, categories):
@@ -320,7 +348,7 @@ class imageFetcher(threading.Thread):
             
             text = imagepage.get()
             foundMatch = False
-            for (regex, replacement) in licenseTemplates:
+            for (regex, replacement) in licenseTemplates[page.site().language()]:
                 match = re.search(regex, text, flags=re.IGNORECASE)
                 if match:
                     foundMatch = True
@@ -337,7 +365,7 @@ class imageFetcher(threading.Thread):
         Returns True if the image is on the skip list, otherwise False
         '''
         for template in imagepage.templates():
-            if template in skipTemplates:
+            if template in skipTemplates[imagepage.site().language()]:
                 pywikibot.output(
                     u'Found %s which is on the template skip list' % template)
                 return True
@@ -431,10 +459,10 @@ class imageFetcher(threading.Thread):
         #text = re.sub(u'== Licensing ==', u'', text, re.IGNORECASE)
         #text = re.sub(u'\{\{(self|self2)\|[^\}]+\}\}', u'', text, re.IGNORECASE)
 
-        for toRemove in sourceGarbage:
+        for toRemove in sourceGarbage[imagepage.site().language()]:
             text = re.sub(toRemove, u'', text, flags=re.IGNORECASE)
         
-        for (regex, repl) in licenseTemplates:
+        for (regex, repl) in licenseTemplates[imagepage.site().language()]:
             text = re.sub(regex, u'', text, flags=re.IGNORECASE)
 
         text = pywikibot.removeCategoryLinks(text, imagepage.site()).strip()
@@ -509,7 +537,7 @@ class imageFetcher(threading.Thread):
 
         result = u''   
 
-        for (regex, replacement) in licenseTemplates:
+        for (regex, replacement) in licenseTemplates[imagepage.site().language()]:
             match = re.search(regex, text, flags=re.IGNORECASE)
             if match:
                 result = re.sub(regex, replacement, match.group(0), flags=re.IGNORECASE)
@@ -736,6 +764,10 @@ def main(args):
             checkTemplate = False
         else:
             genFactory.handleArg(arg)
+
+    if not supportedSite():
+        pywikibot.output(u'Sorry, this site is not supported (yet).')
+        return False
     
     generator = genFactory.getCombinedGenerator()
     if not generator:
