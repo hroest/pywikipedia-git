@@ -117,6 +117,7 @@ skipTemplates = [u'Db-f1',
                  u'Pui',
                  u'Ffd',
                  u'PD-user', # Only the self templates are supported for now.
+                 u'Ticket Scan',
                  ]
                  
 
