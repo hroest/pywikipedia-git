@@ -138,7 +138,8 @@ class Tkdialog:
         self.root=Tk()
         #"%dx%d%+d%+d" % (width, height, xoffset, yoffset)
         #Always appear the same size and in the bottom-left corner
-        self.root.geometry("1000x400+100-100")
+        #FIXME : Base this on the screen size or make it possible for the user to configure this
+        self.root.geometry("1500x400+100-100")
         self.root.title(imagepage.titleWithoutNamespace())
 
 
