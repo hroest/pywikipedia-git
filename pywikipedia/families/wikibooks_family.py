@@ -14,7 +14,7 @@ class Family(family.Family):
             'en', 'de', 'fr', 'ja', 'hu', 'pt', 'nl', 'es', 'pl', 'it', 'he',
             'sq', 'fi', 'ca', 'ru', 'vi', 'cs', 'zh', 'hr', 'sv', 'tr', 'da',
             'id', 'th', 'mk', 'ko', 'fa', 'sr', 'tl', 'gl', 'ar', 'is', 'no',
-            'ta', 'ka', 'lt', 'eo', 'bg', 'ro', 'sk', 'uk', 'el', 'si', 'li',
+            'ta', 'ka', 'lt', 'eo', 'bg', 'ro', 'sk', 'el', 'uk', 'si', 'li',
             'tt', 'la', 'ang', 'ia', 'cv', 'sl', 'mr', 'et', 'az', 'ur', 'oc',
             'ml', 'ms', 'bn', 'eu', 'hi', 'fy', 'ie', 'tg', 'af', 'hy', 'pa',
             'te', 'sa', 'bs', 'ky', 'be', 'ne', 'ast', 'zh-min-nan', 'mg', 'cy',
@@ -195,6 +195,7 @@ class Family(family.Family):
         }
 
         self.namespaces[100] = {
+            'bn': u'উইকিশৈশব',
             'fr': u'Transwiki',
             'he': u'שער',
             'id': u'Resep',
@@ -209,6 +210,7 @@ class Family(family.Family):
         }
 
         self.namespaces[101] = {
+            'bn': u'উইকিশৈশব আলাপ',
             'fr': u'Discussion Transwiki',
             'he': u'שיחת שער',
             'id': u'Pembicaraan Resep',
@@ -223,6 +225,7 @@ class Family(family.Family):
         }
 
         self.namespaces[102] = {
+            'bn': u'বিষয়',
             'ca': u'Viquiprojecte',
             'cy': u'Silff lyfrau',
             'de': u'Regal',
@@ -239,6 +242,7 @@ class Family(family.Family):
         }
 
         self.namespaces[103] = {
+            'bn': u'বিষয় আলাপ',
             'ca': u'Viquiprojecte Discussió',
             'cy': u'Sgwrs Silff lyfrau',
             'de': u'Regal Diskussion',
