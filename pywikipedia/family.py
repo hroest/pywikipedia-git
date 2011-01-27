@@ -636,7 +636,7 @@ class Family:
             },
             2: {
                 '_default': u'User',
-                'ab': [u'Иалахә', u'Участник'],
+                'ab': [u'Алахәыла', u'Иалахә', u'Участник'],
                 'ace': [u'Ureuëng Nguy', u'Pengguna'],
                 'af': u'Gebruiker',
                 'als': u'Benutzer',
@@ -1296,7 +1296,7 @@ class Family:
             },
             7: {
                 '_default': [u'File talk', u'Image talk'],
-                'ab': [u'Обсуждение файла', u'Обсуждение изображения'],
+                'ab': [u'Афаил ахцәажәара', u'Обсуждение файла'],
                 'ace': [u'Marit Beureukaih', u'Pembicaraan Berkas', u'Gambar Pembicaraan', u'Pembicaraan_Gambar'],
                 'af': [u'Lêerbespreking', u'Beeldbespreking'],
                 'als': [u'Datei Diskussion', u'Bild Diskussion'],
