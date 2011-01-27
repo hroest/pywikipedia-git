@@ -771,26 +771,26 @@ class RedirectRobot:
                         pywikibot.output(
                             u'Warning: Redirect target %s forms a redirect loop.'
                             % targetPage.title(asLink=True))
-                        break ###xqt doesn't work. edits twice!
-                        try:
-                            content = targetPage.get(get_redirect=True)
-                        except pywikibot.SectionError:
-                            content = pywikibot.Page(
-                                          targetPage.site(),
-                                          targetPage.sectionFreeTitle()
-                                      ).get(get_redirect=True)
-                        if targetPage.site().lang in sd_template and \
-                           targetPage.site().lang in sd_tagging_sum:
-                            pywikibot.output(u"Tagging redirect for deletion")
-                            # Delete the two redirects
-                            content = pywikibot.translate(
-                                        targetPage.site().lang,
-                                        sd_template)+"\n"+content
-                            summ = pywikibot.translate(targetPage.site().lang,
-                                                       sd_tagging_sum)
-                            targetPage.put(content, summ)
-                            redir.put(content, summ)
-                        break # TODO Better implement loop redirect
+                        break ### doesn't work. edits twice!
+##                        try:
+##                            content = targetPage.get(get_redirect=True)
+##                        except pywikibot.SectionError:
+##                            content = pywikibot.Page(
+##                                          targetPage.site(),
+##                                          targetPage.sectionFreeTitle()
+##                                      ).get(get_redirect=True)
+##                        if targetPage.site().lang in sd_template and \
+##                           targetPage.site().lang in sd_tagging_sum:
+##                            pywikibot.output(u"Tagging redirect for deletion")
+##                            # Delete the two redirects
+##                            content = pywikibot.translate(
+##                                        targetPage.site().lang,
+##                                        sd_template)+"\n"+content
+##                            summ = pywikibot.translate(targetPage.site().lang,
+##                                                       reason_loop)
+##                            targetPage.put(content, summ)
+##                            redir.put(content, summ)
+##                        break # TODO Better implement loop redirect
                     else: # redirect target found
                         if targetPage.isStaticRedirect():
                             pywikibot.output(
