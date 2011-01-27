@@ -31,6 +31,7 @@ comment = {
     'he':u'בוט: מסדר את האינטרוויקי',
     'it':u'Bot: Standardizzo interwiki',
     'ja':u'ロボットによる: 言語間リンクを標準化',
+    'ml':u'യന്ത്രം: അന്തർവിക്കി ക്രമവൽക്കരണം',
     'nl':u'Bot: standaardisatie interwikiverwijzingen',
     'no':u'bot: Språklenkestandardisering',
     'ksh':u'Bot: Engerwiki Lengks opprüühme',
