@@ -511,6 +511,7 @@ msg = {
     'qu': (u'Rurana antacha ', u'Yapasqa', u'Qullusqa', u'Hukchasqa'),
     'ro': (u'Robot interwiki: ', u'Adăugat', u'Înlăturat',u'Modificat'),
     'ru': (u'робот ', u'добавил', u'удалил', u'изменил'),
+    'rue': (u'робот ', u'додав', u'одобрав', u'змінив'),
     'sah': (u'робот ', u'эптэ', u'сотто', u'уларытта'),
     'sk': (u'robot ', u'Pridal', u'Odobral',u'Zmenil' ),
     'sl': (u'robot ', u'Dodajanje', u'Odstranjevanje', u'Spreminjanje'),
