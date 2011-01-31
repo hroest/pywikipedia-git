@@ -273,7 +273,7 @@ nothing_head = {
 # Note: every __botnick__ will be repleaced with your bot's nickname (feel free not to use if you don't need it)
 nothing_notification = {
     'commons':u"\n{{subst:User:Filnik/untagged|File:%s}}\n\n''This message was '''added automatically by [[User:" + \
-               "__botnick__|__botnick__]]''', if you need some help about it, ask its master (~~~) or go to the [[Commons:Help desk]]''. --~~~~",
+               "__botnick__|__botnick__]]''', if you need some help about it, please use the [[Commons:Help desk]]''. --~~~~",
     'ar'     :u"{{subst:مصدر الصورة|File:%s}} --~~~~",
     'de'     :u'\n{{subst:Benutzer:ABF/D2|%s}} ~~~~ ',
     'en'     :u"{{subst:image source|File:%s}} --~~~~",
