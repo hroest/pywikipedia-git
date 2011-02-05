@@ -249,7 +249,7 @@ sd_template = {
     'cs': u'{{smazat|přerušené přesměrování}}',
     'de': u'{{sla|Kaputte Weiterleitung}}',
     'en': u'{{db-r1}}',
-    'fa': u'{{حذف سریع|بن بست}}',
+    'fa': u'{{حذف سریع|بن بست|bot=yes}}',
     'frr': u'{{delete|Widjerfeerang uunstaken',
     'ga': u'{{scrios|Athsheoladh briste}}',
     'he': u'הפניה ללא יעד',
