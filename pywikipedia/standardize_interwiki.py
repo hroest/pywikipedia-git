@@ -27,6 +27,7 @@ comment = {
     'cs':u'Standadizace interwiki',
     'de':u'Bot: Interwikilinks standardisieren',
     'en':u'Robot: Interwiki standardization',
+    'fa':u'ربات: تصحیح جایگذاری میان‌ویکی‌ها',
     'fr':u'Robot : Standardisation des interwikis',
     'he':u'בוט: מסדר את האינטרוויקי',
     'it':u'Bot: Standardizzo interwiki',
