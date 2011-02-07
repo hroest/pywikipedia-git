@@ -55,7 +55,7 @@ from __future__ import generators
 #
 # (C) Daniel Herding, 2004.
 # (C) Purodha Blissenbach, 2009.
-# (C) xqt, 2009-2010
+# (C) xqt, 2009-2011
 # (C) Pywikipedia bot team, 2004-2010
 #
 # Distributed under the terms of the MIT license.
@@ -64,211 +64,22 @@ __version__='$Id$'
 #
 import re, sys, datetime
 import wikipedia as pywikibot
+from pywikibot import i18n
 import config
 import query
 import xmlreader
 
 # Summary message for fixing double redirects
-msg_double={
-    'af': u'Robot: dubbele aanstuur na %(to)s reggemaak',
-    'als': u'Bötli: Uflösig vun de doppleti Wyterleitig zue %(to)s',
-    'ar': u'بوت: تصليح تحويلة مزدوجة إلى %(to)s',
-    'bat-smg': u'Robots: Taisuoms dvėgobs paradresavėms → %(to)s',
-    'be-tarask': u'Робат: выпраўленьне падвойнага перанакіраваньня на %(to)s',
-    'be-x-old': u'Робат: выпраўленьне падвойнага перанакіраваньня → %(to)s',
-    'bjn': u'Robot: Pamasangan paugahan ganda ka %(to)s',
-    'bn': u'বট: %(to)s-এ দ্বিপুনর্নির্দেশনা ঠিক করছে',
-    'br': u'Kempennet adkas doubl gant robot → %(to)s',
-    'bs': u'Bot: Popravlja dvostruka preusmjerenja na %(to)s',
-    'cs': u'Robot opravil dvojité přesměrování → %(to)s',
-    'de': u'Bot: Korrigiere doppelte Weiterleitung auf %(to)s',
-    'el': u'Ρομπότ: Διόρθωση διπλής ανακατεύθυνσης προς %(to)s',
-    'en': u'Bot: Fixing double redirect to %(to)s',
-    'eo': u'Roboto: Riparis duoblan alidirekton al  %(to)s',
-    'es': u'Robot: Arreglando doble redirección → %(to)s',
-    'fa': u'ربات:اصلاح تغییر مسیر دوتایی ← %(to)s',
-    'fr': u'Robot: répare double redirection à %(to)s',
-    'frp': u'Bot : rèpâre redirèccion dobla a %(to)s',
-    'frr': u'Bot: Ferbeedre dobelt widjerfeerang tu %(to)s',
-    'ga': u'Róbó: Ag socrú athsheolta dúbailte → %(to)s',
-    'gl': u'Bot: Arranxo a redirección dobre cara a %(to)s',
-    'he': u'בוט: מתקן הפניה כפולה → %(to)s',
-    'hr': u'Bot: Popravak dvostrukih preusmjeravanja → %(to)s',
-    'hu': u'Bot: %(to)s lapra mutató dupla átirányítás javítása',
-    'hy': u'Ռոբոտ․ Շտկվում են կրկնակի վերահղումները %(to)s -ին',
-    'ia': u'Robot: reparation de duple redirection → %(to)s',
-    'id': u'Bot: Memperbaiki pengalihan ganda ke %(to)s',
-    'is': u'Vélmenni: Lagfæri tvöfalda tilvísun → %(to)s',
-    'it': u'Bot: Sistemo i redirect doppi a %(to)s',
-    'ja': u'ロボットによる: 二重リダイレクト修正 → %(to)s',
-    'ka': u'რობოტი: ორმაგი გადამისამართების გასწორება → %(to)s',
-    'kk': u'Бот: Шынжырлы айдатуды түзетті → %(to)s',
-    'ko': u'로봇: 이중 넘겨주기 수정 → %(to)s',
-    'ksh': u'Bot: [[Special:Doubleredirects|Dubbel Ömlëijdong]] fottjemaat → %(to)s',
-    'la': u'automaton: rectificatio redirectionis duplicis → %(to)s',
-    'lb': u'Bot: Duebel Viruleedung gefléckt → %(to)s',
-    'lt': u'robotas: Taisomas dvigubas peradresavimas → %(to)s',
-    'mk': u'Бот: Исправка на двојни пренасочувања → %(to)s',
-    'ms': u'Bot: Memperbetulkan pelencongan berganda ke %(to)s',
-    'mzn': u'ربوت:عوض هایتن دکشیه‌ئون دِتایی → %(to)s',
-    'nds': u'Bot: Dubbelte Wiederleiden rutmakt → %(to)s',
-    'ne': u'बोट: दुइपल्ट रिडाइरेक्ट लाइ %(to)s मा ठिक गर्दै',
-    'nl': u'Robot: dubbele doorverwijzing gecorrigeerd naar %(to)s',
-    'nn': u'robot: retta dobbel omdirigering → %(to)s',
-    'no': u'robot: Retter dobbel omdirigering til %(to)s',
-    'pdc': u'Waddefresser: Doppelte Weiderleiding nooch %(to)s gennert',
-    'pfl': u'Bot: E doppelte Waiterlaitung vabessat zu %(to)s',
-    'pl': u'Robot naprawia podwójne przekierowanie do %(to)s',
-    'pt': u'Robô: A corrigir o redireccionamento duplo para %(to)s',
-    'ro': u'Robot: Reparat dubla redirecționare înspre %(to)s',
-    'ru': u'Робот: исправление двойного перенаправления → %(to)s',
-    'rue': u'Робот: справив двоїте напрямлїня → %(to)s',
-    'sl': u'Bot: Popravljanje dvojnih preusmeritev na %(to)s',
-    'sr': u'Бот: исправљање двоструких преусмерења у %(to)s',
-    'sv': u'Robot: Rättar dubbel omdirigering → %(to)s',
-    'szl': u'Robot sprowjo tuplowane przekerowańa → %(to)s',
-    'th': u'โรบอต: แก้หน้าเปลี่ยนทางซ้ำซ้อน → %(to)s',
-    'tr': u'Bot değişikliği: Yönlendirmeye olan yönlendirme → %(to)s',
-    'tt': u'Робот: икеле күчешне дөресләү → %(to)s',
-    'uk': u'Робот: виправлення подвійного перенаправлення → %(to)s',
-    'vi': u'Rôbốt: Giải quyết đổi hướng kép đến %(to)s',
-    'war': u'Robot: Gin-ayad in nagduduha nga redirek → %(to)s',
-    'yi': u'באט: פארראכטן פארטאפלטע ווייטערפירונג → %(to)s',
-    'zh': u'機器人:修正雙重重定向 → %(to)s',
-    'zh-classical': u'僕:復修渡口 → %(to)s',
-    'zh-hans': u'机器人:修正双重重定向 → %(to)s',
-    'zh-yue': u'機械人：拉直連串跳轉 → %(to)s',
-}
+msg_double = 'redirect-fix-double'
 
 # Reason for deleting broken redirects
-reason_broken={
-    'af': u'[[WP:CSD#G8|G8]]: Verwyder [[Wikipedia:Redirect|aanstuur]] na nie-bestaande bladsy',
-    'als': u'Wyterleitig wo kaputt isch',
-    'ar': u'تحويلة إلى صفحة محذوفة أو غير موجودة',
-    'be-tarask': u'[[Wikipedia:Redirect|Перанакіраваньне]] на выдаленую ці неіснуючую старонку',
-    'be-x-old': u'Робат: мэта перанакіраваньня не існуе',
-    'br': u'[[WP:CSD#G8|G8]]: Ar bajenn ma vezer adkaset n\eus ket anezhi',
-    'bs': u'[[WP:CSD#G8|G8]]: [[Wikipedia:Redirect|Preusmjerenje]] na obrisanu ili nepostojeću stranicu',
-    'cs': u'Přerušené přesměrování',
-    'de': u'Bot: Weiterleitungsziel existiert nicht',
-    'el': u'[[Βικιπαίδεια:Ανακατεύθυνση|Ανακατεύθυνση]] σε μια [[Βικιπαίδεια:Γρήγορη διαγραφή σελίδων#Ανακατευθύνσεις|σελίδα που διαγράφηκε ή δεν υπάρχει]].',
-    'en': u'[[WP:CSD#G8|G8]]: [[Wikipedia:Redirect|Redirect]] to a deleted or non-existent page',
-    'eo': u'[[WP:CSD#G8|G8]]: [[Wikipedia:Redirect|Alidirekto]] al forigita aŭ neekzistanta paĝo',
-    'es': u'Robot: La página a la que redirige no existe',
-    'fa': u'ربات: (بن بست) تغییرمسیر به صفحه‌ای که وجود ندارد',
-    'fr': u'Robot : Cible du redirect inexistante',
-    'frp': u'[[WP:CSD#G8|G8]] : [[Wikipedia:Redirect|redirèccion]] de vers una pâge suprimâ ou ben pas ègzistenta',
-    'frr': u'Bot: Widjerfeerang tu en duad sidj.',
-    'ga': u'Róbó : Targaid athsheoladh ar iarraidh',
-    'gl': u'[[WP:CSD#G8|G8]]: [[Wikipedia:Redirect|Redirección]] cara a unha páxina eliminada ou en branco',
-    'he': u'בוט: יעד ההפניה אינו קיים',
-    'hu': u'Bot: Törölt vagy nemlétező lapra mutató [[WP:REDIR|átirányítás]] törlése',
-    'ia': u'[[WP:CSD#G8|G8]]: [[Wikipedia:Redirect|Redirection]] a un pagina delite o non existente',
-    'id': u'[[WP:CSD#G8|G8]]: [[Wikipedia:Redirect|Pengalihan]] ke halaman yang dihapus atau tidak ada',
-    'it': u'Bot: Il redirect indirizza ad una pagina inesistente',
-    'ja': u'ロボットによる:リダイレクト先は存在しませんでした',
-    'ka': u'რობოტი: გადამისამართებული გვერდი არ არსებობს',
-    'kk': u'Бот: Айдату нысанасы жоқ болды',
-    'ko': u'로봇: 끊긴 넘겨주기',
-    'ksh': u'Bot: Dė [[Special:BrokenRedirects|Ömlëijdong jingk ennet Liiere]]',
-    'la': u'automaton: redirectio ad paginam quae non est',
-    'lb': u'[[WP:CSD#G8|G8]]: [[Wikipedia:Redirect|Viruleedung]] op eng geläschte Säit oder eng Säit déi et net gëtt',
-    'lt': u'robotas: Peradresavimas į niekur',
-    'mk': u'[[ВП:КББ|О8]]: [[Википедија:Пренасочување|Пренасочување]] кон избришана или непостоечка страница',
-    'mzn': u'ربوت:بی‌جاء ِدکشی‌یه‌ئون',
-    'nds': u'Bot: Kaputte Wiederleiden ward nich brukt',
-    'ne': u'[[WP:CSD#G8|G8]]: [[Wikipedia:Redirect|रिडाइरेक्ट]]  लाइ मेटिएको वा हुदै नभएको पृष्ठमा पठाएको',
-    'nl': u'Robot: de doelpagina van de doorverwijzing bestaat niet',
-    'nn': u'robot: målet for omdirigeringa eksisterer ikkje',
-    'no': u'robot: Målet for omdirigeringen eksisterer ikke',
-    'pl': u'[[WP:CSD#G8|G8]] – [[Wikipedia:Redirect|przekierowanie]] do usuniętej lub nieistniejącej strony',
-    'pt': u'[[WP:CSD#G8|G8]]: [[Wikipedia:Redirect|Redireccionamento]] para uma página eliminada ou inexistente',
-    'ru': u'[[ВП:КБУ#П1|П1]]: перенаправление в никуда',
-    'rue': u'[[WP:CSD#G8|G8]]: [[Wikipedia:Redirect|Напрямлїня]] на змазану або неекзістуючу сторінку',
-    'sl': u'[[WP:CSD#G8|G8]]: [[Wikipedija:Preusmeritev|Preusmeritev]] na izbrisano ali neobstoječo stran',
-    'sr': u'Бот: Преусмерење не постоји',
-    'sv': u'[[WP:CSD#G8|G8]]: [http://sv.wikipedia.org/wiki/Wikipedia:Omdirigeringar Omdirigerar] till en raderad eller en obefintlig sida',
-    'th': u'โรบอต: หน้าเปลี่ยนทางเสีย',
-    'tr': u'Bot değişikliği: Var olmayan sayfaya olan yönlendirme',
-    'tt': u'[[ВП:ТБК#П1|П1]]: беркаяда күчеш ясамау',
-    'uk': u'[[WP:CSD#G8|G8]]: [[Wikipedia:Redirect|Перенаправлення]] на вилучену або неіснуючу сторінку',
-    'vi': u'[[Wikipedia:Trang đổi hướng|Chuyển hướng]] đến trang không tồn tại',
-    'war': u'Robot: Waray dida an karadto-an han redirek',
-    'yi': u'באט: ווײַטערפֿירן ציל עקזיסטירט נישט',
-    'zh': u'機器人:該重定向的目標不存在',
-    'zh-yue': u'機械人：跳轉目標唔存在',
-}
+reason_broken = 'redirect-remove-broken'
 
 # Reason for deleting redirect loops
-reason_loop={
-    'af': u'[[WP:CSD#G8|G8]]: Sirkulêre [[Wikipedia:Redirect|aanstuur]]',
-    'als': u'Bot: Wyterleitige bilde ne Zirkel',
-    'ar': u'هدف التحويلة يصنع عقدة تحويل',
-    'be-tarask': u'[[WP:CSD#G8|G8]]: Мэтавае [[Project:Перанакіраваньне|перанакіраваньне]] стварае пятлю перанакіраваньняў',
-    'br': u'[[WP:CSD#G8|G8]] : Stumm ur c\'helc\'h-tro born zo gant an [[Wikipedia:Redirect|adkas]]',
-    'bs': u'[[WP:CSD#G8|G8]]: [[Wikipedia:Redirect|Preusmjerenje]] pravi petlju na samo sebe',
-    'de': u'Bot: Weiterleitungsziel auf sich selbst',
-    'el': u'Ο στόχος [[Βικιπαίδεια:Ανακατεύθυνση|ανακατεύθυνσης]] προκαλεί [[Βικιπαίδεια:Γρήγορη διαγραφή σελίδων#Ανακατευθύνσεις|βρόχο ανακατεύθυνσης]]',
-    'en': u'[[WP:CSD#G8|G8]]: [[Wikipedia:Redirect|Redirect]] target forms a redirect loop',
-    'eo': u'[[WP:CSD#G8|G8]]: [[Wikipedia:Redirect|Alidirekta]] celas sin mem',
-    'fa': u'ربات: تغییر مسیر حلقه‌ای',
-    'fr': u'Bot : la cible de la redirection forme une boucle de redirection',
-    'frp': u'[[WP:CSD#G8|G8]] : la ciba de la [[Wikipedia:Redirect|redirèccion]] fôrme una boclla de redirèccion',
-    'frr': u'Bot: Widjerfeerang üüb ham salew',
-    'gl': u'[[WP:CSD#G8|G8]]: O destino da [[Wikipedia:Redirect|redirección]] crea un bucle',
-    'he': u'הפניה זו גורמת ללולאה אין־סופית של הפניות',
-    'hu': u'Bot: A cél átirányítási hurkot hoz létre',
-    'ia': u'[[WP:CSD#G8|G8]]: Le destination del [[Wikipedia:Redirect|redirection]] forma un circulo de redirectiones',
-    'id': u'[[WP:CSD#G8|G8]]: Target [[Wikipedia:Redirect|pengalihan]] menghasilkan pengalihan siklik',
-    'ksh': u'Bot: [[Wikipedia:Ömleidung|Ömleidunge]] jonn em Kreis eröm.',
-    'la': u'automaton: redirectio ad eundem titulum',
-    'lb': u'[[WP:CSD#G8|G8]]: [[Wikipedia:Redirect|Viruleedung]] där hiert Zil zu enger endlos Schleef féiert',
-    'mk': u'[[ВП:КББ|О8]]: Одредницата за [[Википедија:Пренасочување|пренасочување]] образува јамка',
-    'ne': u'[[WP:CSD#G8|G8]]: [[Wikipedia:Redirect|रिडाइरेक्ट]] निसाना पृष्ठ रिडाइरेक्ट भएर घुमिरहन्छ',
-    'nl': u'[[WP:NW|NUWEG]]: [[Wikipedia:Doorverwijzing|Doorverwijzing]] vormt een oneindige lus',
-    'no': u'robot: Omdirigering til seg selv',
-    'pl': u'[[WP:CSD#G8|G8]] – pętla [[Wikipedia:Redirect|przekierowań]]',
-    'pt': u'[[WP:CSD#G8|G8]]: O destino do [[Wikipedia:Redirect|redireccionamento]] cria um ciclo de redireccionamentos',
-    'ru': u'[[ВП:КБУ#П1|критерий быстрого удаления \'\'П.1\'\']] — перенаправление в никуда',
-    'rue': u'[[WP:CSD#G8|G8]]: [[Wikipedia:Redirect|Напрямлїня]] формує петлю напрямлїнь',
-    'sl': u'[[WP:CSD#G8|G8]]: Cilj [[Wikipedija:Preusmeritev|preusmeritve]] je ustvarjal preusmeritveno zanko',
-    'sr': u'[[WP:CSD#G8|G8]]: Циљ [[Wikipedia:Redirect|преусмерења]] гради петљу',
-    'tt': u'[[ВП:ТБК#П1|тиз бетерү критерийлары \'\'П.1\'\']] — беркаяда күчеш ясамау',
-    'uk': u'[[WP:CSD#G8|G8]]: [[Wikipedia:Redirect|Перенаправлення]] формує петлю перенаправлень',
-    'vi': u'[[Wikipedia:Trang đổi hướng|Chuyển hướng]] qua lại',
-}
+reason_loop = 'redirect-remove-loop'
 
 # Insert deletion template into page with a broken redirect
-sd_template = {
-    'af': u'{{db-r1}}',
-    'als': u'{{delete}}Wyterleitig wo kaputt isch',
-    'ar': u'{{شطب|تحويلة مكسورة}}',
-    'bar': u'{{delete}}Kaputte Weiterleitung',
-    'be-tarask': u'{{Выдаліць|некарэктнае перанакіраваньне}}',
-    'bs': u'{{db-r1}}',
-    'cs': u'{{smazat|přerušené přesměrování}}',
-    'de': u'{{sla|Kaputte Weiterleitung}}',
-    'en': u'{{db-r1}}',
-    'fa': u'{{حذف سریع|بن بست|bot=yes}}',
-    'frr': u'{{delete|Widjerfeerang uunstaken',
-    'ga': u'{{scrios|Athsheoladh briste}}',
-    'he': u'הפניה ללא יעד',
-    'hu': u'{{azonnali|Hibás átirányítás}}',
-    'ia': u'{{db-r1}}',
-    'id': u'{{db-r1}}',
-    'it': u'{{Cancella subito|9}}',
-    'ksh': u'{{Schmieß fott}}Di Ömlëijdong jeiht noh nörjendwoh hen.',
-    'lb': u'{{db-r1}}',
-    'mk': u'{{db-r1}}',
-    'nds': u'{{delete}}Kaputte Wiederleiden, wat nich brukt ward.',
-    'pdc': u'{{lesche|Kaputte Weiderleiding)}}',
-    'pl': u'{{db-r1}}',
-    'ru': u'{{db-redirnone}}',
-    'sr': u'{{db-r1}}',
-    'vi': u'{{Chờ xóa}}',
-    'war': u'{{delete}}Nautod o nagbinalikbalik nga redirek.',
-    'zh': u'{{delete|R1}}',
-}
+sd_template = 'redirect-broken-redirect-template'
 
 class RedirectGenerator:
     def __init__(self, xmlFilename=None, namespaces=[], offset=-1,
@@ -670,7 +481,7 @@ class RedirectRobot:
 
     def delete_broken_redirects(self):
         # get reason for deletion text
-        reason = pywikibot.translate(self.site, reason_broken)
+        reason = i18n.twtranslate(self.site, reason_broken)
         for redir_name in self.generator.retrieve_broken_redirects():
             self.delete_1_broken_redirect( redir_name, reason)
             if self.exiting:
@@ -699,12 +510,15 @@ class RedirectRobot:
                     try:
                         redir_page.delete(reason, prompt = False)
                     except pywikibot.NoUsername:
-                        if targetPage.site().lang in sd_template and \
-                           targetPage.site().lang in reason_broken:
+                        if i18n.twhas_key(
+                            targetPage.site.lang, sd_template) and \
+                            i18n.twhas_key(targetPage.site.lang, reason_broken):
                             pywikibot.output(
         u"No sysop in user-config.py, put page to speedy deletion.")
                             content = redir_page.get(get_redirect=True)
-                            content = pywikibot.translate(
+                            ### TODO: Add bot's signature if needed
+                            ###       Not supported via TW yet
+                            content = i18n.twtranslate(
                                 targetPage.site().lang,
                                 sd_template) + "\n" + content
                             redir_page.put(content, reason)
@@ -847,7 +661,7 @@ class RedirectRobot:
                     pywikibot.output(u"Note: Nothing left to do on %s"
                                      % redir.title(asLink=True))
                     break
-                summary = pywikibot.translate(self.site, msg_double) \
+                summary = i18n.twtranslate(self.site, msg_double) \
                           % {'to': targetPage.title(asLink=True)}
                 pywikibot.showDiff(oldText, text)
                 if self.prompt(u'Do you want to accept the changes?'):
@@ -875,7 +689,7 @@ class RedirectRobot:
     def fix_double_or_delete_broken_redirects(self):
         # TODO: part of this should be moved to generator, the rest merged into self.run()
         # get reason for deletion text
-        delete_reason = pywikibot.translate(self.site, reason_broken)
+        delete_reason = i18n.twtranslate(self.site, reason_broken)
         count = 0
         for (redir_name, code, target, final)\
                 in self.generator.get_redirects_via_api(maxlen=2):
