@@ -707,9 +707,7 @@ class RedirectRobot:
                             content = pywikibot.translate(
                                 targetPage.site().lang,
                                 sd_template) + "\n" + content
-                            summary = pywikibot.translate(
-                                targetPage.site().lang, reason_broken)
-                            redir_page.put(content, summary)
+                            redir_page.put(content, reason)
             except pywikibot.IsRedirectPage:
                 pywikibot.output(
         u'Redirect target %s is also a redirect! Won\'t delete anything.'
