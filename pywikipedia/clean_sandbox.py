@@ -97,7 +97,7 @@ sandboxTitle = {
     'da': u'Project:Sandkassen',
     'de': u'Project:Spielwiese',
     'en': u'Project:Sandbox',
-    'fa': u'Project:صفحه تمرین',
+    'fa': [u'Project:صفحه تمرین',u'Project:آشنایی'],
     'fr': u'Project:Bac à sable',
     'fi': u'Project:Hiekkalaatikko',
     'he': u'Project:ארגז חול',
