@@ -458,11 +458,17 @@ class Category(wikipedia.Page):
             wikipedia.output('Moving text from %s to %s.' % (self.title(), targetCat.title()))
             authors = ', '.join(self.contributingUsers())
             creationSummary = wikipedia.translate(wikipedia.getSite(), msg_created_for_renaming) % (self.title(), authors)
-            #Maybe sometimes length of summary is more than 200 characters and thus will not be shown.so bot must listify authors in another place
+            #Maybe sometimes length of summary is more than 200 characters and thus will not be shown.
+            #For avoidning copyright violation bot must listify authors in another place
             if len(creationSummary)>200:
-                targetCat.put(self.get()+u"/n/nAuthors: %s" % authors, creationSummary)
-            else:
-                targetCat.put(self.get(), creationSummary)
+                talkpage=targetCat.toggleTalkPage()
+                try:
+                    talktext=talkpage.get()
+                except:
+                    talkpage.put(u"==Authors==\n%s-~~~~" % authors, u"Bot:Listifying authors")
+                else:
+                    talkpage.put(talktext+u"\n==Authors==\n%s-~~~~" % authors, u"Bot:Listifying authors")
+            targetCat.put(self.get(), creationSummary)
             return True
 
     #Like copyTo above, except this removes a list of templates (like deletion templates) that appear in
