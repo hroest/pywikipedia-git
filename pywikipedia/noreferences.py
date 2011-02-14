@@ -319,7 +319,7 @@ referencesTemplates = {
         'eo': [u'Referencoj'],
         'es': ['Listaref', 'Reflist', 'muchasref'],
         'fa': [u'Reflist', u'Refs', u'FootnotesSmall', u'Reference',
-               u'پانویس', u'پانویس‌ها ', u'پانویس ۲', u'پانویس۲'],
+               u'پانویس', u'پانویس‌ها ', u'پانویس ۲', u'پانویس۲',u'فهرست منابع'],
         'fi': [u'Viitteet', u'Reflist'],
         'fr': [u'Références', u'Notes', u'References', u'Reflist'],
         'hu': [u'reflist', u'források', u'references', u'megjegyzések'],
