@@ -56,12 +56,13 @@ class Family(family.Family):
         }
         self.cross_projects = [
             'wikipedia', 'wiktionary', 'wikibooks', 'wikiquote', 'wikisource',
-            'wikinews', 'wikiversity', 'meta', 'test', 'incubator', 'commons', 'species',
+            'wikinews', 'wikiversity', 'meta', 'test', 'incubator', 'commons',
+            'species',
         ]
 
 
     def version(self, code):
-        return '1.16wmf4'
+        return '1.17wmf1'
 
     def shared_image_repository(self, code):
         return ('commons', 'commons')
