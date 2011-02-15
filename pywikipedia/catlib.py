@@ -464,7 +464,7 @@ class Category(wikipedia.Page):
                 talkpage=targetCat.toggleTalkPage()
                 try:
                     talktext=talkpage.get()
-                except:
+                except wikipedia.NoPage:
                     talkpage.put(u"==Authors==\n%s-~~~~" % authors, u"Bot:Listifying authors")
                 else:
                     talkpage.put(talktext+u"\n==Authors==\n%s-~~~~" % authors, u"Bot:Listifying authors")
