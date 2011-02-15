@@ -47,6 +47,7 @@ import time
 import wikipedia as pywikibot
 
 content = {
+    'commons': u'{{Sandbox}}\n<!-- Please edit only below this line. -->',
     'als':u'{{subst:/Vorlage}}',
     'ar': u'{{من فضلك اترك هذا السطر ولا تعدله (عنوان ساحة التجربة)}}\n<!-- مرحبا! خذ راحتك في تجربة مهارتك في التنسيق والتحرير أسفل هذا السطر. هذه الصفحة لتجارب التعديل ، سيتم تفريغ هذه الصفحة كل 6 ساعات. -->',
     'bar':u'{{Bitte erst NACH dieser Zeile schreiben! (Begrüßungskasten)}}\r\n',
@@ -64,11 +65,10 @@ content = {
     'ksh':u'{{subst:/Schablon}}',
     'nds':u'{{subst:/Vörlaag}}',
     'nl': u'{{subst:Wikipedia:Zandbak/schoon zand}}',
-    'no': u'{{Sandkasse}}\n<!-- VENNLIGST EKSPERIMENTER NEDENFOR DENNE SKJULTE TEKSTLINJEN! SANDKASSEMALEN {{Sandkasse}} SKAL IKKE FJERNES! -->}}',
     'nn': u'{{sandkasse}}\n<!-- Ver snill og IKKJE FJERN DENNE LINA OG LINA OVER ({{sandkasse}}) Nedanføre kan du derimot ha det artig og prøve deg fram! Lykke til! :-)  -->',
+    'no': u'{{Sandkasse}}\n<!-- VENNLIGST EKSPERIMENTER NEDENFOR DENNE SKJULTE TEKSTLINJEN! SANDKASSEMALEN {{Sandkasse}} SKAL IKKE FJERNES! -->}}',
     'pl': u'{{Prosimy - NIE ZMIENIAJ, NIE KASUJ, NIE PRZENOŚ tej linijki - pisz niżej}}',
     'pt': u'<!--não apague esta linha-->{{página de testes}}<!--não apagar-->\r\n',
-    'commons': u'{{Sandbox}}\n<!-- Please edit only below this line. -->',
     'ru': u'{{/Пишите ниже}}\n<!-- Не удаляйте, пожалуйста, эту строку, тестируйте ниже -->',
     'sr': u'{{песак}}\n<!-- Молимо, испробавајте испод ове линије. Хвала. -->',
     'sv': u'{{subst:Sandlådan}}',
@@ -77,6 +77,7 @@ content = {
     }
 
 msg = {
+    'commons': u'Bot: This page will automatically be cleaned.',
     'als':u'Bötli: Sandchaschte iigebnet.',
     'ar': u'روبوت: هذه الصفحة سيتم تفريغها تلقائيا',
     'bar':u'Bot: Spielwiesn gmaht.',
@@ -97,7 +98,6 @@ msg = {
     'no': u'bot: Rydder sandkassa.',
     'pl': u'Robot czyści brudnopis',
     'pt': u'Bot: Limpeza da página de testes',
-    'commons': u'Bot: This page will automatically be cleaned.',
     'ru': u'Бот: очистка песочницы',
     'sr': u'Чишћење песка',
     'sv': u'Robot krattar sandlådan.',
@@ -106,6 +106,7 @@ msg = {
     }
 
 sandboxTitle = {
+    'commons': u'Project:Sandbox',
     'als':u'Project:Sandchaschte',
     'ar': u'Project:ساحة التجربة',
     'bar':u'Project:Spielwiese',
@@ -113,9 +114,9 @@ sandboxTitle = {
     'da': u'Project:Sandkassen',
     'de': u'Project:Spielwiese',
     'en': u'Project:Sandbox',
-    'fa': [u'Project:صفحه تمرین',u'Project:آشنایی'],
-    'fr': u'Project:Bac à sable',
+    'fa': [u'Project:صفحه تمرین', u'Project:آشنایی'],
     'fi': u'Project:Hiekkalaatikko',
+    'fr': u'Project:Bac à sable',
     'he': u'Project:ארגז חול',
     'id': u'Project:Bak pasir',
     'it': u'Project:Pagina delle prove',
@@ -127,7 +128,6 @@ sandboxTitle = {
     'no': u'Project:Sandkasse',
     'pl': u'Project:Brudnopis',
     'pt': u'Project:Página de testes',
-    'commons': u'Project:Sandbox',
     'ru': u'Project:Песочница',
     'sr': u'Project:Песак',
     'sv': u'Project:Sandlådan',
