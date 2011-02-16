@@ -521,7 +521,8 @@ def getTemplateList (lang, pType):
         except KeyError:
             templates = template['_default']
     return templates
-def featuredbot(arts,cc,tosite,template_on_top,pType, quiet,dry):
+
+def featuredbot(arts, cc, tosite, template_on_top, pType, quiet, dry):
     templatelist = getTemplateList(tosite.lang, pType)
     findtemplate = '(' + '|'.join(templatelist) + ')'
     re_Link_FA=re.compile(ur"\{\{%s\|%s\}\}"
@@ -633,25 +634,27 @@ def featuredbot(arts,cc,tosite,template_on_top,pType, quiet,dry):
                             cc[a.title()]=atrans.title()
                 except pywikibot.PageNotSaved, e:
                     pywikibot.output(u"Page not saved")
+
 def featuredWithInterwiki(fromsite, tosite, template_on_top, pType, quiet,
-                          dry=False,query=500):
+                          dry=False, query=500):
     if not fromsite.lang in cache:
-        cache[fromsite.lang]={}
+        cache[fromsite.lang] = {}
     if not tosite.lang in cache[fromsite.lang]:
-        cache[fromsite.lang][tosite.lang]={}
-    cc=cache[fromsite.lang][tosite.lang]
+        cache[fromsite.lang][tosite.lang] = {}
+    cc = cache[fromsite.lang][tosite.lang]
     if nocache:
         cc={}
 
     arts=featuredArticles(fromsite, pType)
     top=0
-    if len(arts)>query:
-        while top<len(arts):
-            bottom=top
-            top=top+query
-            featuredbot(arts[bottom:top],cc,tosite,template_on_top, pType, quiet,dry)
+    if len(arts) > query:
+        while top < len(arts):
+            bottom = top
+            top += query
+            featuredbot(arts[bottom:top], cc, tosite, template_on_top, pType,
+                        quiet, dry)
     else:
-        featuredbot(arts,cc,tosite,template_on_top,pType,quiet,dry)
+        featuredbot(arts, cc, tosite, template_on_top, pType, quiet, dry)
 
 if __name__=="__main__":
     template_on_top = True
