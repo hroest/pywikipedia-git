@@ -417,7 +417,7 @@ def featuredArticles(site, pType):
     except KeyError:
         pywikibot.output(
             u'Error: language %s doesn\'t has %s category source.'
-            % (site.lang, feature))
+            % (site.lang, pType))
         return arts
     if pType == 'good':
         name=good_name[site.lang][1]
