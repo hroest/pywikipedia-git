@@ -271,7 +271,7 @@ class Family(family.Family):
         }
 
     def version(self, code):
-        return '1.16wmf4'
+        return '1.17wmf1'
 
     def code2encodings(self, code):
         """
