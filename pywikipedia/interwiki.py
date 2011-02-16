@@ -564,7 +564,7 @@ msg = {
     'uz': (u'Bot ', u'Qoʻshdi', u'Tuzatdi', u'Oʻchirdi'),
     'vec': (u'Bot: ', u'Zonto', u'Cavo', u'Canbio'),
     'vi': (u'robot ', u'Thêm', u'Dời', u'Thay'),
-    'vls': (u'Robot ', u'Derby', u'Derof', u'Anders')
+    'vls': (u'Robot ', u'Derby', u'Derof', u'Anders'),
     'vo': (u'bot ', u'läükon', u'moükon', u'votükon'),
     'wa': (u'robot ', u'radjouter', u'rissaetchî', u'candjî'),
     'war': (u'robot ', u'Gindugngan', u'Gintanggal', u'Ginliwat'),
