@@ -87,7 +87,7 @@ class Family(family.Family):
             'ca': u'Viquitexts Discussió',
             'cs': u'Diskuse k Wikizdrojům',
             'cy': u'Sgwrs Wicitestun',
-            'da': u'Wikisource-diskussion',
+            'da': [u'Wikisource diskussion', u'Wikisource-diskussion'],
             'de': u'Wikisource Diskussion',
             'el': u'Βικιθήκη συζήτηση',
             'es': u'Wikisource Discusión',
