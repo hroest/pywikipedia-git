@@ -282,11 +282,13 @@ netext = {
         'zh-yue': u'{{歡迎}}--%s',
     },
     'wikinews':{
+        'fa': u'{{خوشامد۲|%s}}',
         'it': u'{{subst:benvenuto}}',
         'zh': u'{{subst:welcome}} %s',
     },
     'wiktionary':{
         'bn': u'{{subst:User:Wikitanvir/welcome|firma=%s}}',
+        'fa': u'{{جا:خوشامد|%s}}',
         'it': u'{{subst:Utente:Filnik/Benve|firma=%s}}',
     },
     'wikiversity':{
