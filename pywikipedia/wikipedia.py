@@ -7249,16 +7249,23 @@ u"WARNING: Could not open '%s'. Maybe the server or\n your connection is down. R
         """
         global htmldata
         if not hasattr(self, "_mw_version"):
+            PATTERN = r"^(?:: )?([0-9]+)\.([0-9]+)(.*)$"
             versionpage = self.getUrl(self.get_address("Special:Version"))
             htmldata = BeautifulSoup(versionpage, convertEntities="html")
-            versionstring = htmldata.findAll(text="MediaWiki"
-                                             )[1].parent.nextSibling
-            m = re.match(r"^: ([0-9]+)\.([0-9]+)(.*)$", str(versionstring))
-            if m:
-                self._mw_version = (int(m.group(1)), int(m.group(2)),
-                                        m.group(3))
+            # try to find the live version
+            # 1st try is for mw < 1.17wmf1
+            # 2nd try is for mw 1.17wmf1
+            # 3rd uses family file which is not live
+            for versionstring in [htmldata.findAll(
+                                      text="MediaWiki")[1].parent.nextSibling,
+                                  htmldata.body.table.findAll(
+                                      'td')[1].contents[0],
+                                  self.family.version(self.lang)]:
+                m = re.match(PATTERN, str(versionstring).strip())
+                if m: break
             else:
-                self._mw_version = self.family.version(self.lang).split(".")
+                raise Error(u'Cannot find any live version!')
+            self._mw_version = (int(m.group(1)), int(m.group(2)), m.group(3))
         return self._mw_version
 
     def checkCharset(self, charset):
