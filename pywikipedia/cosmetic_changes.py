@@ -88,6 +88,7 @@ msg_standalone = {
     'fr': u'Robot : Changement de type cosmétique',
     'frr':u'Bot: Kosmeetisk feranerangen',
     'fy': u'bot tekstwiziging',
+    'ga': u'Róbat: Athruithe cosmaideacha',
     'gl': u'bot Cambios estética',
     'he': u'בוט: שינויים קוסמטיים',
     'hi': u'Bot: अंगराग परिवर्तन',
