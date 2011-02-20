@@ -47,6 +47,7 @@ docuReplacements = {
 # Summary messages in different languages
 msg = {
     'ar': u'روبوت: إضافة وسم <references /> مفقود',
+    'be': u'Robot: дабаўлены адсутнічаючы тэг <references />',
     'cs': u'Robot doplnil chybějící <references />',
     'de': u'Bot: Trage fehlendes <references /> nach',
     'en': u'Robot: Adding missing <references /> tag',
@@ -313,6 +314,7 @@ referencesSections = {
 referencesTemplates = {
     'wikipedia': {
         'ar': [u'Reflist', u'ثبت المراجع', u'قائمة المراجع'],
+        'be': [u'Зноскі', u'Примечания', u'Reflist', u'Спіс заўваг', u'Заўвагі'],
         'en': [u'Reflist', u'Refs', u'FootnotesSmall', u'Reference',
                u'Ref-list', u'Reference list', u'References-small', u'Reflink',
                u'Footnotes', u'FootnotesSmall'],
@@ -345,6 +347,7 @@ referencesTemplates = {
 # Define this only if required by your wiki.
 referencesSubstitute = {
     'wikipedia': {
+        'be': u'{{зноскі}}',
         'fi': u'{{viitteet}}',
         'hu': u'{{Források}}',
         'pl': u'{{Przypisy}}',
@@ -357,7 +360,7 @@ referencesSubstitute = {
 # like pl.wiki where {{Przypisy}} generates
 # == Przypisy ==
 # <references />
-noTitleRequired = [u'pl']
+noTitleRequired = [u'pl', u'be']
 
 class XmlDumpNoReferencesPageGenerator:
     """
