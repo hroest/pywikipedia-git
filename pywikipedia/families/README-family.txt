@@ -1,24 +1,28 @@
 How to create a new family file to add a new wiki to the bot framework.
 
-(c) 2008, the Pywikipediabot team
+(c) 2008-2011, the Pywikipediabot team
 
-Copy and paste the text below "COPY HERE" into your favorite text editor, and
-save it as WIKINAME_family.py in the families/ subdirectory.  Replace
-WIKINAME with the name you want to use for the new wiki family, making sure
-that it doesn't duplicate any existing name.
+First of all, run generate_family_file.py, and see if this works. If it doesn't,
+please read the text below and check the example.
+
+Family files are saved as WIKINAME_family.py in the families/ subdirectory.
+WIKINAME is the name you want to use for the new wiki family.
 
 A "family" is any group of wikis located on the same server; usually they
 are versions of the same type of content in different languages, but this
 isn't required.  A family can consist of just one wiki, or more; if there is
 more than one wiki, each wiki needs to be identified by a unique code.
 
-After you copy the text, go through and edit it, based upon the comment
-lines.  First, do a global search-and-replace to change all instances of
-'WIKINAME' to your actual wiki name.  Everything in the example below is
-based on the bot's default settings, except for those that are marked as
-examples. You only need to change it if your wiki's value is
-different from the default. You can delete anything that is not indicated as
-"REQUIRED", if your new wiki doesn't vary from the default settings.
+generate_family_file.py should do this automatically, at least for recent
+versions of MediaWiki. If it does not, go through the example below and edit
+the generated family file based on the comments. Take care to copy the
+indentation - the whitespace is relevant in python!
+
+Everything in the example below is based on the bot's default settings, except
+for those that are marked as examples. You only need to change it if your wiki's
+value is different from the default. You can delete anything that is not
+indicated as "REQUIRED", if your new wiki doesn't vary from the default
+settings.
 
 == COPY HERE ==
 
