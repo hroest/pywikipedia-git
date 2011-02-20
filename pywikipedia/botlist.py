@@ -88,7 +88,7 @@ def refresh(site, sysop=False, witheditsonly=True):
     pywikibot.put_throttle() # It actually is a get, but a heavy one.
     m1 = True
     offset = ''
-    if site.versionnumber == 17:
+    if site.versionnumber >= 17:
         PATTERN = u'<li>(.*?) *\((.*?),\s(.*?)\)(?:.*?)</li>'
     else:
         PATTERN = u'<li>(.*?) *\((.*?),\s(.*?)\)</li>'
@@ -97,7 +97,7 @@ def refresh(site, sysop=False, witheditsonly=True):
 
         m1 = re.findall(u'<li>.*?</li>', text)
         for item in m1:
-            m2 = re.search(PATTERN', item)
+            m2 = re.search(PATTERN, item)
             (bot, flag_local, flag_global) = m2.groups()
             flag_local  = (flag_local[:2] == u'<a')
             flag_global = True # since group='Global_bot'
