@@ -51,7 +51,8 @@ class Family(family.Family):
         self.namespaces[1]['ja'] = [u'ノート', u'トーク']
         self.namespaces[3]['ja'] = [u'利用者‐会話', u'利用者・トーク']
         self.namespaces[6]['ja'] = [u'ファイル', u'Image', u'画像']
-        self.namespaces[7]['ja'] = [u'ファイル‐ノート', u'ファイル・トーク', u'Image talk', u'画像‐ノート']
+        self.namespaces[7]['ja'] = [u'ファイル‐ノート', u'ファイル・トーク',
+                                    u'Image talk', u'画像‐ノート']
         self.namespaces[9]['ja'] = [u'MediaWiki‐ノート', u'MediaWiki・トーク']
         self.namespaces[10]['ja'] = [u'Template', u'テンプレート']
         self.namespaces[11]['ja'] = [u'Template‐ノート', u'テンプレート・トーク']
@@ -61,6 +62,8 @@ class Family(family.Family):
         self.namespaces[15]['ja'] = [u'Category‐ノート', u'カテゴリ・トーク']
         self.namespaces[2]['pl'] = u'Wikipedysta'
         self.namespaces[3]['pl'] = u'Dyskusja wikipedysty'
+        self.namespaces[2]['pt'] = u'Usuário'
+        self.namespaces[3]['pt'] = u'Usuário Discussão'
 
         # Most namespaces are inherited from family.Family.
         # Translation used on all wikis for the different namespaces.
