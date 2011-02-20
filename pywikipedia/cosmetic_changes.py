@@ -153,6 +153,7 @@ msg_append = {
     'fr': u'; changement de type cosmétique',
     'frr':u'; kosmeetisk feranerangen',
     'fy': u'; tekstwiziging',
+    'ga': u'; athruithe cosmaideacha',
     'gl': u'; cambios estética',
     'he': u'; שינויים קוסמטיים',
     'hi': u'; अंगराग परिवर्तन',
