@@ -71,7 +71,7 @@ Additionaly, these arguments can be used to restrict the bot to certain pages:
     -number:       used as -number:#, specifies that the robot should process
                    that amount of pages and then stop. This is only useful in
                    combination with -start. The default is not to stop.
- 
+
     -until:        used as -until:title, specifies that the robot should
                    process pages in wiki default sort order up to, and
                    including, "title" and then stop. This is only useful in
@@ -154,7 +154,7 @@ These arguments are useful to provide hints to the bot:
                        * test:      Take interwiki links from Test Wikipedia
 
                    Languages, groups and families having the same page title
-                   can be combined, as  -hint:5,scand,sr,pt,commons:New_York 
+                   can be combined, as  -hint:5,scand,sr,pt,commons:New_York
 
     -hintfile:     similar to -hint, except that hints are taken from the given
                    file, enclosed in [[]] each, instead of the command line.
@@ -251,13 +251,13 @@ These arguments specify in which way the bot should follow interwiki links:
                    only when you are sure you have first gotten the interwiki
                    links on the starting page exactly right).
                    (note: without ending colon)
- 
+
     -hintsareright do not follow interwiki links to sites for which hints
                    on existing pages are given. Note that, hints given
                    interactively, via the -askhint command line option,
                    are only effective once they have been entered, thus
                    interwiki links on the starting page are followed
-                   regardess of hints given when prompted. 
+                   regardess of hints given when prompted.
                    (Warning! Should be used with caution!)
                    (note: without ending colon)
 
@@ -801,7 +801,7 @@ class StoredPage(pywikibot.Page):
     memory when a big number of Page objects will be loaded
     at the same time.
     """
-    
+
     # Please prefix the class members names by SP
     # to avoid possible name clashes with pywikibot.Page
 
@@ -811,8 +811,8 @@ class StoredPage(pywikibot.Page):
     SPstore = None
 
     # attributes created by pywikibot.Page.__init__
-    SPcopy = [ '_editrestriction', 
-               '_site', 
+    SPcopy = [ '_editrestriction',
+               '_site',
                '_namespace',
                '_section',
                '_title',
@@ -825,7 +825,7 @@ class StoredPage(pywikibot.Page):
                '_startTime',
                '_revisionId',
                '_deletedRevs' ]
-                 
+
     def SPdeleteStore():
         if StoredPage.SPpath:
             del StoredPage.SPstore
@@ -840,7 +840,7 @@ class StoredPage(pywikibot.Page):
             import shelve
             index = 1
             while True:
-                path = config.datafilepath('cache', 'pagestore' + str(index))       
+                path = config.datafilepath('cache', 'pagestore' + str(index))
                 if not os.path.exists(path): break
                 index += 1
             StoredPage.SPpath = path
@@ -869,7 +869,7 @@ class PageTree(object):
     """
     def __init__(self):
         # self.tree :
-        # Dictionary: 
+        # Dictionary:
         # keys: Site
         # values: list of pages
         # All pages found within Site are kept in
@@ -879,7 +879,7 @@ class PageTree(object):
         # the remove() operation,
         # keeping list values is important, because
         # the order in which the pages were found matters:
-        # the earlier a page is found, the closer it is to the 
+        # the earlier a page is found, the closer it is to the
         # Subject.originPage. Chances are that pages found within
         # 2 interwiki distance from the originPage are more related
         # to the original topic than pages found later on, after
@@ -894,7 +894,7 @@ class PageTree(object):
     def filter(self, site):
         """
         Iterates over pages that are in Site site
-        """ 
+        """
         try:
             for page in self.tree[site]:
                 yield page
@@ -934,7 +934,7 @@ class PageTree(object):
         """
         for site, d in self.tree.iteritems():
             yield site, len(d)
-    
+
     def __iter__(self):
         for site, plist in self.tree.iteritems():
             for page in plist:
@@ -956,7 +956,7 @@ class Subject(object):
     pseudocode:
         todo <- [originPage]
         done <- []
-        while todo != []: 
+        while todo != []:
             pending <- todo
             todo <-NL(pending) / done
             done <- NL(pending) U done
@@ -964,23 +964,23 @@ class Subject(object):
 
 
     There is, however, one limitation that is induced by implementation:
-    to compute efficiently NL(P), one has to load the page contents of 
-    pages in P. 
+    to compute efficiently NL(P), one has to load the page contents of
+    pages in P.
     (Not only the langlinks have to be parsed from each Page, but we also want
      to know if the Page is a redirect, a disambiguation, etc...)
 
-    Because of this, the pages in pending have to be preloaded. 
+    Because of this, the pages in pending have to be preloaded.
     However, because the pages in pending are likely to be in several sites
     we cannot "just" preload them as a batch.
 
-    Instead of doing "pending <- todo" at each iteration, we have to elect a 
-    Site, and we put in pending all the pages from todo that belong to that 
+    Instead of doing "pending <- todo" at each iteration, we have to elect a
+    Site, and we put in pending all the pages from todo that belong to that
     Site:
 
     Code becomes:
         todo <- {originPage.site():[originPage]}
         done <- []
-        while todo != {}: 
+        while todo != {}:
             site <- electSite()
             pending <- todo[site]
 
@@ -992,10 +992,10 @@ class Subject(object):
 
 
     Subject objects only operate on pages that should have been preloaded before.
-    In fact, at any time: 
+    In fact, at any time:
       * todo contains new Pages that have not been loaded yet
       * done contains Pages that have been loaded, and that have been treated.
-      * If batch preloadings are successful, Page._get() is never called from 
+      * If batch preloadings are successful, Page._get() is never called from
         this Object.
     """
 
@@ -1114,7 +1114,7 @@ class Subject(object):
     def whatsNextPageBatch(self, site):
         """
         By calling this method, you 'promise' this instance that you will
-        preload all the 'site' Pages that are in the todo list. 
+        preload all the 'site' Pages that are in the todo list.
 
         This routine will return a list of pages that can be treated.
         """
@@ -1363,7 +1363,7 @@ class Subject(object):
     def batchLoaded(self, counter):
         """
         This is called by a worker to tell us that the promised batch of
-        pages was loaded. 
+        pages was loaded.
         In other words, all the pages in self.pending have already
         been preloaded.
 
@@ -1405,8 +1405,8 @@ class Subject(object):
                     for site, count in self.todo.siteCounts():
                         counter.minus(site, count)
                     self.todo = PageTree()
-                    # In some rare cases it might be we already did check some 'automatic' links 
-                    self.done = PageTree() 
+                    # In some rare cases it might be we already did check some 'automatic' links
+                    self.done = PageTree()
                 continue
 
             elif page.isRedirectPage() or page.isCategoryRedirect():
@@ -1519,8 +1519,8 @@ class Subject(object):
 
             elif globalvar.autonomous and duplicate and not skip:
                 pywikibot.output(u"Stopping work on %s because duplicate pages"\
-                    " %s and %s are found" % (self.originPage.aslink(True), 
-                                              duplicate.aslink(True), 
+                    " %s and %s are found" % (self.originPage.aslink(True),
+                                              duplicate.aslink(True),
                                               page.aslink(True)))
                 self.makeForcedStop(counter)
                 try:
@@ -1533,7 +1533,7 @@ class Subject(object):
                         f.write(u" [%s%s graph]" % (config.interwiki_graph_url, filename))
                     f.write("\n")
                     f.close()
-                # FIXME: What errors are we catching here? 
+                # FIXME: What errors are we catching here?
                 # except: should be avoided!!
                 except:
                    #raise
@@ -1880,12 +1880,12 @@ class Subject(object):
         Delete the contents that are stored on disk for this Subject.
 
         We cannot afford to define this in a StoredPage destructor because
-        StoredPage instances can get referenced cyclicly: that would stop the 
+        StoredPage instances can get referenced cyclicly: that would stop the
         garbage collector from destroying some of those objects.
 
         It's also not necessary to set these lines as a Subject destructor:
         deleting all stored content one entry by one entry when bailing out
-        after a KeyboardInterrupt for example is redundant, because the 
+        after a KeyboardInterrupt for example is redundant, because the
         whole storage file will be eventually removed.
         """
         if globalvar.contentsondisk:
@@ -2576,7 +2576,7 @@ def main():
         globalvar.summary = u''
     elif globalvar.summary:
         globalvar.summary += u'; '
-    
+
     # ensure that we don't try to change main page
     try:
         site = pywikibot.getSite()
@@ -2590,7 +2590,7 @@ def main():
 
     if newPages is not None:
         if len(namespaces) == 0:
-            ns = 0 
+            ns = 0
         elif len(namespaces) == 1:
             ns = namespaces[0]
             if ns != 'all':
@@ -2666,7 +2666,7 @@ def main():
     else:
         singlePageTitle = ' '.join(singlePageTitle)
         if not singlePageTitle and not opthintsonly:
-             singlePageTitle = pywikibot.input(u'Which page to check:')
+            singlePageTitle = pywikibot.input(u'Which page to check:')
         if singlePageTitle:
             singlePage = pywikibot.Page(pywikibot.getSite(), singlePageTitle)
         else:
