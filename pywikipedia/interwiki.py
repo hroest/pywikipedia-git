@@ -1755,8 +1755,8 @@ class Subject(object):
         # TODO: sould be move to assemble()
         # replaceLinks will skip the site it's working on.
         if self.originPage.site() not in new:
-          if not self.originPage.site().family.interwiki_forward: #TODO: make this possible as well.
-            new[self.originPage.site()] = self.originPage
+            if not self.originPage.site().family.interwiki_forward: #TODO: make this possible as well.
+                new[self.originPage.site()] = self.originPage
 
         #self.replaceLinks(self.originPage, new, True, bot)
 
