@@ -774,6 +774,7 @@ class Family(family.Family):
             'bn':  [u'দ্ব্যর্থতা নিরসন', u'Disambig'],
             'cdo': [u'Gì-ngiê'],
             'ext': [u'Desambiguáncia'],
+            'fa':  [u'ابهام‌زدایی',u'ابهام زدایی'],
             'fo':  [u'Fleiri týdningar'],
             'frp': [u'Homonimos'],
             'fur': [u'Disambiguazion', u'Disambig'],
