@@ -541,9 +541,12 @@ not supported by PyWikipediaBot!"""
         else:
             return title
 
-    def urlname(self):
+    def urlname(self, withNamespace=True):
         """Return the Page title encoded for use in an URL."""
-        title = self.title(underscore = True)
+        if withNamespace:
+            title = self.title(underscore=True)
+        else:
+            title = self.titleWithoutNamespace(underscore=True)
         encodedTitle = title.encode(self.site().encoding())
         return urllib.quote(encodedTitle)
 
