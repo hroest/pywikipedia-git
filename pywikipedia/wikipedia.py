@@ -1698,8 +1698,16 @@ not supported by PyWikipediaBot!"""
 
         # If there is an unchecked edit restriction, we need to load the page
         if self._editrestriction:
-            output(u'Page %s is semi-protected. Getting edit page to find out if we are allowed to edit.' % self.aslink())
-            self.get(force = True, change_edit_time = False)
+            output(
+u'Page %s is semi-protected. Getting edit page to find out if we are allowed to edit.'
+                   % self.aslink())
+            oldtime = self.editTime()
+            # Note: change_edit_time=True is always True since
+            #       self.get() calls self._getEditPage without this parameter
+            self.get(force=True, change_edit_time=True)
+            newtime = self.editTime()
+            if oldtime != newtime: # page was changed
+                raise EditConflict(u'Page has been changed after first read.')
             self._editrestriction = False
         # If no comment is given for the change, use the default
         comment = comment or action
