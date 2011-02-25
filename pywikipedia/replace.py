@@ -648,13 +648,13 @@ def main(*args):
             else:
                 PageTitles.append(arg[6:])
         elif arg.startswith('-savenew'):
+            append = False
             if len(arg) == 8:
                 filename = pywikibot.input(
 u'Please enter the filename to save the titles \n(will be deleted if exists):')
             else:
                 filename = arg[9:]
         elif arg.startswith('-save'):
-            append = False
             if len(arg) == 5:
                 filename = pywikibot.input(
                     u'Please enter the filename to save the titles:')
