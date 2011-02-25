@@ -81,7 +81,10 @@ def translate(page, hints = None, auto = True, removebrackets = False, site = No
             for newcode in codes:
                 x = None
                 if newcode in family.langs.keys():
-                    if ( page is None ) or ( ( newcode != sitelang ) and ( not family.interwiki_forwarded_from ) ):
+                    if page is None or \
+                       (newcode != sitelang and
+                        pywikibot.getSite().family.name
+                        not in family.interwiki_forwarded_from):
                         x = pywikibot.Page(pywikibot.getSite(fam=family, code=newcode), newname)
                 elif newcode in family.interwiki_forwarded_from:
                     x = pywikibot.Page(pywikibot.getSite(fam=newcode, code=newcode), newname)
