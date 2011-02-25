@@ -441,7 +441,7 @@ class ReplaceRobot:
             try:
                 # Load the page's text from the wiki
                 original_text = page.get(get_redirect=True)
-                if not page.canBeEdited():
+                if not (self.articles or page.canBeEdited()):
                     pywikibot.output(u"You can't edit page %s"
                                      % page.title(asLink=True))
                     continue
