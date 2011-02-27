@@ -471,15 +471,15 @@ duplicatesRegex = {
 # Category with the licenses and / or with subcategories with the other licenses.
 category_with_licenses = {
     'commons': 'Category:License tags',
-    'ar'     : 'تصنيف:قوالب حقوق الصور',
-    'en'     : 'Category:Wikipedia image copyright templates',
-    'fa'     : u'رده:برچسب‌های حق تکثیر نگاره',
-    'ga'     : 'Catagóir:Clibeanna cóipchirt d\'íomhánna',
-    'it'     : 'Categoria:Template Licenze copyright',
-    'ja'     : 'Category:画像の著作権表示テンプレート',
-    'ko'     : '분류:그림 저작권 틀',
-    'ta'     :'Category:காப்புரிமை வார்ப்புருக்கள்',
-    'zh'     : 'Category:版權申告模板',
+    'ar': 'تصنيف:قوالب حقوق الصور',
+    'en': 'Category:Wikipedia image copyright templates',
+    'fa': u'رده:برچسب‌های حق تکثیر نگاره',
+    'ga': 'Catagóir:Clibeanna cóipchirt d\'íomhánna',
+    'it': 'Categoria:Template Licenze copyright',
+    'ja': 'Category:画像の著作権表示テンプレート',
+    'ko': '분류:위키백과 그림 저작권 틀',
+    'ta': 'Category:காப்புரிமை வார்ப்புருக்கள்',
+    'zh': 'Category:版權申告模板',
 }
 
 ## Put None if you don't use this option or simply add nothing if en
