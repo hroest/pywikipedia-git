@@ -1976,7 +1976,9 @@ class Subject(object):
 
         # When running in autonomous mode without -force switch, make sure we
         # don't remove any items, but allow addition of the new ones
-        if globalvar.autonomous and not globalvar.force and len(removing) > 0:
+        if globalvar.autonomous and (not globalvar.force or
+                                     pywikibot.unicode_error
+                                     ) and len(removing) > 0:
             for rmsite in removing:
                 # Sometimes sites have an erroneous link to itself as an
                 # interwiki
@@ -1984,7 +1986,8 @@ class Subject(object):
                     continue
                 rmPage = old[rmsite]
                 #put it to new means don't delete it
-                if not globalvar.cleanup or \
+                if not globalvar.cleanup and not globalvar.force or \
+                   globalvar.cleanup and \
                    rmPage.aslink(forceInterwiki=True) not in globalvar.remove or \
                    rmPage.site().lang in ['hi', 'cdo'] and \
                    pywikibot.unicode_error: #work-arround for bug #3081100 (do not remove hi-pages)
@@ -2037,6 +2040,12 @@ class Subject(object):
             self.problem(u'Found incorrect link to %s in %s'
                          % (",".join([x.lang for x in removing]),
                             page.aslink(True)), createneed=False)
+            if pywikibot.unicode_error:
+                for x in removing:
+                    if x.lang in ['hi', 'cdo']:
+                        pywikibot.output(
+u'\03{lightred}WARNING: This may be false positive due to unicode bug #3081100\03{default}')
+                        break
             ask = True
         if globalvar.force or globalvar.cleanup:
             ask = False
