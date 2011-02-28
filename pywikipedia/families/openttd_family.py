@@ -32,7 +32,7 @@ class Family(family.Family):
         return ''
 
     def version(self, code):
-        return "1.9.1"
+        return "1.12.0"
 
     def apipath(self, code):
         raise NotImplementedError(
