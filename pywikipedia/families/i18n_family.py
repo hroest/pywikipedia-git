@@ -171,6 +171,17 @@ class Family(family.Family):
         self.namespaces[1235] = {
             '_default': [u'OpenImages talk'],
         }
-
+        self.namespaces[1236] = {
+            '_default': [u'‎Europeana'],
+        }
+        self.namespaces[1237] = {
+            '_default': [u'‎Europeana talk'],
+        }
+        self.namespaces[1238] = {
+            '_default': [u'Pywikipedia'],
+        }
+        self.namespaces[1239] = {
+            '_default': [u'Pywikipedia talk'],
+        }
     def version(self, code):
         return "1.18alpha"
