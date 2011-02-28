@@ -48,7 +48,7 @@ class DjVuTextBot:
     # On English Wikisource, {{blank page}} is used to track blank pages.
     # It may be omitted by adding an empty string like has been done for 'fr'.
     blank = {
-        'en': u'{{blank page}}',
+        'en': u"<pagequality level=\"0\" user="+config.usernames['wikisource']['en']+u" />",
         'fa': u'',
         'fr': u'',
         'pt': u'',
