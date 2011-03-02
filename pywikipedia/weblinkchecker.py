@@ -214,6 +214,7 @@ ignorelist = [
     re.compile('.*[\./@]jpl\.nasa\.gov(/.*)?'), # bot rejected on the site
     re.compile('.*[\./@]itis\.gov(/.*)?'), # bot rejected on the site
     re.compile('.*[\./@]cev\.lu(/.*)?'), # bot rejected on the site
+    re.compile('.*[\./@]science\.ksc\.nasa\.gov(/.*)?'), # very slow response resulting in bot error
 ]
 
 def weblinksIn(text, withoutBracketed = False, onlyBracketed = False):
