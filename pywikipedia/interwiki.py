@@ -1989,7 +1989,7 @@ class Subject(object):
                 if not globalvar.cleanup and not globalvar.force or \
                    globalvar.cleanup and \
                    rmPage.aslink(forceInterwiki=True) not in globalvar.remove or \
-                   rmPage.site().lang in ['hi', 'cdo'] and \
+                   rmPage.site().lang in ['hak', 'hi', 'cdo'] and \
                    pywikibot.unicode_error: #work-arround for bug #3081100 (do not remove hi-pages)
                     new[rmsite] = rmPage
                     pywikibot.output(
