@@ -11,8 +11,8 @@ class Family(family.Family):
         self.name = 'wikiversity'
 
         self.languages_by_size = [
-            'en', 'fr', 'ru', 'de', 'cs', 'es', 'it', 'pt', 'el', 'fi', 'sv',
-            'ja',
+            'en', 'fr', 'ru', 'de', 'cs', 'beta', 'es', 'it', 'pt', 'el', 'fi',
+            'sv', 'ja',
         ]
 
         if family.config.SSL_connection:
