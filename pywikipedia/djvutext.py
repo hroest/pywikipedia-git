@@ -140,7 +140,7 @@ class DjVuTextBot:
         djvutxt = self.get_page(pageno)
         if not djvutxt:
             djvutxt = pywikibot.translate(pywikibot.getSite(), self.blank)
-        text = u'<noinclude>{{PageQuality|1|%s}}<div class="pagetext">\n\n\n</noinclude>%s<noinclude><references/></div></noinclude>' % (self.username,djvutxt)
+        text = u'<noinclude><pagequality level="1" user="%s" /><div class="pagetext">\n\n\n</noinclude>%s<noinclude><references/></div></noinclude>' % (self.username,djvutxt)
 
         # convert to wikisyntax
         # this adds a second line feed, which makes a new paragraph
