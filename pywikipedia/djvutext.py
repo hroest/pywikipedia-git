@@ -45,14 +45,6 @@ class DjVuTextBot:
         'nl': u'Bot: pagina aangemaakt met tekst geëxtraheerd uit DjVu-bestand',
         'pt': u'Bot: criando página com texto extraído do DjVu',
     }
-    # On English Wikisource, {{blank page}} is used to track blank pages.
-    # It may be omitted by adding an empty string like has been done for 'fr'.
-    blank = {
-        'en': u"<pagequality level=\"0\" user="+config.usernames['wikisource']['en']+u" />",
-        'fa': u'',
-        'fr': u'',
-        'pt': u'',
-    }
 
     def __init__(self, djvu, index, pages, ask=False, debug=False):
         """
@@ -138,13 +130,15 @@ class DjVuTextBot:
                               % (page_namespace, self.prefix, pageno))
         exists = page.exists()
         djvutxt = self.get_page(pageno)
-        if not djvutxt:
-            djvutxt = pywikibot.translate(pywikibot.getSite(), self.blank)
-        text = u'<noinclude><pagequality level="1" user="%s" /><div class="pagetext">\n\n\n</noinclude>%s<noinclude><references/></div></noinclude>' % (self.username,djvutxt)
 
-        # convert to wikisyntax
-        # this adds a second line feed, which makes a new paragraph
-        text = text.replace('', "\n")
+        if not djvutxt:
+            text = u'<noinclude><pagequality level="0" user="%s" /><div class="pagetext">\n\n\n</noinclude><noinclude><references/></div></noinclude>' % (self.username)
+        else:
+            text = u'<noinclude><pagequality level="1" user="%s" /><div class="pagetext">\n\n\n</noinclude>%s<noinclude><references/></div></noinclude>' % (self.username,djvutxt)
+
+            # convert to wikisyntax
+            # this adds a second line feed, which makes a new paragraph
+            text = text.replace('', "\n")
 
         # only save if something was changed
         # automatically ask if overwriting an existing page
