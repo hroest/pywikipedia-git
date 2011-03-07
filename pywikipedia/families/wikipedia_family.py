@@ -48,6 +48,8 @@ class Family(family.Family):
         # Override defaults
         self.namespaces[2]['cs'] = u'Wikipedista'
         self.namespaces[3]['cs'] = u'Diskuse s wikipedistou'
+        self.namespaces[9]['da'] = u'MediaWiki-diskussion'
+        self.namespaces[13]['da'] = u'Hjælp-diskussion'
         self.namespaces[1]['ja'] = [u'ノート', u'トーク']
         self.namespaces[3]['ja'] = [u'利用者‐会話', u'利用者・トーク']
         self.namespaces[6]['ja'] = [u'ファイル', u'Image', u'画像']
@@ -220,7 +222,7 @@ class Family(family.Family):
             'cu': [u'Википє́дїѩ бєсѣ́да', u'Википедїѩ бєсѣ́да'],
             'cv': u'Википеди сӳтсе явмалли',
             'cy': u'Sgwrs Wicipedia',
-            'da': [u'Wikipedia diskussion', u'Wikipedia-diskussion'],
+            'da': u'Wikipedia-diskussion',
             'de': u'Wikipedia Diskussion',
             'diq': u'Wikipedia talk',
             'dsb': u'Wikipedija diskusija',
