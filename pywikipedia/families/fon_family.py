@@ -37,4 +37,4 @@ class Family(family.Family):
         return '/mediawiki'
 
     def version(self, code):
-        return "1.12.1" 
+        return "1.15.1" 
