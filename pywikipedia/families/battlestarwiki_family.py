@@ -66,4 +66,4 @@ class Family(family.Family):
         return '%s.battlestarwiki.org' % code
 
     def version(self, code):
-        return "1.14.0"
+        return "1.15.0"
