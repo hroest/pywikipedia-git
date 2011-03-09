@@ -206,7 +206,7 @@ class Family(family.Family):
         return '%s/api.php' % self.scriptpath(code)
 
     def version(self, code):
-        return '1.15.1'
+        return '1.16.2'
 
     def code2encoding(self, code):
         return 'utf-8'
