@@ -23,7 +23,7 @@ def _altlang(code):
     If no translation is available to a specified language, translate() will
     try each of the specified fallback languages, in order, until it finds
     one with a translation, with 'en' and '_default' as a last resort.
-    
+
     For example, if for language 'xx', you want the preference of languages
     to be: xx > fr > ru > en, you let altlang return ['fr', 'ru'].
     """
@@ -123,9 +123,11 @@ def _altlang(code):
         return ['ro']
     #Russian and Belarusian
     if code in ['ab', 'av', 'ba', 'bxr', 'ce', 'cv', 'kk', 'koi', 'ky', 'lbe',
-                'mdf', 'mhr', 'mrj', 'myv', 'os', 'rue', 'sah', 'tg', 'tt',
-                'udm', 'uk', 'xal']:
+                'mdf', 'mhr', 'mrj', 'myv', 'os', 'rue', 'sah', 'tg', 'udm',
+                'uk', 'xal']:
         return ['ru']
+    if code == 'tt':
+        return ['tt-cyrl', 'ru']
     if code in ['be', 'be-x-old']:
         return ['be', 'be-x-old', 'ru']
     if code == 'kaa':
@@ -137,7 +139,7 @@ def _altlang(code):
         return ['sr-el', 'sh', 'hr', 'bs']
     #Turkish and Kurdish
     if code in ['diq', 'ku']:
-        return ['ku', 'tr']
+        return ['ku', 'ku-latn', 'tr']
     if code == 'gag':
         return ['tr']
     if code == 'ckb':
