@@ -1690,11 +1690,18 @@ not supported by PyWikipediaBot!"""
             elif self.site().has_api() and self.namespace() in [2,3] \
                  and (self.title().endswith('.css') or \
                       self.title().endswith('.js')):
-                # API enable: if title ends with .css or .js in ns2,3
-                # it needs permission 'editusercssjs'
-                sysop = self._getActionUser(action='editusercssjs',
-                                            restriction=self.editRestriction,
-                                            sysop=True)
+		titleparts = self.title().split("/")
+		userpageowner = titleparts[0].split(":")[1]
+		if userpageowner != username:
+			# API enable: if title ends with .css or .js in ns2,3
+			# it needs permission to edit user pages
+			if self.title().endswith('css'):
+				permission = 'editusercss'
+			else:
+				permission = 'edituserjs'
+			sysop = self._getActionUser(action=permission,
+						    restriction=self.editRestriction,
+						    sysop=True)
 
         # If there is an unchecked edit restriction, we need to load the page
         if self._editrestriction:
@@ -4940,6 +4947,10 @@ class Site(object):
         else:
             self._load(sysop = sysop)
             index = self._userIndex(sysop)
+	    # Handle obsolete editusercssjs permission
+	    if right in ['editusercss', 'edituserjs'] \
+		and right not in self._rights[index]:
+		return 'editusercssjs' in self._rights[index]
             return right in self._rights[index]
 
     def server_time(self):
