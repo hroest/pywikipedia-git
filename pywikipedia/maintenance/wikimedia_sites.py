@@ -7,6 +7,7 @@ against the language lists
 #
 # Distributed under the terms of the MIT license.
 #
+__version__ = '$Id$'
 
 import sys, re
 
