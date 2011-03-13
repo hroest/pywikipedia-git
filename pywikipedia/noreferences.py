@@ -86,10 +86,10 @@ placeBeforeSections = {
         u'Poznámky',
     ],
     'de': [              # no explicit policy on where to put the references
-##        u'Literatur',
-##        u'Weblinks',
-##        u'Siehe auch',
-##        u'Weblink',      # bad, but common singular form of Weblinks
+        u'Literatur',
+        u'Weblinks',
+        u'Siehe auch',
+        u'Weblink',      # bad, but common singular form of Weblinks
     ],
     'en': [              # no explicit policy on where to put the references
         u'Further reading',
@@ -362,6 +362,16 @@ referencesSubstitute = {
 # <references />
 noTitleRequired = [u'pl', u'be']
 
+maintenance_category = {
+    'wikipedia': {
+        'be-x-old': u'Вікіпэдыя:Старонкі з адсутным сьпісам зносак',
+        'de': u'Seiten mit fehlendem References-Tag',
+        'en': u'Pages with missing references list',
+        'ja': u'Refタグがあるのにreferencesタグがないページ',
+        'simple': u'Wikipedia pages with broken references',
+    },
+}
+
 class XmlDumpNoReferencesPageGenerator:
     """
     Generator which will yield Pages that might lack a references tag.
@@ -502,7 +512,11 @@ class NoReferencesBot:
         # won't work with nested templates
         # the negative lookahead assures that we'll match the last template
         # occurence in the temp text.
-        templatePattern  = r'{{((?!}}).)+?}}\s*'
+        ### fix me:
+        ### {{commons}} or {{commonscat}} are part of Weblinks section
+        ### * {{template}} is mostly part of a section
+        ### so templatePattern must be fixed
+        templatePattern  = r'\r\n{{((?!}}).)+?}}\s*'
         commentPattern   = r'<!--((?!-->).)*?-->\s*'
         metadataR = re.compile(r'(\r\n)?(%s|%s|%s|%s)$'
                                % (categoryPattern, interwikiPattern,
@@ -515,7 +529,7 @@ class NoReferencesBot:
             else:
                 break
         pywikibot.output(
-            u'Found no section that can be preceeded by a new references section. Placing it before interwiki links, categories, and bottom templates.')
+            u'Found no section that can be preceeded by a new references section.\nPlacing it before interwiki links, categories, and bottom templates.')
         index = len(tmpText)
         return self.createReferenceSection(oldText, index)
 
@@ -632,9 +646,21 @@ def main():
     if not gen:
         gen = genFactory.getCombinedGenerator()
     if not gen:
+        site = pywikibot.getSite()
+        try:
+            cat = maintenance_category[site.family.name][site.lang]
+        except:
+            pass
+        else:
+            import catlib
+            if not namespaces:
+                namespaces = [0]
+            cat = catlib.Category(site, "%s:%s" % (site.namespace(14), cat))
+            gen = pagegenerators.CategorizedPageGenerator(cat)
+    if not gen:
         pywikibot.showHelp('noreferences')
     else:
-        if namespaces != []:
+        if namespaces:
             gen =  pagegenerators.NamespaceFilterPageGenerator(gen, namespaces)
         preloadingGen = pagegenerators.PreloadingGenerator(gen)
         bot = NoReferencesBot(preloadingGen, always)
