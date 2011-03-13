@@ -273,14 +273,14 @@ def expandmarker(text, marker = '', separator = ''):
 #        A family has by definition only one kind of interlanguage links:
 #        1 - interlanguage links inside the own family.
 #            They go to a corresponding page in another language in the same
-#            family, such as from 'en.wikipedia' to 'pt.wikipedia', or from 
+#            family, such as from 'en.wikipedia' to 'pt.wikipedia', or from
 #            'es.wiktionary' to 'arz.wiktionary'.
 #            Families with this kind have several language-specific sites.
 #            They have their interwiki_forward attribute set to None
 #        2 - language links forwarding to another family.
 #            They go to a corresponding page in another family, such as from
 #            'commons' to 'zh.wikipedia, or from 'incubator' to 'en.wikipedia'.
-#            Families having those have one member only, and do not have 
+#            Families having those have one member only, and do not have
 #            language-specific sites. The name of the target family of their
 #            interlanguage links is kept in their interwiki_forward attribute.
 #        These functions only deal with links of these two kinds only.  They
@@ -1042,7 +1042,7 @@ def translate(code, xdict):
         code = code.lang
 
     # If xdict attribute is wikipedia, define the xdite had multiple projects
-    if 'wikipedia' in xdict: 
+    if 'wikipedia' in xdict:
         if pywikibot.default_family in xdict:
             xdict = xdict[pywikibot.default_family]
         else:
