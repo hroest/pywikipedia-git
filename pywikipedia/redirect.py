@@ -33,7 +33,7 @@ and arguments can be:
 -namespace:n   Namespace to process. Can be given multiple times, for several
                namespaces. If omitted, only the main (article) namespace is
                is treated with -api, with -xml all namespaces are treated,
-               Works only with an XML dump, or the API interface. 
+               Works only with an XML dump, or the API interface.
 
 -offset:n      With -moves, the number of hours ago to start scanning moved
                pages. With -xml, the number of the redirect to restart with

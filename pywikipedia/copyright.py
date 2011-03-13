@@ -351,7 +351,7 @@ class URLExclusion:
                     f = codecs.open(path, 'w', 'utf-8')
                     f.write(data)
                     f.close()
-                    
+
     def update(self):
         self.download(force_update = True)
         self.scan()

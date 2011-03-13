@@ -80,7 +80,7 @@ This script understands the following command-line arguments:
 
    -file[:#]       Use a file instead of a wikipage to take the random sign.
                    If you use this parameter, you don't need to use -random.
-                   
+
    -sign           Use one signature from command line instead of the default
 
    -savedata       This feature saves the random signature index to allow to
@@ -206,13 +206,13 @@ locale.setlocale(locale.LC_ALL, '')
 # language (e.g. 'de') and modify/translate the text.
 
 # The page where the bot will save the log (e.g. Wikipedia:Welcome log).
-# 
+#
 # ATTENTION: "Log disabled comment is listed the projects not to log welcomed users, and no necessary to set deatils.
 logbook = {
     'commons': {'_default': u'Project:Welcome log', },
     'wikipedia': {
         '_default': None,
-        # Log disabled: da, de, en, fa, he, id, ka, pdc, pt, ru, vo. 
+        # Log disabled: da, de, en, fa, he, id, ka, pdc, pt, ru, vo.
         'ar': u'Project:سجل الترحيب',
         'fr': u'Wikipedia:Prise de décision/Accueil automatique des nouveaux par un robot/log',
         'ga': u'Project:Log fáilte',
@@ -386,7 +386,7 @@ timeselected = u' ~~~~~' # Defining the time used after the signature
 
 # The text for reporting a possibly bad username (e.g. *[[Talk_page:Username|Username]]).
 report_text = {
-    'commons': {'_default': u"\n*{{user3|%s}}" + timeselected,}, 
+    'commons': {'_default': u"\n*{{user3|%s}}" + timeselected,},
     'wikipedia':{
         'ar': u"\n*{{user13|%s}}" + timeselected,
         'da': u'\n*[[Bruger Diskussion:%s]] ' + timeselected,
@@ -455,7 +455,7 @@ class FilenameNotSet(pywikibot.Error):
 class Global(object):
     """Container class for global settings.
        Use of globals outside of this is to be avoided."""
-    
+
     attachEditCount = 1     # number of edits that an user required to be welcomed
     dumpToLog = 15          # number of users that are required to add the log :)
     offset = 0              # skip users newer than that timestamp
@@ -477,15 +477,15 @@ class Global(object):
     #fileOption = False     # check if the user wants to use a file or the wikipage
 
 class WelcomeBot(object):
-    
+
     def __init__(self):
         #Initial
         self.site = pywikibot.getSite()
         self.bname = dict()
-        
+
         self._totallyCount = 0
         self.welcomed_users = list()
-        
+
         if globalvar.randomSign:
             self.defineSign(True)
         if __name__ != '__main__': #use only in module call
@@ -570,14 +570,14 @@ class WelcomeBot(object):
                         self.bname[name] = bname
                         return bname.lower() in name.lower()
         except UnicodeEncodeError:
-            pass  
+            pass
         try:
             for bname in self._blacklist:
                 if bname.lower() in str(name).lower(): #bad name positive
                     self.bname[name] = bname
                     return True
         except UnicodeEncodeError:
-            pass          
+            pass
         return False
 
     def reportBadAccount(self, name = None, final = False):
@@ -711,7 +711,7 @@ class WelcomeBot(object):
             if globalvar.quick and count_auto > 0:
                 showStatus()
                 pywikibot.output(u'Ignored %d user(s) by auto-create' % count_auto)
-            
+
             showStatus(5)
             pywikibot.output(u'There is nobody left to be welcomed...')
         else:
@@ -727,7 +727,7 @@ class WelcomeBot(object):
             URL += "&offset=%d" % globalvar.offset
         pywikibot.output("Getting new user log from Special:Log/newusers....")
         raw = self.site.getUrl(URL)
-        
+
         # I search with a regex how many user have not the talk page
         # and i put them in a list (i find it more easy and secure).
         # XXX: That's the regex, if there are problems, take a look here.
@@ -821,7 +821,7 @@ class WelcomeBot(object):
                     pywikibot.output(u'%s might be a global bot!' % users.name() )
                     continue
                 #if globalvar.offset != 0 and time.strptime(users.registrationTime(), "%Y-%m-%dT%H:%M:%SZ") >= globalvar.offset:
-                #    
+                #
                 if users.editCount() >= globalvar.attachEditCount:
                     showStatus(2)
                     pywikibot.output(u'%s has enough edits to be welcomed.' % users.name() )
@@ -917,9 +917,9 @@ class WelcomeBot(object):
                 break
     #if __name__ != '__main__':
     #    globalvar.offset = int(time.strftime("%Y%m%d%H%M%S", time.gmtime()))
-    #    
+    #
     #    def putName(nm):
-    #        
+    #
     #        self._checkQueue.append(name)
     #        if len(self._checkQueue) >= globalvar.dumpToLog:
     #            self.run()
@@ -954,7 +954,7 @@ def load_word_function(raw):
 
 globalvar = Global()
 
-if __name__ == "__main__":    
+if __name__ == "__main__":
     try:
         number_user = 0
         for arg in pywikibot.handleArgs():
@@ -1021,10 +1021,10 @@ if __name__ == "__main__":
                 globalvar.quiet = True
             elif arg == '-quick':
                 globalvar.quick = True
-            
+
         # Filename and pywikipedia path
         # file where is stored the random signature index
-        filename = pywikibot.config.datafilepath('welcome-%s-%s.data' % (pywikibot.default_family, pywikibot.default_code))  
+        filename = pywikibot.config.datafilepath('welcome-%s-%s.data' % (pywikibot.default_family, pywikibot.default_code))
         if globalvar.offset and globalvar.timeoffset:
             pywikibot.output('WARING: both -offset and -timeoffset were provided, ignoring -offset')
             globalvar.offset = 0

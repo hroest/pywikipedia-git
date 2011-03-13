@@ -48,7 +48,7 @@ Furthermore, the following command line parameters are supported:
              the feature.
 -day         the first time found dead link longer than x day ago, it should
              probably be fixed or removed. if no set, default is 7 day.
-             
+
 All other parameters will be regarded as part of the title of a single page,
 and the bot will only work on that single page.
 

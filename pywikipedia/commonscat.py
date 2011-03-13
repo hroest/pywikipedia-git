@@ -83,7 +83,7 @@ commonscatTemplates = {
                            u'انبار رده', u'Commons category',u'انبار-رده']),
     'fr' : (u'Commonscat', [u'CommonsCat', u'Commons cat',
                             u'Commons category']),
-    'frp' : (u'Commonscat', [u'CommonsCat']), 
+    'frp' : (u'Commonscat', [u'CommonsCat']),
     'ga' : (u'Catcómhaoin', [u'Commonscat']),
     'hi' : (u'Commonscat', [u'Commons2', u'Commons cat', u'Commons category']),
     'hu' : (u'Commonskat', [u'Közvagyonkat']),

@@ -238,7 +238,7 @@ imageMoveMessage = {
 }
 
 def pageTextPost(url,parameters):
-    gotInfo = False;    
+    gotInfo = False;
     while(not gotInfo):
         try:
             commonsHelperPage = urllib.urlopen("http://toolserver.org/~magnus/commonshelper.php", parameters)
@@ -249,7 +249,7 @@ def pageTextPost(url,parameters):
         except socket.timeout:
             pywikibot.output(u'Got a timeout, let\'s try again')
     return data
-    
+
 class imageTransfer (threading.Thread):
 
     def __init__ ( self, imagePage, newname, category):
@@ -269,17 +269,17 @@ class imageTransfer (threading.Thread):
                 'ignorewarnings':'1',
                 'doit':'Uitvoeren'
                 }
-      
+
         tosend=urllib.urlencode(tosend)
         print tosend
         CH=pageTextPost('http://www.toolserver.org/~magnus/commonshelper.php', tosend)
         print 'Got CH desc.'
-        
+
         tablock=CH.split('<textarea ')[1].split('>')[0]
         CH=CH.split('<textarea '+tablock+'>')[1].split('</textarea>')[0]
         CH=CH.replace(u'&times;', u'×')
         CH = self.fixAuthor(CH)
-        pywikibot.output(CH);        
+        pywikibot.output(CH);
 
         # I want every picture to be tagged with the bottemplate so i can check my contributions later.
         CH=u'\n\n{{BotMoveToCommons|'+ self.imagePage.site().language() + '.' + self.imagePage.site().family.name +'|year={{subst:CURRENTYEAR}}|month={{subst:CURRENTMONTHNAME}}|day={{subst:CURRENTDAY}}}}' + CH
@@ -287,7 +287,7 @@ class imageTransfer (threading.Thread):
         if self.category:
             CH = CH.replace(u'{{subst:Unc}} <!-- Remove this line once you have added categories -->', u'')
             CH = CH + u'[[Category:' + self.category + u']]'
-        
+
         bot = UploadRobot(url=self.imagePage.fileUrl(), description=CH, useFilename=self.newname, keepFilename=True, verifyDescription=False, ignoreWarning = True, targetSite = pywikibot.getSite('commons', 'commons'))
         bot.run()
 
@@ -327,7 +327,7 @@ class imageTransfer (threading.Thread):
                 imagebot = ImageRobot(generator = self.preloadingGen, oldImage = self.imagePage.titleWithoutNamespace(), newImage = self.newname, summary = moveSummary, always = True, loose = True)
                 imagebot.run()
         return
-    
+
     def fixAuthor(self, pageText):
         '''
         Fix the author field in the information template.
@@ -340,15 +340,15 @@ class imageTransfer (threading.Thread):
 
         #Find the {{self|author=
         selfMatch = selfRegex.search(pageText)
-        
+
         #Check if both are found and are equal
         if (informationMatch and selfMatch):
             if(informationMatch.group('author')==selfMatch.group('author')):
                 #Replace |Author=Original uploader was ... with |Author= ...
                 pageText = informationRegex.sub(r'|Author=\g<author>', pageText)
-                
+
         return pageText
-    
+
 
 #-label ok skip view
 #textarea
@@ -486,7 +486,7 @@ def main(args):
             category = arg [len('-cc:'):]
         else:
             genFactory.handleArg(arg)
-    
+
     generator = genFactory.getCombinedGenerator()
     if not generator:
         raise add_text.NoEnoughData('You have to specify the generator you want to use for the script!')
@@ -516,7 +516,7 @@ def main(args):
                         skip = True
                 else:
                     while True:
-    
+
                         # Do the Tkdialog to accept/reject and change te name
                         (newname, skip)=Tkdialog(imagepage.titleWithoutNamespace(), imagepage.get(), username, imagepage.permalink(), imagepage.templates()).getnewname()
 
@@ -530,7 +530,7 @@ def main(args):
                             newname=imagepage.titleWithoutNamespace()
                         else:
                             newname = newname.decode('utf-8')
-                        
+
                         # Check if the image already exists
                         CommonsPage=pywikibot.Page(
                                        pywikibot.getSite('commons', 'commons'),

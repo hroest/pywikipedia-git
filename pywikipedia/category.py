@@ -1374,7 +1374,7 @@ def main(*args):
             gen = genFactory.getCombinedGenerator()
         if not gen:
             #default for backwords compatibility
-            genFactory.handleArg('-links') 
+            genFactory.handleArg('-links')
         # The preloading generator is responsible for downloading multiple
         # pages from the wiki simultaneously.
         gen = pagegenerators.PreloadingGenerator(

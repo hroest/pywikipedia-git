@@ -34,7 +34,7 @@ Furthermore, the following command line parameters are supported:
 
 -save             Saves the titles of the articles to a file instead of
                   modifying the articles. This way you may collect titles to
-                  work on in automatic mode, and process them later with 
+                  work on in automatic mode, and process them later with
                   -file. Opens the file for append, if exists.
                   If you insert the contents of the file into a wikipage, it
                   will appear as a numbered list, and may be used with -links.
@@ -131,7 +131,7 @@ This command will change 'referer' to 'referrer', but not in pages which
 talk about HTTP, where the typo has become part of the standard:
 
     python replace.py referer referrer -file:typos.txt -excepttext:HTTP
-    
+
 Please type "replace.py -help | more" if you can't read the top of the help.
 """
 from __future__ import generators
@@ -353,8 +353,8 @@ class ReplaceRobot:
         # Some function to set default editSummary should probably be added
         self.editSummary = editSummary
         self.articles = articles
-        
-        #An edit counter to split the file by 100 titles if -save or -savenew 
+
+        #An edit counter to split the file by 100 titles if -save or -savenew
         #is on, and to display the number of edited articles otherwise.
         self.editcounter = 0
 
@@ -508,7 +508,7 @@ class ReplaceRobot:
                     if not self.articles:
                         #Primary behaviour: working on wiki
                         page.put_async(new_text, self.editSummary)
-                        self.editcounter += 1 
+                        self.editcounter += 1
                         #Bug: this increments even if put_async fails
                         #This is separately in two clauses of if for
                         #future purposes to get feedback form put_async
@@ -605,7 +605,7 @@ def main(*args):
     allowoverlap = False
     # Do not recurse replacement
     recursive = False
-    # This is the maximum number of pages to load per query    
+    # This is the maximum number of pages to load per query
     maxquerysize = 60
     # This factory is responsible for processing command line arguments
     # that are also used by other scripts and that determine on which pages
@@ -830,14 +830,14 @@ LIMIT 200""" % (whereClause, exceptClause)
         preloadingGen = pagegenerators.PreloadingGenerator(gen,
                                             pageNumber=20, lookahead=100)
     else:
-        preloadingGen = pagegenerators.PreloadingGenerator(gen, 
+        preloadingGen = pagegenerators.PreloadingGenerator(gen,
                         pageNumber=maxquerysize)
 
     #Finally we open the file for page titles or set article to None
     if filename:
         try:
             #This opens in strict error mode, that means bot will stop
-            #on encoding errors with ValueError. 
+            #on encoding errors with ValueError.
             #See http://docs.python.org/library/codecs.html#codecs.open
             titlefile = codecs.open(filename, encoding='utf-8',
                                     mode=(lambda x: x and 'a' or 'w')(append))
@@ -853,7 +853,7 @@ LIMIT 200""" % (whereClause, exceptClause)
     finally:
         if titlefile:
             #Just for the spirit of programming (it was flushed)
-            titlefile.close() 
+            titlefile.close()
 
 
 if __name__ == "__main__":

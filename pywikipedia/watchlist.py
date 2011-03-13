@@ -64,18 +64,18 @@ def isWatched(pageName, site=None):
 def refresh(site, sysop=False):
     if not site.has_api() or site.versionnumber() < 10:
         _refreshOld(site)
-    
+
     # get watchlist special page's URL
     if not site.loggedInAs(sysop=sysop):
         site.forceLogin(sysop=sysop)
-    
+
     params = {
         'action': 'query',
         'list': 'watchlist',
         'wllimit': pywikibot.config.special_page_limit,
         'wlprop': 'title',
     }
-    
+
     pywikibot.output(u'Retrieving watchlist for %s via API.' % repr(site))
     #pywikibot.put_throttle() # It actually is a get, but a heavy one.
     watchlist = []
@@ -84,7 +84,7 @@ def refresh(site, sysop=False):
         if 'error' in data:
             raise RuntimeError('ERROR: %s' % data)
         watchlist.extend([w['title'] for w in data['query']['watchlist']])
-        
+
         if 'query-continue' in data:
             params['wlstart'] = data['query-continue']['watchlist']['wlstart']
         else:
@@ -96,7 +96,7 @@ def refresh(site, sysop=False):
         f = open(pywikibot.config.datafilepath('watchlists',
                                                'watchlist-%s-%s-sysop.dat'
                                                % (site.family.name, site.lang)),
-                 'w')    
+                 'w')
     else:
         f = open(pywikibot.config.datafilepath('watchlists',
                                                'watchlist-%s-%s.dat'
@@ -126,7 +126,7 @@ def _refreshOld(site, sysop=False):
         f = open(pywikibot.config.datafilepath('watchlists',
                                                'watchlist-%s-%s-sysop.dat'
                                                % (site.family.name, site.lang)),
-                 'w')    
+                 'w')
     else:
         f = open(pywikibot.config.datafilepath('watchlists',
                                                'watchlist-%s-%s.dat'

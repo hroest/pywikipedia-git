@@ -18,7 +18,7 @@ class ParseError(Exception):
 
 def getversion():
     return '%(tag)s (r%(rev)s, %(date)s)' % getversiondict()
-    
+
 def getversiondict():
     global cache
     if cache:
@@ -62,7 +62,7 @@ def getversion_svn():
     rev = entries.readline()[:-1]
     if not date or not tag or not rev:
         raise ParseError
-    return (tag, rev, date)    
+    return (tag, rev, date)
 
 def getversion_nightly():
     data = open(os.path.join(wikipediatools.get_base_dir(), 'version'))
@@ -72,7 +72,7 @@ def getversion_nightly():
     if not date or not tag or not rev:
         raise ParseError
     return (tag, rev, date)
-    
+
 if __name__ == '__main__':
     print 'Pywikipedia %s' % getversion()
     print 'Python %s' % sys.version

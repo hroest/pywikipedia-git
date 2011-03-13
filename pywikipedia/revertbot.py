@@ -116,7 +116,7 @@ class BaseRevertBot(object):
 
 
 class myRevertBot(BaseRevertBot):
-        
+
     def callback(self, item):
         if 'top' in item:
             page = pywikibot.Page(self.site, item['title'])

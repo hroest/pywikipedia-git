@@ -185,7 +185,7 @@ class Category(wikipedia.Page):
             for tag, page in self._oldParseCategory(purge, startFrom):
                 yield tag, page
             return
-        
+
         currentPageOffset = None
         params = {
             'action': 'query',
@@ -349,7 +349,7 @@ class Category(wikipedia.Page):
         equivalent to recurse = False, recurse = 1 gives first-level
         subcategories of subcategories but no deeper, etcetera).
 
-        cacheResults - cache the category contents: useful if you need to 
+        cacheResults - cache the category contents: useful if you need to
         do several passes on the category members list. The simple cache
         system is *not* meant to be memory or cpu efficient for large
         categories
@@ -386,7 +386,7 @@ class Category(wikipedia.Page):
         Recurse can be a number to restrict the depth at which subcategories
         are included.
 
-        cacheResults - cache the category contents: useful if you need to 
+        cacheResults - cache the category contents: useful if you need to
         do several passes on the category members list. The simple cache
         system is *not* meant to be memory or cpu efficient for large
         categories
@@ -602,7 +602,7 @@ def categoryAllElementsAPI(CatName, cmlimit = 5000, categories_parsed = [], site
     Category to load all the elements in a category using the APIs. Limit: 5000 elements.
     """
     wikipedia.output("Loading %s..." % CatName)
-    
+
     params = {
         'action'    :'query',
         'list'      :'categorymembers',

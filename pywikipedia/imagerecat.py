@@ -27,7 +27,7 @@ The following command line parameters are supported:
 __version__ = '$Id$'
 #
 #  (C) Multichill 2008
-#   
+#
 #   Distributed under the terms of the MIT license.
 #
 #
@@ -79,7 +79,7 @@ def categorizeImages(generator, onlyFilter, onlyUncat):
 
             if (onlyUncat and not(u'Uncategorized' in imagepage.templates())):
                 pywikibot.output(u'No Uncategorized template found')
-            else:                
+            else:
                 currentCats = getCurrentCats(imagepage)
                 if onlyFilter:
                     commonshelperCats = []
@@ -94,7 +94,7 @@ def categorizeImages(generator, onlyFilter, onlyUncat):
                         pywikibot.output(u' Found new cat: ' + cat);
                     saveImagePage(imagepage, newcats, usage, galleries,
                                   onlyFilter)
-            
+
 def getCurrentCats(imagepage):
     ''' Get the categories currently on the image '''
     result = []
@@ -367,7 +367,7 @@ def filterParents(categories):
 
 def saveImagePage(imagepage, newcats, usage, galleries, onlyFilter):
     ''' Remove the old categories and add the new categories to the image. '''
-    newtext = pywikibot.removeCategoryLinks(imagepage.get(), imagepage.site())    
+    newtext = pywikibot.removeCategoryLinks(imagepage.get(), imagepage.site())
     if not(onlyFilter):
         newtext = removeTemplates(newtext)
         newtext = newtext + getCheckCategoriesTemplate(usage, galleries,
@@ -413,7 +413,7 @@ def getCheckCategoriesTemplate(usage, galleries, ncats):
         galleryCounter = galleryCounter + 1
     result += u'|ncats=%d\n' % ncats
     result += u'}}\n'
-    return result    
+    return result
 
 def main(args):
     '''
@@ -426,7 +426,7 @@ def main(args):
 
     global search_wikis
     global hint_wiki
-    
+
     site = pywikibot.getSite(u'commons', u'commons')
     pywikibot.setSite(site)
     for arg in pywikibot.handleArgs():

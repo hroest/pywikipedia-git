@@ -31,7 +31,7 @@ class BlockreviewBot:
     note_admin = {
         'de': u"\n\n== Sperrprüfungswunsch ==\nHallo %(admin)s, \n\n[[%(user)s]] wünscht diePrüfung seiner/ihrer Sperre vom %(time)s über die Dauer von %(duration)s. Kommentar war ''%(comment)s''. Bitte äußere Dich dazu auf der [[%(usertalk)s#%(section)s|Diskussionsseite]]. -~~~~"
     }
-    
+
     note_project = {
         'de': u"\n\n== [[%(user)s]] ==\n* gesperrt am %(time)s durch {{Benutzer|%(admin)s}} für eine Dauer von %(duration)s.\n* Kommentar war ''%(comment)s''.\n* [[Benutzer:%(admin)s]] wurde [[Benutzer Diskussion:%(admin)s#Sperrprüfungswunsch|benachrichtigt]].\n* [[%(usertalk)s#%(section)s|Link zur Diskussion]]\n:<small>-~~~~</small>\n;Antrag entgegengenommen"
     }
@@ -133,13 +133,13 @@ class BlockreviewBot:
                             gen = pg.PreloadingGenerator(self.SysopGenerator())
                             for sysop in gen:
                                 print sysop.title()
-                            
+
                         talkText = talkText.replace(u'{{%s}}'   % unblock_tpl,
                                                     u'{{%s|2}}' % unblock_tpl)
                         talkText = talkText.replace(u'{{%s|1}}' % unblock_tpl,
                                                     u'{{%s|2}}' % unblock_tpl)
                         talkComment = pywikibot.translate(self.site.lang, self.msg_user % self.parts)
-        
+
                         # some test stuff
                         if pywikibot.debug and self.site().loggedInAs() == u'Xqbot:':
                             testPage = pywikibot.Page(self.site, 'Benutzer:Xqt/Test')

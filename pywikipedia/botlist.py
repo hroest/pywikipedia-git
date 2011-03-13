@@ -1,12 +1,12 @@
 # -*- coding: utf-8 -*-
 """
 Allows access to the site's bot user list.
- 
+
 The function refresh() downloads the current bot user list and saves
 it to disk. It is run automatically when a bot first tries to get this
 data.
 """
- 
+
 # (C) Daniel Herding, 2005
 # (C) Dr. Trigon, 2009-2010
 #
@@ -16,14 +16,14 @@ data.
 #
 __version__='$Id$'
 #
- 
+
 import re, sys, pickle
 import os.path
 import time
 import wikipedia as pywikibot
- 
+
 cache = {}
- 
+
 def get(site = None):
     if site is None:
         site = pywikibot.getSite()
@@ -49,19 +49,19 @@ def get(site = None):
         # create cached copy
         cache[site] = botlist
     return botlist
- 
+
 def isBot(user, site=None):
     botlist = get(site)
     return user in botlist
- 
+
 def refresh(site, sysop=False, witheditsonly=True):
     #if not site.has_api() or site.versionnumber() < 10:
     #    _refreshOld(site)
-    
+
     # get botlist special page's URL
     if not site.loggedInAs(sysop=sysop):
         site.forceLogin(sysop=sysop)
- 
+
     params = {
         'action': 'query',
         'list': 'allusers',
@@ -69,7 +69,7 @@ def refresh(site, sysop=False, witheditsonly=True):
     }
     if witheditsonly:
         params['auwitheditsonly'] = ''
- 
+
     pywikibot.output(u'Retrieving bot user list for %s via API.' % repr(site))
     pywikibot.put_throttle() # It actually is a get, but a heavy one.
     botlist = []
@@ -78,7 +78,7 @@ def refresh(site, sysop=False, witheditsonly=True):
         if 'error' in data:
             raise RuntimeError('ERROR: %s' % data)
         botlist.extend([w['name'] for w in data['query']['allusers']])
- 
+
         if 'query-continue' in data:
             params['aufrom'] = data['query-continue']['allusers']['aufrom']
         else:
@@ -112,13 +112,13 @@ def refresh(site, sysop=False, witheditsonly=True):
     # The file is stored in the botlists subdir. Create if necessary.
     if sysop:
         f = open(pywikibot.config.datafilepath('botlists',
-                 'botlist-%s-%s-sysop.dat' % (site.family.name, site.lang)), 'w')    
+                 'botlist-%s-%s-sysop.dat' % (site.family.name, site.lang)), 'w')
     else:
         f = open(pywikibot.config.datafilepath('botlists',
                  'botlist-%s-%s.dat' % (site.family.name, site.lang)), 'w')
     pickle.dump(botlist, f)
     f.close()
- 
+
 #def refresh_all(new = False, sysop=False):
 #    if new:
 #        import config
@@ -170,5 +170,5 @@ def refresh(site, sysop=False, witheditsonly=True):
 #        main()
 #    finally:
 #        pywikibot.stopme()
- 
+
 

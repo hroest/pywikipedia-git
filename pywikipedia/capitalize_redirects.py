@@ -12,7 +12,7 @@ Command-line arguments:
 -always           Don't prompt to make changes, just do them.
 
 -titlecase        creates a titlecased redirect version of a given page
-                  where all words of the title start with an uppercase 
+                  where all words of the title start with an uppercase
                   character and the remaining characters are lowercase.
 
 Example: "python capitalize_redirects.py -start:B -always"

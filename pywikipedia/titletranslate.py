@@ -32,7 +32,7 @@ def translate(page, hints = None, auto = True, removebrackets = False, site = No
     brackets and the text between them is removed from the page title.
     If 'auto' is true, known year and date page titles are autotranslated
     to all known target languages and inserted into the list.
-    
+
     """
     result = []
     if site is None and page:

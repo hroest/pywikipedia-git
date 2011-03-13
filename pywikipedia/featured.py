@@ -18,11 +18,11 @@ This script understands various command-line arguments:
 -side             use -side if you want to move all {{Link FA|lang}} next to the
                   corresponding interwiki links. Default is placing
                   {{Link FA|lang}} on top of the interwiki links.
-                  
+
 -count            Only counts how many featured/good articles exist
                   on all wikis (given with the "-fromlang" argument) or
-                  on several language(s) (when using the "-fromall" argument). 
-                  Example: featured.py -fromlang:en,he -count 
+                  on several language(s) (when using the "-fromall" argument).
+                  Example: featured.py -fromlang:en,he -count
                   counts how many featured articles exist in the en and he
                   wikipedias.
 
@@ -422,7 +422,7 @@ def featuredArticles(site, pType):
     if pType == 'good':
         name=good_name[site.lang][1]
     elif pType == 'former':
-        name=former_name[site.lang][1]   
+        name=former_name[site.lang][1]
     elif pType == 'list':
         name=lists_name[site.lang][1]
     else:

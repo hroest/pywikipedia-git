@@ -140,7 +140,7 @@ msg_append = {
     'bg': u'; козметични промени',
     'br': u'; Kemm dister',
     'ca': u'; canvis cosmètics',
-    'ckb':u'; دەستکاریی جوانکاری', 
+    'ckb':u'; دەستکاریی جوانکاری',
     'cs': u'; kosmetické úpravy',
     'da': u'; kosmetiske ændringer',
     'de': u'; kosmetische Änderungen',
@@ -391,7 +391,7 @@ class CosmeticChangesToolkit:
                     print found
                 hasCommentLine = True
                 text = regex.sub('', text)
-        
+
         # Adding categories
         if categories:
             text = pywikibot.replaceCategoryLinks(text, categories, site = self.site)
@@ -769,7 +769,7 @@ class CosmeticChangesToolkit:
             text,
             r"([\r\n])\=\= *(Licensing|License information|{{int:license-header}}) *\=\=",
             r"\1== {{int:license}} ==", exceptions, True)
- 
+
         # frequent field values to {{int:}} versions
         text = pywikibot.replaceExcept(
             text,
@@ -779,10 +779,10 @@ class CosmeticChangesToolkit:
             text,
             r'(\| *Permission *\=) *(?:[Ss]ee below|[Ss]iehe unten) *([\r\n])',
             r'\1\2', exceptions, True)
- 
+
         # added to transwikied pages
         text = pywikibot.replaceExcept(text, r'__NOTOC__', '', exceptions, True)
- 
+
         # tracker element for js upload form
         text = pywikibot.replaceExcept(
             text,
@@ -790,7 +790,7 @@ class CosmeticChangesToolkit:
             '', exceptions[1:], True)
         text = pywikibot.replaceExcept(text, r'{{ImageUpload\|(?:basic|full)}}',
                                        '', exceptions, True)
- 
+
         # duplicated section headers
         text = pywikibot.replaceExcept(
             text,

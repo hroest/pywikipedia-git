@@ -163,7 +163,7 @@ class UploadRobot:
                 file = open(self.url,"rb")
                 self._contents = file.read()
                 file.close()
-    
+
     def process_filename(self):
         """Return base filename portion of self.url"""
         # Isolate the pure name
@@ -171,13 +171,13 @@ class UploadRobot:
         # Filename may be either a local file path or a URL
         if '/' in filename:
             filename = filename.split('/')[-1]
-        
+
         if '\\' in filename:
             filename = filename.split('\\')[-1]
-        
+
         if self.urlEncoding:
             filename = urllib.unquote(filename.decode(self.urlEncoding))
-        
+
         if self.useFilename:
             filename = self.useFilename
         if not self.keepFilename:
@@ -237,12 +237,12 @@ class UploadRobot:
         """
         if not self.targetSite.has_api() or self.targetSite.versionnumber() < 16:
             return self._uploadImageOld(debug)
-        
+
         if not hasattr(self,'_contents'):
             self.read_file_content()
-        
+
         filename = self.process_filename()
-        
+
         params = {
             'action': 'upload',
             'token': self.targetSite.getToken(),
@@ -256,17 +256,17 @@ class UploadRobot:
             params['url'] = self.url
         elif not self.uploadByUrl and not sessionKey:
             params['file'] = self._contents
-        
+
         if self.ignoreWarning:
             params['ignorewarnings'] = 1
-        
+
         pywikibot.output(u'Uploading file to %s via API....' % self.targetSite)
-        
+
         data = query.GetData(params, self.targetSite)
-        
+
         if pywikibot.verbose:
             pywikibot.output("%s" % data)
-        
+
         if 'error' in data: # error occured
             errCode = data['error']['code']
             pywikibot.output("%s" % data)
@@ -297,16 +297,16 @@ class UploadRobot:
                 else:
                     pywikibot.output("Upload aborted.")
                     return
-                
+
             elif data['result'] == u'Success': #No any warning, upload and online complete.
                 pywikibot.output(u"Upload successful.")
                 return filename #data['filename']
-        
+
 
     def _uploadImageOld(self, debug=False):
         if not hasattr(self,'_contents'):
             self.read_file_content()
-        
+
         filename = self.process_filename()
         # Convert the filename (currently Unicode) to the encoding used on the
         # target wiki
@@ -327,7 +327,7 @@ class UploadRobot:
         if self.uploadByUrl:
             formdata["wpUploadFileURL"]  = self.url
             formdata["wpSourceType"] = 'Url'
-        
+
         # try to encode the strings to the encoding used by the target site.
         # if that's not possible (e.g. because there are non-Latin-1 characters and
         # the home Wikipedia uses Latin-1), convert all non-ASCII characters to

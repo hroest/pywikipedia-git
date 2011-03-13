@@ -138,7 +138,7 @@ parameterHelp = u"""\
                   delimited with ";"
                   Example: -usercontribs:DumZiBoT;500
                   returns 500 distinct pages to work on.
-                  
+
 -<mode>log        Work on articles that were on a specified special:log.
                   You have options for every type of logs given by the
                   <mode> parameter which could be one of the following:
@@ -168,7 +168,7 @@ parameterHelp = u"""\
                   "-randomredirect:n" where n is the number of pages to be
                   returned, else 10 pages are returned.
 
--gorandom         Specifies that the robot should starting at the random pages 
+-gorandom         Specifies that the robot should starting at the random pages
                   returned by [[Special:Random]].
 
 -redirectonly     Work on redirect pages only, not their target pages.
@@ -528,7 +528,7 @@ class GeneratorFactory(object):
                 namespace = self.namespaces[0]
             else:
                 namespace = pywikibot.Page(site, firstPageTitle).namespace()
-            
+
             firstPageTitle = pywikibot.Page(site,
                                  firstPageTitle).titleWithoutNamespace()
             gen = AllpagesPageGenerator(firstPageTitle, namespace,
@@ -961,7 +961,7 @@ class GoogleSearchPageGenerator:
             'q': query,
         }
         url += urllib.urlencode(params)
-        
+
         while True:
             try:
                 pywikibot.output(u'Querying Google AJAX Search API...') #, offset %i' % offset)

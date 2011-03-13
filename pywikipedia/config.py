@@ -74,7 +74,7 @@ authenticate = {}
 
 #    Secure Connection to all Wikimedia Projects
 SSL_connection = False
-    
+
 # password_file = ".passwd"
 # A password file with default passwords. For more information, please
 # see LoginManager.readPassword in login.py.

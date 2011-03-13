@@ -91,7 +91,7 @@ class User(object):
 
     def __repr__(self):
         return self.__str__()
-    
+
     def _load(self):
         getall(self.site(), [self], force=True)
         return
@@ -229,7 +229,7 @@ class User(object):
         if ccMe:
             predata['wpCCMe'] = '1'
         predata['wpEditToken'] = self.site().getToken()
-        
+
         response, data = self.site().postForm(address, predata, sysop = False)
         if data:
             if 'var wgAction = "success";' in data:
@@ -242,7 +242,7 @@ class User(object):
             pywikibot.output(u'No data found.')
             return False
 
-    
+
     @pywikibot.deprecated('contributions()')
     def editedPages(self, limit=500):
         """ Deprecated function that wraps 'contributions' for backwards
@@ -348,7 +348,7 @@ class User(object):
             date = m.group('date')
             comment = m.group('comment') or ''
             yield pywikibot.ImagePage(self.site(), image), date, comment, deleted
-    
+
     def block(self, expiry=None, reason=None, anon=True, noCreate=False,
           onAutoblock=False, banMail=False, watchUser=False, allowUsertalk=True,
           reBlock=False, hidename=False):
@@ -360,7 +360,7 @@ class User(object):
                         or the block's expiry time
                         If set to 'infinite', 'indefinite' or 'never',
                         the block will never expire.
-        reason        - Reason for block 
+        reason        - Reason for block
         anon          - Block anonymous users only
         noCreate      - Prevent account creation
         onAutoblock   - Automatically block the last used IP address, and any
@@ -370,7 +370,7 @@ class User(object):
         allowUsertalk - Allow the user to edit their own talk page
         reBlock       - If user is already blocked, overwrite the existing block
         watchUser     - watch the user's user and talk pages (not used with API)
-        
+
         The default values for block options are set to as most unrestrictive
         """
 
@@ -467,7 +467,7 @@ class User(object):
         if data:
             if self.site().mediawiki_message('ipb_already_blocked').replace('$1', self.name()) in data:
                 raise AlreadyBlockedError
-            
+
             raise BlockError
         return True
 
@@ -514,7 +514,7 @@ class User(object):
 
 def getall(site, users, throttle=True, force=False):
     """Bulk-retrieve users data from site
- 
+
     Arguments: site = Site object
                users = iterable that yields User objects
 
@@ -523,7 +523,7 @@ def getall(site, users, throttle=True, force=False):
     if len(users) > 1:
         pywikibot.output(u'Getting %d users data from %s...'
                          % (len(users), site))
-    
+
     if len(users) > 250: # max load prevents HTTPError 400
         for urg in range(0, len(users), 250):
             if urg == range(0, len(users), 250)[-1]: #latest
@@ -561,7 +561,7 @@ class _GetAllUI(object):
                     raise
                 else:
                     break
-            for uj in self.users: 
+            for uj in self.users:
                 try:
                     x = data[uj.name()]
                 except KeyError:
@@ -601,7 +601,7 @@ if __name__ == '__main__':
     pywikibot.output("""
     This module is not for direct usage from the command prompt.
     In code, the usage is as follows:
-    
+
     >>> exampleUser = User("en", 'Example')
     >>> pywikibot.output(exampleUser.getUserPage().get())
     >>> pywikibot.output(exampleUser.getUserPage('Lipsum').get())

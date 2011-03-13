@@ -181,7 +181,7 @@ def workon(page):
     else:
         pywikibot.output('Nothing left to do.')
         return
-    
+
     for page2 in links:
         try:
             target = page2.getRedirectTarget()

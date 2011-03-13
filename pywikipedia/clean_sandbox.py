@@ -150,7 +150,7 @@ class SandboxBot:
             self.userlist = [page.title().split(u'/')[0] for page in pywikibot.Page(self.site, userlist).linkedPages()]
 
     def run(self):
-        
+
         def minutesDiff(time1, time2):
             if type(time1) in [long, int]:
                 time1 = str(time1)

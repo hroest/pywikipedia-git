@@ -1252,7 +1252,7 @@ def recentChanges(site = None, delay=0, block=70):
     The delay is the amount of minutes to wait and the block is the timespan to return images in.
     Should probably be copied to somewhere else
     '''
-    
+
     result = []
     dateformat ="%Y-%m-%dT%H:%M:%SZ"
     rcstart = datetime.utcnow() + timedelta(minutes=-delay-block)

@@ -17,7 +17,7 @@ will be incremented when the archive reaches a certain size.
 
 Trancluded template may contain the following parameters:
 
-{{TEMPLATE_PAGE 
+{{TEMPLATE_PAGE
 |archive             =
 |algo                =
 |counter             =
@@ -253,13 +253,13 @@ def generateTransclusions(Site, template, namespaces=[], eicontinue=''):
         }
     if eicontinue:
         qdata['eicontinue'] = eicontinue
-    
+
     pywikibot.output(u'Fetching template transclusions...')
     response, result = query.GetData(qdata, Site, back_response = True)
-    
+
     for page_d in result['query']['embeddedin']:
         yield pywikibot.Page(Site, page_d['title'])
-    
+
     if 'query-continue' in result:
         eicontinue = result['query-continue']['embeddedin']['eicontinue']
         for page in generateTransclusions(Site, template, namespaces,

@@ -768,7 +768,7 @@ not supported by PyWikipediaBot!"""
             if restr['type'] == 'edit':
                 self.editRestriction = restr['level']
             elif restr['type'] == 'move':
-                self.moveRestriction = restr['level']    
+                self.moveRestriction = restr['level']
 
         self._revisionId = lastRev['revid']
 
@@ -1079,13 +1079,13 @@ not supported by PyWikipediaBot!"""
             data = query.GetData(params, self.site(), encodeTitle = False)['query']['pages'].values()[0]
             if "templates" not in data:
                 return []
-            
+
             for tmp in data['templates']:
                 count += 1
                 tmpsFound.append(Page(self.site(), tmp['title'], defaultNamespace=tmp['ns']) )
                 if count >= tllimit:
                     break
-            
+
             if 'query-continue' in data and count < tllimit:
                 params["tlcontinue"] = data["query-continue"]["templates"]["tlcontinue"]
             else:
@@ -1377,7 +1377,7 @@ not supported by PyWikipediaBot!"""
                 params['blfilterredir'] = 'redirects'
             if not self.site().isAllowed('apihighlimits') and config.special_page_limit > 500:
                 params['bllimit'] = 500
-        
+
         if withTemplateInclusion or onlyTemplateInclusion:
             params['list'].append('embeddedin')
             params['eititle'] = self.title()
@@ -1402,7 +1402,7 @@ not supported by PyWikipediaBot!"""
                 data = data[0] + data[1]
             else:
                 data = data[0]
-            
+
             refPages = set()
             for blp in data:
                 pg = Page(self.site(), blp['title'], defaultNamespace = blp['ns'])
@@ -1420,7 +1420,7 @@ not supported by PyWikipediaBot!"""
                         yield plk
                         refPages.add(plk)
                         if follow_redirects and 'redirect' in p and plk != self:
-                            for zms in plk.getReferences(follow_redirects, withTemplateInclusion, 
+                            for zms in plk.getReferences(follow_redirects, withTemplateInclusion,
                                               onlyTemplateInclusion, redirectsOnly, internal=True):
                                 yield zms
                         else:
@@ -1431,7 +1431,7 @@ not supported by PyWikipediaBot!"""
             if 'query-continue' in datas:
                 if 'backlinks' in datas['query-continue']:
                     params['blcontinue'] = datas['query-continue']['backlinks']['blcontinue']
-                
+
                 if 'embeddedin' in datas['query-continue']:
                     params['eicontinue'] = datas['query-continue']['embeddedin']['eicontinue']
             else:
@@ -2325,7 +2325,7 @@ u'Page %s is semi-protected. Getting edit page to find out if we are allowed to 
             }
             if not self.site().isAllowed('apihighlimits') and config.special_page_limit > 500:
                 params['cllimit'] = 500
-        
+
             output(u'Getting categories in %s via API...' % self.aslink())
             allDone = False
             cats=[]
@@ -2604,7 +2604,7 @@ u'Page %s is semi-protected. Getting edit page to find out if we are allowed to 
 
         Return value is a list of tuples, where each tuple represents one
         edit and is built of revision id, edit date/time, user name,
-        edit summary, size and tags. Starts with the most current revision, 
+        edit summary, size and tags. Starts with the most current revision,
         unless reverseOrder is True.
         Defaults to getting the first revCount edits, unless getAll is True.
 
@@ -2656,7 +2656,7 @@ u'Page %s is semi-protected. Getting edit page to find out if we are allowed to 
             if len(self._versionhistoryearliest) > revCount and not getAll:
                 return self._versionhistoryearliest[:revCount]
             return self._versionhistoryearliest
-        
+
         if dataQuery != []:
             self._versionhistory = dataQuery
             del dataQuery
@@ -2700,7 +2700,7 @@ u'Page %s is semi-protected. Getting edit page to find out if we are allowed to 
                 params['rvstartid'] = result['query-continue']['revisions']['rvstartid']
             else:
                 thisHistoryDone = True
-            
+
             if skipFirst:
                 skipFirst = False
             else:
@@ -2726,8 +2726,8 @@ u'Page %s is semi-protected. Getting edit page to find out if we are allowed to 
                 if len(result['query']['pages'].values()[0]['revisions']) < revCount:
                     thisHistoryDone = True
         return dataQ
-    
-    def _getVersionHistoryOld(self, getAll = False, skipFirst = False, 
+
+    def _getVersionHistoryOld(self, getAll = False, skipFirst = False,
                                reverseOrder = False, revCount=500):
         """Load the version history page and return history information.
            Internal use for self.getVersionHistory(), don't use this function directly.
@@ -2781,7 +2781,7 @@ u'Page %s is semi-protected. Getting edit page to find out if we are allowed to 
 
             if not skipFirst:
                 edits = editR.findall(self_txt)
-            
+
             if skipFirst:
                 # Skip the first page only,
                 skipFirst = False
@@ -2838,7 +2838,7 @@ u'Page %s is semi-protected. Getting edit page to find out if we are allowed to 
                        unescape(match.group('user')),
                        unescape(match.group('content')))
                     for match in r.finditer(data)  ]
-         
+
         # Load history informations by API query.
 
         dataQ = []
@@ -2869,7 +2869,7 @@ u'Page %s is semi-protected. Getting edit page to find out if we are allowed to 
                 params['rvstartid'] = result['query-continue']['revisions']['rvstartid']
             else:
                 thisHistoryDone = True
-            
+
             if skipFirst:
                 skipFirst = False
             else:
@@ -2947,7 +2947,7 @@ u'Page %s is semi-protected. Getting edit page to find out if we are allowed to 
             reason = input(u'Please enter a reason for the move:')
         if self.isTalkPage():
             movetalkpage = False
-        
+
         params = {
             'action': 'move',
             'from': self.title(),
@@ -2978,7 +2978,7 @@ u'Page %s is semi-protected. Getting edit page to find out if we are allowed to 
                         # We dont have the user rights to delete
                         output(u'Page moved failed: Target page [[%s]] already exists.' % newtitle)
             #elif err == 'protectedpage':
-            #    
+            #
             else:
                 output("Unknown Error: %s" % result)
             return False
@@ -2987,7 +2987,7 @@ u'Page %s is semi-protected. Getting edit page to find out if we are allowed to 
                 output(u'Page %s moved to %s, deleting the existing page' % (self.title(), newtitle))
             else:
                 output(u'Page %s moved to %s' % (self.title(), newtitle))
-            
+
             if hasattr(self, '_contents'):
                 #self.__init__(self.site(), newtitle, defaultNamespace = self._namespace)
                 try:
@@ -2999,7 +2999,7 @@ u'Page %s is semi-protected. Getting edit page to find out if we are allowed to 
 
     def _moveOld(self, newtitle, reason=None, movetalkpage=True, movesubpages=False, sysop=False,
              throttle=True, deleteAndMove=False, safe=True, fixredirects=True, leaveRedirect=True):
-        
+
         # Login
         try:
             self.get()
@@ -3329,15 +3329,15 @@ u'Page %s is semi-protected. Getting edit page to find out if we are allowed to 
         """
         # Login
         self._getActionUser(action = 'undelete', sysop = True)
-        
+
         # Check blocks
         self.site().checkBlocks(sysop = True)
-        
+
         token = self.site().getToken(self, sysop=True)
-        
+
         if throttle:
             put_throttle()
-        
+
         if self.site().has_api() and self.site().versionnumber() >= 12:
             params = {
                 'action': 'undelete',
@@ -3347,7 +3347,7 @@ u'Page %s is semi-protected. Getting edit page to find out if we are allowed to 
             }
             if self._deletedRevs and self._deletedRevsModified:
                 selected = []
-                
+
                 for ts in self._deletedRevs:
                     if self._deletedRevs[ts][4]:
                         selected.append(ts)
@@ -3481,9 +3481,9 @@ u'Page %s is semi-protected. Getting edit page to find out if we are allowed to 
                 err = result['error']['code']
                 output('%s' % result)
                 #if err == '':
-                #    
+                #
                 #elif err == '':
-                #    
+                #
             else:
                 if result['protect']:
                     output(u'Changed protection level of page %s.' % self.aslink())
@@ -3545,7 +3545,7 @@ u'Page %s is semi-protected. Getting edit page to find out if we are allowed to 
 
         if token:
             predata['wpEditToken'] = token
-        
+
         response, data = self.site().postForm(address, predata, sysop=True)
 
         if response.code == 302 and not data:
@@ -3726,7 +3726,7 @@ class ImagePage(Page):
             output("API not work, loading page HTML.")
             self.getImagePageHtml()
             return
-            
+
         if 'error' in data:
             raise RuntimeError("%s" %data['error'])
         count = 0
@@ -3739,12 +3739,12 @@ class ImagePage(Page):
             elif 'invalid' in pageInfo:
                 raise BadTitle('BadTitle: %s' % self)
         infos = []
-        
+
         try:
             while True:
                 for info in pageInfo['imageinfo']:
                     count += 1
-                    if count == 1 and 'iistart' not in params: 
+                    if count == 1 and 'iistart' not in params:
                     # count 1 and no iicontinue mean first image revision is latest.
                         self._latestInfo = info
                     infos.append(info)
@@ -3775,10 +3775,10 @@ class ImagePage(Page):
         #change to API query: action=query&titles=File:wiki.jpg&prop=imageinfo&iiprop=url
         if not self._infoLoaded:
             self._loadInfo()
-        
+
         if self._infoLoaded:
             return self._latestInfo['url']
-        
+
         urlR = re.compile(r'<div class="fullImageLink" id="file">.*?<a href="(?P<url>[^ ]+?)"(?! class="image")|<span class="dangerousLink"><a href="(?P<url2>.+?)"', re.DOTALL)
         m = urlR.search(self.getImagePageHtml())
 
@@ -3789,10 +3789,10 @@ class ImagePage(Page):
         """Return True if the image is stored on Wikimedia Commons"""
         if not self._infoLoaded:
             self._loadInfo()
-        
+
         if self._infoLoaded:
             return not self._local
-        
+
         return self.fileUrl().startswith(u'http://upload.wikimedia.org/wikipedia/commons/')
 
     def fileIsShared(self):
@@ -3821,9 +3821,9 @@ class ImagePage(Page):
         if infos:
             for i in infos:
                 result.append((i['timestamp'], i['user'], u"%s×%s" % (i['width'], i['height']), i['size'], i['comment']))
-            
+
             return result
-        
+
         #from ImagePage HTML
         history = re.search('(?s)<table class="wikitable filehistory">.+?</table>', self.getImagePageHtml())
         if history:
@@ -3853,7 +3853,7 @@ class ImagePage(Page):
             self._loadInfo()
         if self._infoLoaded:
             return [self._latestInfo['user'], self._latestInfo['timestamp']]
-        
+
         inf = self.getFileVersionHistory()[0]
         return [inf[1], inf[0]]
 
@@ -3906,15 +3906,15 @@ class ImagePage(Page):
             data = query.GetData(params, self.site())
             if 'error' in data:
                 raise RuntimeError("%s" % data['error'])
-            
+
             for iu in data['query']["imageusage"]:
                 yield Page(self.site(), iu['title'], defaultNamespace=iu['ns'])
-            
+
             if 'query-continue' in data:
                 params['iucontinue'] = data['query-continue']['imageusage']['iucontinue']
             else:
                 break
-    
+
     def _usingPagesOld(self):
         """Yield Pages on which the image is displayed."""
         titleList = re.search('(?s)<h2 id="filelinks">.+?<!-- end content -->',
@@ -4193,7 +4193,7 @@ class _GetAll(object):
                     editRestriction = revs['level']
                 elif revs['type'] == 'move':
                     moveRestriction = revs['level']
-        
+
         page = Page(self.site, title)
         successful = False
         for page2 in self.pages:
@@ -4210,7 +4210,7 @@ class _GetAll(object):
                     page2._getexception = BadTitle
                     successful = True
                     break
-                
+
                 if not (hasattr(page2,'_contents') or hasattr(page2,'_getexception')) or self.force:
                     page2.editRestriction = editRestriction
                     page2.moveRestriction = moveRestriction
@@ -4309,7 +4309,7 @@ class _GetAll(object):
             'prop': ['info', 'revisions'],
             'titles': pagenames,
             'siprop': ['general', 'namespaces'],
-            'rvprop': ['content', 'timestamp', 'user', 'comment', 'size'],#'ids', 
+            'rvprop': ['content', 'timestamp', 'user', 'comment', 'size'],#'ids',
             'inprop': ['protection', 'talkid', 'subjectid'], #, 'url', 'readable'
         }
 
@@ -4335,7 +4335,7 @@ def getall(site, pages, throttle=True, force=False):
     limit = config.special_page_limit / 4 # default is 500/4, but It might have good point for server.
     if len(pages) > limit:
         # separate export pages for bulk-retrieve
-        
+
         for pagg in range(0, len(pages), limit):
             if pagg == range(0, len(pages), limit)[-1]: #latest retrieve
                 k = pages[pagg:]
@@ -4984,7 +4984,7 @@ class Site(object):
     def _loadCookies(self, sysop = False):
         """
          Retrieve session cookies for login
-         if family datas define the cross projects, this function will search 
+         if family datas define the cross projects, this function will search
          the central login file made by self or cross available project
          functioin will read the cookiedata if got one of them is exist
         """
@@ -5018,7 +5018,7 @@ sysopnames['%s']['%s']='name' to your user-config.py"""
                     if os.path.exists(centralPa):
                         self._cookies[index] = self._readCookies(centralFn)
                         break
-            
+
             if os.path.exists(localPa):
                 #read and dump local logindata into self._cookies[index]
                 # if self._cookies[index] is not availabe, read the local data and set the dictionary.
@@ -5045,7 +5045,7 @@ sysopnames['%s']['%s']='name' to your user-config.py"""
             return data
         except IOError:
             return None
-    
+
     def _setupCookies(self, datas, sysop = False):
         """save the cookie dictionary to files
            if cross_project enable, savefiles will separate two, centraldata and localdata.
@@ -5056,7 +5056,7 @@ sysopnames['%s']['%s']='name' to your user-config.py"""
         cache = {0:"",1:""} #0 is central auth, 1 is local.
         if not self.username(sysop):
             if not self._cookies[index]:
-                return 
+                return
             elif self.family.cross_projects_cookie_username in self._cookies[index]:
                 # Using centralauth to cross login data, it's not necessary to forceLogin, but Site() didn't know it.
                 # So we need add centralauth username data into siteattribute
@@ -5069,7 +5069,7 @@ sysopnames['%s']['%s']='name' to your user-config.py"""
                 cache[0] += "%s=%s\n" % (k,v)
             else:
                 cache[1] += "%s=%s\n" % (k,v)
-        
+
         # write the data.
         if self.family.cross_projects and cache[0]:
             filename = '%s-%s-central-login.data' % (self.family.name, self.username(sysop))
@@ -5099,14 +5099,14 @@ sysopnames['%s']['%s']='name' to your user-config.py"""
         index = self._userIndex(sysop)
         if not self._cookies[index]:
             self._setupCookies(datas, sysop)
-            
+
         for k, v in datas.iteritems():
             if k in self._cookies[index]:
                 if v != self._cookies[index][k]:
                     self._cookies[index][k] = v
             else:
                 self._cookies[index][k] = v
-        
+
         self._setupCookies(self._cookies[index], sysop)
 
     def urlEncode(self, query):
@@ -5222,11 +5222,11 @@ sysopnames['%s']['%s']='name' to your user-config.py"""
         }
         if cookies:
             headers['Cookie'] = cookies
-        
+
         if compress:
             headers['Accept-encoding'] = 'gzip'
         #print '%s' % headers
-        
+
         url = '%s://%s%s' % (self.protocol(), self.hostname(), address)
         # Try to retrieve the page until it was successfully loaded (just in
         # case the server is down or overloaded).
@@ -5265,7 +5265,7 @@ sysopnames['%s']['%s']='name' to your user-config.py"""
                     raise
                 else:
                     output(u"Result: %s %s" % (e.code, e.msg))
-                    raise 
+                    raise
             except Exception, e:
                 output(u'%s' %e)
                 if config.retry_on_fail:
@@ -5280,7 +5280,7 @@ sysopnames['%s']['%s']='name' to your user-config.py"""
                         retry_idle_time = 30
                     continue
                 raise
-        
+
         # check cookies return or not, if return, send its to update.
         if hasattr(f, 'sheaders'):
             ck = f.sheaders
@@ -5366,16 +5366,16 @@ sysopnames['%s']['%s']='name' to your user-config.py"""
             headers['Cookie'] = self.cookies(sysop = sysop)
         if compress:
             headers['Accept-encoding'] = 'gzip'
-    
+
         if refer:
             headers['Refer'] = refer
-        
+
         if no_hostname: # This allow users to parse also toolserver's script
             url = path  # and other useful pages without using some other functions.
         else:
             url = '%s://%s%s' % (self.protocol(), self.hostname(), path)
         data = self.urlEncode(data)
-        
+
         # Try to retrieve the page until it was successfully loaded (just in
         # case the server is down or overloaded).
         # Wait for retry_idle_time minutes (growing!) between retries.
@@ -5420,7 +5420,7 @@ u"WARNING: Could not open '%s'.Maybe the server or\n your connection is down. Re
                     raise
                 else:
                     output(u"Result: %s %s" % (e.code, e.msg))
-                    raise 
+                    raise
             except Exception, e:
                 output(u'%s' %e)
                 if retry:
@@ -5435,7 +5435,7 @@ u"WARNING: Could not open '%s'. Maybe the server or\n your connection is down. R
                     if retry_idle_time > 30:
                         retry_idle_time = 30
                     continue
-                
+
                 raise
         # check cookies return or not, if return, send its to update.
         if hasattr(f, 'sheaders'):
@@ -5449,7 +5449,7 @@ u"WARNING: Could not open '%s'. Maybe the server or\n your connection is down. R
                 m = Reat.search(d)
                 if m: tmpc[m.group(1)] = m.group(2)
             self.updateCookies(tmpc, sysop)
-        
+
         if cookie_only:
             return headers.get('set-cookie', '')
         contentType = headers.get('content-type', '')
@@ -5492,7 +5492,7 @@ u"WARNING: Could not open '%s'. Maybe the server or\n your connection is down. R
 
         if back_response:
             return f, text
-        
+
         return text
 
     def _getUserData(self, text, sysop = False, force = True):
@@ -5503,10 +5503,10 @@ u"WARNING: Could not open '%s'. Maybe the server or\n your connection is down. R
         * text - the page text
         * sysop - is the user a sysop?
         """
-        
+
         index = self._userIndex(sysop)
         # Check for blocks
-        
+
         if 'blockedby' in text and not self._isBlocked[index]:
             # Write a warning if not shown earlier
             if sysop:
@@ -5598,7 +5598,7 @@ u"WARNING: Could not open '%s'. Maybe the server or\n your connection is down. R
         else:
             if not self._isBlocked[index]:
                 output(u'WARNING: Token not found on %s. You will not be able to edit any page.' % self)
-    
+
     def _getUserDataOld(self, text, sysop = False, force = True):
         """
         Get the user data from a wiki page data.
@@ -5729,14 +5729,14 @@ u"WARNING: Could not open '%s'. Maybe the server or\n your connection is down. R
             if u'<textarea' in text and u'<li id="ca-viewsource"' not in text and not self._isBlocked[index]:
                 # Token not found
                 output(u'WARNING: Token not found on %s. You will not be able to edit any page.' % self)
-    
+
     def siteinfo(self, key = 'general', force = False, dump = False):
         """Get Mediawiki Site informations by API
            dump - return all siteinfo datas
-            
+
            some siprop params is huge data for MediaWiki, they take long times to read by testment.
            these params could get, but only one by one.
-           
+
         """
         # protection for key in other datatype
         if type(key) not in [str, unicode]:
@@ -5759,7 +5759,7 @@ u"WARNING: Could not open '%s'. Maybe the server or\n your connection is down. R
             if key in ['specialpagealiases', 'interwikimap', 'namespacealiases', 'usergroups', ]:
                 if verbose: print 'getting huge siprop %s...' % key
                 params['siprop'] = [key]
-        
+
         #ver 1.13 handle
         if self.versionnumber() > 13:
             if key not in ['specialpagealiases', 'interwikimap', 'namespacealiases', 'usergroups', ]:
@@ -5781,7 +5781,7 @@ u"WARNING: Could not open '%s'. Maybe the server or\n your connection is down. R
                     self._info[key][entry['name']] = entry['aliases']
             else:
                 for k, v in data.iteritems():
-                    self._info[k] = v 
+                    self._info[k] = v
         #data pre-process
         if dump:
             return self._info
@@ -5904,7 +5904,7 @@ u"WARNING: Could not open '%s'. Maybe the server or\n your connection is down. R
             return True
         except KeyError:
             return False
-        
+
     def has_api(self):
         """Return True if this sites family has api interface."""
         try:
@@ -5947,7 +5947,7 @@ u"WARNING: Could not open '%s'. Maybe the server or\n your connection is down. R
                 params['uiprop'].append('preferencestoken')
 
             data = query.GetData(params, self, sysop=sysop)
-            
+
             # Show the API error code instead making an index error
             if 'error' in data:
                 raise RuntimeError('%s' % data['error'])
@@ -5961,7 +5961,7 @@ u"WARNING: Could not open '%s'. Maybe the server or\n your connection is down. R
         else:
             url = self.edit_address('Non-existing_page')
             text = self.getUrl(url, sysop = sysop)
-            
+
             self._getUserDataOld(text, sysop = sysop, force = force)
 
     def search(self, key, number=10, namespaces=None):
@@ -6011,7 +6011,7 @@ u"WARNING: Could not open '%s'. Maybe the server or\n your connection is down. R
 
     def logpages(self, number = 50, mode = '', title = None, user = None, repeat = False,
                  namespace = [], start = None, end = None, tag = None, newer = False, dump = False):
-        
+
         if not self.has_api() or self.versionnumber() < 11 or \
            mode not in ('block', 'protect', 'rights', 'delete', 'upload',
                         'move', 'import', 'patrol', 'merge', 'suppress',
@@ -6043,7 +6043,7 @@ u"WARNING: Could not open '%s'. Maybe the server or\n your connection is down. R
             params['leend'] = end
         if tag and self.versionnumber() >= 16: # tag support from mw:r58399
             params['letag'] = tag
-        
+
         nbresults = 0
         while True:
             result = query.GetData(params, self)
@@ -6061,7 +6061,7 @@ u"WARNING: Could not open '%s'. Maybe the server or\n your connection is down. R
                             p_ret = ImagePage(self, c['title'])
                         else:
                             p_ret = Page(self, c['title'], defaultNamespace=c['ns'])
-                        
+
                         yield (p_ret, c['user'],
                           parsetime2stamp(c['timestamp']),
                           c['comment'], )
@@ -6325,7 +6325,7 @@ u"WARNING: Could not open '%s'. Maybe the server or\n your connection is down. R
                            No more than 500 (5000 for bots) allowed.
                            Default: 10
         """
-        
+
         for o, u, t, c in self.logpages(number = number, mode = 'upload', title = letitle, user = leuser,
                  repeat = repeat, start = lestart, end = leend):
             yield o, t, u, c
@@ -6826,7 +6826,7 @@ u"WARNING: Could not open '%s'. Maybe the server or\n your connection is down. R
                                 yield Page(self, pages['title'], defaultNamespace=pages['ns'])
                         if count >= limit:
                             break
-                    
+
                     if 'query-continue' in data and count < limit:
                             params['euoffset'] = data[u'query-continue'][u'exturlusage'][u'euoffset']
                     else:
@@ -7584,15 +7584,15 @@ def handleArgs(*args):
             # the argument is not global. Let the specific bot script care
             # about it.
             nonGlobalArgs.append(arg)
-    
+
     # TEST for bug #3081100
     if unicode_error and (default_code == 'hi' or moduleName=='interwiki'):
         output("""
 
 ================================================================================
-\03{lightyellow}WARNING:\03{lightred} your python version might trigger issue #3081100\03{default} 
+\03{lightyellow}WARNING:\03{lightred} your python version might trigger issue #3081100\03{default}
 See http://goo.gl/W8lJB for more information.
-\03{lightyellow}Use an older python version (<2.6.5) if you are running on wikimedia sites!\03{default} 
+\03{lightyellow}Use an older python version (<2.6.5) if you are running on wikimedia sites!\03{default}
 ================================================================================
 
 """)
@@ -8016,13 +8016,13 @@ MyURLopener = urllib2.build_opener(U2RedirectHandler)
 
 if config.proxy['host']:
     proxyHandler = urllib2.ProxyHandler({'http':'http://%s/' % config.proxy['host'] })
-    
+
     MyURLopener.add_handler(proxyHandler)
     if config.proxy['auth']:
         proxyAuth = urllib2.HTTPPasswordMgrWithDefaultRealm()
         proxyAuth.add_password(None, config.proxy['host'], config.proxy['auth'][0], config.proxy['auth'][1])
         proxyAuthHandler = urllib2.ProxyBasicAuthHandler(proxyAuth)
-        
+
         MyURLopener.add_handler(proxyAuthHandler)
 
 if config.authenticate:

@@ -119,13 +119,13 @@ class StatisticsBot:
 
     def date(self):
         return time.strftime('%Y/%m/%d', time.localtime(time.time()))
-    
+
     def outputall(self):
         list = self.dict.keys()
         list.sort()
         for name in self.dict:
             pywikibot.output("There are "+str(self.dict[name])+" "+name)
-    
+
     def idle(self, retry_idle_time):
         time.sleep(retry_idle_time)
         pywikibot.output(u"Starting in %i second..." % retry_idle_time)

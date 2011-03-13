@@ -48,29 +48,29 @@ class FamilyFileGenerator(object):
             name = raw_input("Please insert a short name (eg: freeciv): ")
         self.base_url = url
         self.name = name
-        
+
         self.wikis = {} # {'http://wiki/$1': Wiki('http://wiki/$1'), ...}
         self.langs = [] # [Wiki('http://wiki/$1'), ...]
-        
+
         self.namespaces = NamespaceStorage()
-        
+
     def run(self):
         print "Generating family file from %s" % self.base_url
-        
+
         w = Wiki(self.base_url)
         self.wikis[w.iwpath] = w
         print
         print "=================================="
-        print "api url: %s" % w.api 
+        print "api url: %s" % w.api
         print "MediaWiki version: %s" % w.version
         print "=================================="
         print
-        
+
         self.getlangs(w)
         self.getapis()
         self.getnamespaces()
         self.writefile()
-        
+
     def getlangs(self, w):
         print "Determining other languages...",
         try:
@@ -102,14 +102,14 @@ class FamilyFileGenerator(object):
                 print "downloaded"
             else:
                 print "in cache"
-    
+
     def getnamespaces(self):
         print "Retrieving namespaces... ",
         for w in self.wikis.itervalues():
             print "%s " % w.lang,
             self.namespaces.addfromwiki(w)
         print
-    
+
     def writefile(self):
         fn = "families/%s_family.py" % self.name
         print "Writing %s... " % fn
@@ -121,7 +121,7 @@ class FamilyFileGenerator(object):
         except IOError: # file not found
             pass
         f = codecs.open(fn, 'w', 'utf-8')
-        
+
         f.write("""
 # -*- coding: utf-8 -*-
 \"\"\"
@@ -141,23 +141,23 @@ class Family(family.Family):
         self.name = '%(name)s'
         self.langs = {
 """.lstrip() % {'url': self.base_url, 'name': self.name})
-        
+
         for w in self.wikis.itervalues():
             f.write("            '%(lang)s': u'%(hostname)s',\n" % {'lang': w.lang, 'hostname': urlparse(w.server).netloc})
-        
+
         f.write("        }\n\n")
-        
+
         f.write(self.namespaces.output(8))
         f.write("\n\n")
-    
+
         f.write("    def scriptpath(self, code):\n")
         f.write("        return {\n")
-    
+
         for w in self.wikis.itervalues():
             f.write("            '%(lang)s': u'%(path)s',\n" % {'lang': w.lang, 'path': w.scriptpath})
         f.write("        }[code]\n")
         f.write("\n")
-        
+
         f.write("    def version(self, code):\n")
         f.write("        return {\n")
         for w in self.wikis.itervalues():
@@ -171,14 +171,14 @@ class NamespaceStorage(object):
     def __init__(self):
         self.nsinfo = {}
         self.f = family.Family()
-    
+
     def addfromwiki(self, w):
         data = json.load(urlopen(w.api + "?action=query&format=json&meta=siteinfo&siprop=namespaces|namespacealiases"))['query']
         for ns in data['namespaces'].itervalues():
             self.add(ns['id'], w.lang, ns['*'])
         for ns in data['namespacealiases']:
             self.add(ns['id'], w.lang, ns['*'])
-    
+
     def add(self, ns, lang, translation):
         """ Contains logic for determining whether to define a namespace or not """
         ns = int(ns)
@@ -189,11 +189,11 @@ class NamespaceStorage(object):
                 raise KeyError
         except KeyError:
             self._store(ns, lang, translation)
-    
+
     def _store(self, ns, lang, translation):
         """ Contains logic on how to store a translation """
         self.nsinfo.setdefault(ns, {}).setdefault(lang, []).append(translation)
-        
+
     def output(self, indent):
         data = ""
         for nsid, langs in self.nsinfo.iteritems():
@@ -205,7 +205,7 @@ class NamespaceStorage(object):
                 data += "self.namespaces[%(nsid)i][%(lang)r] = %(translations)r" % locals()
                 data += "\n"
         return data
-        
+
 
 class Wiki(object):
     REwgEnableApi = re.compile(ur'wgEnableAPI ?= ?true')
@@ -214,7 +214,7 @@ class Wiki(object):
     REwgArticlePath = re.compile(ur'wgArticlePath ?= ?"([^"]*)"')
     REwgContentLanguage = re.compile(ur'wgContentLanguage ?= ?"([^"]*)"')
     REwgVersion = re.compile(ur'wgVersion ?= ?"([^"]*)"')
- 
+
     def __init__(self, fromurl):
         if fromurl.endswith("$1"):
           fromurl = fromurl[:-2]
@@ -257,5 +257,5 @@ if __name__ == "__main__":
         print "Usage: %s <url> <short name>"
         print "Example: %s http://www.mywiki.bogus/wiki/Main_Page mywiki"
         print "This will create the file families/mywiki_family.py"
-    
+
     FamilyFileGenerator(*sys.argv[1:]).run()

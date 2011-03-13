@@ -92,7 +92,7 @@ class DjVuTextBot:
             self.prefix = self.prefix[6:]
         pywikibot.output(u"Using prefix %s" % self.prefix)
         gen = self.PagesGenerator()
-   
+
         site = pywikibot.getSite()
         self.username = config.usernames[site.family.name][site.lang]
 
@@ -108,7 +108,7 @@ class DjVuTextBot:
         s = f.read()
         f.close()
         return s.find('TXTz') >= 0
-      
+
     def get_page(self, pageno):
         pywikibot.output(unicode("fetching page %d" % (pageno)))
         cmd = u"djvutxt --page=%d \"%s\" \"%s.out\"" \

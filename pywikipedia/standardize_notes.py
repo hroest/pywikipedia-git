@@ -242,7 +242,7 @@ class ReplacePageGenerator:
                              won't be changed.
             * regex        - if the entries of replacements and exceptions
                              should be interpreted as regular expressions
-                             
+
         """
         mysite = pywikibot.getSite()
         import sqldump

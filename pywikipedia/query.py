@@ -30,12 +30,12 @@ try:
     #For Python 2.6 newer
     import json
     if not hasattr(json, 'loads'):
-        # 'json' can also be the name in for 
+        # 'json' can also be the name in for
         # http://pypi.python.org/pypi/python-json
         raise ImportError
 except ImportError:
     import simplejson as json
-    
+
 
 def GetData(params, site = None, useAPI = True, retryCount = 5, encodeTitle = True, sysop = False, back_response = False):
     """Get data from the query api, and convert it into a data object
@@ -44,7 +44,7 @@ def GetData(params, site = None, useAPI = True, retryCount = 5, encodeTitle = Tr
         site = wikipedia.getSite()
     data = {}
     titlecount = 0
-    
+
     for k,v in params.iteritems():
         if k == u'file':
             data[k] = v
@@ -55,7 +55,7 @@ def GetData(params, site = None, useAPI = True, retryCount = 5, encodeTitle = Tr
                 data[k] = unicode(ListToParam(v))
             else:
                 params[k] = unicode(ListToParam(v))
-            
+
         elif not IsString(v):
             params[k] = unicode(v)
         elif type(v) == unicode:
@@ -66,16 +66,16 @@ def GetData(params, site = None, useAPI = True, retryCount = 5, encodeTitle = Tr
 
     if not useAPI:
         params['noprofile'] = ''
-    
+
     if data:
         for k in data:
-            del params[k] 
-    
+            del params[k]
+
     if wikipedia.verbose: #dump params info.
         wikipedia.output(u"==== API action:%s ====" % params[u'action'])
         if data and 'file' not in data:
             wikipedia.output(u"%s: (%d items)" % (data.keys()[0], titlecount ) )
-        
+
         for k, v in params.iteritems():
             if k not in ['action', 'format', 'file', 'xml', 'text']:
                 if k == 'lgpassword' and wikipedia.verbose == 1:
@@ -84,7 +84,7 @@ def GetData(params, site = None, useAPI = True, retryCount = 5, encodeTitle = Tr
                     v = v.decode('utf-8')
                 wikipedia.output(u"%s: %s" % (k, v) )
         wikipedia.output(u'-' * 16 )
-        
+
 
     postAC = [
         'edit', 'login', 'purge', 'rollback', 'delete', 'undelete', 'protect', 'parse',
@@ -128,7 +128,7 @@ def GetData(params, site = None, useAPI = True, retryCount = 5, encodeTitle = Tr
 
             # This will also work, but all unicode strings will need to be converted from \u notation
             # decodedObj = eval( jsontext )
-            
+
             jsontext = json.loads( jsontext )
 
             if "error" in jsontext:
@@ -137,7 +137,7 @@ def GetData(params, site = None, useAPI = True, retryCount = 5, encodeTitle = Tr
                     wikipedia.output('Received a bad login token error from the server.  Attempting to refresh.')
                     params['token'] = site.getToken(sysop = sysop, getagain = True)
                     continue
-            
+
             if back_response:
                 return res, jsontext
             else:
@@ -149,7 +149,7 @@ def GetData(params, site = None, useAPI = True, retryCount = 5, encodeTitle = Tr
 
             if 'Wikimedia Error' in jsontext: #wikimedia server error
                 raise wikipedia.ServerError
-            
+
             retryCount -= 1
             wikipedia.output(u"Error downloading data: %s" % error)
             wikipedia.output(u"Request %s:%s" % (site.lang, path))
