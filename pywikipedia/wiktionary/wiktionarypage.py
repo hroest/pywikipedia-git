@@ -127,7 +127,7 @@ class WiktionaryPage:
                     if len(lang)>1 and len(lang)<4:
                         self.addLink(lang+':'+linkto)
                     continue
-            # store empty lines literally, this is necessary for the blocks we don't parse 
+            # store empty lines literally, this is necessary for the blocks we don't parse
             # and will return literally
             if len(line) <2:
                 templist.append(line)
@@ -293,7 +293,7 @@ class WiktionaryPage:
                                 self.addEntry(anentry)
                             # Then we can easily add this meaning to it.
                             anentry.addMeaning(ameaning)
-                            
+
                         pos=line.find('<!--')
                         if pos!=-1 and pos < 4:
                             # A html comment at the beginning of the line means this entry already has disambiguation labels, great
