@@ -34,7 +34,7 @@ def check_family(family):
             site = wikipedia.getSite(lang, family)
             wikipedia.output(u'Checking %s' % site)
             namespaces = check_namespaces(site)
-            if namespaces: 
+            if namespaces:
                 for id, name, defined_namespace in namespaces:
                     wikipedia.output(u'Namespace %s for %s is %s, %s is defined in family file.' % \
                         (id, site, name, defined_namespace))

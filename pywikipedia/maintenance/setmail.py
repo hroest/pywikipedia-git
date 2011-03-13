@@ -16,7 +16,7 @@ def confirm(link):
 
 if __name__ == '__main__':
     r_mail = re.compile(ur'(http\:\/\/\S*Confirmemail\S*)')
-    
+
     email = wikipedia.input('Email?')
     host = wikipedia.input('Host?')
     port = wikipedia.input('Port (default: 110; ssl: 995)?')
@@ -26,21 +26,21 @@ if __name__ == '__main__':
         port = 0
     if not port:
         port = 110
-    ssl = wikipedia.inputChoice('SSL? ', ['no', 'yes'], 
+    ssl = wikipedia.inputChoice('SSL? ', ['no', 'yes'],
         ['n', 'y'], (port == 995) and 'y' or 'n') == 'y'
     username = wikipedia.input('User?')
     password = wikipedia.input('Password?', True)
     do_delete = wikipedia.inputChoice('Delete confirmed mails?', ['yes', 'no'], ['y', 'n'], 'y') == 'y'
-        
+
     if email:
         preferences.set_all(['wpUserEmail', 'wpEmailFlag', 'wpOpenotifusertalkpages'],
             [email, True, False], verbose = True)
-    
+
     if ssl:
         pop = poplib.POP3_SSL(host, port)
     else:
         pop = poplib.POP3(host, port)
-        
+
     pop.user(username)
     pop.pass_(password)
     wikipedia.output(unicode(pop.getwelcome()))
@@ -54,10 +54,10 @@ if __name__ == '__main__':
                 link = r_mail.search(line).group(1)
                 wikipedia.output(u'Confirming %s.' % link)
                 confirm(link)
-                
+
         if not confirmed:
             wikipedia.output(u'Unconfirmed mail!')
         elif do_delete:
             pop.dele(i)
     pop.quit()
-        
+
