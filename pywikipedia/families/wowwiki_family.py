@@ -1,4 +1,7 @@
 # -*- coding: utf-8  -*-
+
+__version__ = '$Id$'
+
 import config, family, urllib
 
 class Family(family.Family):

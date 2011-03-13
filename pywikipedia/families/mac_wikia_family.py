@@ -1,4 +1,6 @@
 # -*- coding: utf-8  -*-
+__version__ = '$Id$'
+
 import family, config
 
 class Family(family.Family):
