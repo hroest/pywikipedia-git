@@ -2205,7 +2205,7 @@ class Family(family.Family):
             'eo','tr','ca','fa','hr','sr','lt','tl','lv','bg','la','ro','ms','ast',
             'mk','cy','et','sl','mo','bs','mg','yi','ka','got','zombie','bn','li',
             'km','lb','lo','su','jv','ga','oc'
-        ]     
+        ]
 
         self.alphabetic_revised = [
             'ar','ast','bg','bn','bs','ca','common','cs','cy','da','de','el','en',

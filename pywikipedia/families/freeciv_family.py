@@ -7,7 +7,7 @@ import family
 # The project wiki of Freeciv, an open source strategy game.
 
 class Family(family.Family):
-    
+
     def __init__(self):
         family.Family.__init__(self)
         self.name = 'freeciv'

@@ -34,10 +34,10 @@ class Family(family.Family):
         self.namespaces[113] = {
             '_default': u'Mini talk',
         }
-        
+
     def hostname(self, code):
         return u'www.wikia.com'
-    
+
     def version(self, code):
         return "1.16.2"
 

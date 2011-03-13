@@ -122,7 +122,7 @@ class Family(family.Family):
         ]
         # CentralAuth cross avaliable projects.
         self.cross_projects = [
-            'wikipedia', 'wiktionary', 'wikibooks', 'wikiquote', 'wikisource', 'wikinews', 
+            'wikipedia', 'wiktionary', 'wikibooks', 'wikiquote', 'wikisource', 'wikinews',
             'meta', 'mediawiki', 'test', 'incubator', 'commons', 'species'
         ]
 

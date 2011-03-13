@@ -133,7 +133,7 @@ class Family(family.Family):
             '_default': u'Video talk',
             'ru': u'Обсуждение видео'
         }
-        self.namespaces[500] = { 
+        self.namespaces[500] = {
             '_default': u'User blog',
             'de': u'Benutzer Blog',
             'en': '', #disabled on en
@@ -177,7 +177,7 @@ class Family(family.Family):
             'en': u'Portal talk', 'ru': u'Сервер talk'
         }
 
-        #and a few more        
+        #and a few more
         self.namespaces[120] = { 'no': u'Oppdrag' }
         self.namespaces[121] = { 'no': u'Oppdrag Kommentar' }
         self.namespaces[122] = { 'no': u'Retningslinje' }

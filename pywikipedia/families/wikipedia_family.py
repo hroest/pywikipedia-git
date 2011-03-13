@@ -383,7 +383,7 @@ class Family(family.Family):
             'zh': [u'Wikipedia talk', u'维基百科讨论'],
             'zh-classical': u'維基大典 talk',
         }
-        
+
         self.namespaces[90] = {
             'hu': u'Téma',
         }

@@ -93,7 +93,7 @@ class Family(family.Family):
         self.namespaces[15]['sq'] = u'Kategori Diskutim'
 
         self.namespaces[100] = {'en':u'Focus'}
-        
+
         self.namespaces[101] = {'en':u'Focus talk'}
 
 

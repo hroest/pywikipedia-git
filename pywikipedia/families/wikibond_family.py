@@ -6,7 +6,7 @@ import family
 # The url op the wiki:  nl.wikibond.org
 
 class Family(family.Family):
-   
+
     def __init__(self):
         family.Family.__init__(self)
         self.name = 'wikibond'
