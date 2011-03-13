@@ -3,7 +3,7 @@ class transliterator(object):
     def __init__(self):
         self.trans = {}
         for char in u"ÀÁÂẦẤẪẨẬÃĀĂẰẮẴẶẲȦǠẠḀȂĄǍẢ":
-            self.trans[char] = u"A"       
+            self.trans[char] = u"A"
         for char in u"ȀǞ":
             self.trans[char] = u"Ä"
         self.trans[u"Ǻ"] = u"Å"
@@ -27,7 +27,7 @@ class transliterator(object):
         self.trans[u"Ḉ"] = u"Ç"
         self.trans[u"ḉ"] = u"ç"
         self.trans[u"Ð"] = u"Dh"
-        self.trans[u"ð"] = u"dh"    
+        self.trans[u"ð"] = u"dh"
         for char in u"ĎḊḌḎḐḒĐƉƊƋ":
             self.trans[char] = u"D"
         for char in u"ďḋḍḏḑḓđɖɗƌ":
@@ -146,7 +146,7 @@ class transliterator(object):
         for char in u"źẑżẓžẕƶȥ":
             self.trans[char] = u"z"
         self.trans[u"ɀ"] = u"zv"
-        
+
         # Latin: extended Latin alphabet
         self.trans[u"ɑ"] = u"a"
         for char in u"ÆǼǢ":
@@ -293,7 +293,7 @@ class transliterator(object):
                       u"ҏ": u"r", u"Ҫ": u"Th", u"ҫ": u"th", u"Ҭ": u"T", u"ҭ": u"t",
                       u"Ӯ": u"Û", u"ӯ": u"û", u"Ұ": u"U", u"Ӹ": u"U", u"ұ": u"u",
                       u"ӹ": u"u", u"Ҵ": u"Tts", u"ҵ": u"tts", u"Ӵ": u"Ch", u"ӵ": u"ch"})
-              
+
         for char in u"ЈӤҊ":
             self.trans[char] = u"J"
         for char in u"јӥҋ":
@@ -362,7 +362,7 @@ class transliterator(object):
         self.trans[u"ר"] = u"r"
         self.trans[u"ש"] = u"sh"
         self.trans[u"ת"] = u"th"
-        
+
         # Arab alphabet
         for char in u"اﺍﺎ":
             self.trans[char] = u"a"
@@ -1258,7 +1258,7 @@ class transliterator(object):
             self.trans[char] = u"8"
         for char in u"৯":
             self.trans[char] = u"9"
-        
+
         # Thai (because of complications of the alphabet, self.transliterations
         #       are very imprecise here)
         for char in u"ก":
@@ -1589,7 +1589,7 @@ class transliterator(object):
 
     def transliterate(self, char, default="?", prev="-", next="-"):
         if char in self.trans:
-            return self.trans[char]             
+            return self.trans[char]
         #Arabic
         if char == u"◌":
             return prev

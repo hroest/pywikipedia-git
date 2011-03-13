@@ -269,7 +269,7 @@ class UI:
     def editText(self, text, jumpIndex = None, highlight = None):
         """
         Uses a Tkinter edit box because we don't have a console editor
-        
+
         Parameters:
             * text      - a Unicode string
             * jumpIndex - an integer: position at which to put the caret
