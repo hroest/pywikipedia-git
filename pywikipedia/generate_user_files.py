@@ -65,7 +65,7 @@ def create_user_config(base_dir):
         #
         # I don't like this solution. Temporary for me.
         #
-        f = codecs.open("config.py", "r", "utf-8")
+        f = codecs.open(os.path.join(base_dir, "config.py"), "r", "utf-8")
         cpy = f.read()
         f.close()
 
