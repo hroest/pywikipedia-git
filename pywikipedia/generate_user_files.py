@@ -4,7 +4,6 @@ __version__ = '$Id$'
 
 import codecs, os, re, sys
 
-base_dir = ''
 console_encoding = sys.stdout.encoding
 
 if console_encoding is None or sys.platform == 'cygwin':
@@ -41,7 +40,7 @@ def file_exists(filename):
         return True
     return False
 
-def create_user_config():
+def create_user_config(base_dir):
     _fnc = os.path.join(base_dir, "user-config.py")
     if not file_exists(_fnc):
         known_families = re.findall(r'(.+)_family.py\b',
@@ -113,7 +112,7 @@ usernames['%s']['%s'] = u'%s'
         f.close()
         print("'%s' written." % _fnc)
 
-def create_user_fixes():
+def create_user_fixes(base_dir):
     _fnf = os.path.join(base_dir, "user-fixes.py")
     if not file_exists(_fnf):
         f = codecs.open(_fnf, "w", "utf-8")
@@ -143,11 +142,11 @@ if __name__ == "__main__":
     print("3: The two files")
     choice = raw_input("What do you do? ")
     if choice == "1":
-        create_user_config()
+        create_user_config('')
     if choice == "2":
-        create_user_fixes()
+        create_user_fixes('')
     if choice == "3":
-        create_user_config()
-        create_user_fixes()
+        create_user_config('')
+        create_user_fixes('')
     if not choice in "123":
         print("Nothing to do")
