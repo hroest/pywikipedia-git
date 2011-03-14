@@ -332,6 +332,7 @@ class Family(family.Family):
         self.namespaces[106] = {
             '-': u'Index',
             'ar': u'فهرس',
+            'ca': u'Autor',
             'da': u'Indeks',
             'en': u'Index',
             'et': u'Autor',
@@ -354,6 +355,7 @@ class Family(family.Family):
         self.namespaces[107] = {
             '-': u'Index talk',
             'ar': u'نقاش الفهرس',
+            'ca': u'Autor Discussió',
             'da': u'Indeksdiskussion',
             'en': u'Index talk',
             'et': u'Autori arutelu',
