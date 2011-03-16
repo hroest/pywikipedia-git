@@ -1427,6 +1427,11 @@ class transliterator(object):
             self.trans[char] = u"ro"
         for char in u"메":
             self.trans[char] = u"me"
+        for char in u"역":
+            self.trans[char] = u"yeok"
+        for char in u"도":
+            self.trans[char] = u"do"
+
         # Kannada
         self.trans[u"ಅ"] = u"a"
         for char in u"ಆಾ":
