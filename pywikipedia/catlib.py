@@ -97,7 +97,8 @@ class Category(wikipedia.Page):
         else:
             return '[[%s]]' % titleWithSortKey
 
-    def _getAndCacheContents(self, recurse=False, purge=False, startFrom=None, cache=None):
+    def _getAndCacheContents(self, recurse=False, purge=False, startFrom=None, cache=None, 
+                                   sortby=None, sortdir=None):
         """
         Cache results of _parseCategory for a second call.
 
@@ -133,10 +134,11 @@ class Category(wikipedia.Page):
                         # contents of subcategory are cached by calling
                         # this method recursively; therefore, do not cache
                         # them again
-                        for item in subcat._getAndCacheContents(newrecurse, purge, cache=cache):
+                        for item in subcat._getAndCacheContents(newrecurse, purge, cache=cache,
+                                            sortby=sortby, sortdir=sortdir):
                             yield item
         else:
-            for tag, page in self._parseCategory(purge, startFrom):
+            for tag, page in self._parseCategory(purge, startFrom, sortby, sortdir):
                 if tag == ARTICLE:
                     self.articleCache.append(page)
                     if not page in cache:
@@ -151,23 +153,26 @@ class Category(wikipedia.Page):
                             # contents of subcategory are cached by calling
                             # this method recursively; therefore, do not cache
                             # them again
-                            for item in page._getAndCacheContents(newrecurse, purge, cache=cache):
+                            for item in page._getAndCacheContents(newrecurse, purge, cache=cache,
+                                             sortby=sortby, sortdir=sortdir):
                                 yield item
             if not startFrom:
                 self.completelyCached = True
 
-    def _getContentsNaive(self, recurse=False, startFrom=None):
+    def _getContentsNaive(self, recurse=False, startFrom=None, sortby=None, sortdir=None):
         """
         Simple category content yielder. Naive, do not attempts to
         cache anything
         """
-        for tag, page in self._parseCategory(startFrom=startFrom):
+        for tag, page in self._parseCategory(startFrom=startFrom, 
+                                             sortby=sortby, sortdir=sortdir):
             yield tag, page
             if tag == SUBCATEGORY and recurse:
-                for item in page._getContentsNaive(recurse=True):
+                for item in page._getContentsNaive(recurse=True, 
+                                                   sortby=sortby, sortdir=sortdir):
                     yield item
 
-    def _parseCategory(self, purge=False, startFrom=None):
+    def _parseCategory(self, purge=False, startFrom=None, sortby=None, sortdir=None):
         """
         Yields all articles and subcategories that are in this category by API.
 
@@ -194,6 +199,10 @@ class Category(wikipedia.Page):
             'cmprop': ['title', 'ids', 'sortkey', 'timestamp'],
             #'': '',
         }
+        if sortby:
+            params['cmsort'] = sortby
+        if sortdir:
+            params['cmdir'] = sortdir
         while True:
             if wikipedia.config.special_page_limit > 500:
                 params['cmlimit'] = 500
@@ -201,9 +210,9 @@ class Category(wikipedia.Page):
                 params['cmlimit'] = wikipedia.config.special_page_limit
 
             if currentPageOffset:
-                params['cmcontinue'] = currentPageOffset
+                params.update(currentPageOffset)
                 wikipedia.output('Getting [[%s]] list from %s...'
-                                 % (self.title(), currentPageOffset[:-1])) # cmcontinue last key is '|'
+                                 % (self.title(), "%s=%s" % currentPageOffset.popitem()))
             elif startFrom:
                 params['cmstartsortkey'] = startFrom
                 wikipedia.output('Getting [[%s]] list starting at %s...'
@@ -230,7 +239,7 @@ class Category(wikipedia.Page):
                     break
             # try to find a link to the next list page
             if 'query-continue' in data and count < params['cmlimit']:
-                currentPageOffset = data['query-continue']['categorymembers']['cmcontinue']
+                currentPageOffset = data['query-continue']['categorymembers']
             else:
                 break
 
@@ -339,7 +348,8 @@ class Category(wikipedia.Page):
             else:
                 break
 
-    def subcategories(self, recurse=False, startFrom=None, cacheResults=False):
+    def subcategories(self, recurse=False, startFrom=None, cacheResults=False,
+                            sortby=None, sortdir=None):
         """
         Yields all subcategories of the current category.
 
@@ -360,11 +370,12 @@ class Category(wikipedia.Page):
             gen = self._getAndCacheContents
         else:
             gen = self._getContentsNaive
-        for tag, subcat in gen(recurse=recurse, startFrom=startFrom):
+        for tag, subcat in gen(recurse=recurse, startFrom=startFrom, sortby=sortby,
+                               sortdir=sortdir):
             if tag == SUBCATEGORY:
                 yield subcat
 
-    def subcategoriesList(self, recurse=False):
+    def subcategoriesList(self, recurse=False, sortby=None, sortdir=None):
         """
         Creates a list of all subcategories of the current category.
 
@@ -374,11 +385,12 @@ class Category(wikipedia.Page):
         The elements of the returned list are sorted and unique.
         """
         subcats = []
-        for cat in self.subcategories(recurse):
+        for cat in self.subcategories(recurse, sortby=sortby, sortdir=sortdir):
             subcats.append(cat)
         return unique(subcats)
 
-    def articles(self, recurse=False, startFrom=None, cacheResults=False):
+    def articles(self, recurse=False, startFrom=None, cacheResults=False,
+                       sortby=None, sortdir=None):
         """
         Yields all articles of the current category.
 
@@ -398,11 +410,12 @@ class Category(wikipedia.Page):
             gen = self._getAndCacheContents
         else:
             gen = self._getContentsNaive
-        for tag, page in gen(recurse=recurse, startFrom=startFrom):
+        for tag, page in gen(recurse=recurse, startFrom=startFrom,
+                             sortby=sortby, sortdir=sortdir):
             if tag == ARTICLE:
                 yield page
 
-    def articlesList(self, recurse=False):
+    def articlesList(self, recurse=False, sortby=None, sortdir=None):
         """
         Creates a list of all articles of the current category.
 
@@ -413,7 +426,7 @@ class Category(wikipedia.Page):
         The elements of the returned list are sorted and unique.
         """
         articles = []
-        for article in self.articles(recurse):
+        for article in self.articles(recurse, sortby=sortby, sortdir=sortdir):
             articles.append(article)
         return unique(articles)
 
