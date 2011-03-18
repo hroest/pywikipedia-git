@@ -297,7 +297,8 @@ class PatrolBot:
             pywikibot.output(u"Page %s is a redirect; skipping." % page.aslink())
             return
 
-def newpages_feed(site, number, namespace, user, repeat):
+# This should never be used
+def old_feed_repeater(site, number, namespace, user, repeat):
     while True:
         gen = site.newpages(number = number, namespace = namespace, user=user, rcshow = '!patrolled')
         for page in gen:
@@ -308,14 +309,14 @@ def newpages_feed(site, number, namespace, user, repeat):
         else:
             break
 
-def recentchanges_feed(site, number, namespace, user, repeat):
+def feed_repeater(gen, delay):
     while True:
-        gen = site.recentchanges(number = number, namespace=namespace, user=user, rcshow = '!patrolled')
         for page in gen:
-            yield page[0], page[2], page[5], page[6]
+            attrs = page[1]
+            yield page[0], attrs['user'], attrs['revid'], attrs['rcid']
         if repeat:
-            pywikibot.output('Sleeping for 10 minutes')
-            time.sleep(60)
+            pywikibot.output('Sleeping for %d minutes', delay)
+            time.sleep(delay)
         else:
             break
 
@@ -382,12 +383,14 @@ def main():
 
     if newpages or user:
         pywikibot.output(u"Newpages:")
-        feed = newpages_feed(site, number = newpage_count, namespace = namespace, user=user, repeat=repeat)
+        gen = site.newpages(number = newpage_count, namespace=namespace, user=user, rcshow = '!patrolled', returndict = True)
+        feed = feed_repeater(gen, delay=60)
         bot.run(feed)
 
     if recentchanges or user:
         pywikibot.output(u"Recentchanges:")
-        feed = recentchanges_feed(site, number = 1000, namespace = namespace, user=user, repeat=repeat)
+        gen = site.recentchanges(number = 1000, namespace=namespace, user=user, rcshow = '!patrolled', returndict = True)
+        feed = feed_repeater(gen, delay=60)
         bot.run(feed)
 
     pywikibot.output('%d/%d patrolled' % (bot.patrol_counter, bot.rc_item_counter))

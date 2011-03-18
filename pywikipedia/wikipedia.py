@@ -6082,7 +6082,7 @@ u"WARNING: Could not open '%s'. Maybe the server or\n your connection is down. R
                 break
         return
 
-    def newpages(self, number = 10, get_redirect = False, repeat = False, namespace = 0, rcshow = ['!bot','!redirect'], user = None):
+    def newpages(self, number = 10, get_redirect = False, repeat = False, namespace = 0, rcshow = ['!bot','!redirect'], user = None, returndict = False):
         """Yield new articles (as Page objects) from Special:Newpages.
 
         Starts with the newest article and fetches the number of articles
@@ -6090,7 +6090,9 @@ u"WARNING: Could not open '%s'. Maybe the server or\n your connection is down. R
         Newpages again. If there is no new page, it blocks until there is
         one, sleeping between subsequent fetches of Newpages.
 
-        The objects yielded are tuples composed of the Page object,
+        The objects yielded are dependent on parmater returndict.
+        When true, it yields a tuple composed of a Page object and a dict of attributes.
+        When false, it yields a tuple composed of the Page object,
         timestamp (unicode), length (int), an empty unicode string, username
         or IP address (str), comment (unicode).
 
@@ -6120,7 +6122,10 @@ u"WARNING: Could not open '%s'. Maybe the server or\n your connection is down. R
                     if np['pageid'] not in seen:
                         seen.add(np['pageid'])
                         page = Page(self, np['title'], defaultNamespace=np['ns'])
-                        yield page, np['timestamp'], np['newlen'], u'', np['user'], np['comment']
+                        if returndict:
+                            yield page, np
+                        else:
+                            yield page, np['timestamp'], np['newlen'], u'', np['user'], np['comment']
             else:
                 path = self.newpages_address(n=number, namespace=namespace)
                 # The throttling is important here, so always enabled.
@@ -6332,11 +6337,11 @@ u"WARNING: Could not open '%s'. Maybe the server or\n your connection is down. R
             yield o, t, u, c
         return
 
-    def recentchanges(self, number = 100, rcstart = None, rcend = None, rcshow = None, rcdir='older', rctype ='edit|new', namespace=None, includeredirects=True, repeat = False, user = None):
+    def recentchanges(self, number = 100, rcstart = None, rcend = None, rcshow = None, rcdir='older', rctype ='edit|new', namespace=None, includeredirects=True, repeat = False, user = None, returndict = False):
         """
         Yield recent changes as Page objects
         uses API call: action=query&list=recentchanges&rctype=edit|new&rclimit=500
-
+ 
         Starts with the newest change and fetches the number of changes
         specified in the first argument. If repeat is True, it fetches
         again.
@@ -6369,7 +6374,9 @@ u"WARNING: Could not open '%s'. Maybe the server or\n your connection is down. R
           rctype         - Which types of changes to show.
                            Values (separate with '|'): edit, new, log
 
-        The objects yielded are tuples composed of the Page object,
+        The objects yielded are dependent on parmater returndict.
+        When true, it yields a tuple composed of a Page object and a dict of attributes.
+        When false, it yields a tuple composed of the Page object,
         timestamp (unicode), length (int), an empty unicode string, username
         or IP address (str), comment (unicode).
 
@@ -6402,11 +6409,14 @@ u"WARNING: Could not open '%s'. Maybe the server or\n your connection is down. R
                 raise ServerError("The APIs don't return data, the site may be down")
 
             for i in rcData:
-                comment = ''
-                if 'comment' in i:
-                    comment = i['comment']
                 page = Page(self, i['title'], defaultNamespace=i['ns'])
-                yield page, i['timestamp'], i['newlen'], u'', i['user'], comment
+                if returndict:
+                    yield page, i
+                else:
+                    comment = ''
+                    if 'comment' in i:
+                        comment = i['comment']
+                    yield page, i['timestamp'], i['newlen'], True, i['user'], comment
             if not repeat:
                 break
 
