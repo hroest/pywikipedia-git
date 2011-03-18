@@ -6120,7 +6120,7 @@ u"WARNING: Could not open '%s'. Maybe the server or\n your connection is down. R
                     if np['pageid'] not in seen:
                         seen.add(np['pageid'])
                         page = Page(self, np['title'], defaultNamespace=np['ns'])
-                        yield page, np['timestamp'], np['newlen'], u'', np['user'], np['comment'], np['revid'], np['rcid']
+                        yield page, np['timestamp'], np['newlen'], u'', np['user'], np['comment']
             else:
                 path = self.newpages_address(n=number, namespace=namespace)
                 # The throttling is important here, so always enabled.
@@ -6394,10 +6394,8 @@ u"WARNING: Could not open '%s'. Maybe the server or\n your connection is down. R
                 comment = ''
                 if 'comment' in i:
                     comment = i['comment']
-                revid = i['revid']
-                rcid = i['rcid']
                 page = Page(self, i['title'], defaultNamespace=i['ns'])
-                yield page, i['timestamp'], i['user'], comment, '', revid, rcid
+                yield page, i['timestamp'], i['user'], comment, ''
             if not repeat:
                 break
 
