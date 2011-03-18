@@ -319,6 +319,7 @@ class Family(family.Family):
             'no': u'Wikipedia-diskusjon',
             'nv': u'Wikiibíídiiya baa yáshtiʼ',
             'oc': u'Discussion Wikipèdia',
+            'or': u'ଉଇକିପିଡ଼ିଆ ଆଲୋଚନା',
             'os': u'Дискусси Википеди',
             'pa': u'ਵਿਕਿਪੀਡਿਆ ਚਰਚਾ',
             'pcd': u'Discussion Wikipedia',
