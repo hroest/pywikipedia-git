@@ -6351,8 +6351,6 @@ u"WARNING: Could not open '%s'. Maybe the server or\n your connection is down. R
                            user, comment, flags, timestamp, title, ids, sizes,
                            redirect, patrolled, loginfo
                            Default: title|timestamp|ids
-          rctoken        - Which tokens to obtain for each change
-                           Values (separate with '|'): patrol
           rcshow         - Show only items that meet this criteria.
                            For example, to see only minor edits done by
                            logged-in users, set show=minor|!anon
