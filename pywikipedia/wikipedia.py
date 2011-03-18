@@ -6082,7 +6082,7 @@ u"WARNING: Could not open '%s'. Maybe the server or\n your connection is down. R
                 break
         return
 
-    def newpages(self, number = 10, get_redirect = False, repeat = False, namespace = 0, rcshow = ['!bot','!redirect']):
+    def newpages(self, number = 10, get_redirect = False, repeat = False, namespace = 0, rcshow = ['!bot','!redirect'], user = None):
         """Yield new articles (as Page objects) from Special:Newpages.
 
         Starts with the newest article and fetches the number of articles
@@ -6113,6 +6113,7 @@ u"WARNING: Could not open '%s'. Maybe the server or\n your connection is down. R
                     'rcprop': ['ids','title','timestamp','sizes','user','comment'],
                     'rcshow': rcshow,
                 }
+                if user: params['rcuser'] = user
                 data = query.GetData(params, self)['query']['recentchanges']
 
                 for np in data:
@@ -6331,7 +6332,7 @@ u"WARNING: Could not open '%s'. Maybe the server or\n your connection is down. R
             yield o, t, u, c
         return
 
-    def recentchanges(self, number = 100, rcstart = None, rcend = None, rcshow = None, rcdir='older', rctype ='edit|new', namespace=None, includeredirects=True, repeat = False):
+    def recentchanges(self, number = 100, rcstart = None, rcend = None, rcshow = None, rcdir='older', rctype ='edit|new', namespace=None, includeredirects=True, repeat = False, user = None):
         """
         Yield ImagePages from APIs, call: action=query&list=recentchanges&rctype=edit|new&rclimit=500
 
@@ -6374,6 +6375,7 @@ u"WARNING: Could not open '%s'. Maybe the server or\n your connection is down. R
             'rcnamespace' : namespace,
             'rclimit'   : int(number),
             }
+        if user: params['rcuser'] = user
         if rcstart: params['rcstart'] = rcstart
         if rcend: params['rcend'] = rcend
         if rcshow: params['rcshow'] = rcshow
