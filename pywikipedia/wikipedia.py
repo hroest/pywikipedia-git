@@ -4848,6 +4848,7 @@ class Site(object):
         self._messages = [None, None]
         self._rights = [None, None]
         self._token = [None, None]
+        self._patrolToken = [None, None]
         self._cookies = [None, None]
         # Calculating valid languages took quite long, so we calculate it once
         # in initialization instead of each time it is used.
@@ -6401,6 +6402,25 @@ u"WARNING: Could not open '%s'. Maybe the server or\n your connection is down. R
             if not repeat:
                 break
 
+    def patrol(self, rcid, token = None):
+        if not self.site().has_api() or self.site().versionnumber() < 12:
+            raise Exception('patrol: no API: not implemented')
+
+        if not token:
+            token = self.site().getPatrolToken()
+
+        params = {
+            'action': 'patrol',
+            'rcid':   rcid,
+            'token':  token,
+        }
+
+        result = query.GetData(params, self.site())
+        if 'error' in result:
+            raise RuntimeError("%s" % result['error'])
+
+        return True
+
     def uncategorizedimages(self, number = 10, repeat = False):
         """Yield ImagePages from Special:Uncategorizedimages."""
         seen = set()
@@ -7434,6 +7454,30 @@ u"WARNING: Could not open '%s'. Maybe the server or\n your connection is down. R
             return self._token[index]
         else:
             return False
+
+    def getPatrolToken(self, sysop = False):
+        index = self._userIndex(sysop)
+
+        if self._patrolToken[index] is None:
+            output(u'Getting a patrol token.')
+            params = {
+                'action'    : 'query',
+                'list'      : 'recentchanges',
+                'rcshow'    : '!patrolled',
+                'rctoken'   : 'patrol',
+                'rclimit'   : 1,
+            }
+            data = query.GetData(params, self, encodeTitle = False)
+            if 'error' in data:
+                raise RuntimeError('%s' % data['error'])
+            try:
+                rcData = data['query']['recentchanges']
+            except KeyError:
+                raise ServerError("The APIs don't return data, the site may be down")
+
+            self._patrolToken[index] = rcData[0]['patroltoken']
+            
+        return self._patrolToken[index]
 
     def getFilesFromAnHash(self, hash_found = None):
         """ Function that uses APIs to give the images that has the same hash. Useful
