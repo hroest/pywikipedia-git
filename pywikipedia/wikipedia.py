@@ -6394,13 +6394,10 @@ u"WARNING: Could not open '%s'. Maybe the server or\n your connection is down. R
                 comment = ''
                 if 'comment' in i:
                     comment = i['comment']
-                loginfo = ''
-                if 'loginfo' in i:
-                    loginfo = i['loginfo']
                 revid = i['revid']
                 rcid = i['rcid']
                 page = Page(self, i['title'], defaultNamespace=i['ns'])
-                yield page, i['timestamp'], i['user'], comment, loginfo, revid, rcid
+                yield page, i['timestamp'], i['user'], comment, '', revid, rcid
             if not repeat:
                 break
 
