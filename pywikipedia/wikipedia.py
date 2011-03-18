@@ -6403,11 +6403,11 @@ u"WARNING: Could not open '%s'. Maybe the server or\n your connection is down. R
                 break
 
     def patrol(self, rcid, token = None):
-        if not self.site().has_api() or self.site().versionnumber() < 12:
+        if not self.has_api() or self.versionnumber() < 12:
             raise Exception('patrol: no API: not implemented')
 
         if not token:
-            token = self.site().getPatrolToken()
+            token = self.getPatrolToken()
 
         params = {
             'action': 'patrol',
@@ -6415,7 +6415,7 @@ u"WARNING: Could not open '%s'. Maybe the server or\n your connection is down. R
             'token':  token,
         }
 
-        result = query.GetData(params, self.site())
+        result = query.GetData(params, self)
         if 'error' in result:
             raise RuntimeError("%s" % result['error'])
 
