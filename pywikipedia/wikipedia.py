@@ -6081,7 +6081,7 @@ u"WARNING: Could not open '%s'. Maybe the server or\n your connection is down. R
                 break
         return
 
-    def newpages(self, number = 10, get_redirect = False, repeat = False, namespace = 0):
+    def newpages(self, number = 10, get_redirect = False, repeat = False, namespace = 0, rcshow = ['!bot','!redirect']):
         """Yield new articles (as Page objects) from Special:Newpages.
 
         Starts with the newest article and fetches the number of articles
@@ -6110,8 +6110,7 @@ u"WARNING: Could not open '%s'. Maybe the server or\n your connection is down. R
                     'rcnamespace': namespace,
                     'rclimit': int(number),
                     'rcprop': ['ids','title','timestamp','sizes','user','comment'],
-                    'rcshow': ['!bot','!redirect'],
-                    #'': '',
+                    'rcshow': rcshow,
                 }
                 data = query.GetData(params, self)['query']['recentchanges']
 
