@@ -6334,7 +6334,12 @@ u"WARNING: Could not open '%s'. Maybe the server or\n your connection is down. R
 
     def recentchanges(self, number = 100, rcstart = None, rcend = None, rcshow = None, rcdir='older', rctype ='edit|new', namespace=None, includeredirects=True, repeat = False, user = None):
         """
-        Yield ImagePages from APIs, call: action=query&list=recentchanges&rctype=edit|new&rclimit=500
+        Yield recent changes as Page objects
+        uses API call: action=query&list=recentchanges&rctype=edit|new&rclimit=500
+
+        Starts with the newest change and fetches the number of changes
+        specified in the first argument. If repeat is True, it fetches
+        again.
 
         Options directly from APIs:
         ---
@@ -6363,6 +6368,12 @@ u"WARNING: Could not open '%s'. Maybe the server or\n your connection is down. R
                            Default: 10
           rctype         - Which types of changes to show.
                            Values (separate with '|'): edit, new, log
+
+        The objects yielded are tuples composed of the Page object,
+        timestamp (unicode), length (int), an empty unicode string, username
+        or IP address (str), comment (unicode).
+
+        # TODO: Detection of unregistered users is broken
         """
         if rctype is None:
             rctype = 'edit|new'
@@ -6371,7 +6382,7 @@ u"WARNING: Could not open '%s'. Maybe the server or\n your connection is down. R
             'list'      : 'recentchanges',
             'rcdir'     : rcdir,
             'rctype'    : rctype,
-            'rcprop'    : ['user','comment','timestamp','title','ids','loginfo'],    #','flags','sizes','redirect','patrolled']
+            'rcprop'    : ['user','comment','timestamp','title','ids','loginfo','sizes'],    #','flags','redirect','patrolled']
             'rcnamespace' : namespace,
             'rclimit'   : int(number),
             }
@@ -6395,7 +6406,7 @@ u"WARNING: Could not open '%s'. Maybe the server or\n your connection is down. R
                 if 'comment' in i:
                     comment = i['comment']
                 page = Page(self, i['title'], defaultNamespace=i['ns'])
-                yield page, i['timestamp'], i['user'], comment, ''
+                yield page, i['timestamp'], i['newlen'], u'', i['user'], comment
             if not repeat:
                 break
 
