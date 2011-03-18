@@ -6118,7 +6118,7 @@ u"WARNING: Could not open '%s'. Maybe the server or\n your connection is down. R
                     if np['pageid'] not in seen:
                         seen.add(np['pageid'])
                         page = Page(self, np['title'], defaultNamespace=np['ns'])
-                        yield page, np['timestamp'], np['newlen'], u'', np['user'], np['comment']
+                        yield page, np['timestamp'], np['newlen'], u'', np['user'], np['comment'], np['revid'], np['rcid']
             else:
                 path = self.newpages_address(n=number, namespace=namespace)
                 # The throttling is important here, so always enabled.
@@ -6377,6 +6377,7 @@ u"WARNING: Could not open '%s'. Maybe the server or\n your connection is down. R
         if rcend: params['rcend'] = rcend
         if rcshow: params['rcshow'] = rcshow
         if rctype: params['rctype'] = rctype
+
         while True:
             data = query.GetData(params, self, encodeTitle = False)
             if 'error' in data:
@@ -6393,10 +6394,10 @@ u"WARNING: Could not open '%s'. Maybe the server or\n your connection is down. R
                 loginfo = ''
                 if 'loginfo' in i:
                     loginfo = i['loginfo']
-                # pageid = rcItem['pageid']
-                # logid = rcItem['logid']
+                revid = i['revid']
+                rcid = i['rcid']
                 page = Page(self, i['title'], defaultNamespace=i['ns'])
-                yield page, i['timestamp'], i['user'], comment, loginfo
+                yield page, i['timestamp'], i['user'], comment, loginfo, revid, rcid
             if not repeat:
                 break
 
