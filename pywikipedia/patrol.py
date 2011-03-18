@@ -1,9 +1,9 @@
 #!/usr/bin/python
 # -*- coding: utf-8  -*-
 """
-This is not a complete bot; rather, it is a template from which simple
-bots can be made. You can rename it to mybot.py, then edit it in
-whatever way you want.
+This bot obtains a list of recentchanges and newpages and marks the
+edits as patrolled based on a whitelist.
+See http://en.wikisource.org/wiki/User:JVbot/patrol_whitelist
 
 The following parameters are supported:
 
@@ -120,7 +120,6 @@ class PatrolBot:
 	        return item
 
             # site.authornamespaces
-	    #if item.find('Author:') == 0: # localisation needed
             if self.site.family.name == 'wikisource':
                 author_ns = 0
                 try:
@@ -136,8 +135,6 @@ class PatrolBot:
 
 	            if item.find(author_ns_prefix+':') == 0:
                         author_page_name = item[len(author_ns_prefix)+1:]
-                        #if pywikibot.verbose:
-	                #    pywikibot.output(u'matching against author: %s', author_page_name)
 
                         p = pywikibot.Page(self.site, item)
                         # this can be optimised by building the page list
@@ -281,7 +278,7 @@ class PatrolBot:
 	
 	    # Patrol the page
             if choice == 'y':
-		response = page[0].patrol(rcid)
+		response = self.site.patrol(rcid)
                 self.patrol_counter = self.patrol_counter + 1
 		pywikibot.output("Patrolled %s (rcid %d) by user %s" % (title, rcid, username))
             else:
@@ -302,7 +299,7 @@ class PatrolBot:
 
 def newpages_feed(site, number, namespace, user, repeat):
     while True:
-        gen = site.newpages(number = number, namespace = namespace, rcshow = '!patrolled')
+        gen = site.newpages(number = number, namespace = namespace, user=user, rcshow = '!patrolled')
         for page in gen:
             yield page[0], page[4], page[6], page[7]
         if repeat:
@@ -313,7 +310,7 @@ def newpages_feed(site, number, namespace, user, repeat):
 
 def recentchanges_feed(site, number, namespace, user, repeat):
     while True:
-        gen = site.recentchanges(number = number, namespace=namespace, rcshow = '!patrolled')
+        gen = site.recentchanges(number = number, namespace=namespace, user=user, rcshow = '!patrolled')
         for page in gen:
             yield page[0], page[2], page[5], page[6]
         if repeat:
@@ -370,7 +367,7 @@ def main():
     site.forceLogin()
 
     if user:
-        raise Exception(u'Not implemented')
+        print "processing user: %s" % user
 
     newpage_count = 300
     if not newpages and not recentchanges and not user:
