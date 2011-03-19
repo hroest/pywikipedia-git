@@ -309,13 +309,13 @@ def old_feed_repeater(site, number, namespace, user, repeat):
         else:
             break
 
-def feed_repeater(gen, delay):
+def feed_repeater(gen, delay=0, repeat=False):
     while True:
         for page in gen:
             attrs = page[1]
             yield page[0], attrs['user'], attrs['revid'], attrs['rcid']
         if repeat:
-            pywikibot.output('Sleeping for %d minutes', delay)
+            pywikibot.output(u'Sleeping for %d minutes' % delay)
             time.sleep(delay)
         else:
             break
@@ -384,13 +384,13 @@ def main():
     if newpages or user:
         pywikibot.output(u"Newpages:")
         gen = site.newpages(number = newpage_count, namespace=namespace, user=user, rcshow = '!patrolled', returndict = True)
-        feed = feed_repeater(gen, delay=60)
+        feed = feed_repeater(gen, delay=60, repeat=repeat)
         bot.run(feed)
 
     if recentchanges or user:
         pywikibot.output(u"Recentchanges:")
         gen = site.recentchanges(number = 1000, namespace=namespace, user=user, rcshow = '!patrolled', returndict = True)
-        feed = feed_repeater(gen, delay=60)
+        feed = feed_repeater(gen, delay=60, repeat=repeat)
         bot.run(feed)
 
     pywikibot.output('%d/%d patrolled' % (bot.patrol_counter, bot.rc_item_counter))
