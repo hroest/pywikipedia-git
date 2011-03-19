@@ -57,6 +57,7 @@ class Family(family.Family):
             'en': u'School',
             'it': u'Facoltà',
             'ja': u'School',
+            'sv': u'Portal',
         }
         self.namespaces[101] = {
             'cs': u'Diskuse k fóru',
@@ -64,6 +65,7 @@ class Family(family.Family):
             'en': u'School talk',
             'it': u'Discussioni facoltà',
             'ja': u'School‐ノート',
+            'sv': u'Portaldiskussion',
         }
         self.namespaces[102] = {
             'el': u'Τμήμα',
