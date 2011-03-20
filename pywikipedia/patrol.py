@@ -86,18 +86,7 @@ class PatrolBot:
         else:
             tuples[user] = [page]
 
-    def title_match(self, prefix, title):
-        if pywikibot.verbose:
-            pywikibot.output(u'matching %s to prefix %s' % (title,prefix))
-	prefix_len=len(prefix)
-	title_trimmed = title[:prefix_len]
-	if title_trimmed == prefix:
-            if pywikibot.verbose:
-	        pywikibot.output(u"substr match")
-	    return True
-        return False
-
-    def in_list(self, pagelist, title):
+    def in_list(self, pagelist, title, laxyload=True):
         if pywikibot.verbose:
             pywikibot.output(u'Checking whitelist for: %s' % title)
 
@@ -115,35 +104,14 @@ class PatrolBot:
             if pywikibot.verbose:
 	        pywikibot.output(u"checking against whitelist item = %s" % item)
 
-            if self.title_match(item, title):
+            if isinstance(item, PatrolRule):
+                if pywikibot.verbose:
+	            pywikibot.output(u"invoking programmed rule")
+                if item.match(title):
+                    return item
+
+            elif title_match(item, title):
 	        return item
-
-            # site.authornamespaces
-            if self.site.family.name == 'wikisource':
-                author_ns = 0
-                try:
-                    author_ns = self.site.family.authornamespaces[self.site.lang][0]
-                except:
-                    pass
-
-                if author_ns:
-                    author_ns_prefix = self.site.namespace(author_ns)
-
-                    if pywikibot.debug:
-                        pywikibot.output(u'Author ns: %d; name: %s' % (author_ns, author_ns_prefix))
-
-	            if item.find(author_ns_prefix+':') == 0:
-                        author_page_name = item[len(author_ns_prefix)+1:]
-
-                        p = pywikibot.Page(self.site, item)
-                        # this can be optimised by building the page list
-                        # in parse_page_tuples(), or by inline replacing the
-                        # 'Author:..' whitelist with the resulting page list
-		        for work in p.linkedPages():
-		            if self.title_match(work.title(), title):
-                                if pywikibot.verbose:
-		                    pywikibot.output(u"Matched work '%s' of author" % work.title())
-		    	        return work
 
         if pywikibot.verbose:
             pywikibot.output(u'not found')
@@ -197,9 +165,15 @@ class PatrolBot:
 
                 if current_user:
                     if not user or current_user == user:
-                        if pywikibot.verbose:
-                            pywikibot.output(u'Whitelist page: %s' % page)
-                        self.add_to_tuples(tuples, current_user, page)
+                        if self.is_wikisource_author_page(page):
+                            if pywikibot.verbose:
+                                pywikibot.output(u'Whitelist author: %s' % page)
+                            author = LinkedPagesRule(page)
+                            self.add_to_tuples(tuples, current_user, author)
+                        else:
+                            if pywikibot.verbose:
+                                pywikibot.output(u'Whitelist page: %s' % page)
+                            self.add_to_tuples(tuples, current_user, page)
                     elif pywikibot.verbose:
                         pywikibot.output(u'Discarding whitelist page for another user: %s' % page)
                 else:
@@ -212,6 +186,31 @@ class PatrolBot:
         process_children(root,None)
 
         return tuples
+
+    def is_wikisource_author_page(self, title):
+        if not self.site.family.name == 'wikisource':
+            return False
+
+        author_ns = 0
+        try:
+            author_ns = self.site.family.authornamespaces[self.site.lang][0]
+        except:
+            pass
+
+        if author_ns:
+            author_ns_prefix = self.site.namespace(author_ns)
+
+        if pywikibot.debug:
+            pywikibot.output(u'Author ns: %d; name: %s' % (author_ns, author_ns_prefix))
+
+	if title.find(author_ns_prefix+':') == 0:
+            return True
+
+        if pywikibot.verbose:
+            author_page_name = title[len(author_ns_prefix)+1:]
+            pywikibot.output(u'Found author %s' % author_page_name)
+        
+        return False
 
     def run(self, feed = None):
 	if self.whitelist == None:
@@ -295,6 +294,66 @@ class PatrolBot:
         except pywikibot.IsRedirectPage:
             pywikibot.output(u"Page %s is a redirect; skipping." % page.aslink())
             return
+
+def title_match(prefix, title):
+    if pywikibot.verbose:
+        pywikibot.output(u'matching %s to prefix %s' % (title,prefix))
+    prefix_len=len(prefix)
+    title_trimmed = title[:prefix_len]
+    if title_trimmed == prefix:
+        if pywikibot.verbose:
+	    pywikibot.output(u"substr match")
+	return True
+    return False
+
+class PatrolRule:
+    def __init__(self, page_title):
+        """
+        Constructor. Parameters:
+            * page_title - The page title for this rule
+        """
+        self.page_title = page_title
+
+    def title(self):
+        return self.page_title
+
+    def match(self, page):
+        pass
+
+class LinkedPagesRule(PatrolRule):
+    def __init__(self, page_title):
+        self.site = pywikibot.getSite()
+        self.page_title = page_title
+        self.linkedpages = None
+
+    def match(self, page_title):
+        if page_title == self.page_title:
+            return True
+
+        if not self.site.family.name == 'wikisource':
+            raise Exception('This is a wikisource rule')
+
+        if not self.linkedpages:
+            if pywikibot.verbose:
+                pywikibot.output(u"loading page links on %s" % self.page_title)
+
+            p = pywikibot.Page(self.site, self.page_title)
+            linkedpages = list()
+            for linkedpage in p.linkedPages():
+                linkedpages.append(linkedpage.title())
+            self.linkedpages = linkedpages 
+
+            if pywikibot.verbose:
+                pywikibot.output(u"loaded %d page links" % len(linkedpages) )
+
+        for p in self.linkedpages:
+            if pywikibot.verbose:
+                pywikibot.output(u"checking against '%s'" % p )
+
+            if title_match(p, page_title):
+                if pywikibot.verbose:
+                    pywikibot.output(u"Matched.")
+                return p
 
 def feed_repeater(gen, delay=0, repeat=False):
     while True:
