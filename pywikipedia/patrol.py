@@ -48,6 +48,7 @@ class PatrolBot:
 	    self.whitelist_pagename = u'%s:%s/%s' % (self.site.namespace(2),self.site.username(),local_whitelist_subpage_name)
         self.whitelist = None
         self.whitelist_ts = 0
+        self.whitelist_load_ts = 0
 
 	self.autopatroluserns = False
         self.highest_rcid = 0 # used to track loops
@@ -58,19 +59,40 @@ class PatrolBot:
         self.patrol_counter = 0  # and how many times an action was taken
 
     def load_whitelist(self):
-        if not self.whitelist:
-	    pywikibot.output(u'Loading %s' % self.whitelist_pagename)
-	else:
-            pywikibot.output(u'Reloading whitelist')
+        # Check for a more recent version after 5 minutes
+        if self.whitelist_load_ts and ((time.time() - self.whitelist_load_ts) < 300):
+            if pywikibot.verbose:
+                pywikibot.output(u'Whitelist not stale yet')
+            return
 
 	whitelist_page = pywikibot.Page(pywikibot.getSite(), self.whitelist_pagename)
+
+        if not self.whitelist:
+	    pywikibot.output(u'Loading %s' % self.whitelist_pagename)
+
         try:
+            if self.whitelist_ts:
+                # check for a more recent version
+                h = whitelist_page.getVersionHistory(forceReload=True,revCount=1)
+                last_edit_ts = pywikibot.parsetime2stamp(h[0][1])
+                if last_edit_ts == self.whitelist_ts:
+                    # As there hasn't been any changed to the whitelist
+                    # it has been effectively reloaded 'now' 
+                    self.whitelist_load_ts = time.time()
+                    if pywikibot.verbose:
+                        pywikibot.output(u'Whitelist not modified')
+                    return
+
+	    if self.whitelist:
+                pywikibot.output(u'Reloading whitelist')
+
 	    # Fetch whitelist
             wikitext = whitelist_page.get()
 	    # Parse whitelist
             self.whitelist = self.parse_page_tuples (wikitext, self.user)
 	    # Record timestamp
-            self.whitelist_ts = time.time()
+            self.whitelist_ts = whitelist_page.editTime()
+            self.whitelist_load_ts = time.time()
         except Exception as e:
             # cascade if there isnt a whitelist to fallback on
             if not self.whitelist:
@@ -240,12 +262,10 @@ class PatrolBot:
 
             # check whether we have wrapped around to higher rcids
             # which indicates a new RC feed is being processed
-            # reload the whitelist after 30 minutes
             if rcid > self.last_rcid:
-                ts = time.time()
-                if (ts - self.whitelist_ts) > 1800:
-                    self.load_whitelist()
-                self.repeat_start_ts = ts
+                # refresh the whitelist
+                self.load_whitelist()
+                self.repeat_start_ts = time.time()
 
 	    title = page[0].title()
             if pywikibot.verbose or self.ask:
@@ -355,13 +375,13 @@ class LinkedPagesRule(PatrolRule):
                     pywikibot.output(u"Matched.")
                 return p
 
-def feed_repeater(gen, delay=0, repeat=False):
+def api_feed_repeater(gen, delay=0, repeat=False, number = 1000, namespace=None, user=None):
     while True:
-        for page in gen:
+        for page in gen(number=number, namespace=namespace, user=user, rcshow = '!patrolled', returndict = True):
             attrs = page[1]
             yield page[0], attrs['user'], attrs['revid'], attrs['rcid']
         if repeat:
-            pywikibot.output(u'Sleeping for %d minutes' % delay)
+            pywikibot.output(u'Sleeping for %d seconds' % delay)
             time.sleep(delay)
         else:
             break
@@ -429,14 +449,14 @@ def main():
 
     if newpages or user:
         pywikibot.output(u"Newpages:")
-        gen = site.newpages(number = newpage_count, namespace=namespace, user=user, rcshow = '!patrolled', returndict = True)
-        feed = feed_repeater(gen, delay=60, repeat=repeat)
+        gen = site.newpages
+        feed = api_feed_repeater(gen, delay=60, repeat=repeat, number=newpage_count, namespace=namespace, user=user)
         bot.run(feed)
 
     if recentchanges or user:
         pywikibot.output(u"Recentchanges:")
-        gen = site.recentchanges(number = 1000, namespace=namespace, user=user, rcshow = '!patrolled', returndict = True)
-        feed = feed_repeater(gen, delay=60, repeat=repeat)
+        gen = site.recentchanges
+        feed = api_feed_repeater(gen, delay=60, repeat=repeat, number = 1000, namespace=namespace, user=user)
         bot.run(feed)
 
     pywikibot.output(u'%d/%d patrolled' % (bot.patrol_counter, bot.rc_item_counter))
