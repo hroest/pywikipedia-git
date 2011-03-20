@@ -74,7 +74,7 @@ class Family:
             'nap', 'ce', 'frr', 'pih', 'no', 'nb', 'nn', 'nrm', 'nov', 'ii',
             'oc', 'mhr', 'or', 'om', 'ng', 'hz', 'uz', 'pa', 'pi', 'pfl', 'pag',
             'pnb', 'pap', 'ps', 'km', 'pcd', 'pms', 'nds', 'pl', 'pnt', 'pt',
-            'aa', 'kdb', 'kaa', 'crh', 'ty', 'ksh', 'ro', 'rmy', 'rm', 'qu',
+            'aa', 'kbd', 'kaa', 'crh', 'ty', 'ksh', 'ro', 'rmy', 'rm', 'qu',
             'ru', 'rue', 'sah', 'se', 'sa', 'sg', 'sc', 'sco', 'stq', 'st',
             'tn', 'sq', 'scn', 'si', 'simple', 'sd', 'ss', 'sk', 'sl', 'cu',
             'szl', 'so', 'ckb', 'srn', 'sr', 'sh', 'fi', 'sv', 'tl', 'ta',
