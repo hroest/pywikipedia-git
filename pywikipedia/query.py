@@ -88,7 +88,7 @@ def GetData(params, site = None, useAPI = True, retryCount = 5, encodeTitle = Tr
 
     postAC = [
         'edit', 'login', 'purge', 'rollback', 'delete', 'undelete', 'protect', 'parse',
-        'block', 'unblock', 'move', 'emailuser','import', 'userrights', 'upload',
+        'block', 'unblock', 'move', 'emailuser','import', 'userrights', 'upload', 'patrol'
     ]
     if useAPI:
         if params['action'] in postAC:
