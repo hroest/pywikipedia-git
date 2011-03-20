@@ -75,6 +75,9 @@ def _altlang(code):
     #Estonian
     if code == 'fiu-vro':
         return ['et']
+    #Latvian
+    if code == 'ltg':
+        return ['lv']
     #Persian (Farsi)
     if code in ['glk', 'mzn']:
         return ['ar']
@@ -123,9 +126,9 @@ def _altlang(code):
     if code in ['mo', 'roa-rup']:
         return ['ro']
     #Russian and Belarusian
-    if code in ['ab', 'av', 'ba', 'bxr', 'ce', 'cv', 'kk', 'koi', 'ky', 'lbe',
-                'mdf', 'mhr', 'mrj', 'myv', 'os', 'rue', 'sah', 'tg', 'udm',
-                'uk', 'xal']:
+    if code in ['ab', 'av', 'ba', 'bxr', 'ce', 'cv', 'kdb', 'kk', 'koi', 'ky',
+                'lbe', 'mdf', 'mhr', 'mrj', 'myv', 'os', 'rue', 'sah', 'tg',
+                'udm', 'uk', 'xal']:
         return ['ru']
     if code == 'tt':
         return ['tt-cyrl', 'ru']
@@ -229,7 +232,7 @@ def twtranslate(code, twtitle, parameters=None):
     # There are two possible failure modes: the translation dict might not have
     # the language altogether, or a specific key could be untranslated. Both
     # modes are caught with the KeyError.
-    
+
     trans = None
     try:
         trans = transdict[code][twtitle]
