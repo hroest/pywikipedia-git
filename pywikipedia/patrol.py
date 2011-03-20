@@ -130,7 +130,7 @@ class PatrolBot:
                     author_ns_prefix = self.site.namespace(author_ns)
 
                     if pywikibot.debug:
-                        pywikibot.output('Author ns: %d; name: %s' % (author_ns, author_ns_prefix))
+                        pywikibot.output(u'Author ns: %d; name: %s' % (author_ns, author_ns_prefix))
 
 	            if item.find(author_ns_prefix+':') == 0:
                         author_page_name = item[len(author_ns_prefix)+1:]
@@ -279,7 +279,7 @@ class PatrolBot:
             if choice == 'y':
 		response = self.site.patrol(rcid)
                 self.patrol_counter = self.patrol_counter + 1
-		pywikibot.output("Patrolled %s (rcid %d) by user %s" % (title, rcid, username))
+		pywikibot.output(u"Patrolled %s (rcid %d) by user %s" % (title, rcid, username))
             else:
                 if pywikibot.verbose:
 		    pywikibot.output(u"skipped")
@@ -295,18 +295,6 @@ class PatrolBot:
         except pywikibot.IsRedirectPage:
             pywikibot.output(u"Page %s is a redirect; skipping." % page.aslink())
             return
-
-# This should never be used
-def old_feed_repeater(site, number, namespace, user, repeat):
-    while True:
-        gen = site.newpages(number = number, namespace = namespace, user=user, rcshow = '!patrolled')
-        for page in gen:
-            yield page[0], page[4], page[6], page[7]
-        if repeat:
-            pywikibot.output('Sleeping for 10 minutes')
-            time.sleep(60)
-        else:
-            break
 
 def feed_repeater(gen, delay=0, repeat=False):
     while True:
@@ -367,7 +355,7 @@ def main():
     site.forceLogin()
 
     if user:
-        print "processing user: %s" % user
+        pywikibot.output(u"processing user: %s" % user)
 
     newpage_count = 300
     if not newpages and not recentchanges and not user:
@@ -392,7 +380,7 @@ def main():
         feed = feed_repeater(gen, delay=60, repeat=repeat)
         bot.run(feed)
 
-    pywikibot.output('%d/%d patrolled' % (bot.patrol_counter, bot.rc_item_counter))
+    pywikibot.output(u'%d/%d patrolled' % (bot.patrol_counter, bot.rc_item_counter))
 
 if __name__ == "__main__":
     try:
