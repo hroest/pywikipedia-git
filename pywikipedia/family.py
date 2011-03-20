@@ -31,7 +31,7 @@ class Family:
             'ki', 'glk', 'gu', 'got', 'hak', 'xal', 'ko', 'ha', 'haw', 'hy',
             'hi', 'ho', 'hsb', 'hr', 'io', 'ig', 'ilo', 'bpy', 'id', 'ia', 'ie',
             'iu', 'ik', 'os', 'xh', 'zu', 'is', 'it', 'he', 'jv', 'kl', 'kn',
-            'kr', 'pam', 'kdb', 'krc', 'ka', 'ks', 'csb', 'kk', 'kw', 'rw',
+            'kr', 'pam', 'kbd', 'krc', 'ka', 'ks', 'csb', 'kk', 'kw', 'rw',
             'ky', 'rn', 'sw', 'koi', 'kv', 'kg', 'ht', 'ku', 'kj', 'lad', 'lbe',
             'lo', 'la', 'ltg', 'lv', 'lb', 'lt', 'lij', 'li', 'ln', 'jbo', 'lg',
             'lmo', 'hu', 'mk', 'mg', 'ml', 'mt', 'mi', 'mr', 'arz', 'mzn', 'ms',
