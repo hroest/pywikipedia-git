@@ -24,9 +24,7 @@ docuReplacements = {
 }
 
 class PatrolBot:
-    # Edit summary message that should be used.
-    # NOTE: Put a good description here, and add translations, if possible!
-
+    # Localised name of the whitelist page
     whitelist_subpage_name = {
         'en': u'patrol_whitelist',
     }
