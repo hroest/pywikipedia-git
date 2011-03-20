@@ -33,8 +33,9 @@ class PatrolBot:
         """
         Constructor. Parameters:
             * feed      - The changes feed to work on (Newpages or Recentchanges)
-            * verbose     - If True, doesn't do any real changes, but only shows
-                          what would have been changed.
+            * user      - Limit whitelist parsing and patrolling to a specific user
+            * ask       - If True, confirm each patrol action
+            * whitelist - page title for whitelist (optional)
         """
         self.feed = feed
 	self.user = user
