@@ -10,7 +10,12 @@ The following parameters are supported:
 &params;
 
 """
-__version__ = '$Id: basic.py 4701 2007-12-11 18:00:31Z leogregianin $'
+#
+# (C) Pywikipedia bot team, 2011
+#
+# Distributed under the terms of the MIT license.
+#
+__version__ = '$Id: patrol.py $'
 import wikipedia as pywikibot
 import pagegenerators
 import mwlib.uparser # used to parse the whitelist
