@@ -245,6 +245,8 @@ class Page(object):
     botMayEdit (*)        : True if bot is allowed to edit page
     put(newtext)          : Saves the page
     put_async(newtext)    : Queues the page to be saved asynchronously
+    watch                 : Add the page to the watchlist
+    unwatch               : Remove the page from the watchlist
     move                  : Move the page to another title
     delete                : Deletes the page (requires being logged in)
     protect               : Protect or unprotect a page (requires sysop status)
@@ -2906,6 +2908,31 @@ u'Page %s is semi-protected. Getting edit page to find out if we are allowed to 
         edits = self.getVersionHistory(revCount=total)
         users = set([edit[2] for edit in edits])
         return users
+
+    def watch(self, unwatch=False):
+        """Add this page to the watchlist"""
+        if self.site().has_api:
+            params = {
+                'action': 'watch',
+                'title': self.title()
+            }
+            if unwatch:
+                params['unwatch'] = ''
+
+            data = query.GetData(params, self.site())
+            if 'error' in data:
+                raise RuntimeError("API query error: %s" % data['error'])
+        else:
+            urlname = self.urlname()
+            if not unwatch:
+                address = self.site().watch_address(urlname)
+            else:
+                address = self.site().unwatch_address(urlname)
+            response = self.site().getUrl(address)
+            return response
+
+    def unwatch(self):
+        self.watch(unwatch=True)
 
     def move(self, newtitle, reason=None, movetalkpage=True, movesubpages=False, sysop=False,
              throttle=True, deleteAndMove=False, safe=True, fixredirects=True, leaveRedirect=True):
@@ -7133,6 +7160,14 @@ u"WARNING: Could not open '%s'. Maybe the server or\n your connection is down. R
     def edit_address(self, s):
         """Return URL path for edit form for page titled 's'."""
         return self.family.edit_address(self.lang, s)
+
+    def watch_address(self, s):
+        """Return URL path for watching the titled 's'."""
+        return self.family.watch_address(self.lang, s)
+
+    def unwatch_address(self, s):
+        """Return URL path for unwatching the titled 's'."""
+        return self.family.unwatch_address(self.lang, s)
 
     def purge_address(self, s):
         """Return URL path to purge cache and retrieve page 's'."""

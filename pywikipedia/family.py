@@ -3923,6 +3923,12 @@ class Family:
     def edit_address(self, code, name):
         return '%s?title=%s&action=edit&useskin=monobook' % (self.path(code), name)
 
+    def watch_address(self, code, name):
+        return '%s?title=%s&action=watch&useskin=monobook' % (self.path(code), name)
+
+    def unwatch_address(self, code, name):
+        return '%s?title=%s&action=unwatch&useskin=monobook' % (self.path(code), name)
+
     def purge_address(self, code, name):
         return '%s?title=%s&redirect=no&action=purge&useskin=monobook' % (self.path(code), name)
 
