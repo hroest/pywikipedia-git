@@ -126,6 +126,7 @@ class Family(family.Family):
             'pl': u'Portal',
             'pt': u'Portal',
             'ru': u'Портал',
+            'sq': u'Portal',
             'sv': u'Portal',
             'ta': u'வலைவாசல்',
             'tr': u'Portal',
@@ -147,6 +148,7 @@ class Family(family.Family):
             'pl': u'Dyskusja portalu',
             'pt': u'Portal Discussão',
             'ru': u'Обсуждение портала',
+            'sq': u'Portal diskutim',
             'sv': u'Portaldiskussion',
             'ta': u'வலைவாசல் பேச்சு',
             'tr': u'Portal tartışma',
@@ -164,6 +166,7 @@ class Family(family.Family):
             'hu': u'Portál',
             'pt': u'Efeméride',
             'ru': u'Комментарии',
+            'sq': u'Komentet',
             'sr': u'Коментар',
         }
 
@@ -178,6 +181,7 @@ class Family(family.Family):
             'hu': u'Portálvita',
             'pt': u'Efeméride Discussão',
             'ru': u'Обсуждение комментариев',
+            'sq': u'Komentet diskutim',
             'sr': u'Разговор о коментару',
         }
 
