@@ -43,19 +43,19 @@ class PatrolBot:
             * whitelist - page title for whitelist (optional)
         """
         self.feed = feed
-	self.user = user
-	self.ask = ask 
-	self.site = pywikibot.getSite()
+        self.user = user
+        self.ask = ask
+        self.site = pywikibot.getSite()
         if whitelist:
             self.whitelist_pagename = whitelist
         else:
             local_whitelist_subpage_name = pywikibot.translate(self.site, self.whitelist_subpage_name)
-	    self.whitelist_pagename = u'%s:%s/%s' % (self.site.namespace(2),self.site.username(),local_whitelist_subpage_name)
+            self.whitelist_pagename = u'%s:%s/%s' % (self.site.namespace(2),self.site.username(),local_whitelist_subpage_name)
         self.whitelist = None
         self.whitelist_ts = 0
         self.whitelist_load_ts = 0
 
-	self.autopatroluserns = False
+        self.autopatroluserns = False
         self.highest_rcid = 0 # used to track loops
         self.last_rcid = 0
         self.repeat_start_ts = 0
@@ -70,10 +70,10 @@ class PatrolBot:
                 pywikibot.output(u'Whitelist not stale yet')
             return
 
-	whitelist_page = pywikibot.Page(pywikibot.getSite(), self.whitelist_pagename)
+        whitelist_page = pywikibot.Page(pywikibot.getSite(), self.whitelist_pagename)
 
         if not self.whitelist:
-	    pywikibot.output(u'Loading %s' % self.whitelist_pagename)
+            pywikibot.output(u'Loading %s' % self.whitelist_pagename)
 
         try:
             if self.whitelist_ts:
@@ -82,20 +82,20 @@ class PatrolBot:
                 last_edit_ts = pywikibot.parsetime2stamp(h[0][1])
                 if last_edit_ts == self.whitelist_ts:
                     # As there hasn't been any changed to the whitelist
-                    # it has been effectively reloaded 'now' 
+                    # it has been effectively reloaded 'now'
                     self.whitelist_load_ts = time.time()
                     if pywikibot.verbose:
                         pywikibot.output(u'Whitelist not modified')
                     return
 
-	    if self.whitelist:
+            if self.whitelist:
                 pywikibot.output(u'Reloading whitelist')
 
-	    # Fetch whitelist
+            # Fetch whitelist
             wikitext = whitelist_page.get()
-	    # Parse whitelist
+            # Parse whitelist
             self.whitelist = self.parse_page_tuples (wikitext, self.user)
-	    # Record timestamp
+            # Record timestamp
             self.whitelist_ts = whitelist_page.editTime()
             self.whitelist_load_ts = time.time()
         except Exception as e:
@@ -105,10 +105,10 @@ class PatrolBot:
             pywikibot.output(u'Error: ' + e)
 
     def add_to_tuples(self, tuples, user, page):
-	if pywikibot.verbose:
-	    pywikibot.output(u"Adding %s:%s" % (user, page.title()) )
+        if pywikibot.verbose:
+            pywikibot.output(u"Adding %s:%s" % (user, page.title()) )
 
-	if user in tuples:
+        if user in tuples:
             tuples[user].append(page)
         else:
             tuples[user] = [page]
@@ -124,21 +124,21 @@ class PatrolBot:
         # quick check for wildcard
         if '' in pagelist:
             if pywikibot.verbose:
-	        pywikibot.output(u"wildcarded")
+                pywikibot.output(u"wildcarded")
             return '.*'
 
-	for item in pagelist:
+        for item in pagelist:
             if pywikibot.verbose:
-	        pywikibot.output(u"checking against whitelist item = %s" % item)
+                pywikibot.output(u"checking against whitelist item = %s" % item)
 
             if isinstance(item, PatrolRule):
                 if pywikibot.verbose:
-	            pywikibot.output(u"invoking programmed rule")
+                    pywikibot.output(u"invoking programmed rule")
                 if item.match(title):
                     return item
 
             elif title_match(item, title):
-	        return item
+                return item
 
         if pywikibot.verbose:
             pywikibot.output(u'not found')
@@ -230,21 +230,21 @@ class PatrolBot:
         if pywikibot.debug:
             pywikibot.output(u'Author ns: %d; name: %s' % (author_ns, author_ns_prefix))
 
-	if title.find(author_ns_prefix+':') == 0:
+        if title.find(author_ns_prefix+':') == 0:
             return True
 
         if pywikibot.verbose:
             author_page_name = title[len(author_ns_prefix)+1:]
             pywikibot.output(u'Found author %s' % author_page_name)
-        
+
         return False
 
     def run(self, feed = None):
-	if self.whitelist == None:
-	    self.load_whitelist()
+        if self.whitelist == None:
+            self.load_whitelist()
 
-	if not feed:
-	    feed = self.feed
+        if not feed:
+            feed = self.feed
 
         for page in feed:
             self.treat(page)
@@ -253,17 +253,17 @@ class PatrolBot:
         """
         Loads the given page, does some changes, and saves it.
         """
-	choice = None
+        choice = None
         try:
-	    # page: title, date, username, comment, loginfo, rcid, token
-	    username = page[1]
+            # page: title, date, username, comment, loginfo, rcid, token
+            username = page[1]
             # when the feed isnt from the API, it used to contain
             # '(not yet written)' or '(page does not exist)' when it was
             # a redlink
             revid = page[2]
             rcid = page[3]
-	    if not rcid:
-	        raise Exception('rcid not present')
+            if not rcid:
+                raise Exception('rcid not present')
 
             # check whether we have wrapped around to higher rcids
             # which indicates a new RC feed is being processed
@@ -272,22 +272,22 @@ class PatrolBot:
                 self.load_whitelist()
                 self.repeat_start_ts = time.time()
 
-	    title = page[0].title()
+            title = page[0].title()
             if pywikibot.verbose or self.ask:
                 pywikibot.output(u"User %s has created or modified page %s" % (username, title) )
 
-	    if self.autopatroluserns and (page[0].namespace() == 2 or page[0].namespace() == 3):
+            if self.autopatroluserns and (page[0].namespace() == 2 or page[0].namespace() == 3):
                 # simple rule to whitelist any user editing their own userspace
-	        if page[0].titleWithoutNamespace().startswith(username):
+                if page[0].titleWithoutNamespace().startswith(username):
                     if pywikibot.verbose:
                         pywikibot.output(u'%s is whitelisted to modify %s' % (username, page[0].title()))
-	            choice = 'y'
+                    choice = 'y'
 
-	    if choice != 'y' and username in self.whitelist:
-		if self.in_list(self.whitelist[username], page[0].title() ):
+            if choice != 'y' and username in self.whitelist:
+                if self.in_list(self.whitelist[username], page[0].title() ):
                     if pywikibot.verbose:
                         pywikibot.output(u'%s is whitelisted to modify %s' % (username, page[0].title()))
-		    choice = 'y'
+                    choice = 'y'
 
             if self.ask:
                 options = ['y', 'N']
@@ -296,17 +296,17 @@ class PatrolBot:
                     options = ['Y', 'n']
                 else:
                     choice = 'N'
-                
+
                 choice = pywikibot.inputChoice(u'Do you want to mark page as patrolled?', ['Yes', 'No'], options, choice)
-	
-	    # Patrol the page
+
+            # Patrol the page
             if choice == 'y':
-		response = self.site.patrol(rcid)
+                response = self.site.patrol(rcid)
                 self.patrol_counter = self.patrol_counter + 1
-		pywikibot.output(u"Patrolled %s (rcid %d) by user %s" % (title, rcid, username))
+                pywikibot.output(u"Patrolled %s (rcid %d) by user %s" % (title, rcid, username))
             else:
                 if pywikibot.verbose:
-		    pywikibot.output(u"skipped")
+                    pywikibot.output(u"skipped")
 
             if rcid > self.highest_rcid:
                 self.highest_rcid = rcid
@@ -327,8 +327,8 @@ def title_match(prefix, title):
     title_trimmed = title[:prefix_len]
     if title_trimmed == prefix:
         if pywikibot.verbose:
-	    pywikibot.output(u"substr match")
-	return True
+            pywikibot.output(u"substr match")
+        return True
     return False
 
 class PatrolRule:
@@ -366,7 +366,7 @@ class LinkedPagesRule(PatrolRule):
             linkedpages = list()
             for linkedpage in p.linkedPages():
                 linkedpages.append(linkedpage.title())
-            self.linkedpages = linkedpages 
+            self.linkedpages = linkedpages
 
             if pywikibot.verbose:
                 pywikibot.output(u"loaded %d page links" % len(linkedpages) )
