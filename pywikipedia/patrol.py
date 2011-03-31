@@ -15,7 +15,7 @@ The following parameters are supported:
 #
 # Distributed under the terms of the MIT license.
 #
-__version__ = '$Id: patrol.py $'
+__version__ = '$Id$'
 import wikipedia as pywikibot
 import pagegenerators
 import mwlib.uparser # used to parse the whitelist
