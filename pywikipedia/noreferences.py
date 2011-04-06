@@ -52,6 +52,7 @@ msg = {
     'ar': u'روبوت: إضافة وسم <references /> مفقود',
     'be': u'Robot: дабаўлены адсутнічаючы тэг <references />',
     'cs': u'Robot doplnil chybějící <references />',
+    'da': u'Bot: Tilføj manglede {{reflist}}',
     'de': u'Bot: Trage fehlendes <references /> nach',
     'en': u'Robot: Adding missing <references /> tag',
     'eo': u'Roboto: Aldono de "<references />"',
@@ -87,6 +88,9 @@ placeBeforeSections = {
     'cs': [
         u'Reference',
         u'Poznámky',
+    ],
+    'da': [              # no explicit policy on where to put the references
+        u'Eksterne links'
     ],
     'de': [              # no explicit policy on where to put the references
         u'Literatur',
@@ -206,6 +210,9 @@ referencesSections = {
         u'مراجع',
         u'ملاحظات',
     ],
+    'da': [
+        u'Noter',
+    ],
     'de': [             #see [[de:WP:REF]]
         u'Einzelnachweise',
         u'Fußnoten',
@@ -318,6 +325,7 @@ referencesTemplates = {
     'wikipedia': {
         'ar': [u'Reflist', u'ثبت المراجع', u'قائمة المراجع'],
         'be': [u'Зноскі', u'Примечания', u'Reflist', u'Спіс заўваг', u'Заўвагі'],
+        'da': [u'Reflist'],
         'en': [u'Reflist', u'Refs', u'FootnotesSmall', u'Reference',
                u'Ref-list', u'Reference list', u'References-small', u'Reflink',
                u'Footnotes', u'FootnotesSmall'],
@@ -351,6 +359,7 @@ referencesTemplates = {
 referencesSubstitute = {
     'wikipedia': {
         'be': u'{{зноскі}}',
+        'da': u'{{reflist}}',
         'fi': u'{{viitteet}}',
         'hu': u'{{Források}}',
         'pl': u'{{Przypisy}}',

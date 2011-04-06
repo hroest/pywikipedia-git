@@ -50,6 +50,7 @@ docuReplacements = {
 msg = {
     'ar':u'روبوت: إزالة وصلات ذاتية',
     'cs':u'Robot odstranil odkaz na název článku',
+    'da':u'Bot: fjerner selvreference',
     'de':u'Bot: Entferne Selbstlinks',
     'en':u'Robot: Removing selflinks',
     'es':u'Bot: Eliminando enlaces al mismo artículo',
