@@ -6013,7 +6013,10 @@ u"WARNING: Could not open '%s'. Maybe the server or\n your connection is down. R
             offset = 0
             while offset < number or not number:
                 params['sroffset'] = offset
-                data = query.GetData(params, self)['query']
+                data = query.GetData(params, self)
+                if 'error'in data:
+                    raise NotImplementedError('%s' % data['error']['info'])
+                data = data['query']
                 if 'error' in data:
                     raise RuntimeError('%s' % data['error'])
                 if not data['search']:
