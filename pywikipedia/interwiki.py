@@ -1154,7 +1154,7 @@ class Subject(object):
         """
         if self.forcedStop:
             return False
-        if globalvar.nobackonly and originPage: # cannot check backlink before we have an origin page
+        if globalvar.nobackonly and self.originPage: # cannot check backlink before we have an origin page
             if page == self.originPage:
                 try:
                     pywikibot.output(u"%s has a backlink from %s."
