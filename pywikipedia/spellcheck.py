@@ -112,12 +112,7 @@ def getalternatives(string):
     for i in xrange(11):
         simwords[i] = []
     for alt in knownwords.keys():
-        if basetext:
-            if basetext not in alt.lower() == -1:
-                dothis = False
-            else:
-                dothis = True
-        else: dothis = True
+        dothis = not basetext or basetext in alt.lower()
         if dothis:
             diff = distance(string,alt)
             if diff < 11:
