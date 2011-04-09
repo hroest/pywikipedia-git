@@ -550,6 +550,7 @@ ignore_title = {
             u'Wikipedia:Wikipedianen met een encyclopedisch artikel',
             u'Wikipedia:Woorden die niet als zoekterm gebruikt kunnen worden',
             u'Overleg gebruiker:Taka(/.*)?',
+            u"Wikipedia:Links naar doorverwijspagina's/Artikelen",
          ],
         'pl': [
             u'Wikipedysta:.+',
