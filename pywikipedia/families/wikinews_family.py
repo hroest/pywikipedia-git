@@ -13,7 +13,7 @@ class Family(family.Family):
         self.languages_by_size = [
             'sr', 'en', 'pl', 'de', 'fr', 'it', 'es', 'pt', 'zh', 'ja', 'sv',
             'ru', 'ta', 'fi', 'cs', 'he', 'ro', 'bg', 'ar', 'hu', 'sd', 'fa',
-            'tr', 'ca', 'uk', 'sq', 'no', 'bs', 'th', 'ko', 'eo',
+            'tr', 'ca', 'uk', 'sq', 'no', 'bs', 'el', 'th', 'ko', 'eo',
         ]
 
         if family.config.SSL_connection:
@@ -39,6 +39,7 @@ class Family(family.Family):
             'bs': u'Wikivijesti',
             'ca': u'Viquinotícies',
             'cs': u'Wikizprávy',
+            'el': u'Βικινέα',
             'eo': u'Vikinovaĵoj',
             'es': u'Wikinoticias',
             'fa': u'ویکی‌خبر',
@@ -68,6 +69,7 @@ class Family(family.Family):
             'ca': u'Viquinotícies Discussió',
             'cs': u'Diskuse k Wikizprávám',
             'de': u'Wikinews Diskussion',
+            'el': u'Βικινέα συζήτηση',
             'eo': u'Vikinovaĵoj diskuto',
             'es': u'Wikinoticias Discusión',
             'fa': u'بحث ویکی‌خبر',
