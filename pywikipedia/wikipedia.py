@@ -1113,7 +1113,7 @@ not supported by PyWikipediaBot!"""
 
         """
         found = False
-        if self.isRedirectPage() and self.versionnumber() > 13:
+        if self.isRedirectPage() and self.site().versionnumber() > 13:
             staticKeys = self.site().getmagicwords('staticredirect')
             text = self.get(get_redirect=True, force=force)
             if staticKeys:
