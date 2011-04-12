@@ -1113,7 +1113,7 @@ not supported by PyWikipediaBot!"""
 
         """
         found = False
-        if self.isRedirectPage():
+        if self.isRedirectPage() and self.versionnumber() > 13:
             staticKeys = self.site().getmagicwords('staticredirect')
             text = self.get(get_redirect=True, force=force)
             if staticKeys:
@@ -2528,7 +2528,8 @@ u'Page %s is semi-protected. Getting edit page to find out if we are allowed to 
                 if name.startswith('#'):
                     continue
                 # {{DEFAULTSORT:...}}
-                defaultKeys = self.site().getmagicwords('defaultsort')
+                defaultKeys = self.versionnumber() > 13 and \
+                              self.site().getmagicwords('defaultsort')
                 # It seems some wikis does not have this magic key
                 if defaultKeys:
                     found = False
@@ -5804,6 +5805,8 @@ u"WARNING: Could not open '%s'. Maybe the server or\n your connection is down. R
             self._info = data
         else:
             if key == 'magicwords':
+                if self.versionnumber() <= 13:
+                    return None #Not implemented
                 self._info[key]={}
                 for entry in data[key]:
                     self._info[key][entry['name']] = entry['aliases']
@@ -6980,16 +6983,19 @@ u"WARNING: Could not open '%s'. Maybe the server or\n your connection is down. R
 
     def getmagicwords(self, word):
         """Return list of localized "word" magic words for the site."""
+        if self.versionnumber() <= 13:
+            raise NotImplementedError
         return self.siteinfo('magicwords').get(word)
 
     def redirect(self, default=False):
         """Return the localized redirect tag for the site.
 
-        Argument is ignored (but maintained for backwards-compatibility).
-
         """
         # return the magic word without the preceding '#' character
-        return self.getmagicwords('redirect')[0].lstrip("#")
+        if default or self.versionnumber() <= 13:
+            return u'REDIRECT'
+        else:
+            return self.getmagicwords('redirect')[0].lstrip("#")
 
     def redirectRegex(self):
         """Return a compiled regular expression matching on redirect pages.
@@ -6999,7 +7005,7 @@ u"WARNING: Could not open '%s'. Maybe the server or\n your connection is down. R
         """
         #NOTE: this is needed, since the API can give false positives!
         default = 'REDIRECT'
-        keywords = self.getmagicwords('redirect')
+        keywords = self.versionnumber() > 13 and self.getmagicwords('redirect')
         if keywords:
             pattern = r'(?:' + '|'.join(keywords) + ')'
         else:
@@ -7019,11 +7025,13 @@ u"WARNING: Could not open '%s'. Maybe the server or\n your connection is down. R
 
     def pagenamecodes(self, default=True):
         """Return list of localized PAGENAME tags for the site."""
-        return self.getmagicwords('pagename')
+        return self.versionnumber() > 13 and self.getmagicwords('pagename') \
+               or u'PAGENAME'
 
     def pagename2codes(self, default=True):
         """Return list of localized PAGENAMEE tags for the site."""
-        return self.getmagicwords('pagenamee')
+        return self.versionnumber() > 13 and self.getmagicwords('pagenamee') \
+               or u'PAGENAMEE'
 
     def resolvemagicwords(self, wikitext):
         """Replace the {{ns:xx}} marks in a wikitext with the namespace names"""
