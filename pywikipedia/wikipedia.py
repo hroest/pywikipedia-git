@@ -2528,7 +2528,7 @@ u'Page %s is semi-protected. Getting edit page to find out if we are allowed to 
                 if name.startswith('#'):
                     continue
                 # {{DEFAULTSORT:...}}
-                defaultKeys = self.versionnumber() > 13 and \
+                defaultKeys = self.site().versionnumber() > 13 and \
                               self.site().getmagicwords('defaultsort')
                 # It seems some wikis does not have this magic key
                 if defaultKeys:
