@@ -1692,18 +1692,18 @@ not supported by PyWikipediaBot!"""
             elif self.site().has_api() and self.namespace() in [2,3] \
                  and (self.title().endswith('.css') or \
                       self.title().endswith('.js')):
-		titleparts = self.title().split("/")
-		userpageowner = titleparts[0].split(":")[1]
-		if userpageowner != username:
-			# API enable: if title ends with .css or .js in ns2,3
-			# it needs permission to edit user pages
-			if self.title().endswith('css'):
-				permission = 'editusercss'
-			else:
-				permission = 'edituserjs'
-			sysop = self._getActionUser(action=permission,
-						    restriction=self.editRestriction,
-						    sysop=True)
+                titleparts = self.title().split("/")
+                userpageowner = titleparts[0].split(":")[1]
+                if userpageowner != username:
+                    # API enable: if title ends with .css or .js in ns2,3
+                    # it needs permission to edit user pages
+                    if self.title().endswith('css'):
+                        permission = 'editusercss'
+                    else:
+                        permission = 'edituserjs'
+                    sysop = self._getActionUser(action=permission,
+                                                restriction=self.editRestriction,
+                                                sysop=True)
 
         # If there is an unchecked edit restriction, we need to load the page
         if self._editrestriction:
@@ -4975,10 +4975,10 @@ class Site(object):
         else:
             self._load(sysop = sysop)
             index = self._userIndex(sysop)
-	    # Handle obsolete editusercssjs permission
-	    if right in ['editusercss', 'edituserjs'] \
-		and right not in self._rights[index]:
-		return 'editusercssjs' in self._rights[index]
+            # Handle obsolete editusercssjs permission
+            if right in ['editusercss', 'edituserjs'] \
+               and right not in self._rights[index]:
+                return 'editusercssjs' in self._rights[index]
             return right in self._rights[index]
 
     def server_time(self):
@@ -6371,7 +6371,7 @@ u"WARNING: Could not open '%s'. Maybe the server or\n your connection is down. R
         """
         Yield recent changes as Page objects
         uses API call: action=query&list=recentchanges&rctype=edit|new&rclimit=500
- 
+
         Starts with the newest change and fetches the number of changes
         specified in the first argument. If repeat is True, it fetches
         again.
@@ -7532,7 +7532,7 @@ u"WARNING: Could not open '%s'. Maybe the server or\n your connection is down. R
                 raise ServerError("The APIs don't return data, the site may be down")
 
             self._patrolToken[index] = rcData[0]['patroltoken']
-            
+
         return self._patrolToken[index]
 
     def getFilesFromAnHash(self, hash_found = None):
