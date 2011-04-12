@@ -1748,8 +1748,6 @@ class Subject(object):
         if new is None: # User said give up
             pywikibot.output(u"======Aborted processing %s======" % self.originPage.aslink(True))
             return
-        if not len(new): # nothing else to do
-            return
 
         # Make sure new contains every page link, including the page we are processing
         # TODO: sould be move to assemble()
