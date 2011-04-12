@@ -214,6 +214,7 @@ class Category(wikipedia.Page):
                 wikipedia.output('Getting [[%s]] list from %s...'
                                  % (self.title(), "%s=%s" % currentPageOffset.popitem()))
             elif startFrom:
+                startFrom = startFrom.upper() # category sort keys are uppercase
                 params['cmstartsortkey'] = startFrom
                 wikipedia.output('Getting [[%s]] list starting at %s...'
                                  % (self.title(), startFrom))
