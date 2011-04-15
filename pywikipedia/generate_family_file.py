@@ -4,7 +4,7 @@ This script generates a family file from a given URL.
 Hackish, etc. Regexps, yes. Sorry, jwz.
 
 """
-__version__ = "$Id"
+__version__ = "$Id$"
 
 #
 # (C) Merlijn van Deen, 2010
