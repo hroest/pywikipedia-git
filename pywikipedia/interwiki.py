@@ -1725,15 +1725,17 @@ class Subject(object):
             raise "Bugcheck: finish called before done"
         if not self.workonme:
             return
-        if self.forcedStop: # autonomous with problem
-            pywikibot.output(u"======Aborted processing %s======" % self.originPage.aslink(True))
-            return
         if self.originPage:
             if self.originPage.isRedirectPage():
                 return
             if self.originPage.isCategoryRedirect():
                 return
+        else:
+            return
         if not self.untranslated and globalvar.untranslatedonly:
+            return
+        if self.forcedStop: # autonomous with problem
+            pywikibot.output(u"======Aborted processing %s======" % self.originPage.aslink(True))
             return
         # The following check is not always correct and thus disabled.
         # self.done might contain no interwiki links because of the -neverlink
@@ -1741,8 +1743,7 @@ class Subject(object):
 #         if len(self.done) == 1:
 #             # No interwiki at all
 #             return
-        if self.originPage:
-            pywikibot.output(u"======Post-processing %s======" % self.originPage.aslink(True))
+        pywikibot.output(u"======Post-processing %s======" % self.originPage.aslink(True))
         # Assemble list of accepted interwiki links
         new = self.assemble()
         if new is None: # User said give up
