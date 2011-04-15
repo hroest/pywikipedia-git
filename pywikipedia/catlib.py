@@ -97,7 +97,7 @@ class Category(wikipedia.Page):
         else:
             return '[[%s]]' % titleWithSortKey
 
-    def _getAndCacheContents(self, recurse=False, purge=False, startFrom=None, cache=None, 
+    def _getAndCacheContents(self, recurse=False, purge=False, startFrom=None, cache=None,
                                    sortby=None, sortdir=None):
         """
         Cache results of _parseCategory for a second call.
@@ -164,11 +164,11 @@ class Category(wikipedia.Page):
         Simple category content yielder. Naive, do not attempts to
         cache anything
         """
-        for tag, page in self._parseCategory(startFrom=startFrom, 
+        for tag, page in self._parseCategory(startFrom=startFrom,
                                              sortby=sortby, sortdir=sortdir):
             yield tag, page
             if tag == SUBCATEGORY and recurse:
-                for item in page._getContentsNaive(recurse=True, 
+                for item in page._getContentsNaive(recurse=True,
                                                    sortby=sortby, sortdir=sortdir):
                     yield item
 
