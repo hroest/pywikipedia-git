@@ -1568,7 +1568,8 @@ class Subject(object):
                             else:
                                 if config.interwiki_shownew or pywikibot.verbose:
                                     pywikibot.output(u"%s: %s gives new interwiki %s"% (self.originPage.title(asLink=True), page.aslink(True), linkedPage.aslink(True)))
-
+                if self.forcedStop:
+                    break
         # These pages are no longer 'in progress'
         self.pending = PageTree()
         # Check whether we need hints and the user offered to give them
