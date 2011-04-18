@@ -52,7 +52,6 @@ class Family(family.Family):
         self.namespaces[13]['da'] = u'Hjælp-diskussion'
         self.namespaces[1]['ja'] = [u'ノート', u'トーク']
         self.namespaces[3]['ja'] = [u'利用者‐会話', u'利用者・トーク']
-        self.namespaces[6]['ja'] = [u'ファイル', u'Image', u'画像']
         self.namespaces[7]['ja'] = [u'ファイル‐ノート', u'ファイル・トーク',
                                     u'Image talk', u'画像‐ノート']
         self.namespaces[9]['ja'] = [u'MediaWiki‐ノート', u'MediaWiki・トーク']
