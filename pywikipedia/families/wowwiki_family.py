@@ -43,6 +43,18 @@ class Family(family.Family):
             'zh': 'zh.wow.wikia.com'
         }
 
+        # Override defaults
+        self.namespaces[1]['ja'] = [u'ノート']
+        self.namespaces[3]['ja'] = [u'利用者‐会話']
+        self.namespaces[7]['ja'] = [u'ファイル‐ノート', u'Image talk', u'画像‐ノート']
+        self.namespaces[9]['ja'] = [u'MediaWiki‐ノート']
+        self.namespaces[10]['ja'] = [u'Template']
+        self.namespaces[11]['ja'] = [u'Template‐ノート']
+        self.namespaces[12]['ja'] = [u'Help']
+        self.namespaces[13]['ja'] = [u'Help‐ノート']
+        self.namespaces[14]['ja'] = [u'Category']
+        self.namespaces[15]['ja'] = [u'Category‐ノート']
+
         self.namespaces[4] = {
             'cs': u'WoWWiki',
             'da': u'WoWWiki Danmark',
