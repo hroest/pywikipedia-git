@@ -7,8 +7,10 @@ lists which are required by some other programs.
 # © Rob W.W. Hooft, 2003
 # © Daniel Herding, 2004
 # © Ævar Arnfjörð Bjarmason, 2004
-# © Andre Engels, 2005
-# © Yuri Astrakhan, 2005-2006  FirstnameLastname@gmail.com (years/decades/centuries/millenniums  str <=> int  conversions)
+# © Andre Engels, 2004-2005
+# © Yuri Astrakhan, 2005-2006  FirstnameLastname@gmail.com
+#       (years/decades/centuries/millenniums  str <=> int  conversions)
+# © Pywikipedia bot team, 2004-2011
 #
 # Distributed under the terms of the MIT license.
 #
@@ -241,10 +243,10 @@ def localDigitsStrToInt( value, digitsToLocalDict, localToDigitsDict ):
 _decimalDigits = '0123456789'
 
 # Helper for roman numerals number representation
-_romanNumbers = ['-', 'I', 'II', 'III', 'IV', 'V', 'VI', 'VII', 'VIII', 'IX',
+_romanNumbers = ('-', 'I', 'II', 'III', 'IV', 'V', 'VI', 'VII', 'VIII', 'IX',
                  'X', 'XI', 'XII', 'XIII', 'XIV', 'XV', 'XVI', 'XVII', 'XVIII',
                  'XIX', 'XX', 'XXI', 'XXII', 'XXIII', 'XXIV', 'XXV', 'XXVI',
-                 'XXVII', 'XXVIII', 'XXVIX', 'XXX']
+                 'XXVII', 'XXVIII', 'XXIX', 'XXX')
 
 def intToRomanNum(i):
     if i >= len(_romanNumbers):
@@ -888,10 +890,12 @@ formats = {
         'he' :      lambda v: dh_decBC( v, u'שנות ה־%d לפני הספירה' ),
         'hr' :      lambda v: dh_decBC( v, u'%dih p.n.e.' ),
 
-        'hu' :      lambda m: multi( m, [
-            (lambda v: dh_constVal( v, 0, u'i.e. 0-ás évek' ),      lambda p: p == 0),
-            (lambda v: dh_decBC( v, u'i.e. %d-as évek' ),           lambda p: (p % 100 / 10) in [0,2,3,6,8]),
-            (lambda v: dh_decBC( v, u'i.e. %d-es évek' ),           alwaysTrue)]),
+        'hu' :      lambda m: multi(m, [
+            (lambda v: dh_constVal(v, 0, u'i. e. 0-s évek'),
+             lambda p: p == 0),
+            (lambda v: dh_decBC(v, u'i.e. %d-as évek' ),
+             lambda p: (p % 100 / 10) in [0,2,3,6,8]),
+            (lambda v: dh_decBC(v, u'i.e. %d-es évek'), alwaysTrue)]),
 
         'it' :      lambda v: dh_decBC( v, u'Anni %d a.C.' ),
 
