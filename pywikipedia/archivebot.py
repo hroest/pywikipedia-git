@@ -216,7 +216,7 @@ def int2month(num):
     """Returns the locale's full name of month 'num' (1-12)."""
     if hasattr(locale, 'nl_langinfo'):
         return locale.nl_langinfo(locale.MON_1+num-1).decode('utf-8')
-    Months = ['january', 'february', 'march', 'april', 'may', 'june',
+    Months = ['january', 'february', 'march', 'april', 'may_long', 'june',
               'july', 'august', 'september', 'october', 'november', 'december']
     return Site.mediawiki_message(Months[num-1])
 
