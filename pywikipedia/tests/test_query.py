@@ -32,12 +32,33 @@ class PyWikiQueryTestCase(tests.test_pywiki.PyWikiTestCase):
         ]}
         self.assertEqualQueryResult(params, expectedresult)
 
-    def test_multi(self):
+    def test_titles_multi(self):
         params = {
             'action': 'query',
             'list': 'users',
             'usprop': ['registration'],
             'ususers': u'Example|Example2',
+        }
+        expectedresult = {u'users': [
+        {
+            u'userid': 215131,
+            u'name': u'Example',
+            u'registration': u'2005-03-19T00:17:19Z'
+        },
+        {
+            u'userid': 5176706,
+            u'name': u'Example2',
+            u'registration': u'2007-08-26T02:13:33Z'
+        },
+        ]}
+        self.assertEqualQueryResult(params, expectedresult)
+
+    def test_titles_list(self):
+        params = {
+            'action': 'query',
+            'list': 'users',
+            'usprop': ['registration'],
+            'ususers': [u'Example', u'Example2'],
         }
         expectedresult = {u'users': [
         {
