@@ -279,3 +279,15 @@ def ToUtf8(s):
 
 def IsString(s):
     return type( s ) in [str, unicode]
+
+if __name__ == '__main__':
+    """
+    Testing code for this module
+    """
+    wikipedia.output("""
+    This module is not for direct usage from the command prompt.
+    """)
+    # unit tests
+    import tests.test_query
+    import unittest
+    unittest.main(tests.test_query)
