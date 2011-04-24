@@ -1848,7 +1848,7 @@ u'Page %s is semi-protected. Getting edit page to find out if we are allowed to 
             # Submit the prepared information
             try:
                 response, data = query.GetData(params, self.site(), sysop=sysop, back_response = True)
-                if query.IsString(data):
+                if isinstance(data,basestring):
                     raise KeyError
             except httplib.BadStatusLine, line:
                 raise PageNotSaved('Bad status line: %s' % line.line)

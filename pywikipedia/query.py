@@ -56,7 +56,7 @@ def GetData(params, site = None, useAPI = True, retryCount = 5, encodeTitle = Tr
             else:
                 params[k] = unicode(ListToParam(v))
 
-        elif not IsString(v):
+        elif not isinstance(v,basestring):
             params[k] = unicode(v)
         elif type(v) == unicode:
             params[k] = ToUtf8(v)
@@ -249,7 +249,7 @@ def ConvToList( item ):
     """
     if item is None:
         return []
-    elif IsString(item):
+    elif isinstance(item,basestring):
         return [item]
     else:
         return item
@@ -276,9 +276,6 @@ def ToUtf8(s):
         except UnicodeDecodeError:
             s = s.decode(wikipedia.config.console_encoding)
     return s
-
-def IsString(s):
-    return type( s ) in [str, unicode]
 
 if __name__ == '__main__':
     """
