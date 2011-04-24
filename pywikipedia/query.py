@@ -263,10 +263,21 @@ def ListToParam( list ):
 
     encList = ''
     # items may not have one symbol - '|'
-    for l in list:
-        if type(l) == str and u'|' in l:
-            raise wikipedia.Error("item '%s' contains '|' symbol" % l )
-        encList += ToUtf8(l) + u'|'
+    for item in list:
+        if isinstance(item,basestring):
+            if u'|' in item:
+                raise wikipedia.Error(u"item '%s' contains '|' symbol" % item )
+            encList += ToUtf8(item) + u'|'
+        elif isinstance(item,wikipedia.Page):
+            encList += ToUtf8(item.title()) + u'|'
+        elif item.__class__.__name__ == 'User':
+            # delay loading this until it is needed
+            import userlib
+            encList += ToUtf8(item.name()) + u'|'
+        else:
+            raise wikipedia.Error(u'unknown item class %s' % item.__class__.__name__)
+
+    # strip trailing '|' before returning
     return encList[:-1]
 
 def ToUtf8(s):
