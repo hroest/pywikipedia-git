@@ -2,7 +2,7 @@
 # -*- coding: utf-8  -*-
 
 """Unit tests for userlib.py"""
-__version__ = '$Id: test_userlib.py 9043 2011-03-13 10:25:08Z xqt $'
+__version__ = '$Id$'
 
 import unittest
 import tests.test_pywiki
