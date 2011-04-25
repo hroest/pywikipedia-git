@@ -633,7 +633,8 @@ def replaceCategoryLinks(oldtext, new, site = None, addOnly = False):
     Replace the category links given in the wikitext given
     in oldtext by the new links given in new.
 
-    'new' should be a list of Category objects.
+    'new' should be a list of Category objects or strings
+          which can be either the raw name or [[Category:..]].
 
     If addOnly is True, the old category won't be deleted and the
     category(s) given will be added (and so they won't replace anything).
@@ -695,7 +696,8 @@ See http://de.wikipedia.org/wiki/Hilfe_Diskussion:Personendaten/Archiv/bis_2006#
 def categoryFormat(categories, insite = None):
     """Return a string containing links to all categories in a list.
 
-    'categories' should be a list of Category objects.
+    'categories' should be a list of Category objects or strings
+        which can be either the raw name or [[Category:..]].
 
     The string is formatted for inclusion in insite.
 
@@ -704,7 +706,15 @@ def categoryFormat(categories, insite = None):
         return ''
     if insite is None:
         insite = pywikibot.getSite()
-    catLinks = [category.aslink(noInterwiki=True) for category in categories]
+
+    if isinstance(categories[0],basestring):
+        if categories[0][0] == '[':
+            catLinks = categories
+        else:
+            catLinks = ['[[Category:'+category+']]' for category in categories]
+    else:
+        catLinks = [category.aslink(noInterwiki=True) for category in categories]
+
     if insite.category_on_one_line():
         sep = ' '
     else:
