@@ -511,8 +511,9 @@ class RedirectRobot:
                         redir_page.delete(reason, prompt = False)
                     except pywikibot.NoUsername:
                         if i18n.twhas_key(
-                            targetPage.site.lang, sd_template) and \
-                            i18n.twhas_key(targetPage.site.lang, reason_broken):
+                            targetPage.site().lang, sd_template) and \
+                            i18n.twhas_key(targetPage.site().lang,
+                                           reason_broken):
                             pywikibot.output(
         u"No sysop in user-config.py, put page to speedy deletion.")
                             content = redir_page.get(get_redirect=True)
