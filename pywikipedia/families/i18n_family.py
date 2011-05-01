@@ -172,16 +172,28 @@ class Family(family.Family):
             '_default': [u'OpenImages talk'],
         }
         self.namespaces[1236] = {
-            '_default': [u'‎Europeana'],
+            '_default': [u'Europeana'],
         }
         self.namespaces[1237] = {
-            '_default': [u'‎Europeana talk'],
+            '_default': [u'Europeana talk'],
         }
         self.namespaces[1238] = {
             '_default': [u'Pywikipedia'],
         }
         self.namespaces[1239] = {
             '_default': [u'Pywikipedia talk'],
+        }
+        self.namespaces[1240] = {
+            '_default': [u'Toolserver'],
+        }
+        self.namespaces[1241] = {
+            '_default': [u'Toolserver talk'],
+        }
+        self.namespaces[1242] = {
+            '_default': [u'EOL'],
+        }
+        self.namespaces[1243] = {
+            '_default': [u'EOL talk'],
         }
     def version(self, code):
         return "1.18alpha"
