@@ -268,7 +268,7 @@ def ListToParam( list ):
             if u'|' in item:
                 raise wikipedia.Error(u"item '%s' contains '|' symbol" % item)
             encList += ToUtf8(item) + u'|'
-        if type(item) == 'int':
+        elif type(item) == 'int':
             encList += ToUtf8(item) + u'|'
         elif isinstance(item, wikipedia.Page):
             encList += ToUtf8(item.title()) + u'|'
