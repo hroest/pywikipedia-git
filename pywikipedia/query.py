@@ -255,7 +255,9 @@ def ConvToList( item ):
         return item
 
 def ListToParam( list ):
-    """Convert a list of unicode strings into a UTF8 string separated by the '|' symbols
+    """Convert a list of unicode strings into a UTF8 string separated by the '|'
+    symbols
+
     """
     list = ConvToList( list )
     if len(list) == 0:
@@ -268,7 +270,7 @@ def ListToParam( list ):
             if u'|' in item:
                 raise wikipedia.Error(u"item '%s' contains '|' symbol" % item)
             encList += ToUtf8(item) + u'|'
-        elif type(item) == 'int':
+        elif type(item) == int:
             encList += ToUtf8(item) + u'|'
         elif isinstance(item, wikipedia.Page):
             encList += ToUtf8(item.title()) + u'|'
