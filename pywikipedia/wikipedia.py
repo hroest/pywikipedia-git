@@ -723,7 +723,9 @@ not supported by PyWikipediaBot!"""
             'prop': ['revisions', 'info'],
             'rvprop': ['content', 'ids', 'flags', 'timestamp', 'user', 'comment', 'size'],
             'rvlimit': 1,
-            'inprop': ['protection', 'talkid', 'subjectid', 'url', 'readable'],
+            #'talkid' valid for release > 1.12
+            #'url', 'readable' valid for release > 1.14
+            'inprop': ['protection', 'subjectid'],
             #'intoken': 'edit',
         }
         if oldid:
@@ -4338,7 +4340,7 @@ class _GetAll(object):
             'titles': pagenames,
             'siprop': ['general', 'namespaces'],
             'rvprop': ['content', 'timestamp', 'user', 'comment', 'size'],#'ids',
-            'inprop': ['protection', 'talkid', 'subjectid'], #, 'url', 'readable'
+            'inprop': ['protection', 'subjectid'], #, 'talkid', 'url', 'readable'
         }
 
         # Slow ourselves down
