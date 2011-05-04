@@ -206,7 +206,8 @@ def main():
     mysite = pywikibot.getSite()
     if doSinglePage:
         if not summary:
-            summary = pywikibot.input(u'Enter a reason for the deletion:')
+            summary = pywikibot.input(u'Enter a reason for the %sdeletion:'
+                                      % ['', 'un'][undelete])
         page = pywikibot.Page(mysite, pageName)
         gen = iter([page])
     elif doCategory:
