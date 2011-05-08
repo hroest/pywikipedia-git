@@ -67,7 +67,7 @@ commonscatTemplates = {
     'af' : (u'CommonsKategorie', [u'commonscat']),
     'ar' : (u'تصنيف كومنز', [u'Commonscat', u'تصنيف كومونز',
                              u'Commons cat', u'CommonsCat']),
-    'az' : (u'CommonsKat', []),
+    'az' : (u'CommonsKat', [u'Commonscat']),
     'bn' : (u'কমন্সক্যাট', [u'Commonscat']),
     'crh' : (u'CommonsKat', [u'Commonscat']),
     'cs' : (u'Commonscat', [u'Commons cat']),
