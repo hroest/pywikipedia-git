@@ -223,7 +223,7 @@ def twtranslate(code, twtitle, parameters=None):
         import table.
     """
     package = twtitle.split("-")[0]
-    transdict = getattr(__import__("i18n", fromlist=[package]), package).msg
+    transdict = getattr(__import__("i18n", {}, {}, [package]), package).msg
 
     # If a site is given instead of a code, use its language
     if hasattr(code, 'lang'):
@@ -263,7 +263,7 @@ def twhas_key(code, twtitle):
         import table.
     """
     package = twtitle.split("-")[0]
-    transdict = getattr(__import__("i18n", fromlist=[package]), package).msg
+    transdict = getattr(__import__("i18n", {}, {}, [package]), package).msg
     # If a site is given instead of a code, use its language
     if hasattr(code, 'lang'):
         code = code.lang
