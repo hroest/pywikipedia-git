@@ -501,18 +501,43 @@ class Category(wikipedia.Page):
             wikipedia.output('Moving text from %s to %s.' % (self.title(), targetCat.title()))
             authors = ', '.join(self.contributingUsers())
             creationSummary = wikipedia.translate(wikipedia.getSite(), msg_created_for_renaming) % (self.title(), authors)
-            newtext = self.get()
-        for regexName in cfdTemplates:
-            matchcfd = re.compile(r"{{%s.*?}}" % regexName, re.IGNORECASE)
-            newtext = matchcfd.sub('',newtext)
-            matchcomment = re.compile(r"<!--BEGIN CFD TEMPLATE-->.*<!--END CFD TEMPLATE-->", re.IGNORECASE | re.MULTILINE | re.DOTALL)
-            newtext = matchcomment.sub('',newtext)
-            pos = 0
-            while (newtext[pos:pos+1] == "\n"):
-                pos = pos + 1
-            newtext = newtext[pos:]
+            newtext = remove_cfd_templates(cfdTemplates, self.get())
         targetCat.put(newtext, creationSummary)
         return True
+
+def remove_cfd_templates(cfdTemplates, pageText):
+    for regexName in cfdTemplates:
+        matchcfd = re.compile(r"{{%s.*?}}" % regexName, re.IGNORECASE)
+        pageText = matchcfd.sub('',pageText)
+        matchcomment = re.compile(r"<!--BEGIN CFD TEMPLATE-->.*<!--END CFD TEMPLATE-->", re.IGNORECASE | re.MULTILINE | re.DOTALL)
+        pageText = matchcomment.sub('',pageText)
+        pos = 0
+        while (pageText[pos:pos+1] == "\n"):
+            pos = pos + 1
+        pageText = pageText[pos:]
+    return pageText
+
+def add_category(article, category, comment=None, createEmptyPages=False):
+    """
+    Given an article and a category, adds the article to the category.
+    """
+    cats = article.categories(get_redirect=True)
+    if not category in cats:
+        cats.append(category)
+        try:
+            text = article.get()
+        except wikipedia.NoPage:
+            if createEmptyPages:
+                text = ''
+            else:
+                raise
+
+        text = wikipedia.replaceCategoryLinks(text, cats)
+        try:
+            article.put(text, comment=comment)
+        except wikipedia.EditConflict:
+            wikipedia.output(u'Skipping %s because of edit conflict' % article.title())
+
 
 #def Category(code, name):
 #    """Factory method to create category link objects from the category name"""
