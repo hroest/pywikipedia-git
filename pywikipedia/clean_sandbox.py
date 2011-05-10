@@ -45,6 +45,7 @@ __version__ = '$Id$'
 
 import time
 import wikipedia as pywikibot
+from pywikibot import i18n
 
 content = {
     'commons': u'{{Sandbox}}\n<!-- Please edit only below this line. -->',
@@ -74,35 +75,6 @@ content = {
     'sv': u'{{subst:Sandlådan}}',
     'th': u'{{กระบะทราย}}\n<!-- กรุณาอย่าแก้ไขบรรทัดนี้ ขอบคุณครับ/ค่ะ -- Please leave this line as they are. Thank you! -->',
     'zh': u'{{subst:User:Sz-iwbot/sandbox}}\r\n',
-    }
-
-msg = {
-    'commons': u'Bot: This page will automatically be cleaned.',
-    'als':u'Bötli: Sandchaschte iigebnet.',
-    'ar': u'روبوت: هذه الصفحة سيتم تفريغها تلقائيا',
-    'bar':u'Bot: Spielwiesn gmaht.',
-    'cs': u'Uhrabání pískoviště',
-    'da': u'Bot: Nyt sand (fra[[Skabelon:Sandkasse tekst]])',
-    'de': u'Bot: Setze Spielwiese zurück.',
-    'en': u'Robot: Automatically cleaned',
-    'fa': u'ربات: صفحه به طور خودکار تميز شد',
-    'fi': u'Botti siivosi hiekkalaatikon.',
-    'he': u'בוט: דף זה ינוקה אוטומטית.',
-    'id': u'Bot: Tata ulang',
-    'it': u'Bot: pulitura sandbox',
-    'ja': u'ロボットによる: 砂場ならし',
-    'ko': u'로봇: 연습장 비움',
-    'ksh':u'Bot: allt Zeush fott gedunn.',
-    'nds':u'Bot: Speelwisch leddig maakt.',
-    'nl': u'Bot: automatisch voorzien van schoon zand.',
-    'no': u'bot: Rydder sandkassa.',
-    'pl': u'Robot czyści brudnopis',
-    'pt': u'Bot: Limpeza da página de testes',
-    'ru': u'Бот: очистка песочницы',
-    'sr': u'Чишћење песка',
-    'sv': u'Robot krattar sandlådan.',
-    'th': u'โรบอต: กำลังจะเก็บกวาดหน้านี้โดยอัตโนมัติ',
-    'zh': u'Bot: 本页被自动清理',
     }
 
 sandboxTitle = {
@@ -183,7 +155,8 @@ class SandboxBot:
                 try:
                     text = sandboxPage.get()
                     translatedContent = pywikibot.translate(mySite, content)
-                    translatedMsg = pywikibot.translate(mySite, msg)
+                    translatedMsg = i18n.twtranslate(mySite,
+                                                     'clean_sandbox-cleaned')
                     subst = 'subst:' in translatedContent
                     pos = text.find(translatedContent.strip())
                     if text.strip() == translatedContent.strip():
