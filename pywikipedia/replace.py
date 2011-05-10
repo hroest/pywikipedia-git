@@ -136,7 +136,7 @@ Please type "replace.py -help | more" if you can't read the top of the help.
 """
 from __future__ import generators
 #
-# (C) Daniel Herding & the Pywikipedia team, 2004-2010
+# (C) Daniel Herding & the Pywikipedia team, 2004-2011
 #
 __version__='$Id$'
 #
@@ -147,6 +147,7 @@ import sys, re, time, codecs
 import wikipedia as pywikibot
 import pagegenerators
 import editarticle
+from pywikibot import i18n
 import webbrowser
 
 # Imports predefined replacements tasks from fixes.py
@@ -157,83 +158,6 @@ import fixes
 docuReplacements = {
     '&params;':     pagegenerators.parameterHelp,
     '&fixes-help;': fixes.help,
-}
-
-
-# Summary messages in different languages
-# NOTE: Predefined replacement tasks might use their own dictionary, see 'fixes'
-# below.
-msg = {
-    'af': u'Robot: geoutomatiseerde teks vervanging %s',
-    'als': u'Bot: het dr Text automatisch uustuscht: %s',
-    'ar': u'%s بوت: استبدال تلقائي للنص',
-    'ast': u'Bot: Troquéu automáticu de testu %s',
-    'be-tarask': u'Робат: аўтаматызаваная замена тэксту %s',
-    'br': u'Robot : Erlec\'hiañ testenn emgefre %s',
-    'bs': u'Bot: Automatska zamjena teksta %s',
-    'ca': u'Robot: Reemplaçament automàtic de text %s',
-    'cs': u'Robot automaticky nahradil text: %s',
-    'cy': u'Bot: Amnewid testun awtomataidd %s',
-    'da': u'Bot: Automatisk teksterstatning: %s',
-    'de': u'Bot: Automatisierte Textersetzung %s',
-    'el': u'Ρομπότ: Αυτόματη αντικατάσταση κειμένου %s',
-    'en': u'Bot: Automated text replacement %s',
-    'eo': u'Roboto: Automata tekst-anstataŭigo: %s',
-    'es': u'Robot: Reemplazo automático de texto %s',
-    'eu': u'Robota: Testu aldaketa automatikoa %s',
-    'fa': u'ربات: تغییر خودکار متن %s',
-    'fi': u'Botti korvasi automaattisesti tekstin %s',
-    'fr': u'Robot : Remplacement de texte automatisé %s',
-    'frp': u'Bot : remplacement de tèxto ôtomatisâ %s',
-    'frr': u'Bot: Automatisiaret ütjwakselt tekst %s',
-    'fur': u'Robot: Sostituzion automatiche di test %s',
-    'gl': u'Bot: Substitución automática de texto %s',
-    'gsw': u'Bot: het dr Text automatisch uustuscht: %s',
-    'he': u'בוט: החלפת טקסט אוטומטית %s',
-    'hsb': u'Boćik: Awtomatiske narunanje teksta %s',
-    'hu': u'Robot: Automatikus szövegcsere %s',
-    'hy': u'Ռոբոտ․ Տեքստի ավտոմատ փոխարինում %s',
-    'ia': u'Robot: Reimplaciamento automatic de texto %s',
-    'id': u'Bot: Penggantian teks otomatis %s',
-    'is': u'Vélmenni: breyti texta %s',
-    'it': u'Bot: Sostituzione automatica %s',
-    'ja': u'ロボットによる: 文字置き換え %s',
-    'ka': u'რობოტი: ტექსტის ავტომატური შეცვლა %s',
-    'kk': u'Бот: Мәтінді өздікті алмастырды: %s',
-    'ksh': u'Bot: hät outomatesch Täx jetuusch: %s',
-    'la': u'automaton: mutans textum automatice: %s',
-    'lb': u'Bot: Automatescht Ersetze vun Text %s',
-    'li': u'Robot: autematis teks vervange %s',
-    'lt': u'robotas: Automatinis teksto keitimas %s',
-    'mk': u'Бот: Автоматизирана замена на текст %s',
-    'ms': u'Bot: Penggantian teks automatik %s',
-    'mt': u'Bot: Sostituzzjoni awtomatika %s',
-    'my': u'ဘော့ - စာသားများကို အလိုအလျောက် အစားထိုးခြင်း %s',
-    'nds': u'Bot: Text automaatsch utwesselt: %s',
-    'nds-nl': u'Bot: autematisch tekse vervungen %s',
-    'ne': u'बोट: स्वचालित रुपमा हरफहरु परिवर्तन गरिएको %s',
-    'nl': u'Robot: automatisch tekst vervangen %s',
-    'nn': u'robot: automatisk teksterstatning: %s',
-    'no': u'robot: automatisk teksterstatning: %s',
-    'pl': u'Robot automatycznie zamienia tekst %s',
-    'pt': u'Robô: Substituição de texto automática %s',
-    'pt-br': u'Robô: Substituição automática de texto %s',
-    'ro': u'Robot. Înlocuire automată de text %s',
-    'ru': u'Робот: Автоматизированная замена текста %s',
-    'rue': u'Робот: Автоматізована заміна тексту: %s',
-    'sl': u'Bot: Samodejna zamenjava besedila %s',
-    'sr': u'Бот: Аутоматска замена текста %s',
-    'sr-ec': u'Бот: самостална замена текста %s',
-    'sr-el': u'Bot: samostalna zamena teksta %s',
-    'sv': u'Bot: Automatisk textersättning: %s',
-    'tl': u'Bot: Kusang pagpapalit ng teksto %s',
-    'tr': u'Bot: Otomatik metin değiştirme %s',
-    'tt-cyrl': u'Робот: %s текстын автомат алмаштыру',
-    'uk': u'Бот: Автоматизована заміна тексту: %s',
-    'vi': u'Robot: Tự động thay thế văn bản %s',
-    'zh': u'機器人:執行文字代換作業 %s',
-    'zh-hans': u'机器人：自动文本替换%s',
-    'zh-hant': u'機器人：自動替換文字%s',
 }
 
 
@@ -629,7 +553,8 @@ def main(*args):
     genFactory = pagegenerators.GeneratorFactory()
     # Load default summary message.
     # BUG WARNING: This is probably incompatible with the -lang parameter.
-    editSummary = pywikibot.translate(pywikibot.getSite(), msg)
+    editSummary = i18n.twtranslate(pywikibot.getSite(), 'replace-replacing',
+                                   {'description': u''})
     # Between a regex and another (using -fix) sleep some time (not to waste
     # too much CPU
     sleep = None
@@ -719,9 +644,11 @@ u'Please enter the filename to save the titles \n(will be deleted if exists):')
         replacements.append((commandline_replacements[0],
                              commandline_replacements[1]))
         if not summary_commandline:
-            editSummary = pywikibot.translate(pywikibot.getSite(), msg ) % (
-                                   ' (-%s +%s)' % (commandline_replacements[0],
-                                                   commandline_replacements[1]))
+            editSummary = pywikibot.translate(pywikibot.getSite(),
+                                              'replace-replacing',
+                                              {'description': ' (-%s +%s)'
+                                               % (commandline_replacements[0],
+                                                  commandline_replacements[1])})
     elif (len(commandline_replacements) > 1):
         if (fix is None):
             for i in xrange (0, len(commandline_replacements), 2):
@@ -733,8 +660,10 @@ u'Please enter the filename to save the titles \n(will be deleted if exists):')
                          for i in range(0, len(commandline_replacements), 2)]
                 replacementsDescription = '(%s)' % ', '.join(
                     [('-' + pair[0] + ' +' + pair[1]) for pair in pairs])
-                editSummary = pywikibot.translate(pywikibot.getSite(), msg ) \
-                              % replacementsDescription
+                editSummary = i18n.twtranslate(pywikibot.getSite(),
+                                               'replace-replacing',
+                                               {'description':
+                                                replacementsDescription})
         else:
            raise pywikibot.Error(
                'Specifying -fix with replacements is undefined')
@@ -753,7 +682,9 @@ u'Please enter another text that should be replaced, or press Enter to start:')
             change = change + ' & -' + old + ' +' + new
             replacements.append((old, new))
         if not summary_commandline:
-            default_summary_message =  pywikibot.translate(pywikibot.getSite(), msg) % change
+            default_summary_message =  i18n.twtranslate(pywikibot.getSite(),
+                                                        'replace-replacing',
+                                                        {'description': change})
             pywikibot.output(u'The summary message will default to: %s'
                              % default_summary_message)
             summary_message = pywikibot.input(
