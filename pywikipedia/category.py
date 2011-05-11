@@ -935,7 +935,7 @@ class CategoryRemoveRobot:
     def __init__(self, catTitle, batchMode = False, editSummary = '', useSummaryForDeletion = True, titleRegex = None, inPlace = False):
         self.editSummary = editSummary
         self.site = pywikibot.getSite()
-        self.cat = catlib.Category(self.site, catTitle)
+        self.cat = catlib.Category(self.site, 'Category:'+ catTitle)
         # get edit summary message
         self.useSummaryForDeletion = useSummaryForDeletion
         self.batchMode = batchMode
