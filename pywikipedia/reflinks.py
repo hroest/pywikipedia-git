@@ -1,17 +1,19 @@
 # -*- coding: utf-8 -*-
 """
-This bot will search for references which are only made of a link
-without title, (i.e. <ref>[http://www.google.fr/]</ref> or
-<ref>http://www.google.fr/</ref>) and will fetch the html title from
-the link to use it as the title of the wiki link in the reference, i.e.
+This bot will search for references which are only made of a link without title,
+(i.e. <ref>[http://www.google.fr/]</ref> or <ref>http://www.google.fr/</ref>)
+and will fetch the html title from the link to use it as the title of the wiki
+link in the reference, i.e.
 <ref>[http://www.google.fr/search?q=test test - Google Search]</ref>
 
-The bot checks every 20 edits a special stop page : if
-the page has been edited, it stops.
+The bot checks every 20 edits a special stop page : if the page has been edited,
+it stops.
 
-DumZiBoT is running that script on en: & fr: at every new dump, running it on de: is not allowed anymore.
+DumZiBoT is running that script on en: & fr: at every new dump, running it on
+de: is not allowed anymore.
 
-As it uses it, you need to configure noreferences.py for your wiki, or it will not work.
+As it uses it, you need to configure noreferences.py for your wiki, or it will
+not work.
 
 pdfinfo is needed for parsing pdf titles.
 
@@ -19,21 +21,18 @@ See [[:en:User:DumZiBoT/refLinks]] for more information on the bot.
 
 &params;
 
--limit:n                Stops after n edits
+-limit:n          Stops after n edits
 
--xml:dump.xml           Should be used instead of a simple page fetching
-                        method from pagegenerators.py for performance and
-                        load issues
+-xml:dump.xml     Should be used instead of a simple page fetching method from
+                  pagegenerators.py for performance and load issues
 
--xmlstart               Page to start with when using an XML dump
+-xmlstart         Page to start with when using an XML dump
 
--ignorepdf              Do not handle PDF files (handy if you use Windows and
-                        can't get pdfinfo)
-
-Basic pagegenerators commands, -page, etc...
+-ignorepdf        Do not handle PDF files (handy if you use Windows and can't
+                  get pdfinfo)
 """
 # (C) 2008 - Nicolas Dumazet ( en:User:NicDumZ )
-# (C) Pywikipedia bot team, 2008-2010
+# (C) Pywikipedia bot team, 2008-2011
 #
 # Distributed under the terms of the GPL
 #
@@ -46,6 +45,10 @@ import wikipedia as pywikibot
 from BeautifulSoup import UnicodeDammit
 import pagegenerators
 import noreferences
+
+docuReplacements = {
+    '&params;': pagegenerators.parameterHelp
+}
 
 stopPage = {'fr':u'Utilisateur:DumZiBoT/EditezCettePagePourMeStopper',
             'da':u'Bruger:DumZiBoT/EditThisPageToStopMe',
