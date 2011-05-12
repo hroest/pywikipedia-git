@@ -769,6 +769,8 @@ def TextfilePageGenerator(filename=None, site=None):
         f.seek(0)
         for title in f:
             title = title.strip()
+            if '|' in title:
+                title = title[:title.index('|')]
             if title:
                 yield pywikibot.Page(site, title)
     f.close()
