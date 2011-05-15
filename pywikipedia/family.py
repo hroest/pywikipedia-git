@@ -1063,6 +1063,7 @@ class Family:
             4: {
                 '_default': u'Project',
                 'ab': u'Авикипедиа',
+                'am': u'ውክፔዲያ',
                 'arc': u'ܘܝܩܝܦܕܝܐ',
                 'bh': u'विकिपीडिया',
                 'bjn': u'Wikipidia',
@@ -1085,6 +1086,7 @@ class Family:
                 '_default': u'Project talk',
                 'ab': u'Авикипедиа ахцәажәара',
                 'ace': [u'Marit Wikipedia', u'Pembicaraan Wikipedia'],
+                'am': u'ውክፔዲያ ውይይት',
                 'arc': [u'ܡܡܠܠܐ ܕ ܘܝܩܝܦܕܝܐ', u'ܘܝܩܝܦܕܝܐ talk'],
                 'as': [u'Wikipedia বাৰ্তা', u'Wikipedia वार्ता', u'Wikipedia বার্তা'],
                 'bh': u'विकिपीडिया वार्ता',

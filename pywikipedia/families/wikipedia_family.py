@@ -75,6 +75,7 @@ class Family(family.Family):
         self.namespaces[4] = {
             '_default': [u'Wikipedia', self.namespaces[4]['_default']],
             'ab': u'Авикипедиа',
+            'am': u'ውክፔዲያ',
             'ar': u'ويكيبيديا',
             'arc': u'ܘܝܩܝܦܕܝܐ',
             'arz': u'ويكيبيديا',
@@ -189,7 +190,7 @@ class Family(family.Family):
             'ace': u'Marit Wikipedia',
             'af': u'Wikipediabespreking',
             'als': u'Wikipedia Diskussion',
-            'am': u'Wikipedia ውይይት',
+            'am': u'ውክፔዲያ ውይይት',
             'an': u'Descusión Wikipedia',
             'ar': u'نقاش ويكيبيديا',
             'arc': [u'ܡܡܠܠܐ ܕܘܝܩܝܦܕܝܐ', u'ܘܝܩܝܦܕܝܐ talk'],
@@ -275,8 +276,8 @@ class Family(family.Family):
             'jv': u'Dhiskusi Wikipedia',
             'ka': u'ვიკიპედია განხილვა',
             'kaa': u'Wikipedia sa\'wbeti',
-            'kbd': u'Уикипедиэм и тепсэлъыхьыгъуэ',
             'kab': u'Amyannan n Wikipedia',
+            'kbd': u'Уикипедиэм и тепсэлъыхьыгъуэ',
             'kk': u'Уикипедия талқылауы',
             'kl': u'Wikipedia-p oqalliffia',
             'km': u'ការពិភាក្សាអំពីវិគីភីឌា',
@@ -410,6 +411,7 @@ class Family(family.Family):
         self.namespaces[100] = {
             'af': u'Portaal',
             'als': u'Portal',
+            'am': u'በር',
             'an': u'Portal',
             'ar': u'بوابة',
             'arz': u'بوابة',
@@ -501,6 +503,7 @@ class Family(family.Family):
         self.namespaces[101] = {
             'af': u'Portaalbespreking',
             'als': u'Portal Diskussion',
+            'am': u'በር ውይይት',
             'an': u'Descusión Portal',
             'ar': u'نقاش البوابة',
             'arz': u'مناقشة بوابة',
