@@ -392,7 +392,7 @@ class CategoryMoveRobot:
         newCat = catlib.Category(site, self.newCatTitle)
         # set edit summary message
         if not self.editSummary:
-            self.editSummary = i18n.twtranslate(site, msg_change) \
+            self.editSummary = i18n.twtranslate(site, 'category-changing') \
                                % {'oldcat':self.oldCat.title(),
                                   'newcat':newCat.title()}
 
