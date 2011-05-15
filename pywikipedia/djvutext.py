@@ -138,7 +138,9 @@ class DjVuTextBot:
 
             # convert to wikisyntax
             # this adds a second line feed, which makes a new paragraph
-            text = text.replace('', "\n")
+            text = text.replace('', "\n") # US /x1F
+            text = text.replace('', "\n") # GS /x1D
+            text = text.replace('', "\n") # FF /x0C
 
         # only save if something was changed
         # automatically ask if overwriting an existing page
