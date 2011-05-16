@@ -152,6 +152,7 @@ msg_lists = {
     'frr':u'Bot: [[%s:%s]] as en wäärdag list',
     'ja': u'ロボットによる: 秀逸な一覧へのリンク [[%s:%s]]',
     'ksh':u'bot: [[%s:%s]] ess_en joode Leß',
+    'pl': u'Bot: [[%s:%s]] jest listą medalową',
     'pt': u'Bot: [[%s:%s]] é uma lista destacada',
     'sv': u'Bot: [[%s:%s]] är en utmärkt list',
 }
@@ -164,6 +165,7 @@ msg_former = {
     'fa': u'ربات:نوشتار [[%s:%s]] یک نوشتار برگزیده پیشین است.',
     'fi': u'Botti: [[%s:%s]] on entinen suositeltu artikkeli',
     'frr':u'Bot: [[%s:%s]] wiar ans en auer a miaten guden artiikel',
+    'pl': u'Bot: [[%s:%s]] jest byłym artykułem na medal',
 }
 
 # ALL wikis use 'Link FA', and sometimes other localized templates.
