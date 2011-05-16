@@ -70,6 +70,7 @@ msg = {
     'pl': u'Robot dodaje szablon {{przypisy}}',
     'pt': u'Bot: Adicionando a tag <references />',
     'ru': u'Robot: Добавлен отсутствующий тег <references />',
+    'szl':u'Bot dodowo {{Przipisy}}',
     'zh': u'機器人: 增加遺失的 <references /> 標籤',
 }
 
@@ -196,6 +197,9 @@ placeBeforeSections = {
     'sk': [
         u'Pozri aj',
     ],
+    'szl': [
+        u'Przipisy',
+    ],
     'zh': [
         u'外部連结',
         u'外部链接',
@@ -305,6 +309,9 @@ referencesSections = {
     'sk': [
         u'Referencie',
     ],
+    'szl': [
+        u'Przipisy',
+    ],
     'zh': [
         u'參考文獻',
         u'参考文献',
@@ -350,6 +357,7 @@ referencesTemplates = {
         'ru': [u'Reflist', u'Ref-list', u'Refs', u'Sources',
                u'Примечания', u'Список примечаний',
                u'Сноска', u'Сноски'],
+        'szl':[u'Przipisy'],
         'zh': [u'Reflist'],
     },
 }
@@ -364,6 +372,7 @@ referencesSubstitute = {
         'hu': u'{{Források}}',
         'pl': u'{{Przypisy}}',
         'ru': u'{{примечания}}',
+        'szl':u'{{Przipisy}}',
     },
 }
 
@@ -372,7 +381,7 @@ referencesSubstitute = {
 # like pl.wiki where {{Przypisy}} generates
 # == Przypisy ==
 # <references />
-noTitleRequired = [u'pl', u'be']
+noTitleRequired = [u'pl', u'be', u'szl']
 
 maintenance_category = {
     'wikipedia': {
