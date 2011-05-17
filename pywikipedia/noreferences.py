@@ -70,7 +70,7 @@ msg = {
     'pl': u'Robot dodaje szablon {{przypisy}}',
     'pt': u'Bot: Adicionando a tag <references />',
     'ru': u'Robot: Добавлен отсутствующий тег <references />',
-    'szl':u'Bot dodowo {{Przipisy}}',
+    'szl':u'Bot dodowo szablon {{Przipisy}}',
     'zh': u'機器人: 增加遺失的 <references /> 標籤',
 }
 
@@ -199,6 +199,7 @@ placeBeforeSections = {
     ],
     'szl': [
         u'Przipisy',
+        u'Připisy',
     ],
     'zh': [
         u'外部連结',
@@ -311,6 +312,7 @@ referencesSections = {
     ],
     'szl': [
         u'Przipisy',
+        u'Připisy',
     ],
     'zh': [
         u'參考文獻',
@@ -357,7 +359,7 @@ referencesTemplates = {
         'ru': [u'Reflist', u'Ref-list', u'Refs', u'Sources',
                u'Примечания', u'Список примечаний',
                u'Сноска', u'Сноски'],
-        'szl':[u'Przipisy'],
+        'szl':[u'Przipisy', u'Připisy'],
         'zh': [u'Reflist'],
     },
 }
