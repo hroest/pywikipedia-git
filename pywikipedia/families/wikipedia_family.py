@@ -792,7 +792,6 @@ class Family(family.Family):
             'ext': [u'Desambiguáncia'],
             'fo':  [u'Fleiri týdningar'],
             'frp': [u'Homonimos'],
-            'frr': [u'Muardüüdag artikel', u'Muardüüdag artiikel'],
             'fur': [u'Disambiguazion', u'Disambig'],
             'fy':  [u'Tfs', u'Neibetsjuttings'],
             'gan': [u'扤清楚', u'Disambig'],
