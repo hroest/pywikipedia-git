@@ -17,14 +17,14 @@ class Family(family.Family):
             'id', 'gl', 'ca', 'uk', 'bg', 'cs', 'eo', 'vo', 'is', 'fa', 'hr',
             'oc', 'simple', 'scn', 'th', 'sr', 'af', 'fy', 'sw', 'br', 'he',
             'eu', 'la', 'sq', 'sl', 'hy', 'cy', 'da', 'tt', 'zh-min-nan', 'wa',
-            'az', 'lv', 'ne', 'hi', 'tk', 'ast', 'ka', 'ur', 'hsb', 'kk', 'ky',
+            'az', 'hi', 'lv', 'ne', 'tk', 'ast', 'ka', 'ur', 'hsb', 'kk', 'ky',
             'nn', 'wo', 'km', 'ang', 'co', 'be', 'ga', 'mr', 'gn', 'ia', 'sk',
             'tl', 'ms', 'ps', 'csb', 'st', 'nds', 'sd', 'kl', 'si', 'sh', 'ug',
             'ti', 'mk', 'bn', 'lb', 'an', 'zu', 'gu', 'am', 'ss', 'qu', 'chr',
             'ts', 'bs', 'fo', 'rw', 'tg', 'om', 'nah', 'kw', 'su', 'gv', 'iu',
             'mn', 'ie', 'yi', 'gd', 'za', 'pa', 'mt', 'tpi', 'mi', 'dv', 'ik',
-            'sg', 'so', 'roa-rup', 'uz', 'jv', 'ln', 'sm', 'ha', 'ay', 'sa',
-            'na', 'fj', 'jbo', 'ks', 'tn', 'dz',
+            'sg', 'so', 'roa-rup', 'uz', 'jv', 'ln', 'sm', 'ha', 'sa', 'ay',
+            'jbo', 'na', 'fj', 'ks', 'tn', 'dz',
         ]
 
         if family.config.SSL_connection:
