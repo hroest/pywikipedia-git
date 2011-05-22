@@ -933,7 +933,7 @@ class Family:
                 'hr': u'Razgovor sa suradnikom',
                 'hsb': u'Diskusija z wužiwarjom',
                 'ht': u'Diskisyon Itilizatè',
-                'hu': u'Szerkesztővita',
+                'hu': [u'Szerkesztővita', u'User vita'],
                 'hy': u'Մասնակցի քննարկում',
                 'ia': u'Discussion Usator',
                 'id': u'Pembicaraan Pengguna',
