@@ -644,11 +644,11 @@ u'Please enter the filename to save the titles \n(will be deleted if exists):')
         replacements.append((commandline_replacements[0],
                              commandline_replacements[1]))
         if not summary_commandline:
-            editSummary = pywikibot.translate(pywikibot.getSite(),
-                                              'replace-replacing',
-                                              {'description': ' (-%s +%s)'
-                                               % (commandline_replacements[0],
-                                                  commandline_replacements[1])})
+            editSummary = i18n.twtranslate(pywikibot.getSite(),
+                                           'replace-replacing',
+                                           {'description': ' (-%s +%s)'
+                                            % (commandline_replacements[0],
+                                               commandline_replacements[1])})
     elif (len(commandline_replacements) > 1):
         if (fix is None):
             for i in xrange (0, len(commandline_replacements), 2):
@@ -676,15 +676,15 @@ u'Please enter the filename to save the titles \n(will be deleted if exists):')
             old = pywikibot.input(
 u'Please enter another text that should be replaced, or press Enter to start:')
             if old == '':
-                change = change + ')'
+                change += ')'
                 break
             new = pywikibot.input(u'Please enter the new text:')
-            change = change + ' & -' + old + ' +' + new
+            change += ' & -' + old + ' +' + new
             replacements.append((old, new))
         if not summary_commandline:
-            default_summary_message =  i18n.twtranslate(pywikibot.getSite(),
-                                                        'replace-replacing',
-                                                        {'description': change})
+            default_summary_message = i18n.twtranslate(pywikibot.getSite(),
+                                                       'replace-replacing',
+                                                       {'description': change})
             pywikibot.output(u'The summary message will default to: %s'
                              % default_summary_message)
             summary_message = pywikibot.input(
