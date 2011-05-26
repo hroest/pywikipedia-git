@@ -2290,9 +2290,9 @@ def compareLanguages(old, new, insite):
 
         mcomment += globalvar.summary
 
-        changes = {'adding':    ' ,'.join([fmt(new, x) for x in adding]),
-                   'removing':  ' ,'.join([fmt(old, x) for x in removing]),
-                   'modifying': ' ,'.join([fmt(new, x) for x in modifying])}
+        changes = {'adding':    ', '.join([fmt(new, x) for x in adding]),
+                   'removing':  ', '.join([fmt(old, x) for x in removing]),
+                   'modifying': ', '.join([fmt(new, x) for x in modifying])}
 
         mcomment += i18n.twtranslate(insite.lang, commentname) % changes
         mods = i18n.twtranslate('en', commentname) % changes
