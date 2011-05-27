@@ -21,7 +21,7 @@ class Family(family.Family):
             'nn', 'wo', 'km', 'ang', 'co', 'be', 'ga', 'mr', 'gn', 'ia', 'sk',
             'tl', 'ms', 'ps', 'csb', 'st', 'nds', 'sd', 'kl', 'si', 'sh', 'ug',
             'ti', 'mk', 'bn', 'lb', 'an', 'zu', 'gu', 'am', 'ss', 'qu', 'chr',
-            'ts', 'bs', 'fo', 'rw', 'tg', 'om', 'nah', 'kw', 'su', 'gv', 'iu',
+            'ts', 'bs', 'fo', 'nah', 'rw', 'tg', 'om', 'kw', 'su', 'gv', 'iu',
             'mn', 'ie', 'yi', 'gd', 'za', 'pa', 'mt', 'tpi', 'mi', 'dv', 'ik',
             'sg', 'so', 'roa-rup', 'uz', 'jv', 'ln', 'sm', 'ha', 'sa', 'ay',
             'jbo', 'na', 'fj', 'ks', 'tn', 'dz',
