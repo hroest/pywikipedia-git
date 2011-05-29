@@ -621,12 +621,12 @@ def replaceCategoryInPlace(oldtext, oldcat, newcat, site=None):
                             % (catNamespace, title), re.I | re.M)
     if newcat is None:
         """ First go through and try the more restrictive regex that removes
-            an entire line, if the category is the only thing on that line (this
-            prevents blank lines left over in category lists following a removal.)
+        an entire line, if the category is the only thing on that line (this
+        prevents blank lines left over in category lists following a removal.)
         """
 
         text = replaceExcept(oldtext, categoryRN, '',
-                                ['nowiki', 'comment', 'math', 'pre', 'source'])
+                             ['nowiki', 'comment', 'math', 'pre', 'source'])
         text = replaceExcept(text, categoryR, '',
                              ['nowiki', 'comment', 'math', 'pre', 'source'])
     else:
