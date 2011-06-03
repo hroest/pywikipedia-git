@@ -83,11 +83,13 @@ class Family(family.Family):
         }
         self.namespaces[104] = {
             'en': u'Topic',
+            'fr': u'Recherche',
             'it': u'Materia',
             'ja': u'Topic',
         }
         self.namespaces[105] = {
             'en': u'Topic talk',
+            'fr': u'Discussion Recherche',
             'it': u'Discussioni materia',
             'ja': u'Topic‐ノート',
         }
