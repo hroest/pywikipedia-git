@@ -19,13 +19,14 @@ from datetime import datetime
 from datetime import timedelta
 
 #Probably unneeded because these are hidden categories. Have to figure it out.
-ignoreCategories = [u'[[Category:CC-BY-SA-3.0]]',
-                    u'[[Category:GFDL]]',
-                    u'[[Category:Media for cleanup]]',
-                    u'[[Category:Media lacking a description]]',
-                    u'[[Category:Media lacking author information]]',
-                    u'[[Category:Media lacking a description]]',
-                    u'[[Category:Self-published work]]']
+ignoreCategories = [u'Category:CC-BY-SA-3.0',
+                    u'Category:GFDL',
+                    u'Category:Media for cleanup',
+                    u'Category:Media lacking a description',
+                    u'Category:Media lacking author information',
+                    u'Category:Media lacking a description',
+                    u'Category:Self-published work',
+                    u'Category:Uploaded with UploadWizard',]
 
 #Dont bother to put the template on a image with one of these templates
 skipTemplates = [u'Delete',
@@ -1293,9 +1294,10 @@ def isUncat(page):
     pywikibot.output(u'Working on '+ page.title())
 
     for category in page.categories():
-        if category not in ignoreCategories:
+        if category.title() not in ignoreCategories:
             pywikibot.output(u'Got category ' + category.title())
             return False
+        #FIXME: Add check if the category is hidden. If hidden -> ignore
 
     for templateWithTrail in page.templates():
         #Strip of trailing garbage
@@ -1304,6 +1306,8 @@ def isUncat(page):
             # Already tagged with a template, skip it
             pywikibot.output(u'Already tagged, skip it')
             return False
+        elif template.startswith(u'Int:'):
+            pywikibot.output(u'Ignoring internationalization template ' + template)
         elif template in ignoreTemplates:
             # template not relevant for categorization
             pywikibot.output(u'Ignore ' + template)
