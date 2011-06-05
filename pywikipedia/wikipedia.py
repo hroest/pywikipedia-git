@@ -7049,7 +7049,7 @@ u"WARNING: Could not open '%s'. Maybe the server or\n your connection is down. R
             value = namespace.get('_default', None)
             if value:
                 if isinstance(value, list):
-                    defaults += value
+                    defaults += value[0]
                 else:
                     defaults.append(value)
 
