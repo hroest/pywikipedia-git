@@ -5576,7 +5576,13 @@ u"WARNING: Could not open '%s'. Maybe the server or\n your connection is down. R
 
         # Get user groups and rights
         if 'groups' in text:
-            self._rights[index] = text['groups']
+            self._rights[index] = []
+            for group in text['groups']:
+                # Convert dictionaries to list items (bug 3311663)
+                if isinstance(group, dict):
+                    self._rights[index].extend(group.keys())
+                else:
+                    self._rights[index].append(group)
             self._rights[index].extend(text['rights'])
             # Warnings
             # Don't show warnings for not logged in users, they will just fail to
