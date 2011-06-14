@@ -23,7 +23,7 @@ create_categories.py
     -basename:"Cultural heritage monuments in"
 
 """
-__version__ = '$Id: create_categories.py 9042 2011-03-13 10:14:47Z xqt $'
+__version__ = '$Id$'
 #
 #  (C) Multichill 2011
 #
