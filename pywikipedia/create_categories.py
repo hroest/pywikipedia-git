@@ -2,11 +2,12 @@
 """
 Program to batch create categories.
 
-The program expects a generator containing a list of page titles to be used as base.
+The program expects a generator containing a list of page titles to be used as
+base.
 
 The following command line parameters are supported:
 
--alway          (not implemented yet) Don't ask, just do the edit.
+-always         (not implemented yet) Don't ask, just do the edit.
 
 -overwrite      (not implemented yet).
 
@@ -61,7 +62,7 @@ def createCategory(page, parent, basename):
     else:
         #FIXME: Add overwrite option
         pywikibot.output(u'%s already exists, skipping'  % (newpage.title(),))
-    
+
 
 def main(args):
     '''
@@ -71,7 +72,7 @@ def main(args):
     parent = u''
     basename = u''
     always = False
-    
+
     genFactory = pagegenerators.GeneratorFactory()
 
     for arg in pywikibot.handleArgs():
@@ -90,7 +91,7 @@ def main(args):
             createCategory(page, parent, basename)
     else:
         pywikibot.output(u'No pages to work on')
-        
+
     pywikibot.output(u'All done')
 
 if __name__ == "__main__":
