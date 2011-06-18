@@ -45,6 +45,24 @@ class Family(family.Family):
         self.namespaces[101] = {
             '_default': [u'Portal talk'],
         }
+        self.namespaces[202] = {
+            '_default': [u'Property'],
+        }
+        self.namespaces[203] = {
+            '_default': [u'Property talk'],
+        }
+        self.namespaces[206] = {
+            '_default': [u'Form'],
+        }
+        self.namespaces[207] = {
+            '_default': [u'Form talk'],
+        }
+        self.namespaces[208] = {
+            '_default': [u'Concept'],
+        }
+        self.namespaces[209] = {
+            '_default': [u'Concept talk'],
+        }
         self.namespaces[420] = {
             '_default': [u'Layer'],
         }
@@ -194,6 +212,12 @@ class Family(family.Family):
         }
         self.namespaces[1243] = {
             '_default': [u'EOL talk'],
+        }
+        self.namespaces[1244] = {
+            '_default': [u'Kiwix'],
+        }
+        self.namespaces[1245] = {
+            '_default': [u'Kiwix talk'],
         }
     def version(self, code):
         return "1.18alpha"
