@@ -220,4 +220,4 @@ class Family(family.Family):
             '_default': [u'Kiwix talk'],
         }
     def version(self, code):
-        return "1.18alpha"
+        return "1.19alpha"
