@@ -13,12 +13,13 @@ Command line options:
 
 -remove      Remove every occurence of the template from every article
 
--subst       Resolves the template by putting its text directly into the article.
-             This is done by changing {{...}} or {{msg:...}} into {{subst:...}}
+-subst       Resolves the template by putting its text directly into the
+             article. This is done by changing {{...}} or {{msg:...}} into
+             {{subst:...}}
 
--xml         retrieve information from a local dump (http://download.wikimedia.org).
-             if this argument isn\'t given, info will be loaded from the maintenance
-             page of the live wiki.
+-xml         retrieve information from a local dump
+             (http://download.wikimedia.org). If this argument isn\'t given,
+             info will be loaded from the maintenance page of the live wiki.
              argument can also be given as "-xml:filename.xml".
 
 -namespace:  Only process templates in the given namespace number (may be used
@@ -34,14 +35,15 @@ Command line options:
              If this parameter is missed, all edits are checked but this is
              restricted to the last 100 edits.
 
--summary:    Lets you pick a custom edit summary.  Use quotes if edit summary contains
-             spaces.
+-summary:    Lets you pick a custom edit summary.  Use quotes if edit summary
+             contains spaces.
 
 -always      Don't bother asking to confirm any of the changes, Just Do It.
 
--category:   Appends the given category to every page that is edited.  This is useful when
-             a category is being broken out from a template parameter or when templates are
-             being upmerged but more information must be preserved.
+-category:   Appends the given category to every page that is edited.  This is
+             useful when a category is being broken out from a template
+             parameter or when templates are being upmerged but more information
+             must be preserved.
 
 other:       First argument is the old template name, second one is the new
              name.
@@ -59,25 +61,26 @@ change it to [[Template:Cities in Washington state]], start
 Move the page [[Template:Cities in Washington]] manually afterwards.
 
 
-If you have a template called [[Template:test]] and want to substitute it only on pages
-in the User: and User talk: namespaces, do:
+If you have a template called [[Template:test]] and want to substitute it only
+on pages in the User: and User talk: namespaces, do:
 
     python template.py test -namespace:2 -namespace:3
 
-Note that, on the English Wikipedia, User: is namespace 2 and User talk: is namespace 3.
-This may differ on other projects so make sure to find out the appropriate namespace numbers.
+Note that, on the English Wikipedia, User: is namespace 2 and User talk: is
+namespace 3. This may differ on other projects so make sure to find out the
+appropriate namespace numbers.
 
 
-This next example substitutes the template lived with a supplied edit summary.  It only
-performs substitutions in main article namespace and doesn't prompt to start replacing.
-Note that -putthrottle: is a global pywikipedia parameter.
+This next example substitutes the template lived with a supplied edit summary.
+It only performs substitutions in main article namespace and doesn't prompt to
+start replacing. Note that -putthrottle: is a global pywikipedia parameter.
 
     python template.py -putthrottle:30 -namespace:0 lived -always
         -summary:"ROBOT: Substituting {{lived}}, see [[WP:SUBST]]."
 
 
-This next example removes the templates {{cfr}}, {{cfru}}, and {{cfr-speedy}} from five
-category pages as given:
+This next example removes the templates {{cfr}}, {{cfru}}, and {{cfr-speedy}}
+from five category pages as given:
 
     python template.py cfr cfru cfr-speedy -remove -always
         -page:"Category:Mountain monuments and memorials" -page:"Category:Indian family names"
@@ -86,7 +89,8 @@ category pages as given:
         -summary:"Removing Cfd templates from category pages that survived."
 
 
-This next example substitutes templates test1, test2, and space test on all pages:
+This next example substitutes templates test1, test2, and space test on all
+pages:
 
     python template.py test1 test2 "space test" -subst -always
 
@@ -99,10 +103,10 @@ This next example substitutes templates test1, test2, and space test on all page
 #
 __version__='$Id$'
 #
+import re, sys, string
 import wikipedia as pywikibot
-import config
-import replace, pagegenerators
-import re, sys, string, catlib
+import config, pagegenerators, catlib
+import replace
 
 def UserEditFilterGenerator(generator, username, timestamp=None, skip=False):
     """
@@ -330,8 +334,8 @@ class TemplateRobot:
         'zh':u'機器人: 更換模板 %s',
     }
 
-    def __init__(self, generator, templates, subst = False, remove = False, editSummary = '',
-                 acceptAll = False, addedCat = None):
+    def __init__(self, generator, templates, subst = False, remove = False,
+                 editSummary = '', acceptAll = False, addedCat = None):
         """
         Arguments:
             * generator    - A page generator.
@@ -408,7 +412,7 @@ class TemplateRobot:
         replaceBot = replace.ReplaceRobot(self.generator, replacements, exceptions, acceptall = self.acceptAll, addedCat=self.addedCat, editSummary=self.editSummary)
         replaceBot.run()
 
-def main():
+def main(*args):
     templateNames = []
     templates = {}
     subst = False
