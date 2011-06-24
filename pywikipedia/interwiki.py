@@ -1271,6 +1271,9 @@ class Subject(object):
                 elif not globalvar.followredirect:
                     if not globalvar.quiet or pywikibot.verbose:
                         pywikibot.output(u"NOTE: not following %sredirects." % redir)
+                elif page.isStaticRedirect():
+                    if not globalvar.quiet or pywikibot.verbose:
+                        pywikibot.output(u"NOTE: not following static %sredirects." % redir)
                 elif page.site().family == redirectTargetPage.site().family \
                     and not self.skipPage(page, redirectTargetPage, counter):
                     if self.addIfNew(redirectTargetPage, counter, page):
