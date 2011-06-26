@@ -1,4 +1,3 @@
-#!/usr/bin/python
 # -*- coding: utf-8  -*-
 """
 Script to welcome new users. This script works out of the box for Wikis that
@@ -228,6 +227,7 @@ logbook = {
 #The edit summary for the welcome message (e.g. Welcome!).
 summary = {
     'commons': {'_default': u'Welcome!', },
+    'am': u'Welcome to Amharic Wikipedia!',
     'ar': u'مرحبا!',
     'bn': u'Welcome!',
     'da': u'Velkommen',
@@ -258,6 +258,7 @@ summary = {
 netext = {
     'commons': {'_default': u'{{subst:welcome}} %s', } ,
     'wikipedia': {
+        'am': u'{{subst:Welcome}} %s',
         'ar': u'{{subst:ترحيب}} %s',
         'da': u'{{velkommen|%s}}',
         'de': u'{{subst:Hallo}} %s',
@@ -303,6 +304,7 @@ netext = {
 # The edit summary for updating the welcome log (e.g. Updating log).
 summary2 = {
     'commons': u'Updating log',
+    'am': u'Updating log',
     'ar': u'تحديث السجل',
     'da': u'Updating log',
     'de': u'Aktualisiere Logdatei',
@@ -325,6 +327,7 @@ summary2 = {
 report_page = {
     'commons': {'_default': u'Project:Administrators\' noticeboard/User problems/Usernames to be checked', },
     'wikipedia': {
+        'am': u'User:Beria/Report',
         'ar': 'Project:إخطار الإداريين/أسماء مستخدمين للفحص',
         'da': u'Bruger:Broadbot/Report',
         'de': u'Benutzer:Filnik/Report',
@@ -347,6 +350,7 @@ report_page = {
 comment = {
     'commons': {'_default': u'Adding a username that needs to be checked',},
     'wikipedia':{
+        'am': u'Adding a username that needs to be checked',
         'ar': u'إضافة اسم مستخدم يحتاج للفحص',
         'da': u'Adding a username that needs to be checked',
         'de': u'Ergänze zu überprüfenden Benutzernamen',
@@ -367,6 +371,7 @@ comment = {
 bad_pag = {
     'commons': {'_default': u'Project:Welcome log/Bad_names', },
     'wikipedia':{
+        'am': u'User:Beria/Bad_names',
         'ar': u'Project:سجل الترحيب/أسماء سيئة',
         'en': u'Project:Welcome log/Bad_names',
         'fa': u'Project:سیاهه خوشامد/نام بد',
@@ -388,6 +393,7 @@ timeselected = u' ~~~~~' # Defining the time used after the signature
 report_text = {
     'commons': {'_default': u"\n*{{user3|%s}}" + timeselected,},
     'wikipedia':{
+        'am': u"\n*[[User talk:%s]]" + timeselected,
         'ar': u"\n*{{user13|%s}}" + timeselected,
         'da': u'\n*[[Bruger Diskussion:%s]] ' + timeselected,
         'de': u'\n*[[Benutzer Diskussion:%s]] ' + timeselected,
@@ -407,6 +413,7 @@ report_text = {
 # Set where you load your list of signatures that the bot will load if you use
 # the random argument (this parameter is optional).
 random_sign = {
+    'am': u'User:Beria/Signatures',
     'ar': u'Project:سجل الترحيب/توقيعات',
     'da': u'Wikipedia:Velkommen/Signaturer',
     'en': u'Project:Welcome log/Sign',
