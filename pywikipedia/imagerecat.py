@@ -251,7 +251,7 @@ def getUsage(use):
     project = ''
     article = ''
     usageRe = re.compile(
-        '^(?P<lang>([\w]+))\.(?P<project>([\w]+))\.org:(?P<articles>\s(.*))')
+        '^(?P<lang>([\w-]+))\.(?P<project>([\w]+))\.org:(?P<articles>\s(.*))')
     matches = usageRe.search(use)
     if matches:
         if (matches.group('lang')):
