@@ -146,6 +146,10 @@ nowCommons = {
         u'공용 중복',
         u'Nowcommons',
     ],
+    'nds-nl' : [
+        u'NoenCommons',
+        u'NowCommons',
+    ],
     'nl': [
         u'NuCommons',
         u'Nucommons',
