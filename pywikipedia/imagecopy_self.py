@@ -70,18 +70,22 @@ NL=''
 
 nowCommonsTemplate = {
     'en': u'{{NowCommons|1=File:%s|date=~~~~~|reviewer={{subst:REVISIONUSER}}}}',
+    'nds-nl': u'{{NoenCommons|1=File:%s}}',
 }
 
 nowCommonsMessage = {
     'en': u'File is now available on Wikimedia Commons.',
+    'nds-nl': u'Disse ofbeelding is beschikbaor op Wikimedia Commons.',
 }
 
 moveToCommonsTemplate = {
     'en': [u'Commons ok', u'Copy to Wikimedia Commons', u'Move to commons', u'Movetocommons', u'To commons', u'Copy to Wikimedia Commons by BotMultichill'],
+    'nds-nl': [u'Noar Commons', u'VNC'],
 }
 
 imageMoveMessage = {
     'en': u'[[:File:%s|File]] moved to [[:commons:File:%s|commons]].',
+    'nds-nl': u'[[:File:%s|Ofbeelding]] naar [[:commons:File:%s|commons]].',
 }
 
 skipTemplates = {
@@ -120,6 +124,12 @@ skipTemplates = {
            u'PD-user', # Only the self templates are supported for now.
            u'Ticket Scan',
            ],
+    'nds-nl': [u'Allinnig Wikipedie',
+               u'Bepark',
+               u'Gienidee',
+               u'NoenCommons',
+               u'NowCommons',
+               ],
     }
 
 
@@ -131,6 +141,8 @@ licenseTemplates = {
            (u'\{\{Multilicense replacing placeholder(\|[^\}\|=]+=[^\}\|]+)*(?P<migration>\|[^\}\|=]+=[^\}\|]+)(\|[^\}\|=]+=[^\}\|]+)*\}\}', u'{{Self|GFDL|Cc-by-sa-2.5,2.0,1.0\\g<migration>|author=[[:%(lang)s:User:%(author)s|%(author)s]] at [http://%(lang)s.%(family)s.org %(lang)s.%(family)s]}}'),
            (u'\{\{Multilicense replacing placeholder new(\|class=[^\}]+)?\}\}', u'{{Self|GFDL|Cc-by-sa-3.0,2.5,2.0,1.0|author=[[:%(lang)s:User:%(author)s|%(author)s]] at [http://%(lang)s.%(family)s.org %(lang)s.%(family)s]}}'),
            ],
+    'nds-nl': [(u'\{\{PD-eigenwark\}\}', u'{{PD-user-w|%(lang)s|%(family)s|%(author)s}}'),
+               ],
     }
 
 sourceGarbage = {
@@ -139,6 +151,10 @@ sourceGarbage = {
            u'==\s*Licensing:?\s*==',
            u'\{\{(Copy to Wikimedia Commons|Move to Commons|Move to commons|Move to Wikimedia Commons|Copy to commons|Mtc|MtC|MTC|CWC|CtWC|CTWC|Ctwc|Tocommons|Copy to Commons|To Commons|Movetocommons|Move to Wikimedia commons|Move-to-commons|Commons ok|ToCommons|To commons|MoveToCommons|Copy to wikimedia commons|Upload to commons|CopyToCommons|Copytocommons|MITC|MovetoCommons|Do move to Commons)\}\}'
            ],
+    'nds-nl': [u'==\s*Beschrieving\s*==',
+               u'==\s*Licentie\s*==',
+               u'\{\{DEFAULTSORT:\{\{PAGENAME\}\}\}\}',
+               ],
     }
 
 def supportedSite():
