@@ -93,7 +93,10 @@ class CapitalizeBot:
             if self.acceptall or choice == 'y':
                 comment = pywikibot.translate(self.site, msg) % page_t
                 try:
-                    page_cap.put(u"#%s [[%s]]" % (self.site.redirect(True), page_t), comment)
+                    page_cap.put(u"#%s %s" % (self.site.redirect(True),
+                                              page.title(asLink=True,
+                                                         textlink=True),
+                                              comment)
                 except:
                     pywikibot.output(u"An error occurred, skipping...")
 
