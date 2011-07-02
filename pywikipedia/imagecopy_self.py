@@ -235,172 +235,6 @@ def supportedSite():
             return False
 
     return True
-
-
-class Tkdialog:
-    def __init__(self, fields): #imagepage, description, date, source, author, licensetemplate, categories):
-        self.root=Tk()
-        #"%dx%d%+d%+d" % (width, height, xoffset, yoffset)
-        #Always appear the same size and in the bottom-left corner
-        #FIXME : Base this on the screen size or make it possible for the user to configure this
-
-        # Get all the relevant fields
-        self.imagepage = fields.get('imagepage')
-        self.filename = fields.get('filename')
-
-        self.description = fields.get('description')
-        self.date = fields.get('date')
-        self.source = fields.get('source')
-        self.author = fields.get('author')
-        self.permission = fields.get('permission')
-        self.other_versions = fields.get('other_versions')
-
-        self.licensetemplate = fields.get('licensetemplate')
-        self.categories = fields.get('categories')
-        self.skip = False
-
-        # Start building the page
-        self.root.geometry("1500x400+100-100")
-        self.root.title(self.filename)
-
-        self.url=self.imagepage.permalink()
-        self.scrollbar=Scrollbar(self.root, orient=VERTICAL)
-
-        self.old_description=Text(self.root)
-        self.old_description.insert(END, self.imagepage.get().encode('utf-8'))
-        self.old_description.config(state=DISABLED, height=8, width=140, padx=0, pady=0, wrap=WORD, yscrollcommand=self.scrollbar.set)
-
-        self.scrollbar.config(command=self.old_description.yview)
-
-        self.old_description_label = Label(self.root,
-                                           text=u'The old description was : ')
-        self.new_description_label = Label(self.root,
-                                           text=u'The new fields are : ')
-        self.filename_label = Label(self.root, text=u'Filename : ')
-        self.information_description_label = Label(self.root,
-                                                   text=u'Description : ')
-        self.information_date_label = Label(self.root, text=u'Date : ')
-        self.information_source_label = Label(self.root, text=u'Source : ')
-        self.information_author_label = Label(self.root, text=u'Author : ')
-        self.information_licensetemplate_label = Label(self.root,
-                                                       text=u'License : ')
-        self.information_categories_label = Label(self.root,
-                                                  text=u'Categories : ')
-
-        self.filename_field = Entry(self.root)
-        self.information_description = Entry(self.root)
-        self.information_date = Entry(self.root)
-        self.information_source = Entry(self.root)
-        self.information_author = Entry(self.root)
-        self.information_licensetemplate = Entry(self.root)
-        self.information_categories = Entry(self.root)
-
-        self.field_width=120
-
-        self.filename_field.config(width=self.field_width)
-        self.information_description.config(width=self.field_width)
-        self.information_date.config(width=self.field_width)
-        self.information_source.config(width=self.field_width)
-        self.information_author.config(width=self.field_width)
-        self.information_licensetemplate.config(width=self.field_width)
-        self.information_categories.config(width=self.field_width)
-
-
-        self.filename_field.insert(0, self.filename)
-        self.information_description.insert(0, self.description)
-        self.information_date.insert(0, self.date)
-        self.information_source.insert(0, self.source)
-        self.information_author.insert(0, self.author)
-        self.information_licensetemplate.insert(0, self.licensetemplate)
-        self.information_categories.insert(0, self.categories)
-
-        self.browserButton=Button(self.root, text='View in browser',
-                                  command=self.openInBrowser)
-        self.skipButton=Button(self.root, text="Skip", command=self.skipFile)
-        self.okButton=Button(self.root, text="OK", command=self.okFile)
-
-        ##Start grid
-        self.old_description_label.grid(row=0, column=0, columnspan=3)
-
-        self.old_description.grid(row=1, column=0, columnspan=3)
-        self.scrollbar.grid(row=1, column=3)
-        self.new_description_label.grid(row=2, column=0, columnspan=3)
-
-        self.filename_label.grid(row=3, column=0)
-        self.information_description_label.grid(row=4, column=0)
-        self.information_date_label.grid(row=5, column=0)
-        self.information_source_label.grid(row=6, column=0)
-        self.information_author_label.grid(row=7, column=0)
-        self.information_licensetemplate_label.grid(row=8, column=0)
-        self.information_categories_label.grid(row=9, column=0)
-
-        self.filename_field.grid(row=3, column=1, columnspan=3)
-        self.information_description.grid(row=4, column=1, columnspan=3)
-        self.information_date.grid(row=5, column=1, columnspan=3)
-        self.information_source.grid(row=6, column=1, columnspan=3)
-        self.information_author.grid(row=7, column=1, columnspan=3)
-        self.information_licensetemplate.grid(row=8, column=1, columnspan=3)
-        self.information_categories.grid(row=9, column=1, columnspan=3)
-
-        self.okButton.grid(row=10, column=3, rowspan=2)
-        self.skipButton.grid(row=10, column=2, rowspan=2)
-        self.browserButton.grid(row=10, column=1, rowspan=2)
-
-    def okFile(self):
-        '''
-        The user pressed the OK button.
-        '''
-        self.filename=self.filename_field.get()
-        self.description=self.information_description.get()
-        self.date=self.information_date.get()
-        self.source=self.information_source.get()
-        self.author=self.information_author.get()
-        self.licensetemplate=self.information_licensetemplate.get()
-        self.categories=self.information_categories.get()
-
-        self.root.destroy()
-
-    def skipFile(self):
-        '''
-        The user pressed the Skip button.
-        '''
-        self.skip=1
-        self.root.destroy()
-
-    def openInBrowser(self):
-        '''
-        The user pressed the View in browser button.
-        '''
-        webbrowser.open(self.url)
-
-    def add2autoskip(self):
-        '''
-        The user pressed the Add to AutoSkip button.
-        '''
-        templateid=int(self.templatelist.curselection()[0])
-        template=self.templatelist.get(templateid)
-        toadd=codecs.open(archivo, 'a', 'utf-8')
-        toadd.write('{{'+template)
-        toadd.close()
-        self.skipFile()
-
-    def getnewmetadata(self):
-        '''
-        Activate the dialog and return the new name and if the image is skipped.
-        '''
-        self.root.mainloop()
-
-        return {u'imagepage' : self.imagepage,
-                u'filename' : self.filename,
-                u'description' : self.description,
-                u'date' : self.date,
-                u'source' : self.source,
-                u'author' : self.author,
-                u'permission' : u'', #FIXME: Add permission
-                u'other_versions' : u'', #FIXME: Add other_versions,
-                u'licensetemplate' : self.licensetemplate,
-                u'categories' : self.categories,
-                u'skip' : self.skip}
     
 class imageFetcher(threading.Thread):
     '''
@@ -704,6 +538,172 @@ class userInteraction(threading.Thread):
                 # We dont overwrite images, pick another name, go to the start of the loop
 
         self.uploadQueue.put(fields)
+
+
+class Tkdialog:
+    def __init__(self, fields): #imagepage, description, date, source, author, licensetemplate, categories):
+        self.root=Tk()
+        #"%dx%d%+d%+d" % (width, height, xoffset, yoffset)
+        #Always appear the same size and in the bottom-left corner
+        #FIXME : Base this on the screen size or make it possible for the user to configure this
+
+        # Get all the relevant fields
+        self.imagepage = fields.get('imagepage')
+        self.filename = fields.get('filename')
+
+        self.description = fields.get('description')
+        self.date = fields.get('date')
+        self.source = fields.get('source')
+        self.author = fields.get('author')
+        self.permission = fields.get('permission')
+        self.other_versions = fields.get('other_versions')
+
+        self.licensetemplate = fields.get('licensetemplate')
+        self.categories = fields.get('categories')
+        self.skip = False
+
+        # Start building the page
+        self.root.geometry("1500x400+100-100")
+        self.root.title(self.filename)
+
+        self.url=self.imagepage.permalink()
+        self.scrollbar=Scrollbar(self.root, orient=VERTICAL)
+
+        self.old_description=Text(self.root)
+        self.old_description.insert(END, self.imagepage.get().encode('utf-8'))
+        self.old_description.config(state=DISABLED, height=8, width=140, padx=0, pady=0, wrap=WORD, yscrollcommand=self.scrollbar.set)
+
+        self.scrollbar.config(command=self.old_description.yview)
+
+        self.old_description_label = Label(self.root,
+                                           text=u'The old description was : ')
+        self.new_description_label = Label(self.root,
+                                           text=u'The new fields are : ')
+        self.filename_label = Label(self.root, text=u'Filename : ')
+        self.information_description_label = Label(self.root,
+                                                   text=u'Description : ')
+        self.information_date_label = Label(self.root, text=u'Date : ')
+        self.information_source_label = Label(self.root, text=u'Source : ')
+        self.information_author_label = Label(self.root, text=u'Author : ')
+        self.information_licensetemplate_label = Label(self.root,
+                                                       text=u'License : ')
+        self.information_categories_label = Label(self.root,
+                                                  text=u'Categories : ')
+
+        self.filename_field = Entry(self.root)
+        self.information_description = Entry(self.root)
+        self.information_date = Entry(self.root)
+        self.information_source = Entry(self.root)
+        self.information_author = Entry(self.root)
+        self.information_licensetemplate = Entry(self.root)
+        self.information_categories = Entry(self.root)
+
+        self.field_width=120
+
+        self.filename_field.config(width=self.field_width)
+        self.information_description.config(width=self.field_width)
+        self.information_date.config(width=self.field_width)
+        self.information_source.config(width=self.field_width)
+        self.information_author.config(width=self.field_width)
+        self.information_licensetemplate.config(width=self.field_width)
+        self.information_categories.config(width=self.field_width)
+
+
+        self.filename_field.insert(0, self.filename)
+        self.information_description.insert(0, self.description)
+        self.information_date.insert(0, self.date)
+        self.information_source.insert(0, self.source)
+        self.information_author.insert(0, self.author)
+        self.information_licensetemplate.insert(0, self.licensetemplate)
+        self.information_categories.insert(0, self.categories)
+
+        self.browserButton=Button(self.root, text='View in browser',
+                                  command=self.openInBrowser)
+        self.skipButton=Button(self.root, text="Skip", command=self.skipFile)
+        self.okButton=Button(self.root, text="OK", command=self.okFile)
+
+        ##Start grid
+        self.old_description_label.grid(row=0, column=0, columnspan=3)
+
+        self.old_description.grid(row=1, column=0, columnspan=3)
+        self.scrollbar.grid(row=1, column=3)
+        self.new_description_label.grid(row=2, column=0, columnspan=3)
+
+        self.filename_label.grid(row=3, column=0)
+        self.information_description_label.grid(row=4, column=0)
+        self.information_date_label.grid(row=5, column=0)
+        self.information_source_label.grid(row=6, column=0)
+        self.information_author_label.grid(row=7, column=0)
+        self.information_licensetemplate_label.grid(row=8, column=0)
+        self.information_categories_label.grid(row=9, column=0)
+
+        self.filename_field.grid(row=3, column=1, columnspan=3)
+        self.information_description.grid(row=4, column=1, columnspan=3)
+        self.information_date.grid(row=5, column=1, columnspan=3)
+        self.information_source.grid(row=6, column=1, columnspan=3)
+        self.information_author.grid(row=7, column=1, columnspan=3)
+        self.information_licensetemplate.grid(row=8, column=1, columnspan=3)
+        self.information_categories.grid(row=9, column=1, columnspan=3)
+
+        self.okButton.grid(row=10, column=3, rowspan=2)
+        self.skipButton.grid(row=10, column=2, rowspan=2)
+        self.browserButton.grid(row=10, column=1, rowspan=2)
+
+    def okFile(self):
+        '''
+        The user pressed the OK button.
+        '''
+        self.filename=self.filename_field.get()
+        self.description=self.information_description.get()
+        self.date=self.information_date.get()
+        self.source=self.information_source.get()
+        self.author=self.information_author.get()
+        self.licensetemplate=self.information_licensetemplate.get()
+        self.categories=self.information_categories.get()
+
+        self.root.destroy()
+
+    def skipFile(self):
+        '''
+        The user pressed the Skip button.
+        '''
+        self.skip=1
+        self.root.destroy()
+
+    def openInBrowser(self):
+        '''
+        The user pressed the View in browser button.
+        '''
+        webbrowser.open(self.url)
+
+    def add2autoskip(self):
+        '''
+        The user pressed the Add to AutoSkip button.
+        '''
+        templateid=int(self.templatelist.curselection()[0])
+        template=self.templatelist.get(templateid)
+        toadd=codecs.open(archivo, 'a', 'utf-8')
+        toadd.write('{{'+template)
+        toadd.close()
+        self.skipFile()
+
+    def getnewmetadata(self):
+        '''
+        Activate the dialog and return the new name and if the image is skipped.
+        '''
+        self.root.mainloop()
+
+        return {u'imagepage' : self.imagepage,
+                u'filename' : self.filename,
+                u'description' : self.description,
+                u'date' : self.date,
+                u'source' : self.source,
+                u'author' : self.author,
+                u'permission' : u'', #FIXME: Add permission
+                u'other_versions' : u'', #FIXME: Add other_versions,
+                u'licensetemplate' : self.licensetemplate,
+                u'categories' : self.categories,
+                u'skip' : self.skip}
 
 
 class uploader(threading.Thread):
