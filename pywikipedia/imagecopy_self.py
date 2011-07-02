@@ -238,33 +238,39 @@ def supportedSite():
 
 
 class Tkdialog:
-    def __init__(self, imagepage, description, date, source, author, licensetemplate, categories):
+    def __init__(self, fields): #imagepage, description, date, source, author, licensetemplate, categories):
         self.root=Tk()
         #"%dx%d%+d%+d" % (width, height, xoffset, yoffset)
         #Always appear the same size and in the bottom-left corner
         #FIXME : Base this on the screen size or make it possible for the user to configure this
+
+        # Get all the relevant fields
+        self.imagepage = fields.get('imagepage')
+        self.filename = fields.get('filename')
+
+        self.description = fields.get('description')
+        self.date = fields.get('date')
+        self.source = fields.get('source')
+        self.author = fields.get('author')
+        self.permission = fields.get('permission')
+        self.other_versions = fields.get('other_versions')
+
+        self.licensetemplate = fields.get('licensetemplate')
+        self.categories = fields.get('categories')
+        self.skip = False
+
+        # Start building the page
         self.root.geometry("1500x400+100-100")
-        self.root.title(imagepage.titleWithoutNamespace())
+        self.root.title(self.filename)
 
-
-        self.url=imagepage.permalink()
+        self.url=self.imagepage.permalink()
         self.scrollbar=Scrollbar(self.root, orient=VERTICAL)
 
         self.old_description=Text(self.root)
-        self.old_description.insert(END, imagepage.get().encode('utf-8'))
+        self.old_description.insert(END, self.imagepage.get().encode('utf-8'))
         self.old_description.config(state=DISABLED, height=8, width=140, padx=0, pady=0, wrap=WORD, yscrollcommand=self.scrollbar.set)
 
         self.scrollbar.config(command=self.old_description.yview)
-
-        self.filename = imagepage.titleWithoutNamespace()
-
-        self.description = description
-        self.date = date
-        self.source = source
-        self.author = author
-        self.licensetemplate = licensetemplate
-        self.categories = categories
-        self.skip = False
 
         self.old_description_label = Label(self.root,
                                            text=u'The old description was : ')
@@ -383,10 +389,19 @@ class Tkdialog:
         Activate the dialog and return the new name and if the image is skipped.
         '''
         self.root.mainloop()
-        return (self.filename, self.description, self.date, self.source,
-                self.author, self.licensetemplate, self.categories, self.skip)
 
-
+        return {u'imagepage' : self.imagepage,
+                u'filename' : self.filename,
+                u'description' : self.description,
+                u'date' : self.date,
+                u'source' : self.source,
+                u'author' : self.author,
+                u'permission' : u'', #FIXME: Add permission
+                u'other_versions' : u'', #FIXME: Add other_versions,
+                u'licensetemplate' : self.licensetemplate,
+                u'categories' : self.categories,
+                u'skip' : self.skip}
+    
 class imageFetcher(threading.Thread):
     '''
     Tries to fetch information for all images in the generator
@@ -452,10 +467,22 @@ class imageFetcher(threading.Thread):
             (description, date, source, author, permission, other_versions) = self.getNewFieldsFromInformation(imagepage)
         else:
             (description, date, source, author) = self.getNewFieldsFromFreetext(imagepage)
+            permission = u''
+            other_versions = u''
 
         licensetemplate = self.getNewLicensetemplate(imagepage)
         categories = self.getNewCategories(imagepage)
-        return (imagepage, description, date, source, author, licensetemplate, categories)
+        return {u'imagepage' : imagepage,
+                u'filename' : imagepage.titleWithoutNamespace(),
+                u'description' : description,
+                u'date' : date,
+                u'source' : source,
+                u'author' : author,
+                u'permission' : permission,
+                u'other_versions' : other_versions,
+                u'licensetemplate' : licensetemplate,
+                u'categories' : categories,
+                u'skip' : False}
 
     def getNewFieldsFromInformation(self, imagepage):
         '''
@@ -660,24 +687,23 @@ class userInteraction(threading.Thread):
         '''
         Work on a single image
         '''
-        (imagepage, description, date, source, author, licensetemplate, categories) = fields
         while True:
             # Do the Tkdialog to accept/reject and change te name
-            (filename, description, date, source, author, licensetemplate, categories, skip)=Tkdialog(imagepage, description, date, source, author, licensetemplate, categories).getnewmetadata()
+            fields=Tkdialog(fields).getnewmetadata()
 
-            if skip:
-                pywikibot.output(u'Skipping %s : User pressed skip.' % imagepage.title())
+            if fields.get('skip'):
+                pywikibot.output(u'Skipping %s : User pressed skip.' % fields.get('imagepage').title())
                 return False
 
             # Check if the image already exists
-            CommonsPage=pywikibot.Page(pywikibot.getSite('commons', 'commons'), u'File:' + filename)
+            CommonsPage=pywikibot.Page(pywikibot.getSite('commons', 'commons'), u'File:' + fields.get('filename'))
             if not CommonsPage.exists():
                 break
             else:
                 pywikibot.output('Image already exists, pick another name or skip this image')
                 # We dont overwrite images, pick another name, go to the start of the loop
 
-        self.uploadQueue.put((imagepage, filename, description, date, source, author, licensetemplate, categories))
+        self.uploadQueue.put(fields)
 
 
 class uploader(threading.Thread):
@@ -709,22 +735,21 @@ class uploader(threading.Thread):
         '''
         Work on a single image
         '''
-        (imagepage, filename, description, date, source, author, licensetemplate, categories) = fields
-        cid = self.buildNewImageDescription(imagepage, description, date, source, author, licensetemplate, categories)
+        cid = self.buildNewImageDescription(fields)
         pywikibot.output(cid)
-        bot = UploadRobot(url=imagepage.fileUrl(), description=cid, useFilename=filename, keepFilename=True, verifyDescription=False, ignoreWarning = True, targetSite = pywikibot.getSite('commons', 'commons'))
+        bot = UploadRobot(url=fields.get('imagepage').fileUrl(), description=cid, useFilename=fields.get('filename'), keepFilename=True, verifyDescription=False, ignoreWarning = True, targetSite = pywikibot.getSite('commons', 'commons'))
         bot.run()
 
-        self.tagNowcommons(imagepage, filename)
-        self.replaceUsage(imagepage, filename)
+        self.tagNowcommons(fields.get('imagepage'), fields.get('filename'))
+        self.replaceUsage(fields.get('imagepage'), fields.get('filename'))
 
 
-    def buildNewImageDescription(self, imagepage, description, date, source, author, licensetemplate, categories):
+    def buildNewImageDescription(self, fields):
         '''
         Build a new information template
         '''
 
-        site = imagepage.site()
+        site = fields.get('imagepage').site()
         lang = site.language()
         family = site.family.name
 
@@ -734,22 +759,22 @@ class uploader(threading.Thread):
         cid = cid + u'== {{int:filedesc}} ==\n'
         cid = cid + u'{{Information\n'
         cid = cid + u'|description={{%(lang)s|1=' % {u'lang' : lang, u'family' : family}
-        cid = cid + description + u'}}\n'
-        cid = cid + u'|date=' + date + u'\n'
-        cid = cid + u'|source=' + source + u'\n'
-        cid = cid + u'|author=' + author + u'\n'
-        cid = cid + u'|permission=\n' # FIXME: Permission should be extracted too
-        cid = cid + u'|other_versions=\n'
+        cid = cid + u'%(description)s}}\n' % fields
+        cid = cid + u'|date=%(date)s\n' % fields
+        cid = cid + u'|source=%(source)s\n' % fields
+        cid = cid + u'|author=%(author)s\n' % fields
+        cid = cid + u'|permission=%(permission)s\n' % fields
+        cid = cid + u'|other_versions=%(other_versions)s\n' % fields
         cid = cid + u'}}\n'
         cid = cid + u'== {{int:license}} ==\n'
-        cid = cid + licensetemplate + u'\n'
+        cid = cid + u'%(licensetemplate)s\n' % fields
         cid = cid + u'\n'
-        cid = cid + self.getOriginalUploadLog(imagepage)
+        cid = cid + self.getOriginalUploadLog(fields.get('imagepage'))
         cid = cid + u'__NOTOC__\n'
-        if categories.strip()==u'':
+        if fields.get('categories').strip()==u'':
             cid = cid + u'{{Subst:Unc}}'
         else:
-            cid = cid + categories
+            cid = cid + u'%(categories)s\n' % fields
         return cid
 
     def getOriginalUploadLog(self, imagepage):
