@@ -184,7 +184,7 @@ informationTemplate = {
 
 informationFields = {
     'de' : {
-        u'anmerkungen' : u'location', #FIXME: More flexible
+        u'anmerkungen' : u'remarks', #FIXME: More flexible
         u'beschreibung' : u'description',
         u'quelle' : u'source',
         u'datum' : u'date',
@@ -193,7 +193,7 @@ informationFields = {
         u'andere Versione' : u'other versions',
         },
     'en' : {
-        u'location' : u'location',
+        u'location' : u'remarks',
         u'description' : u'description',
         u'source' : u'source',
         u'date' : u'date',
@@ -202,7 +202,7 @@ informationFields = {
         u'other versions' : u'other versions',
         },
     'nds-nl' : {
-        u'location' : u'location',
+        u'location' : u'remarks',
         u'description' : u'description',
         u'source' : u'source',
         u'date' : u'date',
@@ -493,10 +493,13 @@ class imageFetcher(threading.Thread):
         # We now got the contents from the old information template. Let's get the info for the new one
 
         # Description
-        if not contents[u'location']==u'':
-            description = self.convertLinks(contents[u'location'], imagepage.site()) + u'\n'
         if not contents[u'description']==u'':
-            description = description + self.convertLinks(contents[u'description'], imagepage.site())
+            description = self.convertLinks(contents[u'description'], imagepage.site())
+        if not contents[u'remarks']==u'':
+            if description==u'':
+                description = self.convertLinks(contents[u'remarks'], imagepage.site())
+            else:
+                description = description + u'<BR/>\n' + self.convertLinks(contents[u'remarks'], imagepage.site())
 
         # Source
         source = self.getSource(imagepage, source=self.convertLinks(contents[u'source'], imagepage.site()))
