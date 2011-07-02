@@ -69,27 +69,35 @@ from image import *
 NL=''
 
 nowCommonsTemplate = {
+    'de': u'{{NowCommons|%s}}',
     'en': u'{{NowCommons|1=File:%s|date=~~~~~|reviewer={{subst:REVISIONUSER}}}}',
     'nds-nl': u'{{NoenCommons|1=File:%s}}',
 }
 
 nowCommonsMessage = {
+    'de': u'Datei ist jetzt auf Wikimedia Commons verfügbar.',
     'en': u'File is now available on Wikimedia Commons.',
     'nds-nl': u'Disse ofbeelding is beschikbaor op Wikimedia Commons.',
 }
 
 moveToCommonsTemplate = {
-    'en': [u'Commons ok', u'Copy to Wikimedia Commons', u'Move to commons', u'Movetocommons', u'To commons', u'Copy to Wikimedia Commons by BotMultichill'],
-    'nds-nl': [u'Noar Commons', u'VNC'],
+    'de' : [u'NowCommons', u'NC', u'NCT',  u'Nowcommons'],
+    'en' : [u'Commons ok', u'Copy to Wikimedia Commons', u'Move to commons', u'Movetocommons', u'To commons', u'Copy to Wikimedia Commons by BotMultichill'],
+    'nds-nl' : [u'Noar Commons', u'VNC'],
 }
 
 imageMoveMessage = {
+    'de': u'[[:File:%s|File]] moved to [[:commons:File:%s|commons]].', #FIXME: Translate
     'en': u'[[:File:%s|File]] moved to [[:commons:File:%s|commons]].',
     'nds-nl': u'[[:File:%s|Ofbeelding]] naar [[:commons:File:%s|commons]].',
 }
 
 skipTemplates = {
-    'en': [u'Db-f1',
+    'de' : [u'Löschprüfung',
+            u'NoCommons',
+            u'NowCommons',
+            ],
+    'en' :[u'Db-f1',
            u'Db-f2',
            u'Db-f3',
            u'Db-f7',
@@ -134,18 +142,29 @@ skipTemplates = {
 
 
 licenseTemplates = {
-    'en': [(u'\{\{(self|self2)\|([^\}]+)\}\}', u'{{Self|\\2|author=[[:%(lang)s:User:%(author)s|%(author)s]] at [http://%(lang)s.%(family)s.org %(lang)s.%(family)s]}}'),
-           (u'\{\{(GFDL-self|GFDL-self-no-disclaimers)\|([^\}]+)\}\}', u'{{Self|GFDL|\\2|author=[[:%(lang)s:User:%(author)s|%(author)s]] at [http://%(lang)s.%(family)s.org %(lang)s.%(family)s]}}'),
-           (u'\{\{GFDL-self-with-disclaimers\|([^\}]+)\}\}', u'{{Self|GFDL-with-disclaimers|\\1|author=[[:%(lang)s:User:%(author)s|%(author)s]] at [http://%(lang)s.%(family)s.org %(lang)s.%(family)s]}}'),
-           (u'\{\{PD-self(\|date=[^\}]+)?\}\}', u'{{PD-user-w|%(lang)s|%(family)s|%(author)s}}'),
-           (u'\{\{Multilicense replacing placeholder(\|[^\}\|=]+=[^\}\|]+)*(?P<migration>\|[^\}\|=]+=[^\}\|]+)(\|[^\}\|=]+=[^\}\|]+)*\}\}', u'{{Self|GFDL|Cc-by-sa-2.5,2.0,1.0\\g<migration>|author=[[:%(lang)s:User:%(author)s|%(author)s]] at [http://%(lang)s.%(family)s.org %(lang)s.%(family)s]}}'),
-           (u'\{\{Multilicense replacing placeholder new(\|class=[^\}]+)?\}\}', u'{{Self|GFDL|Cc-by-sa-3.0,2.5,2.0,1.0|author=[[:%(lang)s:User:%(author)s|%(author)s]] at [http://%(lang)s.%(family)s.org %(lang)s.%(family)s]}}'),
-           ],
+    'de' : [(u'\{\{Bild-CC-by-sa/3\.0/de\}\}[\s\r\n]*\{\{Bild-CC-by-sa/3\.0\}\}[\s\r\n]*\{\{Bild-GFDL-Neu\}\}', u'{{Self|Cc-by-sa-3.0-de|Cc-by-sa-3.0|GFDL|author=[[:%(lang)s:User:%(author)s|%(author)s]] at [http://%(lang)s.%(family)s.org %(lang)s.%(family)s]}}'),
+            (u'\{\{Bild-GFDL\}\}[\s\r\n]*\{\{Bild-CC-by-sa/(\d\.\d)\}\}', u'{{Self|GFDL|Cc-by-sa-3.0-migrated|Cc-by-sa-\\1|author=[[:%(lang)s:User:%(author)s|%(author)s]] at [http://%(lang)s.%(family)s.org %(lang)s.%(family)s]}}'),
+            (u'\{\{Bild-GFDL\}\}', u'{{Self|GFDL|Cc-by-sa-3.0-migrated|author=[[:%(lang)s:User:%(author)s|%(author)s]] at [http://%(lang)s.%(family)s.org %(lang)s.%(family)s]}}'),
+            (u'\{\{Bild-CC-by-sa/(\d\.\d)\}\}', u'{{Self|Cc-by-sa-\\1|author=[[:%(lang)s:User:%(author)s|%(author)s]] at [http://%(lang)s.%(family)s.org %(lang)s.%(family)s]}}'),
+            (u'\{\{Bild-CC-by-sa/(\d\.\d)/de\}\}', u'{{Self|Cc-by-sa-\\1-de|author=[[:%(lang)s:User:%(author)s|%(author)s]] at [http://%(lang)s.%(family)s.org %(lang)s.%(family)s]}}'),
+            (u'\{\{Bild-CC-by/(\d\.\d)\}\}', u'{{Self|Cc-by-\\1|author=[[:%(lang)s:User:%(author)s|%(author)s]] at [http://%(lang)s.%(family)s.org %(lang)s.%(family)s]}}'),
+            (u'\{\{Bild-CC-by/(\d\.\d)/de\}\}', u'{{Self|Cc-by-\\1-de|author=[[:%(lang)s:User:%(author)s|%(author)s]] at [http://%(lang)s.%(family)s.org %(lang)s.%(family)s]}}'),
+
+            ],
+    'en' : [(u'\{\{(self|self2)\|([^\}]+)\}\}', u'{{Self|\\2|author=[[:%(lang)s:User:%(author)s|%(author)s]] at [http://%(lang)s.%(family)s.org %(lang)s.%(family)s]}}'),
+            (u'\{\{(GFDL-self|GFDL-self-no-disclaimers)\|([^\}]+)\}\}', u'{{Self|GFDL|\\2|author=[[:%(lang)s:User:%(author)s|%(author)s]] at [http://%(lang)s.%(family)s.org %(lang)s.%(family)s]}}'),
+            (u'\{\{GFDL-self-with-disclaimers\|([^\}]+)\}\}', u'{{Self|GFDL-with-disclaimers|\\1|author=[[:%(lang)s:User:%(author)s|%(author)s]] at [http://%(lang)s.%(family)s.org %(lang)s.%(family)s]}}'),
+            (u'\{\{PD-self(\|date=[^\}]+)?\}\}', u'{{PD-user-w|%(lang)s|%(family)s|%(author)s}}'),
+            (u'\{\{Multilicense replacing placeholder(\|[^\}\|=]+=[^\}\|]+)*(?P<migration>\|[^\}\|=]+=[^\}\|]+)(\|[^\}\|=]+=[^\}\|]+)*\}\}', u'{{Self|GFDL|Cc-by-sa-2.5,2.0,1.0\\g<migration>|author=[[:%(lang)s:User:%(author)s|%(author)s]] at [http://%(lang)s.%(family)s.org %(lang)s.%(family)s]}}'),
+            (u'\{\{Multilicense replacing placeholder new(\|class=[^\}]+)?\}\}', u'{{Self|GFDL|Cc-by-sa-3.0,2.5,2.0,1.0|author=[[:%(lang)s:User:%(author)s|%(author)s]] at [http://%(lang)s.%(family)s.org %(lang)s.%(family)s]}}'),
+            ],
     'nds-nl': [(u'\{\{PD-eigenwark\}\}', u'{{PD-user-w|%(lang)s|%(family)s|%(author)s}}'),
                ],
     }
 
 sourceGarbage = {
+    'de' : [u'==\s*\[\[Wikipedia:Lizenzvorlagen für Bilder\|Lizenz\]\]\s*==',
+            ],
     'en': [u'==\s*Description\s*==',
            u'==\s*Summary\s*==',
            u'==\s*Licensing:?\s*==',
@@ -156,6 +175,44 @@ sourceGarbage = {
                u'\{\{DEFAULTSORT:\{\{PAGENAME\}\}\}\}',
                ],
     }
+
+informationTemplate = {
+    'de' : 'Information',
+    'en' : 'Information',
+    'nds-nl' : 'Information',
+    }
+
+informationFields = {
+    'de' : {
+        u'anmerkungen' : u'location', #FIXME: More flexible
+        u'beschreibung' : u'description',
+        u'quelle' : u'source',
+        u'datum' : u'date',
+        u'urheber' : u'author',
+        u'permission' : u'permission',
+        u'andere Versione' : u'other versions',
+        },
+    'en' : {
+        u'location' : u'location',
+        u'description' : u'description',
+        u'source' : u'source',
+        u'date' : u'date',
+        u'author' : u'author',
+        u'permission' : u'permission',
+        u'other versions' : u'other versions',
+        },
+    'nds-nl' : {
+        u'location' : u'location',
+        u'description' : u'description',
+        u'source' : u'source',
+        u'date' : u'date',
+        u'author' : u'author',
+        u'permission' : u'permission',
+        u'other versions' : u'other versions',
+        },
+    }
+
+
 
 def supportedSite():
     '''
@@ -405,7 +462,8 @@ class imageFetcher(threading.Thread):
         Try to extract fields from the current information template for the new information template.
         '''
 
-        fields = [u'location', u'description', u'source', u'date', u'author', u'permission', u'other versions']
+        #fields = [u'location', u'description', u'source', u'date', u'author', u'permission', u'other versions']
+        #FIXME: The implementation for German has to be checked for the "strange" fields
 
         description = u''
         source = u''
@@ -415,8 +473,8 @@ class imageFetcher(threading.Thread):
         other_versions = u''
         contents = {}
 
-        for field in fields:
-            contents[field]=u''
+        for key, value in informationFields.get(imagepage.site().language()).items():
+            contents[value]=u''
 
         templates = imagepage.templatesWithParams()
 
@@ -428,9 +486,9 @@ class imageFetcher(threading.Thread):
                     #To lowercase, remove underscores and strip of spaces
                     field = field.lower().replace(u'_', u' ').strip()
                     #See if first part is in fields list
-                    if field in fields:
+                    if field in informationFields.get(imagepage.site().language()).keys():
                         #Ok, field is good, store it.
-                        contents[field] = value.strip()
+                        contents[informationFields.get(imagepage.site().language()).get(field)] = value.strip()
 
         # We now got the contents from the old information template. Let's get the info for the new one
 
@@ -677,7 +735,7 @@ class uploader(threading.Thread):
         cid = cid + u'|date=' + date + u'\n'
         cid = cid + u'|source=' + source + u'\n'
         cid = cid + u'|author=' + author + u'\n'
-        cid = cid + u'|permission=\n'
+        cid = cid + u'|permission=\n' # FIXME: Permission should be extracted too
         cid = cid + u'|other_versions=\n'
         cid = cid + u'}}\n'
         cid = cid + u'== {{int:license}} ==\n'
