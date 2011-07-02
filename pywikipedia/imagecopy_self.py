@@ -504,6 +504,7 @@ class userInteraction(threading.Thread):
     def __init__ ( self, prefetchQueue, uploadQueue):
         self.prefetchQueue = prefetchQueue
         self.uploadQueue = uploadQueue
+        self.autonomous = False
         threading.Thread.__init__ ( self )
 
     def run(self):
@@ -516,27 +517,41 @@ class userInteraction(threading.Thread):
         self.uploadQueue.put(None)
         pywikibot.output(u'User worked on all images.')
         return True
-
+    
+    def setAutonomous(self):
+        '''
+        Don't do any user interaction.
+        '''
+        self.autonomous = True
+        return
+    
     def processImage(self, fields):
         '''
         Work on a single image
         '''
-        while True:
-            # Do the Tkdialog to accept/reject and change te name
-            fields=Tkdialog(fields).getnewmetadata()
-
-            if fields.get('skip'):
-                pywikibot.output(u'Skipping %s : User pressed skip.' % fields.get('imagepage').title())
-                return False
-
-            # Check if the image already exists
+        if self.autonomous:
+            # Check if the image already exists. Do nothing if the name is already taken.
             CommonsPage=pywikibot.Page(pywikibot.getSite('commons', 'commons'), u'File:' + fields.get('filename'))
-            if not CommonsPage.exists():
-                break
-            else:
-                pywikibot.output('Image already exists, pick another name or skip this image')
-                # We dont overwrite images, pick another name, go to the start of the loop
+            if CommonsPage.exists():
+                return False
+        else:
+            while True:
+                # Do the Tkdialog to accept/reject and change te name
+                fields=Tkdialog(fields).getnewmetadata()
 
+                if fields.get('skip'):
+                    pywikibot.output(u'Skipping %s : User pressed skip.' % fields.get('imagepage').title())
+                    return False
+
+                # Check if the image already exists
+                CommonsPage=pywikibot.Page(pywikibot.getSite('commons', 'commons'), u'File:' + fields.get('filename'))
+                if not CommonsPage.exists():
+                    break
+                else:
+                    pywikibot.output('Image already exists, pick another name or skip this image')
+                    # We dont overwrite images, pick another name, go to the start of the loop
+
+        # Put the fields in the queue to be uploaded
         self.uploadQueue.put(fields)
 
 
@@ -873,7 +888,7 @@ def main(args):
     pywikibot.output(u'WARNING: Use at your own risk!')
 
     generator = None;
-    always = False
+    autonomous = False
     checkTemplate = True
 
     # Load a lot of default generators
@@ -882,6 +897,8 @@ def main(args):
     for arg in pywikibot.handleArgs():
         if arg == '-nochecktemplate':
             checkTemplate = False
+        elif arg == '-autonomous':
+            autonomous = True
         else:
             genFactory.handleArg(arg)
 
@@ -906,7 +923,12 @@ def main(args):
     userInteractionThread.daemon=False
     uploaderThread.daemon=False
 
+    if autonomous:
+        pywikibot.output(u'Bot is running in autonomous mode. There will be no user interaction.')
+        userInteractionThread.setAutonomous()
+        
     if not checkTemplate:
+        pywikibot.output(u'No check template will be added to the uploaded files.')
         uploaderThread.nochecktemplate()
 
     fetchDone = imageFetcherThread.start()
