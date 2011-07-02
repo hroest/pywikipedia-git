@@ -585,6 +585,9 @@ class Tkdialog:
         self.information_date_label = Label(self.root, text=u'Date : ')
         self.information_source_label = Label(self.root, text=u'Source : ')
         self.information_author_label = Label(self.root, text=u'Author : ')
+        self.information_permission_label = Label(self.root, text=u'Permission : ')
+        self.information_other_versions_label = Label(self.root, text=u'Other versions : ')
+        
         self.information_licensetemplate_label = Label(self.root,
                                                        text=u'License : ')
         self.information_categories_label = Label(self.root,
@@ -595,6 +598,8 @@ class Tkdialog:
         self.information_date = Entry(self.root)
         self.information_source = Entry(self.root)
         self.information_author = Entry(self.root)
+        self.information_permission = Entry(self.root)
+        self.information_other_versions = Entry(self.root)
         self.information_licensetemplate = Entry(self.root)
         self.information_categories = Entry(self.root)
 
@@ -605,6 +610,8 @@ class Tkdialog:
         self.information_date.config(width=self.field_width)
         self.information_source.config(width=self.field_width)
         self.information_author.config(width=self.field_width)
+        self.information_permission.config(width=self.field_width)
+        self.information_other_versions.config(width=self.field_width)
         self.information_licensetemplate.config(width=self.field_width)
         self.information_categories.config(width=self.field_width)
 
@@ -614,6 +621,8 @@ class Tkdialog:
         self.information_date.insert(0, self.date)
         self.information_source.insert(0, self.source)
         self.information_author.insert(0, self.author)
+        self.information_permission.insert(0, self.permission)
+        self.information_other_versions.insert(0, self.other_versions)
         self.information_licensetemplate.insert(0, self.licensetemplate)
         self.information_categories.insert(0, self.categories)
 
@@ -629,25 +638,32 @@ class Tkdialog:
         self.scrollbar.grid(row=1, column=3)
         self.new_description_label.grid(row=2, column=0, columnspan=3)
 
+        # All the labels for the new fields
         self.filename_label.grid(row=3, column=0)
         self.information_description_label.grid(row=4, column=0)
         self.information_date_label.grid(row=5, column=0)
         self.information_source_label.grid(row=6, column=0)
         self.information_author_label.grid(row=7, column=0)
-        self.information_licensetemplate_label.grid(row=8, column=0)
-        self.information_categories_label.grid(row=9, column=0)
+        self.information_permission_label.grid(row=8, column=0)
+        self.information_other_versions_label.grid(row=9, column=0)
+        self.information_licensetemplate_label.grid(row=10, column=0)
+        self.information_categories_label.grid(row=11, column=0)
 
+        # The new fields
         self.filename_field.grid(row=3, column=1, columnspan=3)
         self.information_description.grid(row=4, column=1, columnspan=3)
         self.information_date.grid(row=5, column=1, columnspan=3)
         self.information_source.grid(row=6, column=1, columnspan=3)
         self.information_author.grid(row=7, column=1, columnspan=3)
-        self.information_licensetemplate.grid(row=8, column=1, columnspan=3)
-        self.information_categories.grid(row=9, column=1, columnspan=3)
+        self.information_permission.grid(row=8, column=1, columnspan=3)
+        self.information_other_versions.grid(row=9, column=1, columnspan=3)
+        self.information_licensetemplate.grid(row=10, column=1, columnspan=3)
+        self.information_categories.grid(row=11, column=1, columnspan=3)
 
-        self.okButton.grid(row=10, column=3, rowspan=2)
-        self.skipButton.grid(row=10, column=2, rowspan=2)
-        self.browserButton.grid(row=10, column=1, rowspan=2)
+        # The buttons at the bottom
+        self.okButton.grid(row=12, column=3, rowspan=2)
+        self.skipButton.grid(row=12, column=2, rowspan=2)
+        self.browserButton.grid(row=12, column=1, rowspan=2)
 
     def okFile(self):
         '''
@@ -658,6 +674,8 @@ class Tkdialog:
         self.date=self.information_date.get()
         self.source=self.information_source.get()
         self.author=self.information_author.get()
+        self.permission=self.information_permission.get()
+        self.other_versions=self.information_other_versions.get()
         self.licensetemplate=self.information_licensetemplate.get()
         self.categories=self.information_categories.get()
 
@@ -699,8 +717,8 @@ class Tkdialog:
                 u'date' : self.date,
                 u'source' : self.source,
                 u'author' : self.author,
-                u'permission' : u'', #FIXME: Add permission
-                u'other_versions' : u'', #FIXME: Add other_versions,
+                u'permission' : self.permission,
+                u'other_versions' : self.other_versions,
                 u'licensetemplate' : self.licensetemplate,
                 u'categories' : self.categories,
                 u'skip' : self.skip}
