@@ -96,6 +96,9 @@ skipTemplates = {
     'de' : [u'Löschprüfung',
             u'NoCommons',
             u'NowCommons',
+            u'NowCommons/Mängel',
+            u'NowCommons-Überprüft',
+            u'Wappenrecht',
             ],
     'en' :[u'Db-f1',
            u'Db-f2',
@@ -163,14 +166,16 @@ licenseTemplates = {
     }
 
 sourceGarbage = {
-    'de' : [u'==\s*\[\[Wikipedia:Lizenzvorlagen für Bilder\|Lizenz\]\]\s*==',
+    'de' : [u'==\s*Beschreibung,\sQuelle\s*==',
+            u'==\s*Beschrieving\s*==',
+            u'==\s*\[\[Wikipedia:Lizenzvorlagen für Bilder\|Lizenz\]\]\s*==',
             ],
     'en': [u'==\s*Description\s*==',
            u'==\s*Summary\s*==',
            u'==\s*Licensing:?\s*==',
            u'\{\{(Copy to Wikimedia Commons|Move to Commons|Move to commons|Move to Wikimedia Commons|Copy to commons|Mtc|MtC|MTC|CWC|CtWC|CTWC|Ctwc|Tocommons|Copy to Commons|To Commons|Movetocommons|Move to Wikimedia commons|Move-to-commons|Commons ok|ToCommons|To commons|MoveToCommons|Copy to wikimedia commons|Upload to commons|CopyToCommons|Copytocommons|MITC|MovetoCommons|Do move to Commons)\}\}'
            ],
-    'nds-nl': [u'==\s*Beschrieving\s*==',
+    'nds-nl': [
                u'==\s*Licentie\s*==',
                u'\{\{DEFAULTSORT:\{\{PAGENAME\}\}\}\}',
                ],
