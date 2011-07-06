@@ -96,6 +96,8 @@ nowCommons = {
         u'NC',
         u'NCT',
         u'Nowcommons',
+        u'NowCommons/Mängel',
+        u'NowCommons-Überprüft',
     ],
     'en': [
         u'NowCommons',
