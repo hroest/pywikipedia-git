@@ -276,6 +276,7 @@ class Family(family.Family):
             'sr': u'Портал',
             'tr': u'Portal',
             'uk': u'Додаток',
+            'zh': u'附录',
         }
         self.namespaces[101] = {
             'bg': u'Словоформи беседа',
@@ -301,11 +302,12 @@ class Family(family.Family):
             'oc': u'Discussion Annèxa',
             'pl': u'Dyskusja aneksu',
             'pt': u'Apêndice Discussão',
-            'ro': u'Discuţie Portal',
+            'ro': u'Discuție Portal',
             'ru': [u'Обсуждение приложения', u'Appendix talk'],
             'sr': u'Разговор о порталу',
             'tr': u'Portal tartışma',
             'uk': u'Обговорення додатка',
+            'zh': u'附录',
         }
 
         self.namespaces[102] = {
@@ -336,7 +338,7 @@ class Family(family.Family):
             'lt': u'Priedo aptarimas',
             'pl': u'Dyskusja indeksu',
             'pt': u'Vocabulário Discussão',
-            'ro': u'Discuţie Apendice',
+            'ro': u'Discuție Apendice',
             'ru': [u'Обсуждение конкорданса', u'Concordance talk'],
             'sv': u'Appendixdiskussion',
             'uk': u'Обговорення індексу',
