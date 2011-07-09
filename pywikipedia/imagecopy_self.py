@@ -66,6 +66,8 @@ import imagerecat
 from datetime import datetime
 from upload import *
 from image import *
+from pywikibot import i18n
+
 NL=''
 
 nowCommonsTemplate = {
@@ -74,22 +76,10 @@ nowCommonsTemplate = {
     'nds-nl': u'{{NoenCommons|1=File:%s}}',
 }
 
-nowCommonsMessage = {
-    'de': u'Datei ist jetzt auf Wikimedia Commons verfügbar.',
-    'en': u'File is now available on Wikimedia Commons.',
-    'nds-nl': u'Disse ofbeelding is beschikbaor op Wikimedia Commons.',
-}
-
 moveToCommonsTemplate = {
     'de' : [u'NowCommons', u'NC', u'NCT',  u'Nowcommons'],
     'en' : [u'Commons ok', u'Copy to Wikimedia Commons', u'Move to commons', u'Movetocommons', u'To commons', u'Copy to Wikimedia Commons by BotMultichill'],
     'nds-nl' : [u'Noar Commons', u'VNC'],
-}
-
-imageMoveMessage = {
-    'de': u'[[:File:%s|File]] moved to [[:commons:File:%s|commons]].', #FIXME: Translate
-    'en': u'[[:File:%s|File]] moved to [[:commons:File:%s|commons]].',
-    'nds-nl': u'[[:File:%s|Ofbeelding]] naar [[:commons:File:%s|commons]].',
 }
 
 skipTemplates = {
@@ -227,9 +217,7 @@ def supportedSite():
     lang=site.language()
 
     lists = [nowCommonsTemplate,
-             nowCommonsMessage,
              moveToCommonsTemplate,
-             imageMoveMessage,
              skipTemplates,
              licenseTemplates,
              sourceGarbage,
@@ -862,10 +850,7 @@ class uploader(threading.Thread):
             else:
                 addTemplate = nowCommonsTemplate['_default'] % filename
 
-            if imagepage.site().language() in nowCommonsMessage:
-                commentText = nowCommonsMessage[imagepage.site().language()]
-            else:
-                commentText = nowCommonsMessage['_default']
+            commentText = i18n.twtranslate(imagepage.site(), 'commons-file-now-available', {'localfile' : imagepage.titleWithoutNamespace(), 'commonsfile' : filename})
 
             pywikibot.showDiff(imagepage.get(), imtxt + addTemplate)
             imagepage.put(imtxt + addTemplate, comment = commentText)
@@ -878,10 +863,8 @@ class uploader(threading.Thread):
             gen = pagegenerators.FileLinksGenerator(imagepage)
             preloadingGen = pagegenerators.PreloadingGenerator(gen)
 
-            if imagepage.site().language() in imageMoveMessage:
-                moveSummary = imageMoveMessage[imagepage.site().language()] % (imagepage.titleWithoutNamespace(), filename)
-            else:
-                moveSummary = imageMoveMessage['_default'] % (imagepage.titleWithoutNamespace(), filename)
+            moveSummary = i18n.twtranslate(imagepage.site(), 'commons-file-moved', {'localfile' : imagepage.titleWithoutNamespace(), 'commonsfile' : filename})
+
             imagebot = ImageRobot(generator = preloadingGen, oldImage = imagepage.titleWithoutNamespace(), newImage = filename, summary = moveSummary, always = True, loose = True)
             imagebot.run()
 
