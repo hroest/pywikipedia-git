@@ -94,6 +94,7 @@ import config, socket
 import pagegenerators, add_text
 from upload import *
 from image import *
+from pywikibot import i18n
 NL=''
 
 nowCommonsTemplate = {
@@ -186,27 +187,6 @@ nowCommonsTemplate = {
     'zh-yue': u'{{subst:Ncd|File:%s}}',
 }
 
-nowCommonsMessage = {
-    '_default': u'File is now available on Wikimedia Commons.',
-    'ar': u'الملف الآن متوفر في ويكيميديا كومنز.',
-    'de': u'Datei ist jetzt auf Wikimedia Commons verfügbar.',
-    'en': u'File is now available on Wikimedia Commons.',
-    'eo': u'Dosiero nun estas havebla en la Wikimedia-Komunejo.',
-    'fa': u'اینک پرونده در ویکی‌انبار قابل دسترسی است.',
-    'he': u'הקובץ זמין כעת בוויקישיתוף.',
-    'hu': u'A fájl most már elérhető a Wikimedia Commonson.',
-    'ia': u'Le file es ora disponibile in Wikimedia Commons.',
-    'it': u'L\'immagine è adesso disponibile su Wikimedia Commons.',
-    'kk': u'Файлды енді Wikimedia Ортаққорынан қатынауға болады.',
-    'lt': u'Failas įkeltas į Wikimedia Commons projektą.',
-    'nl': u'Dit bestand staat nu op [[w:nl:Wikimedia Commons|Wikimedia Commons]].',
-    'pl': u'Plik jest teraz dostępny na Wikimedia Commons.',
-    'pt': u'Arquivo está agora na Wikimedia Commons.',
-    'ru': u'Файл теперь доступен на Викискладе.',
-    'sr': u'Слика је сада доступна и на Викимедија Остави.',
-    'zh': u'檔案已存在於維基共享資源。',
-}
-
 moveToCommonsTemplate = {
     'ar': [u'نقل إلى كومنز'],
     'en': [u'Commons ok', u'Copy to Wikimedia Commons', u'Move to commons', u'Movetocommons', u'To commons', u'Copy to Wikimedia Commons by BotMultichill'],
@@ -223,18 +203,6 @@ moveToCommonsTemplate = {
     'sr': [u'За оставу'],
     'sv': [u'Till Commons'],
     'zh': [u'Copy to Wikimedia Commons'],
-}
-
-imageMoveMessage = {
-    '_default': u'[[:File:%s|File]] moved to [[:commons:File:%s|commons]].',
-    'ar': u'[[:File:%s|الصورة]] تم نقلها إلى [[:commons:File:%s|كومنز]].',
-    'en': u'[[:File:%s|File]] moved to [[:commons:File:%s|commons]].',
-    'fa': u'[[:پرونده:%s|پرونده]] به [[:commons:File:%s|commons]] منتقل شد.',
-    'hu': u'[[:File:%s|Kép]] átmozgatva a [[:commons:File:%s|Commons]]ba.',
-    'nl': u'[[:File:%s|Bestand]] is verplaatst naar [[:commons:File:%s|commons]].',
-    'pl': u'[[:File:%s|Plik]] przeniesiona do [[:commons:File:%s|commons]].',
-    'ru': u'[[:File:%s|Файл]] перемещён на [[:commons:File:%s|Викисклад]].',
-    'zh': u'[[:File:%s|本檔案]]已移至[[:commons:File:%s|維基共享資源]]',
 }
 
 def pageTextPost(url,parameters):
@@ -307,10 +275,7 @@ class imageTransfer (threading.Thread):
             else:
                 addTemplate = nowCommonsTemplate['_default'] % self.newname
 
-            if self.imagePage.site().language() in nowCommonsMessage:
-                commentText = nowCommonsMessage[self.imagePage.site().language()]
-            else:
-                commentText = nowCommonsMessage['_default']
+            commentText = i18n.twtranslate(self.imagePage.site(), 'commons-file-now-available', {'localfile' : self.imagePage.titleWithoutNamespace(), 'commonsfile' : self.newname})
 
             pywikibot.showDiff(self.imagePage.get(), imtxt+addTemplate)
             self.imagePage.put(imtxt + addTemplate, comment = commentText)
@@ -320,10 +285,8 @@ class imageTransfer (threading.Thread):
 
             #If the image is uploaded under a different name, replace all instances
             if self.imagePage.titleWithoutNamespace() != self.newname:
-                if self.imagePage.site().language() in imageMoveMessage:
-                    moveSummary = imageMoveMessage[self.imagePage.site().language()] % (self.imagePage.titleWithoutNamespace(), self.newname)
-                else:
-                    moveSummary = imageMoveMessage['_default'] % (self.imagePage.titleWithoutNamespace(), self.newname)
+                moveSummary = i18n.twtranslate(self.imagePage.site(), 'commons-file-moved', {'localfile' : self.imagePage.titleWithoutNamespace(), 'commonsfile' : self.newname})
+                
                 imagebot = ImageRobot(generator = self.preloadingGen, oldImage = self.imagePage.titleWithoutNamespace(), newImage = self.newname, summary = moveSummary, always = True, loose = True)
                 imagebot.run()
         return
