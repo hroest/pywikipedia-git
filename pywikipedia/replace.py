@@ -436,7 +436,12 @@ class ReplaceRobot:
                         page.site().nice_get_address(page.title())
                     ))
                     pywikibot.input("Press Enter when finished in browser.")
-                    original_text = page.get(get_redirect=True, force=True)
+                    try:
+                        original_text = page.get(get_redirect=True, force=True)
+                    except pywikibot.NoPage:
+                        pywikibot.output(u'Page %s has been deleted.'
+                                         % page.title())
+                        break
                     new_text = original_text
                     continue
                 if choice == 'q':
