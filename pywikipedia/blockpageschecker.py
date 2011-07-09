@@ -356,9 +356,12 @@ def main():
             # We tried to fix edit-protection templates, but it did not work.
             pywikibot.output('Warning : No edit-protection template could be found')
 
-        if moveBlockCheck:
+        if moveBlockCheck and changes > -1:
             # checking move protection now
-            moveRestr = restrictions['move']
+            try:
+                moveRestr = restrictions['move']
+            except KeyError:
+                moveRestr = False
             changes = -1
 
             if not moveRestr:
