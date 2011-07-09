@@ -1737,10 +1737,11 @@ u'Page %s is semi-protected. Getting edit page to find out if we are allowed to 
                 if verbose:
                     output(u'Cosmetic Changes for %s-%s enabled.' % (self.site().family.name, self.site().lang))
                 import cosmetic_changes
+                from pywikibot import i18n
                 ccToolkit = cosmetic_changes.CosmeticChangesToolkit(self.site(), redirect=self.isRedirectPage(), namespace = self.namespace(), pageTitle=self.title())
                 newtext = ccToolkit.change(newtext)
                 if comment and old.strip().replace('\r\n', '\n') != newtext.strip().replace('\r\n', '\n'):
-                    comment += translate(self.site(), cosmetic_changes.msg_append)
+                    comment += i18n.twtranslate(self.site(), 'cosmetic_changes-append')
 
         if watchArticle is None:
             # if the page was loaded via get(), we know its status
