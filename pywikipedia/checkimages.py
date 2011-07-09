@@ -103,18 +103,18 @@ locale.setlocale(locale.LC_ALL, '')
 # That's what you want that will be added. (i.e. the {{no source}} with the
 # right day/month/year )
 n_txt = {
-    'commons':u'\n{{subst:nld}}',
-    'ar'     :u'\n{{subst:لم}}',
+    'commons':u'{{subst:nld}}',
+    'ar'     :u'{{subst:لم}}',
     'de'     :u'{{Benutzer:ABF/D|~~~~}} {{Dateiüberprüfung/benachrichtigt (Kategorie)|{{subst:LOCALYEAR}}|{{subst:LOCALMONTH}}|{{subst:LOCALDAY}}}} {{Dateiüberprüfung/benachrichtigt (Text)|Lizenz|||||}} --This was added by ~~~~-- ',
-    'en'     :u'\n{{subst:nld}}',
+    'en'     :u'{{subst:nld}}',
     'fa'     :u'{{جا:حق تکثیر تصویر نامعلوم}}',
-    'fr'     :u'\n{{subst:lid}}',
-    'ga'     :u'\n{{subst:Ceadúnas de dhíth}}',
-    'hu'     :u'\n{{nincslicenc|~~~~~}}',
-    'it'     :u'\n{{subst:unverdata}}',
+    'fr'     :u'{{subst:lid}}',
+    'ga'     :u'{{subst:Ceadúnas de dhíth}}',
+    'hu'     :u'{{nincslicenc|~~~~~}}',
+    'it'     :u'{{subst:unverdata}}',
     'ja'     :u'{{subst:Nld}}',
-    'ko'     :u'\n{{subst:nld}}',
-    'ta'     :u'\n{{subst:nld}}',
+    'ko'     :u'{{subst:nld}}',
+    'ta'     :u'{{subst:nld}}',
     'zh'     :u'{{subst:No license/auto}}',
 }
 
@@ -717,7 +717,7 @@ class main:
         # You can use this function also to find only the user that
         # has upload the image (FixME: Rewrite a bit this part)
         if put:
-            reportPageObject.put(reportPageText + self.newtext,
+            reportPageObject.put(self.newtext + "\n" + reportPageText,
                                  comment=self.commImage)
         # paginetta it's the image page object.
         try:
