@@ -14,21 +14,23 @@ are taken into account.
 """
 
 #
-# (C) Pywikipedia team, 2008-2009
+# (C) Pywikipedia team, 2008-2011
 #
 __version__ = '$Id$'
 #
 # Distributed under the terms of the MIT license.
 #
 
-import wikipedia as pywikibot
-import catlib, query, pagegenerators
 import cPickle
 import math
 import re
 import sys, traceback
 import time
 from datetime import datetime, timedelta
+import wikipedia as pywikibot
+import pagegenerators
+import catlib, query
+from pywikibot import i18n
 
 
 class APIError(Exception):
@@ -227,7 +229,12 @@ liên kết thể loại:
 
         """
         oldtext = article.get(get_redirect=True, force=True)
-        newtext = pywikibot.replaceCategoryInPlace(oldtext, oldCat, newCat)
+        if newCat in article.categories() or newCat == article:
+            newtext = pywikibot.replaceCategoryInPlace(oldtext, oldCat, None,
+                                                       site=self.site)
+        else:
+            newtext = pywikibot.replaceCategoryInPlace(oldtext, oldCat, newCat,
+                                                       site=self.site)
         try:
             # even if no changes, still save the page, in case it needs
             # an update due to changes in a transcluded template
