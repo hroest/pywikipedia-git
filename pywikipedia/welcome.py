@@ -173,6 +173,7 @@ badword at all but can be used for some bad-nickname.
 # (C) Filnik, 2007-2010
 # (C) Daniel Herding, 2007
 # (C) Alex Shih-Han Lin, 2009
+# (C) xqt, 2009-2011
 #
 # Distributed under the terms of the MIT license.
 #
@@ -185,6 +186,7 @@ from datetime import timedelta
 from random import choice
 from string import capitalize
 import wikipedia as pywikibot
+from pywikibot import i18n
 import config, query, userlib
 
 locale.setlocale(locale.LC_ALL, '')
@@ -194,8 +196,8 @@ locale.setlocale(locale.LC_ALL, '')
 # been eliminated.
 # FIXME: Not all language/project combinations have been defined yet.
 #       Add the following strings to customise for a language:
-#       logbook, talk_page, summary, netext, summary2, user, con, report_page
-#       comment, bad_pag, report_text, logt, random_sign and whitelist_pg.
+#       logbook, talk_page, netext, user, con, report_page
+#       bad_pag, report_text, logt, random_sign and whitelist_pg.
 
 ############################################################################
 ############################################################################
@@ -223,34 +225,6 @@ logbook = {
         'sr': u'Project:Добродошлице',
         'zh': u'User:Welcomebot/欢迎日志',
     }
-}
-#The edit summary for the welcome message (e.g. Welcome!).
-summary = {
-    'commons': {'_default': u'Welcome!', },
-    'am': u'Welcome to Amharic Wikipedia!',
-    'ar': u'مرحبا!',
-    'bn': u'Welcome!',
-    'da': u'Velkommen',
-    'de': u'Herzlich willkommen!',
-    'en': u'Welcome!',
-    'fa': u'خوش آمدید!',
-    'fr': u'Bienvenue sur Wikipedia !',
-    'ga': u'Fáilte!',
-    'he': u'ברוך הבא!',
-    'id': u'Selamat datang',
-    'it': u'Benvenuto!',
-    'ja': u'ウィキペディア日本語版へようこそ！',
-    'ka': u'კეთილი იყოს თქვენი მობრძანება!',
-    'nl': u'Welkom!',
-    'no': u'Velkommen!',
-    'pdc':u'Wilkum!',
-    'pt': u'Bem vindo!',
-    'ru': u'Добро пожаловать!',
-    'sq': u'Tung',
-    'sr': u'Добродошли!',
-    'vo': u'Benokömö!',
-    'zh': u'欢迎！',
-    'zh-yue': u'歡迎',
 }
 # The text for the welcome message (e.g. {{welcome}}) and %s at the end
 # that is your signature (the bot has a random parameter to add different
@@ -301,28 +275,6 @@ netext = {
         'it': u'{{subst:Benvenuto}} %s',
     },
 }
-# The edit summary for updating the welcome log (e.g. Updating log).
-summary2 = {
-    'commons': u'Updating log',
-    'am': u'Updating log',
-    'ar': u'تحديث السجل',
-    'da': u'Updating log',
-    'de': u'Aktualisiere Logdatei',
-    'en': u'Updating log',
-    'fa': u'به روز رسانی سیاهه',
-    'fr': u'Mise a jour du journal',
-    'ga': u'Log a thabhairt suas chun dáta',
-    'it': u'Aggiorno il log',
-    'ja': u'更新記録',
-    'nl': u'Logboek bijwerken',
-    'no': u'Oppdaterer logg',
-    'pdc':u'Logfeil ennere',
-    'ru': u'Обновление',
-    'sq': u'Rifreskoj log',
-    'sr': u'Освежавање записа',
-    'zh': u'更新日志',
-    'zh-yue':u'更新日誌',
-}
 # The page where the bot will report users with a possibly bad username.
 report_page = {
     'commons': {'_default': u'Project:Administrators\' noticeboard/User problems/Usernames to be checked', },
@@ -344,26 +296,6 @@ report_page = {
         'sr': u'User:SashatoBot/Записи',
         'zh': u'User:Welcomebot/report',
         'zh-yue': u'User:Alexbot/report',
-    }
-}
-# The edit summary for reporting a possibly bad username.
-comment = {
-    'commons': {'_default': u'Adding a username that needs to be checked',},
-    'wikipedia':{
-        'am': u'Adding a username that needs to be checked',
-        'ar': u'إضافة اسم مستخدم يحتاج للفحص',
-        'da': u'Adding a username that needs to be checked',
-        'de': u'Ergänze zu überprüfenden Benutzernamen',
-        'en': u'Adding a username that needs to be checked',
-        'fa': u'افزودن حساب کاربری نیازمند بررسی',
-        'it': u'Aggiunto utente da controllare',
-        'ja': u'不適切な利用者名の報告',
-        'nl': u'Te controleren gebruikersnaam toegevoegd',
-        'no': u'Legger til et brukernavn som m? sjekkes',
-        'pdc':u'Yuusernaame zum iwwerpriefe',
-        'ru': u'Добавлено подозрительное имя участника',
-        'sq': u'Added username to be checked',
-        'zh': u'回報不適當的用戶名稱',
     }
 }
 # The page where the bot reads the real-time bad words page
@@ -630,7 +562,7 @@ class WelcomeBot(object):
                     if self.site.lang == 'it':
                         rep_text = "%s%s}}" % (rep_text, self.bname[username])
 
-            com = pywikibot.translate(self.site, comment)
+            com = i18n.twtranslate(self.site, 'welcome-bad_username')
             if rep_text != '':
                 rep_page.put(text_get + rep_text, comment = com, minorEdit = True)
                 showStatus(5)
@@ -672,7 +604,8 @@ class WelcomeBot(object):
         #update log page.
         while True:
             try:
-                logPage.put(text, pywikibot.translate(self.site, summary2) )
+                logPage.put(text, i18n.twtranslate(self.site,
+                                                   'welcome-updating'))
                 return True
             except pywikibot.EditConflict:
                 pywikibot.output(u'An edit conflict has occured. Pausing for 10 seconds before continuing.')
@@ -853,7 +786,8 @@ class WelcomeBot(object):
                             welcome_text = welcome_text % globalvar.defaultSign
                         if self.site.lang in final_new_text_additions:
                             welcome_text += pywikibot.translate(self.site, final_new_text_additions)
-                        welcome_comment = pywikibot.translate(self.site, summary)
+                        welcome_comment = i18n.twtranslate(self.site,
+                                                           'welcome-welcome')
                         try:
                             #append welcomed, welcome_count++
                             ustp.put(welcome_text, welcome_comment, minorEdit=False)
