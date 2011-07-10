@@ -38,82 +38,13 @@ Furthermore, the following command line parameters are supported:
 
 __version__='$Id$'
 
+import sys, re
 import wikipedia as pywikibot
 import pagegenerators
-import sys, re
+from pywikibot import i18n
 
 docuReplacements = {
     '&params;': pagegenerators.parameterHelp,
-}
-
-# Summary messages in different languages
-msg = {
-    'af': u'Robot: Formatteer ISBN',
-    'als': u'Bot: ISBN formatiert',
-    'ar': u'روبوت: تنسيق ISBN',
-    'ast': u'Robot: Iguando formatu ISBN',
-    'be': u'робат аформіў ISBN',
-    'bn': u'বট: আইএসবিএন নম্বরের ফরম্যাট ঠিক করছে',
-    'br': u'Robot : O furmadiñ an ISBN',
-    'bs': u'Robot: Oblikovanje ISBN',
-    'ca': u'Robot: Format de l\'ISBN',
-    'cs': u'Robot: Formátování ISBN',
-    'cy': u'Robot: Yn fformatio\'r ISBN',
-    'da': u'Robot: Formaterer ISBN',
-    'de': u'Bot: Formatiere ISBN',
-    'el': u'Ρομπότ: Μορφοποίηση ISBN',
-    'en': u'Robot: Formatting ISBN',
-    'eo': u'Roboto: Aranĝis ISBN',
-    'es': u'Robot: dando formato al ISBN',
-    'eu': u'Robota: ISBN formatua ematen',
-    'fa': u'ربات:استانداردسازی شابک',
-    'fi': u'Botti muotoili ISBN-tunnuksen',
-    'fr': u'Robot : Mise en forme du ISBN',
-    'frp': u'Robot : misa en fôrma du ISBN',
-    'frr': u'Bot: Formatiare ISBN',
-    'fur': u'Robot: o formati il codiç ISBN',
-    'gl': u'Bot: Dou formato ISBN',
-    'he': u'בוט: מעצב מסת״ב',
-    'hr': u'Bot: Oblikovanje ISBN',
-    'hsb': u'Boćik: ISBN so formatuje',
-    'hu': u'Bot: ISBN formázása',
-    'ia': u'Robot: Formatation ISBN',
-    'id': u'Bot: Memformat ISBN',
-    'it': u'Bot: Formatto ISBN',
-    'ja': u'ロボットによる ISBN の書式化',
-    'ksh': u'Bot: ISBN zerääsch jemaat.',
-    'ku': u'Robot:ISBN\'ê format bike',
-    'lb': u'Bot: ISBN formatéiert',
-    'li': u'Robot: ISBN opgemaak',
-    'lt': u'Robotas: Formatuojamas ISBN',
-    'mk': u'Робот: Форматирам ISBN',
-    'ms': u'Bot: Memformatkan ISBN',
-    'mt': u'Bot: Format ISBN',
-    'my': u'ရိုဘော့ - ISBN နံပါတ်ကို ပုံစံချနေသည်',
-    'nds': u'Bot: ISBN-Format',
-    'ne': u'रोबोट: ISBN मिलाउँदै',
-    'nl': u'Robot: ISBN opgemaakt',
-    'nn': u'robot: formaterer ISBN',
-    'no': u'robot: Formaterer ISBN',
-    'pl': u'Robot sformatował numer ISBN',
-    'pt': u'Robô: A formatar o ISBN',
-    'ro': u'Robot: Formatat codul ISBN',
-    'ru': u'Робот: преобразование ISBN',
-    'rue': u'Робот: Форматованя ISBN',
-    'si': u'රොබෝ: ISBN ආකෘතිකරණය',
-    'sl': u'Robot: Oblikovanje ISBN',
-    'sr': u'Робот: обликовање ISBN-а',
-    'sv': u'Robot: Formaterar ISBN',
-    'ta': u'தானியங்கி: ISBN ஐ வடிவமைத்தல்',
-    'th': u'บอต: การจัดรูปแบบเลขมาตรฐานสากลประจำหนังสือ',
-    'tl': u'Robot: Inaayos ang anyo ng ISBN',
-    'tr': u'Robot: ISBN biçimleniyor',
-    'tt': u'Робот: ISBN үзләштерү',
-    'uk': u'Робот: Форматування ISBN',
-    'vi': u'Bot: Định dạng ISBN',
-    'zh': u'機器人：ISBN格式化',
-    'zh-hans': u'机器人：ISBN格式化',
-    'zh-hant': u'機器人：格式化ISBN',
 }
 
 # Maps each group number to the list of its publisher number ranges.
@@ -1235,13 +1166,13 @@ class IsbnBot:
                 page.put(text)
             except pywikibot.NoPage:
                 pywikibot.output(u"Page %s does not exist?!"
-                                 % page.aslink())
+                                 % page.title(asLink=True))
             except pywikibot.IsRedirectPage:
                 pywikibot.output(u"Page %s is a redirect; skipping."
-                                 % page.aslink())
+                                 % page.title(asLink=True))
             except pywikibot.LockedPage:
                 pywikibot.output(u"Page %s is locked?!"
-                                 % page.aslink())
+                                 % page.title(asLink=True))
 
 
 class InvalidIsbnException(pywikibot.Error):
@@ -1446,7 +1377,7 @@ class IsbnBot:
         self.format = format
         self.always = always
         self.isbnR = re.compile(r'(?<=ISBN )(?P<code>[\d\-]+[Xx]?)')
-        self.comment = pywikibot.translate(pywikibot.getSite(), msg)
+        self.comment = i18n.twtranslate(pywikibot.getSite(), 'isbn-formatting')
 
     def treat(self, page):
         try:
@@ -1466,11 +1397,11 @@ class IsbnBot:
                 newText = self.isbnR.sub(_hyphenateIsbnNumber, newText)
             self.save(page, newText)
         except pywikibot.NoPage:
-            pywikibot.output(u"Page %s does not exist?!" % page.aslink())
+            pywikibot.output(u"Page %s does not exist?!" % page.title(asLink=True))
         except pywikibot.IsRedirectPage:
-            pywikibot.output(u"Page %s is a redirect; skipping." % page.aslink())
+            pywikibot.output(u"Page %s is a redirect; skipping." % page.title(asLink=True))
         except pywikibot.LockedPage:
-            pywikibot.output(u"Page %s is locked?!" % page.aslink())
+            pywikibot.output(u"Page %s is locked?!" % page.title(asLink=True))
 
     def save(self, page, text):
         if text != page.get():
