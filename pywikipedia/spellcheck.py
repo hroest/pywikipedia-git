@@ -51,7 +51,7 @@ Command-line options:
 """
 #
 # (C) Andre Engels, 2005
-# (C) Pywikipedia bot team, 2006-2010
+# (C) Pywikipedia bot team, 2006-2011
 #
 # Distributed under the terms of the MIT license.
 #
@@ -64,15 +64,16 @@ import wikipedia as pywikibot
 import pagegenerators
 
 msg={
-    'ar':u'تدقيق إملائي بمساعدة البوت',
-    'en':u'Bot-aided spell checker',
-    'es':u'Bot asistido de correción ortográfica',
-    'fr':u'Correction orthographique par robot',
-    'he':u'בדיקת איות באמצעות בוט',
-    'ia':u'Correction de orthographia per robot',
-    'nl':u'Spellingscontrole',
-    'pl':u'Wspomagane przez robota sprawdzanie pisowni',
-    'pt':u'Bot de correção ortográfica',
+    'ar': u'تدقيق إملائي بمساعدة البوت',
+    'de': u'Bot-unterstützte Rechtschreibprüfung',
+    'en': u'Bot-aided spell checker',
+    'es': u'Bot asistido de correción ortográfica',
+    'fr': u'Correction orthographique par robot',
+    'he': u'בדיקת איות באמצעות בוט',
+    'ia': u'Correction de orthographia per robot',
+    'nl': u'Spellingscontrole',
+    'pl': u'Wspomagane przez robota sprawdzanie pisowni',
+    'pt': u'Bot de correção ortográfica',
 }
 
 
