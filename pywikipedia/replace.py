@@ -709,7 +709,12 @@ u'Press Enter to use this default message, or enter a description of the\nchange
         if "regex" in fix:
             regex = fix['regex']
         if "msg" in fix:
-            editSummary = pywikibot.translate(pywikibot.getSite(), fix['msg'])
+            if isinstance(fix['msg'], basestring):
+                editSummary = i18n.twtranslate(pywikibot.getSite(),
+                                               str(fix['msg']))
+            else:
+                editSummary = pywikibot.translate(pywikibot.getSite(),
+                                                  fix['msg'])
         if "exceptions" in fix:
             exceptions = fix['exceptions']
         if "nocase" in fix:

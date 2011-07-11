@@ -422,21 +422,7 @@ fixes = {
 
     'isbn': {
         'regex': True,
-        'msg': {
-            'ar': u'روبوت: تصليح صيغة ISBN',
-            'be': u'Бот: Карэкцыя ISBN фармату',
-            'cs': u'Oprava formátu ISBN',
-            'de': u'Bot: Korrigiere ISBN-Format',
-            'en': u'Robot: Fixing ISBN format',
-            'es': u'Arreglando formato ISBN',
-            'eo': u'Bot: Korekto de teksto en ISBN-formato',
-            'fa': u'ربات:تصحیح شابک',
-            'he': u'בוט: מתקן פורמט ISBN',
-            'ja': u'ロボットによる: ISBNフォーマット修正',
-            'ru': u'Бот: Коррекция ISBN формата',
-            'uk': u'Бот: Корекція ISBN формату',
-            'zh': u'機器人: 修正ISBN格式',
-        },
+        'msg': 'isbn-formatting', # use i18n translations
         'replacements': [
             # colon
             (r'ISBN: (\d+)', r'ISBN \1'),
