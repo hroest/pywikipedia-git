@@ -12,7 +12,7 @@ class Family(family.Family):
 
         self.languages_by_size = [
             'en', 'fr', 'beta', 'ru', 'cs', 'de', 'it', 'pt', 'es', 'el', 'sv',
-            'fi', 'ja',
+            'fi', 'ja', 'ar'
         ]
 
         if family.config.SSL_connection:
