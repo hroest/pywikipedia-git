@@ -34,7 +34,7 @@ class Family:
             'kr', 'pam', 'krc', 'ka', 'ks', 'csb', 'kk', 'kw', 'rw', 'ky', 'rn',
             'sw', 'kv', 'kg', 'ht', 'ku', 'kj', 'mrj', 'lad', 'lbe', 'lo',
             'ltg', 'la', 'lv', 'lb', 'lt', 'lij', 'li', 'ln', 'jbo', 'lg',
-            'lmo', 'hu', 'mk', 'mg', 'ml', 'mt', 'mi', 'mr', 'arz', 'mzn', 'ms',
+            'lmo', 'hu', 'mk', 'mg', 'ml', 'mt', 'mi', 'mr', 'xmf', 'arz', 'mzn', 'ms',
             'cdo', 'mwl', 'mdf', 'mo', 'mn', 'mus', 'my', 'nah', 'na', 'fj',
             'nl', 'nds-nl', 'cr', 'ne', 'new', 'ja', 'nap', 'ce', 'frr', 'pih',
             'no', 'nb', 'nn', 'nrm', 'nov', 'ii', 'oc', 'mhr', 'or', 'om', 'ng',
