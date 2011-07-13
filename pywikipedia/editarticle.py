@@ -28,7 +28,7 @@ import string
 import optparse
 import tempfile
 
-import pywikibot
+import wikipedia as pywikibot
 from pywikibot import i18n
 import config
 
