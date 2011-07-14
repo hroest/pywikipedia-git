@@ -27,6 +27,7 @@ class Family(family.Family):
         # You only need to enter translations that differ from _default.
         self.namespaces[4] = {
             '_default': [u'Wikiversity', self.namespaces[4]['_default']],
+            'ar': u'ويكي الجامعة',
             'cs': u'Wikiverzita',
             'el': u'Βικιεπιστήμιο',
             'es': u'Wikiversidad',
@@ -38,6 +39,7 @@ class Family(family.Family):
         }
         self.namespaces[5] = {
             '_default': [u'Wikiversity talk', self.namespaces[5]['_default']],
+            'ar': u'نقاش ويكي الجامعة',
             'cs': u'Diskuse k Wikiverzitě',
             'de': u'Wikiversity Diskussion',
             'el': u'Συζήτηση Βικιεπιστημίου',
@@ -52,6 +54,7 @@ class Family(family.Family):
         }
 
         self.namespaces[100] = {
+            'ar': u'مدرسة',
             'cs': u'Fórum',
             'el': u'Σχολή',
             'en': u'School',
@@ -60,6 +63,7 @@ class Family(family.Family):
             'sv': u'Portal',
         }
         self.namespaces[101] = {
+            'ar': u'نقاش المدرسة',
             'cs': u'Diskuse k fóru',
             'el': u'Συζήτηση Σχολής',
             'en': u'School talk',
@@ -68,6 +72,7 @@ class Family(family.Family):
             'sv': u'Portaldiskussion',
         }
         self.namespaces[102] = {
+            'ar': u'بوابة',
             'el': u'Τμήμα',
             'en': u'Portal',
             'fr': u'Projet',
@@ -75,6 +80,7 @@ class Family(family.Family):
             'ja': u'Portal',
         }
         self.namespaces[103] = {
+            'ar': u'نقاش البوابة',
             'el': u'Συζήτηση Τμήματος',
             'en': u'Portal talk',
             'fr': u'Discussion Projet',
@@ -82,24 +88,28 @@ class Family(family.Family):
             'ja': u'Portal‐ノート',
         }
         self.namespaces[104] = {
+            'ar': u'موضوع',
             'en': u'Topic',
             'fr': u'Recherche',
             'it': u'Materia',
             'ja': u'Topic',
         }
         self.namespaces[105] = {
+            'ar': u'نقاش الموضوع',
             'en': u'Topic talk',
             'fr': u'Discussion Recherche',
             'it': u'Discussioni materia',
             'ja': u'Topic‐ノート',
         }
         self.namespaces[106] = {
+            'ar': u'مجموعة',
             'de': u'Kurs',
             'en': u'Collection',
             'fr': u'Faculté',
             'it': u'Dipartimento',
         }
         self.namespaces[107] = {
+            'ar': u'نقاش المجموعة',
             'de': u'Kurs Diskussion',
             'en': u'Collection talk',
             'fr': u'Discussion Faculté',
