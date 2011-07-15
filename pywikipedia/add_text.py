@@ -75,6 +75,7 @@ __version__ = '$Id$'
 
 import re, pagegenerators, urllib2, urllib
 import wikipedia as pywikibot
+from pywikibot import i18n
 import codecs, config
 
 # This is required for the text that is shown when you run this script
@@ -82,29 +83,6 @@ import codecs, config
 docuReplacements = {
     '&params;':     pagegenerators.parameterHelp,
 }
-
-msg = {
-    'ar': u'بوت: إضافة %s',
-    'cs': u'Robot přidal %s',
-    'de': u'Bot: "%s" hinzugefügt',
-    'en': u'Bot: Adding %s',
-    'fr': u'Robot : Ajoute %s',
-    'he': u'בוט: מוסיף %s',
-    'fa': u'ربات: افزودن %s',
-    'it': u'Bot: Aggiungo %s',
-    'ja': u'ロボットによる: 追加 %s',
-    'ksh': u'Bot: dobeijedonn: %s',
-    'nds': u'Bot: tofoiegt: %s',
-    'nn': u'Robot: La til %s',
-    'pdc': u'Waddefresser: %s dezu geduh',
-    'pl': u'Robot dodaje: %s',
-    'pt': u'Bot: Adicionando %s',
-    'ru': u'Бот: добавление %s',
-    'sv': u'Bot: Lägger till %s',
-    'szl': u'Bot dodowo: %s',
-    'vo': u'Bot: Läükon vödemi: %s',
-    'zh': u'機器人: 正在新增 %s',
-    }
 
 nn_iw_msg = u'<!--interwiki (no, sv, da first; then other languages alphabetically by name)-->'
 
@@ -158,7 +136,8 @@ def add_text(page = None, addText = None, summary = None, regexSkip = None,
     if not addText:
         raise NoEnoughData('You have to specify what text you want to add!')
     if not summary:
-        summary = pywikibot.translate(pywikibot.getSite(), msg) % addText[:200]
+        summary = i18n.twtranslate(pywikibot.getSite(), 'add_text-adding',
+                                   {'adding': addText[:200]})
 
     # When a page is tagged as "really well written" it has a star in the
     # interwiki links. This is a list of all the templates used (in regex
