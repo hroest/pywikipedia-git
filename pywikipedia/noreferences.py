@@ -38,6 +38,7 @@ __version__='$Id$'
 
 import re, sys
 import wikipedia as pywikibot
+from pywikibot import i18n
 import pagegenerators, catlib
 import editarticle
 
@@ -45,33 +46,6 @@ import editarticle
 # with the parameter -help.
 docuReplacements = {
     '&params;':     pagegenerators.parameterHelp,
-}
-
-# Summary messages in different languages
-msg = {
-    'ar': u'روبوت: إضافة وسم <references /> مفقود',
-    'be': u'Robot: дабаўлены адсутнічаючы тэг <references />',
-    'cs': u'Robot doplnil chybějící <references />',
-    'da': u'Bot: Tilføj manglede {{reflist}}',
-    'de': u'Bot: Trage fehlendes <references /> nach',
-    'en': u'Robot: Adding missing <references /> tag',
-    'eo': u'Roboto: Aldono de "<references />"',
-    'fa': u'ربات: برچسب <references /> فراموش شده‌است',
-    'fi': u'Botti lisäsi puuttuvan {{viitteet}}-mallineen',
-    'fr': u'Robot: Ajout de la balise <references /> manquante',
-    'he': u'בוט: מוסיף תגית <references /> חסרה',
-    'hu': u'Hiányzó {{Források}} pótlása',
-    'it': u'Bot: Aggiungo il tag <references /> mancante',
-    'ja': u'ロボットによる: <references /> タグの補完。',
-    'ko': u'봇: 이전에 없던 <references /> 추가',
-    'lt': u'robotas: Pridedama trūkstama <references /> žymė',
-    'nl': u'Bot: toevoeging ontbrekende <references /> tag',
-    'pdc':u'Waddefresse: Fehlendes <references /> dezu geduh',
-    'pl': u'Robot dodaje szablon {{przypisy}}',
-    'pt': u'Bot: Adicionando a tag <references />',
-    'ru': u'Robot: Добавлен отсутствующий тег <references />',
-    'szl':u'Bot dodowo szablon {{Przipisy}}',
-    'zh': u'機器人: 增加遺失的 <references /> 標籤',
 }
 
 # References sections are usually placed before further reading / external
@@ -599,7 +573,7 @@ class NoReferencesBot:
         return
 
     def run(self):
-        comment = pywikibot.translate(self.site, msg)
+        comment = i18n.twtranslate(self.site, 'noreferences-add-tag')
         pywikibot.setAction(comment)
 
         for page in self.generator:
