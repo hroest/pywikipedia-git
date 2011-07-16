@@ -458,6 +458,16 @@ class Category(wikipedia.Page):
             return False
         return True
 
+    def isHiddenCategory(self):
+        """Return True if the category is hidden."""
+        text = self.get()
+        hidden = re.search('__HIDDENCAT__', text)
+
+        if hidden:
+            return True
+        else:
+            return False
+
     def copyTo(self, catname):
         """
         Returns true if copying was successful, false if target page already
