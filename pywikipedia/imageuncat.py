@@ -1294,9 +1294,12 @@ def isUncat(page):
     pywikibot.output(u'Working on '+ page.title())
 
     for category in page.categories():
-        if category.title() not in ignoreCategories:
-            pywikibot.output(u'Got category ' + category.title())
-            return False
+        # Check if it's not a red link category
+        if category.exists():
+            # Check if it's not a category to ignore
+            if category.title() not in ignoreCategories:
+                pywikibot.output(u'Got category ' + category.title())
+                return False
         #FIXME: Add check if the category is hidden. If hidden -> ignore
 
     for templateWithTrail in page.templates():
