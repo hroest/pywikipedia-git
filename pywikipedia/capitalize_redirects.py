@@ -28,28 +28,12 @@ __version__ = '$Id$'
 
 import time, sys, re
 import wikipedia as pywikibot
+from pywikibot import i18n
 import pagegenerators
 
 docuReplacements = {
     '&params;': pagegenerators.parameterHelp
 }
-
-msg = {
-     'ar': u'روبوت: إنشاء تحويلة إلى [[%s]]',
-     'cs': u'Robot vytvořil přesměrování na [[%s]]',
-     'de': u'Bot: Weiterleitung angelegt auf [[%s]]',
-     'en': u'Robot: Create redirect to [[%s]]',
-     'fr': u'robot: Créer redirection à [[%s]]',
-     'he': u'בוט: יוצר הפניה לדף [[%s]]',
-     'ja': u'ロボットによる: リダイレクト作成 [[%s]]',
-     'ksh': u'Bot: oemleidung aanjelaat op [[%s]]',
-     'nl': u'Bot: doorverwijzing gemaakt naar [[%s]]',
-     'pt': u'Bot: Criando redirecionamento para [[%s]]',
-     'ru': u'Бот: Создано перенаправление на [[%s]]',
-     'sv': u'Bot: Omdirigerar till [[%s]]',
-     'uk': u'Бот: Створено перенаправлення на [[%s]]',
-     'zh': u'機器人: 建立重定向至[[%s]]',
-    }
 
 class CapitalizeBot:
     def __init__(self, generator, acceptall, titlecase):
@@ -91,7 +75,9 @@ class CapitalizeBot:
                 elif choice == 'q':
                     self.done = True
             if self.acceptall or choice == 'y':
-                comment = pywikibot.translate(self.site, msg) % page_t
+                comment = i18n.twtranslate(self.site,
+                                           'capitalize_redirects-create_redirect',
+                                           page_t)
                 try:
                     page_cap.put(u"#%s %s" % (self.site.redirect(True),
                                               page.title(asLink=True,
