@@ -49,14 +49,15 @@ __version__ = '$Id$'
 #
 # (C) Maxim Razin, 2005
 # (C) Leonardo Gregianin, 2005-2008
-# (C) xqt, 2009-2010
-# (C) Pywikipedia bot team, 2005-2010
+# (C) xqt, 2009-2011
+# (C) Pywikipedia bot team, 2005-2011
 #
 # Distributed under the terms of the MIT license.
 #
 
 import sys, re, pickle, os.path
 import wikipedia as pywikibot
+from pywikibot import i18n
 import catlib, config
 
 def CAT(site,name):
@@ -69,104 +70,6 @@ def BACK(site,name):
     p=pywikibot.Page(site, name)
     return [page for page in p.getReferences(follow_redirects=False,
                                              onlyTemplateInclusion=True)]
-
-msg = {
-    'als':u'Bötli: [[%s:%s]] isch en bsunders glungener Artikel',
-    'ar': u'بوت: [[%s:%s]] هي مقالة مختارة',
-    'bat-smg': u'robots: Pavīzdėnė straipsnė nūruoda [[%s:%s]]',
-    'be-x-old': u'Робат: [[%s:%s]] — абраны артыкул',
-    'bs': u'Bot: Interwiki za izabrane članke za [[%s:%s]]',
-    'ca': u'Bot: Enllaç a article destacat per: [[%s:%s]]',
-    'cs': u'Robot přidal nejlepší článek: [[%s:%s]]',
-    'cy': u'Robot: Mae [[%s:%s]] yn erthygl ddethol',
-    'de': u'Bot: [[%s:%s]] ist ein ausgezeichneter Artikel',
-    'dsb':u'Bot: [[%s:%s]] jo wuběrny nastawk',
-    'en': u'Bot: [[%s:%s]] is a featured article',
-    'eo': u'roboto: [[%s:%s]] estas artikolo elstara',
-    'es': u'Bot: Enlace a artículo destacado para: [[%s:%s]]',
-    'fa': u'ربات: [[%s:%s]] یک مقاله برگزیده است',
-    'fi': u'Botti: [[%s:%s]] on suositeltu artikkeli',
-    'fr': u'Bot: Lien AdQ pour [[%s:%s]]',
-    'frr':u'Bot: [[%s:%s]] as en auer a miaten guden artiikel',
-    'he': u'בוט: קישור לערך מומלץ עבור [[%s:%s]]',
-    'hr': u'Bot: Interwiki za izabrane članke za [[%s:%s]]',
-    'hsb':u'Bot: [[%s:%s]] je wuběrny nastawk',
-    'hu': u'Bot: a(z) [[%s:%s]] kiemelt szócikk',
-    'ia': u'Robot: Ligamine verso articulo eminente [[%s:%s]]',
-    'it': u'Bot: collegamento articolo in vetrina [[%s:%s]]',
-    'ja': u'ロボットによる: 秀逸な記事へのリンク [[%s:%s]]',
-    'ka': u'ბოტი: რჩეული სტატიის ბმული გვერდისათვის [[%s:%s]]',
-    'ko': u'로봇: 알찬 글 [[%s:%s]]',
-    'ksh':u'bot: [[%s:%s]] ess_enen ußjezëijshneten Atikkel',
-    'lb': u'Bot: Exzellenten Arikel Link op [[%s:%s]]',
-    'lt': u'Bot: Pavyzdinis straipsnis [[%s:%s]]',
-    'nl': u'Bot: verwijzing naar etalage-artikel voor [[%s:%s]]',
-    'no': u'bot: [[%s:%s]] er en utmerka artikkel',
-    'nn': u'bot: [[%s:%s]] er ein god artikkel',
-    'nv': u'Naaltsoos [[%s:%s]] kʼad nizhónígo ályaa',
-    'mk': u'Бот: Интервики за избрани статии за [[%s:%s]]',
-    'pl': u'Bot: Link do artykułu wyróżnionego [[%s:%s]]',
-    'pt': u'Bot: Ligando artigos destacados para [[%s:%s]]',
-    'ru': u'Робот: избранная статья [[%s:%s]]',
-    'sk': u'Bot: [[%s:%s]] je najlepší článok',
-    'sr': u'Bot: Међувики за изабране чланке за [[%s:%s]]',
-    'sv': u'Bot: [[%s:%s]] är en utmärkt artikel',
-    'th': u'บอต: ลิงก์บทความคัดสรร [[%s:%s]]',
-    'tr': u'Bot değişikliği: [[%s:%s]] madde bağlantısı eklendi',
-    'vo': u'Bot: Yüm yegeda gudik tefü [[%s:%s]]',
-    'zh': u'機器人: 連結特色條目 [[%s:%s]]',
-}
-
-msg_good = {
-    'als': u'Bötli: [[%s:%s]] isch en glungener Artikel',
-    'ar': u'بوت: [[%s:%s]] هي مقالة جيدة',
-    'cy': u'Robot: Mae [[%s:%s]] yn erthygl dda',
-    'de': u'Bot: [[%s:%s]] ist ein lesenswerter Artikel',
-    'en': u'Bot: [[%s:%s]] is a good article',
-    'eo': u'roboto: [[%s:%s]] estas artikolo leginda',
-    'es': u'Bot: Enlace a artículo bueno para: [[%s:%s]]',
-    'fa': u'ربات: [[%s:%s]] یک مقاله خوب است',
-    'fi': u'Botti: [[%s:%s]] on hyvä artikkeli',
-    'fr': u'Bot: Lien BA pour [[%s:%s]]',
-    'frr':u'Bot: [[%s:%s]] as en guden artiikel',
-    'it': u'Bot: collegamento articolo di qualità [[%s:%s]]',
-    'ja': u'ロボットによる: 良質な記事へのリンク [[%s:%s]]',
-    'ko': u'로봇: 좋은 글 [[%s:%s]]',
-    'ksh':u'bot: [[%s:%s]] ess_enen jooden Atikkel',
-    'no': u'bot: [[%s:%s]] er en anbefalt artikkel',
-    'nn': u'bot: [[%s:%s]] er ein god artikkel',
-    'pl': u'Bot: Link do dobrego artykułu: [[%s:%s]]',
-    'pt': u'Bot: [[%s:%s]] é um artigo bom',
-    'ru': u'Робот: хорошая статья [[%s:%s]]',
-    'sv': u'Bot: [[%s:%s]] är en läsvärd artikel',
-}
-
-msg_lists = {
-    'als':u'Bötli: [[%s:%s]] isch e bsunders glungene Lischte',
-    'ar': u'بوت: [[%s:%s]] هي قائمة مختارة',
-    'de': u'Bot: [[%s:%s]] ist eine informative Liste',
-    'en': u'Bot: [[%s:%s]] is a featured list',
-    'es': u'Bot: Enlace a lista destacada para: [[%s:%s]]',
-    'fa': u'ربات: [[%s:%s]] یک فهرست برگزیده است',
-    'fi': u'Botti: [[%s:%s]] on suositeltu luettelo',
-    'frr':u'Bot: [[%s:%s]] as en wäärdag list',
-    'ja': u'ロボットによる: 秀逸な一覧へのリンク [[%s:%s]]',
-    'ksh':u'bot: [[%s:%s]] ess_en joode Leß',
-    'pl': u'Bot: [[%s:%s]] jest listą medalową',
-    'pt': u'Bot: [[%s:%s]] é uma lista destacada',
-    'sv': u'Bot: [[%s:%s]] är en utmärkt list',
-}
-
-msg_former = {
-    'ar': u'بوت: [[%s:%s]] مقالة مختارة سابقة',
-    'de': u'Bot: [[%s:%s]] ist ein ehemaliger ausgezeichneter Artikel',
-    'en': u'Bot: [[%s:%s]] is a former featured article',
-    'es': u'Bot: [[%s:%s]] ya no es un artículo destacado',
-    'fa': u'ربات:نوشتار [[%s:%s]] یک نوشتار برگزیده پیشین است.',
-    'fi': u'Botti: [[%s:%s]] on entinen suositeltu artikkeli',
-    'frr':u'Bot: [[%s:%s]] wiar ans en auer a miaten guden artiikel',
-    'pl': u'Bot: [[%s:%s]] jest byłym artykułem na medal',
-}
 
 # ALL wikis use 'Link FA', and sometimes other localized templates.
 # We use _default AND the localized ones
@@ -412,32 +315,32 @@ def featuredArticles(site, pType):
     arts=[]
     try:
         if pType == 'good':
-            method=good_name[site.lang][0]
+            method = good_name[site.lang][0]
         elif pType == 'former':
-            method=former_name[site.lang][0]
+            method = former_name[site.lang][0]
         elif pType == 'list':
-            method=lists_name[site.lang][0]
+            method = lists_name[site.lang][0]
         else:
-            method=featured_name[site.lang][0]
+            method = featured_name[site.lang][0]
     except KeyError:
         pywikibot.output(
             u'Error: language %s doesn\'t has %s category source.'
             % (site.lang, pType))
         return arts
     if pType == 'good':
-        name=good_name[site.lang][1]
+        name = good_name[site.lang][1]
     elif pType == 'former':
-        name=former_name[site.lang][1]
+        name = former_name[site.lang][1]
     elif pType == 'list':
-        name=lists_name[site.lang][1]
+        name = lists_name[site.lang][1]
     else:
-        name=featured_name[site.lang][1]
-    raw=method(site, name)
+        name = featured_name[site.lang][1]
+    raw = method(site, name)
     for p in raw:
-        if p.namespace()==0: # Article
+        if p.namespace() == 0: # Article
             arts.append(p)
         # Article talk (like in English)
-        elif p.namespace()==1 and site.lang <> 'el':
+        elif p.namespace() == 1 and site.lang <> 'el':
             arts.append(pywikibot.Page(p.site(), p.titleWithoutNamespace()))
     pywikibot.output(
         '\03{lightred}** wikipedia:%s has %i %s articles\03{default}'
@@ -483,23 +386,23 @@ def findTranslated(page, oursite=None, quiet=False):
         pywikibot.output(u"%s -> page doesn't exist, skipping" % ourpage.title())
         return None
     try:
-        iw=ourpage.interwiki()
+        iw = ourpage.interwiki()
     except:
         return None
     backpage=None
     for p in iw:
-        if p.site()==page.site():
-            backpage=p
+        if p.site() == page.site():
+            backpage = p
             break
     if not backpage:
         pywikibot.output(u"%s -> no back interwiki ref" % page.title())
         return None
-    if backpage==page:
+    if backpage == page:
         # everything is ok
         return ourpage
     if backpage.isRedirectPage():
         backpage = backpage.getRedirectTarget()
-    if backpage==page:
+    if backpage == page:
         # everything is ok
         return ourpage
     pywikibot.output(u"%s -> back interwiki ref target is %s"
@@ -510,19 +413,19 @@ def getTemplateList (lang, pType):
     if pType == 'good':
         try:
             templates = template_good[lang]
-            templates+= template_good['_default']
+            templates += template_good['_default']
         except KeyError:
             templates = template_good['_default']
     elif pType == 'list':
         try:
             templates = template_lists[lang]
-            templatest+= template_lists['_default']
+            templatest += template_lists['_default']
         except KeyError:
             templates = template_lists['_default']
     else: #pType in ['former', 'featured']
         try:
             templates = template[lang]
-            templates+= template['_default']
+            templates += template['_default']
         except KeyError:
             templates = template['_default']
     return templates
@@ -536,109 +439,104 @@ def featuredbot(arts, cc, tosite, template_on_top, pType, quiet, dry):
     re_this_iw=re.compile(ur"\[\[%s:[^]]+\]\]" % fromsite.lang)
     pairs=[]
     for a in arts:
-                if a.title()<afterpage:
-                    continue
-                if u"/" in a.title() and a.namespace() != 0:
-                    pywikibot.output(u"%s is a subpage" % a.title())
-                    continue
-                if a.title() in cc:
-                    pywikibot.output(u"(cached) %s -> %s"%(a.title(), cc[a.title()]))
-                    continue
-                if a.isRedirectPage():
-                    a=a.getRedirectTarget()
-                try:
-                    if not a.exists():
-                        pywikibot.output(u"source page doesn't exist: %s" % a.title())
-                        continue
-                    atrans = findTranslated(a, tosite, quiet)
-                    if pType!='former':
-                        if atrans:
-                            text=atrans.get()
-                            m=re_Link_FA.search(text)
-                            if m:
-                                pywikibot.output(u"(already done)")
-                            else:
-                                # insert just before interwiki
-                                if (not interactive or
-                                    pywikibot.input(
-                                        u'Connecting %s -> %s. Proceed? [Y/N]'
-                                        % (a.title(), atrans.title())) in ['Y','y']
-                                    ):
-                                    m=re_this_iw.search(text)
-                                    if not m:
-                                        pywikibot.output(
-                                            u"no interwiki record, very strange")
-                                        continue
-                                    site = pywikibot.getSite()
-                                    if pType == 'good':
-                                        comment = pywikibot.setAction(
-                                            pywikibot.translate(site, msg_good)
-                                            % (fromsite.lang, a.title()))
-                                    elif pType == 'list':
-                                        comment = pywikibot.setAction(
-                                            pywikibot.translate(site, msg_lists)
-                                            % (fromsite.lang, a.title()))
-                                    else:
-                                        comment = pywikibot.setAction(
-                                            pywikibot.translate(site, msg)
-                                            % (fromsite.lang, a.title()))
-                                    ### Moving {{Link FA|xx}} to top of interwikis ###
-                                    if template_on_top == True:
-                                        # Getting the interwiki
-                                        iw = pywikibot.getLanguageLinks(text, site)
-                                        # Removing the interwiki
-                                        text = pywikibot.removeLanguageLinks(text, site)
-                                        text += u"\r\n{{%s|%s}}\r\n" % (templatelist[0],
-                                                                        fromsite.lang)
-                                        # Adding the interwiki
-                                        text = pywikibot.replaceLanguageLinks(text,
-                                                                              iw, site)
-
-                                    ### Placing {{Link FA|xx}} right next to corresponding interwiki ###
-                                    else:
-                                        text=(text[:m.end()]
-                                              + (u" {{%s|%s}}" % (templatelist[0],
-                                                                  fromsite.lang))
-                                              + text[m.end():])
-                                    if not dry:
-                                        try:
-                                            atrans.put(text, comment)
-                                        except pywikibot.LockedPage:
-                                            pywikibot.output(u'Page %s is locked!'
-                                                             % atrans.title())
-                            cc[a.title()]=atrans.title()
+        if a.title() < afterpage:
+            continue
+        if u"/" in a.title() and a.namespace() != 0:
+            pywikibot.output(u"%s is a subpage" % a.title())
+            continue
+        if a.title() in cc:
+            pywikibot.output(u"(cached) %s -> %s"%(a.title(), cc[a.title()]))
+            continue
+        if a.isRedirectPage():
+            a=a.getRedirectTarget()
+        try:
+            if not a.exists():
+                pywikibot.output(u"source page doesn't exist: %s" % a.title())
+                continue
+            atrans = findTranslated(a, tosite, quiet)
+            if pType!='former':
+                if atrans:
+                    text=atrans.get()
+                    m=re_Link_FA.search(text)
+                    if m:
+                        pywikibot.output(u"(already done)")
                     else:
-                        if atrans:
-                            text=atrans.get()
-                            m=re_Link_FA.search(text)
-                            if m:
-                                # insert just before interwiki
-                                if (not interactive or
-                                    pywikibot.input(
-                                        u'Connecting %s -> %s. Proceed? [Y/N]'
-                                        % (a.title(), atrans.title())) in ['Y','y']
-                                    ):
-                                    m=re_this_iw.search(text)
-                                    if not m:
-                                        pywikibot.output(
-                                            u"no interwiki record, very strange")
-                                        continue
-                                    site = pywikibot.getSite()
-                                    comment = pywikibot.setAction(
-                                        pywikibot.translate(site, msg_former)
-                                        % (fromsite.lang, a.title()))
-                                    text=re.sub(re_Link_FA,'',text)
-                                    if not dry:
-                                        try:
-                                            atrans.put(text, comment)
-                                        except pywikibot.LockedPage:
-                                            pywikibot.output(u'Page %s is locked!'
-                                                             % atrans.title())
+                        # insert just before interwiki
+                        if (not interactive or
+                            pywikibot.input(
+                                u'Connecting %s -> %s. Proceed? [Y/N]'
+                                % (a.title(), atrans.title())) in ['Y','y']
+                            ):
+                            m=re_this_iw.search(text)
+                            if not m:
+                                pywikibot.output(
+                                    u"no interwiki record, very strange")
+                                continue
+                            site = pywikibot.getSite()
+                            comment = pywikibot.setAction(
+                                i18n.twtranslate(
+                                    site, 'featured-' + pType,
+                                    {'page': a.title(
+                                        asLink=True, forceInterwiki=True)}))
+                            ### Moving {{Link FA|xx}} to top of interwikis ###
+                            if template_on_top == True:
+                                # Getting the interwiki
+                                iw = pywikibot.getLanguageLinks(text, site)
+                                # Removing the interwiki
+                                text = pywikibot.removeLanguageLinks(text, site)
+                                text += u"\r\n{{%s|%s}}\r\n" % (templatelist[0],
+                                                                fromsite.lang)
+                                # Adding the interwiki
+                                text = pywikibot.replaceLanguageLinks(text,
+                                                                      iw, site)
+
+                            ### Placing {{Link FA|xx}} right next to corresponding interwiki ###
                             else:
-                                pywikibot.output(u"(already done)")
-                            cc[a.title()]=atrans.title()
-                except pywikibot.PageNotSaved, e:
-                    pywikibot.output(u"Page not saved")
+                                text=(text[:m.end()]
+                                      + (u" {{%s|%s}}" % (templatelist[0],
+                                                          fromsite.lang))
+                                      + text[m.end():])
+                            if not dry:
+                                try:
+                                    atrans.put(text, comment)
+                                except pywikibot.LockedPage:
+                                    pywikibot.output(u'Page %s is locked!'
+                                                     % atrans.title())
+                    cc[a.title()]=atrans.title()
+            else:
+                if atrans:
+                    text=atrans.get()
+                    m=re_Link_FA.search(text)
+                    if m:
+                        # insert just before interwiki
+                        if (not interactive or
+                            pywikibot.input(
+                                u'Connecting %s -> %s. Proceed? [Y/N]'
+                                % (a.title(), atrans.title())) in ['Y','y']
+                            ):
+                            m=re_this_iw.search(text)
+                            if not m:
+                                pywikibot.output(
+                                    u"no interwiki record, very strange")
+                                continue
+                            site = pywikibot.getSite()
+                            comment = pywikibot.setAction(
+                                i18n.twtranslate(
+                                    site, 'featured-former',
+                                    {'page': a.title(
+                                        asLink=True, forceInterwiki=True)}))
+                            text = re.sub(re_Link_FA,'',text)
+                            if not dry:
+                                try:
+                                    atrans.put(text, comment)
+                                except pywikibot.LockedPage:
+                                    pywikibot.output(u'Page %s is locked!'
+                                                     % atrans.title())
+                    else:
+                        pywikibot.output(u"(already done)")
+                    cc[a.title()]=atrans.title()
+        except pywikibot.PageNotSaved, e:
+            pywikibot.output(u"Page not saved")
 
 def featuredWithInterwiki(fromsite, tosite, template_on_top, pType, quiet,
                           dry=False, query=500):
@@ -650,8 +548,8 @@ def featuredWithInterwiki(fromsite, tosite, template_on_top, pType, quiet,
     if nocache:
         cc={}
 
-    arts=featuredArticles(fromsite, pType)
-    top=0
+    arts = featuredArticles(fromsite, pType)
+    top = 0
     if len(arts) > query:
         while top < len(arts):
             bottom = top
@@ -741,7 +639,6 @@ if __name__=="__main__":
     except:
         cache={}
 
-
     if not fromlang:
         pywikibot.showHelp('featured')
         sys.exit(1)
@@ -769,11 +666,11 @@ if __name__=="__main__":
                 break
             elif  fromsite != pywikibot.getSite():
                 featuredWithInterwiki(fromsite, pywikibot.getSite(),
-                                      template_on_top, processType, quiet, dry,query)
+                                      template_on_top, processType, quiet, dry,
+                                      query)
     except KeyboardInterrupt:
         pywikibot.output('\nQuitting program...')
     finally:
         pywikibot.stopme()
         if not nocache:
             pickle.dump(cache,file(filename,"wb"))
-
