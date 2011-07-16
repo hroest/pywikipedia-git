@@ -1142,7 +1142,12 @@ not supported by PyWikipediaBot!"""
                                 ).titleWithoutNamespace() # normalize title
                 if template in catredirs:
                     # Get target (first template argument)
-                    self._catredirect = self.site().namespace(14) + ":" + args[0]
+                    if not args:
+                        pywikibot.output(u'Warning: redirect target for %s is missing'
+                                         % self.title(asLink=True))
+                        self._catredirect = False
+                    else:
+                        self._catredirect = self.site().namespace(14) + ":" + args[0]
                     break
             else:
                 self._catredirect = False
