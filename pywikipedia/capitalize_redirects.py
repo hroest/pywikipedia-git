@@ -95,7 +95,7 @@ class CapitalizeBot:
                 try:
                     page_cap.put(u"#%s %s" % (self.site.redirect(True),
                                               page.title(asLink=True,
-                                                         textlink=True),
+                                                         textlink=True)),
                                               comment)
                 except:
                     pywikibot.output(u"An error occurred, skipping...")
