@@ -454,7 +454,7 @@ ignoreTemplates = {
     'de' : [u'inuse', u'in bearbeitung', u'löschen', u'sla', u'löschantrag',
             u'löschantragstext'],
     'en' : [u'inuse', u'softredirect'],
-    'fa' : [u'در دست ویرایش ۲',u'حذف سریع'],
+    'fa' : [u'در دست ویرایش ۲', u'حذف سریع'],
     'pdc': [u'lösche'],
 }
 
