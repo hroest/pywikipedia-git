@@ -402,9 +402,9 @@ def getCheckCategoriesTemplate(usage, galleries, ncats):
     result = u'{{Check categories|year={{subst:CURRENTYEAR}}|month={{subst:CURRENTMONTHNAME}}|day={{subst:CURRENTDAY}}\n'
     usageCounter = 1
     for (lang, project, article) in usage:
-        result += u'|lang%d=' % (usageCounter, lang)
-        result += u'|wiki%d=' % (usageCounter, project)
-        result += u'|article%d=' % (usageCounter, article)
+        result += u'|lang%d=%s' % (usageCounter, lang)
+        result += u'|wiki%d=%s' % (usageCounter, project)
+        result += u'|article%d=%s' % (usageCounter, article)
         result += u'\n'
         usageCounter = usageCounter + 1
     galleryCounter = 1
