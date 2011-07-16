@@ -3723,6 +3723,7 @@ class ImagePage(Page):
     getFileVersionHistoryTable: Return the version history in the form of a
                                 wiki table.
     usingPages                : Yield Pages on which the image is displayed.
+    globalUsage               : Yield Pages on which the image is used globally
 
     """
     def __init__(self, site, title, insite = None):
@@ -3965,7 +3966,52 @@ class ImagePage(Page):
                 output(
         u"Image description page %s contains invalid reference to [[%s]]."
                     % (self.title(), match.group('title')))
+                
+    def globalUsage(self):
+        '''
+        Yield Pages on which the image is used globally.
+        Currently this probably only works on Wikimedia Commonas.
+        '''
+        
+        if not self.site().has_api() or self.site().versionnumber() < 11:
+            # Not supported, just return none
+            return
 
+        params = {
+            'action': 'query',
+            'prop': 'globalusage',
+            'titles': self.title(),
+            'gulimit': config.special_page_limit,
+            #'': '',
+        }
+
+        while True:
+            data = query.GetData(params, self.site())
+            if 'error' in data:
+                raise RuntimeError("%s" % data['error'])
+
+            for (page, globalusage) in data['query']['pages'].items():
+                for gu in globalusage['globalusage']:
+                    #FIXME : Should have a cleaner way to get the wiki where the image is used
+                    siteparts = gu['wiki'].split('.')
+                    if len(siteparts)==3:
+                        if siteparts[0] in self.site().fam().alphabetic and siteparts[1] in ['wikipedia', 'wiktionary', 'wikibooks', 'wikiquote','wikisource']:
+                            code = siteparts[0]
+                            fam = siteparts[1]
+                        elif siteparts[0] in ['meta', 'incubator'] and siteparts[1]==u'wikimedia':
+                            code = code = siteparts[0]
+                            fam = code = siteparts[0]
+                        else:
+                            code = None
+                            fam = None
+                        if code and fam:
+                            site = getSite(code=code, fam=fam)
+                            yield Page(site, gu['title'])
+
+            if 'query-continue' in data:
+                params['gucontinue'] = data['query-continue']['globalusage']['gucontinue']
+            else:
+                break
 
 class _GetAll(object):
     """For internal use only - supports getall() function"""
