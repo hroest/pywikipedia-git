@@ -196,6 +196,16 @@ def translate(code, xdict):
     if hasattr(code, 'lang'):
         code = code.lang
 
+    # If xdict attribute is wikipedia, define the xdite had multiple projects
+    if 'wikipedia' in xdict:
+        if pywikibot.default_family in xdict:
+            xdict = xdict[pywikibot.default_family]
+        else:
+            xdict = xdict['wikipedia']
+
+        if type(xdict) != dict:
+            return xdict
+
     if code in xdict:
         return xdict[code]
     for alt in _altlang(code):
