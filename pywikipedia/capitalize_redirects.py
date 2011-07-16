@@ -77,7 +77,7 @@ class CapitalizeBot:
             if self.acceptall or choice == 'y':
                 comment = i18n.twtranslate(self.site,
                                            'capitalize_redirects-create_redirect',
-                                           page_t)
+                                           {'to': page_t})
                 try:
                     page_cap.put(u"#%s %s" % (self.site.redirect(True),
                                               page.title(asLink=True,
