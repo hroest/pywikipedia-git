@@ -80,8 +80,8 @@ Furthermore, the following command line parameters are supported:
 -fix:XYZ          Perform one of the predefined replacements tasks, which are
                   given in the dictionary 'fixes' defined inside the file
                   fixes.py.
-                  The -regex and -nocase argument and given replacements will
-                  be ignored if you use -fix.
+                  The -regex, -recursive and -nocase argument and given 
+                  replacements and exceptions will be ignored if you use -fix.
                   Currently available predefined fixes are:
 &fixes-help;
 
@@ -717,9 +717,15 @@ u'Press Enter to use this default message, or enter a description of the\nchange
                                                   fix['msg'])
         if "exceptions" in fix:
             exceptions = fix['exceptions']
+        if "recursive" in fix:
+            recursive = fix['recursive']
         if "nocase" in fix:
             caseInsensitive = fix['nocase']
-        replacements = fix['replacements']
+        try:
+            replacements = fix['replacements']
+        except KeyError:
+            pywikibot.output(u"No replacements given in fix, don't joke with me!")
+            return
 
     #Set the regular expression flags
     flags = re.UNICODE
