@@ -104,6 +104,9 @@ commonscatTemplates = {
     'pt' : (u'Commonscat', [u'Commons cat']),
     'ro' : (u'Commonscat', [u'Commons cat']),
     'ru' : (u'Commonscat', [u'Викисклад-кат', u'Commons category']),
+    'simple' : (u'Commonscat' ,[u'CommonsCompact', u'Commons-inline',
+                                u'Commons category multi',
+                                u'Commons cat multi',u'Commons category']),
     'sh' : (u'Commonscat', [u'Commons cat',]),
     'sl' : (u'Kategorija v Zbirki', [u'Commonscat', u'Kategorija v zbirki',
                                      u'Commons cat', u'Katzbirke']),
@@ -153,6 +156,7 @@ ignoreTemplates = {
             u'Catsjab', u'Catwiki'],
     'om' : [u'Commons'],
     'pt' : [u'Correlatos'],
+    'simple': [u'Sisterlinks'],
     'ru' : [u'Навигация', u'Навигация для категорий'],
     'tt' : [u'Навигация'],
 }
