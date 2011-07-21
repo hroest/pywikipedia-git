@@ -242,7 +242,7 @@ netext = {
         'ga': u'{{subst:fáilte}} %s',
         'he': u'{{ס:ברוך הבא}} %s',
         'id': u'{{sdbot|%s}}',
-        'it': u'<!-- inizio template di benvenuto -->\n{{subst:Benvebot}} %s',
+        'it': u'<!-- inizio template di benvenuto -->\n{{subst:Benvenuto}} %s',
         'ja': u'{{subst:Welcome/intro}}\n{{subst:welcome|%s}} ',
         'ka': u'{{ახალი მომხმარებელი}}--%s',
         'nl': u'{{hola|bot|%s}}',
