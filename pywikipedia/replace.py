@@ -81,7 +81,8 @@ Furthermore, the following command line parameters are supported:
                   given in the dictionary 'fixes' defined inside the file
                   fixes.py.
                   The -regex, -recursive and -nocase argument and given 
-                  replacements and exceptions will be ignored if you use -fix.
+                  replacements and exceptions will be ignored if you use -fix
+                  and they are present in the 'fixes' dictionary.
                   Currently available predefined fixes are:
 &fixes-help;
 
