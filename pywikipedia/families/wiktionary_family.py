@@ -87,7 +87,7 @@ class Family(family.Family):
             'pl': u'Wikisłownik',
             'ps': u'ويکيسيند',
             'pt': u'Wikcionário',
-            'ro': u'Wikţionar',
+            'ro': u'Wikționar',
             'ru': u'Викисловарь',
             'scn': u'Wikizziunariu',
             'si': u'වික්ෂනරි',
@@ -194,7 +194,7 @@ class Family(family.Family):
             'ps': u'د ويکيسيند خبرې اترې',
             'pt': u'Wikcionário Discussão',
             'qu': u'Wiktionary rimanakuy',
-            'ro': u'Discuție Wikţionar',
+            'ro': [u'Discuție Wikționar', u'Discuţie Wikționar'],
             'ru': u'Обсуждение Викисловаря',
             'sa': [u'Wiktionaryसम्भाषणम्', u'Wiktionaryसंभाषणं'],
             'sc': u'Wiktionary discussioni',
@@ -250,6 +250,7 @@ class Family(family.Family):
         self.namespaces[100] = {
             'bg': u'Словоформи',
             'bn': u'উইকিসরাস',
+            'br': u'Stagadenn',
             'bs': u'Portal',
             'cy': u'Atodiad',
             'el': u'Παράρτημα',
@@ -281,6 +282,7 @@ class Family(family.Family):
         self.namespaces[101] = {
             'bg': u'Словоформи беседа',
             'bn': u'উইকিসরাস আলোচনা',
+            'br': u'Kaozeadenn Stagadenn',
             'bs': u'Razgovor o Portalu',
             'cy': u'Sgwrs Atodiad',
             'el': u'Συζήτηση παραρτήματος',
