@@ -309,7 +309,7 @@ class Family(family.Family):
             'sr': u'Разговор о порталу',
             'tr': u'Portal tartışma',
             'uk': u'Обговорення додатка',
-            'zh': u'附录',
+            'zh': u'附录讨论',
         }
 
         self.namespaces[102] = {
