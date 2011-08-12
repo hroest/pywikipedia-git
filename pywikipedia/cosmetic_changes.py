@@ -435,6 +435,8 @@ class CosmeticChangesToolkit:
         # ignore ' see http://eo.wikipedia.org/w/index.php?title=Liberec&diff=next&oldid=2320801
         #if self.site.lang == 'eo':
         #    ignore += [39]
+        if self.template:
+            ignore += [58]
         text = pywikibot.html2unicode(text, ignore = ignore)
         return text
 
