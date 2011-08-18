@@ -71,7 +71,7 @@ class Family(family.Family):
             'de': u'Wikinews Diskussion',
             'el': u'Βικινέα συζήτηση',
             'eo': u'Vikinovaĵoj diskuto',
-            'es': u'Wikinoticias Discusión',
+            'es': u'Wikinoticias discusión',
             'fa': u'بحث ویکی‌خبر',
             'fi': u'Keskustelu Wikiuutisista',
             'fr': u'Discussion Wikinews',

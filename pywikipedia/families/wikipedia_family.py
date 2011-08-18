@@ -198,7 +198,7 @@ class Family(family.Family):
             'as': [u'Wikipedia বাৰ্তা', u'Wikipedia वार्ता', u'Wikipedia বার্তা'],
             'ast': u'Uiquipedia alderique',
             'av': u'Обсуждение Wikipedia',
-            'ay': u'Wikipedia Discusión',
+            'ay': u'Wikipedia discusión',
             'az': u'Vikipediya müzakirəsi',
             'ba': u'Wikipedia б-са фекер алышыу',
             'bar': u'Wikipedia Diskussion',
@@ -216,7 +216,7 @@ class Family(family.Family):
             'bs': u'Razgovor s Wikipediom',
             'bug': u'Pembicaraan Wikipedia',
             'ca': u'Viquipèdia Discussió',
-            'cbk-zam': u'Wikipedia Discusión',
+            'cbk-zam': u'Wikipedia discusión',
             'ce': [u'Википедийа дийцаре', u'Википедийа Дийца', u'Дийцаре Википедийа'],
             'ceb': [u'Hisgot sa Wikipedia', u'Hisgot saWikipedia'],
             'ch': u'Kombetsasion nu Wikipedia',
@@ -235,7 +235,7 @@ class Family(family.Family):
             'eml': u'Discussioni Wikipedia',
             'en': [u"Wikipedia talk", u"WT"],
             'eo': u'Vikipedia diskuto',
-            'es': u'Wikipedia Discusión',
+            'es': u'Wikipedia discusión',
             'et': u'Vikipeedia arutelu',
             'eu': u'Wikipedia eztabaida',
             'ext': u'Güiquipeya talk',
@@ -268,6 +268,7 @@ class Family(family.Family):
             'hy': u'Վիքիփեդիայի քննարկում',
             'ia': u'Discussion Wikipedia',
             'id': u'Pembicaraan Wikipedia',
+            'ie': u'Wikipedia Discussion',
             'ig': u'Okwu Wikipedia',
             'io': u'Wikipedio Debato',
             'is': u'Wikipediaspjall',
@@ -391,6 +392,7 @@ class Family(family.Family):
             'zea': u'Overleg Wikipedia',
             'zh': [u'Wikipedia talk', u'维基百科讨论'],
             'zh-classical': u'維基大典 talk',
+            'zh-yue': [u'Wikipedia 傾偈', u'WT'],
         }
 
         self.namespaces[90] = {

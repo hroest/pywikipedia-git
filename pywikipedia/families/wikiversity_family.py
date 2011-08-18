@@ -43,7 +43,7 @@ class Family(family.Family):
             'cs': u'Diskuse k Wikiverzitě',
             'de': u'Wikiversity Diskussion',
             'el': u'Συζήτηση Βικιεπιστημίου',
-            'es': u'Wikiversidad Discusión',
+            'es': u'Wikiversidad discusión',
             'fi': u'Keskustelu Wikiopistosta',
             'fr': u'Discussion Wikiversité',
             'it': u'Discussioni Wikiversità',

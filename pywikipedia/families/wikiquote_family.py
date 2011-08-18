@@ -86,7 +86,7 @@ class Family(family.Family):
             'de': u'Wikiquote Diskussion',
             'el': u'Βικιφθέγματα συζήτηση',
             'eo': [u'Vikicitaro-Diskuto', u'Vikicitaro diskuto'],
-            'es': u'Wikiquote Discusión',
+            'es': u'Wikiquote discusión',
             'et': u'Vikitsitaatide arutelu',
             'eu': u'Wikiquote eztabaida',
             'fa': u'بحث ویکی‌گفتاورد',
