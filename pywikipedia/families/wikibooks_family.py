@@ -29,7 +29,7 @@ class Family(family.Family):
         # Override defaults
         self.namespaces[2]['pl'] = u'Wikipedysta'
         self.namespaces[3]['pl'] = [u'Dyskusja wikipedysty',
-                                    u'Dyskusja wikipedystki'],
+                                    u'Dyskusja wikipedystki']
 
         # Most namespaces are inherited from family.Family.
         # Translation used on all wikis for the different namespaces.
