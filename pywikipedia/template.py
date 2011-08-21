@@ -105,6 +105,7 @@ __version__='$Id$'
 #
 import re, sys, string
 import wikipedia as pywikibot
+from pywikibot import i18n
 import config, pagegenerators, catlib
 import replace
 
@@ -179,161 +180,13 @@ class XmlDumpTemplatePageGenerator:
                 page = pywikibot.Page(mysite, entry.title)
                 yield page
 
+
 class TemplateRobot:
     """
     This robot will load all pages yielded by a page generator and replace or
     remove all occurences of the old template, or substitute them with the
     template's text.
     """
-    # Summary messages for replacing templates
-    msg_change={
-        'ar':u'روبوت: تغيير القالب: %s',
-        'da':u'Bot: Erstatter skabelon: %s',
-        'de':u'Bot: Ändere Vorlage: %s',
-        'en':u'Robot: Changing template: %s',
-        'es':u'Robot: Cambiada la plantilla: %s',
-        'fa':u'ربات:تغییر الگو: %s',
-        'fi':u'Botti korvasi mallineen: %s',
-        'fr':u'Robot : Change modèle: %s',
-        'he':u'בוט: משנה תבנית: %s',
-        'hu':u'Robot: Sablon csere: %s',
-        'ia':u'Robot: Modification del template: %s',
-        'kk':u'Бот: Мына үлгі өзгертілді: %s',
-        'lt':u'robotas: Keičiamas šablonas: %s',
-        'nds':u'Bot: Vörlaag utwesselt: %s',
-        'ja':u'ロボットによるテンプレートの張り替え : %s',
-        'nl':u'Bot: vervangen sjabloon: %s',
-        'no':u'bot: Endrer mal: %s',
-        'pl':u'Robot zmienia szablon: %s',
-        'pt':u'Bot: Alterando predefinição: %s',
-        'ru':u'Робот: замена шаблона: %s',
-        'sr':u'Бот: Измена шаблона: %s',
-        'uk':u'Робот: заміна шаблону: %s',
-        'zh':u'機器人: 更改模板 %s',
-    }
-
-    #Needs more translations!
-    msgs_change={
-        'ar':u'روبوت: تغيير القوالب: %s',
-        'da':u'Bot: Erstatter skabeloner: %s',
-        'de':u'Bot: Ändere Vorlagen: %s',
-        'en':u'Robot: Changing templates: %s',
-        'es':u'Robot: Cambiando las plantillas: %s',
-        'fa':u'ربات:تغییر الگوها: %s',
-        'fi':u'Botti korvasi mallineet: %s',
-        'fr':u'Robot : Modifie modèles %s',
-        'he':u'בוט: משנה תבניות: %s',
-        'kk':u'Бот: Мына үлгілер өзгертілді: %s',
-        'lt':u'robotas: Keičiami šablonai: %s',
-        'nds':u'Bot: Vörlagen utwesselt: %s',
-        'ja':u'ロボットによるテンプレートの張り替え : %s',
-        'nl':u'Bot: vervangen sjablonen: %s',
-        'no':u'bot: Endrer maler: %s',
-        'pl':u'Robot zmienia szablony: %s',
-        'pt':u'Bot: Alterando predefinição: %s',
-        'ru':u'Робот: замена шаблонов: %s',
-        'uk':u'Робот: заміна шаблонів: %s',
-        'zh':u'機器人: 更改模板 %s',
-    }
-
-    # Summary messages for removing templates
-    msg_remove={
-        'ar':u'روبوت: إزالة القالب: %s',
-        'da':u'Bot: Fjerner skabelon: %s',
-        'de':u'Bot: Entferne Vorlage: %s',
-        'en':u'Robot: Removing template: %s',
-        'es':u'Robot: Retirando la plantilla: %s',
-        'fa':u'ربات:حذف الگو: %s',
-        'fi':u'Botti poisti mallineen: %s',
-        'fr':u'Robot : Enlève le modèle: %s',
-        'he':u'בוט: מסיר תבנית: %s',
-        'hu':u'Robot: Sablon eltávolítása: %s',
-        'kk':u'Бот: Мына үлгі аластатылды: %s',
-        'ia':u'Robot: Elimination del template: %s',
-        'lt':u'robotas: Šalinamas šablonas: %s',
-        'nds':u'Bot: Vörlaag rut: %s',
-        'ja':u'ロボットによるテンプレートの除去 : %s',
-        'nl':u'Bot: verwijderen sjabloon: %s',
-        'no':u'bot: Fjerner mal: %s',
-        'pl':u'Robot usuwa szablon: %s',
-        'pt':u'Bot: Removendo predefinição: %s',
-        'ru':u'Робот: удаление шаблона: %s',
-        'sr':u'Бот: Уклањање шаблона: %s',
-        'uk':u'Робот: видалення шаблону: %s',
-        'zh':u'機器人: 移除模板 %s',
-    }
-
-    #Needs more translations!
-    msgs_remove={
-        'ar':u'روبوت: إزالة القوالب: %s',
-        'da':u'Bot: Fjerner skabeloner: %s',
-        'de':u'Bot: Entferne Vorlagen: %s',
-        'en':u'Robot: Removing templates: %s',
-        'es':u'Robot: Retirando las plantillas: %s',
-        'fa':u'ربات:حذف الگوها: %s',
-        'fi':u'Botti poisti mallineet: %s',
-        'he':u'בוט: מסיר תבניות: %s',
-        'fr':u'Robot : Enlève modèles : %s',
-        'kk':u'Бот: Мына үлгілер аластатылды: %s',
-        'lt':u'robotas: Šalinami šablonai: %s',
-        'nds':u'Bot: Vörlagen rut: %s',
-        'ja':u'ロボットによるテンプレートの除去 : %s',
-        'nl':u'Bot: verwijderen sjablonen: %s',
-        'no':u'bot: Fjerner maler: %s',
-        'pl':u'Robot usuwa szablony: %s',
-        'ru':u'Робот: удаление шаблонов: %s',
-        'pt':u'Bot: Removendo predefinição: %s',
-        'uk':u'Робот: видалення шаблонів: %s',
-        'zh':u'機器人: 移除模板 %s',
-    }
-
-    # Summary messages for substituting templates
-    #Needs more translations!
-    msg_subst={
-        'ar':u'روبوت: نسخ القالب: %s',
-        'da':u'Bot: Substituerer skabelon: %s',
-        'de':u'Bot: Umgehe Vorlage: %s',
-        'en':u'Robot: Substituting template: %s',
-        'es':u'Robot: Sustituyendo la plantilla: %s',
-        'fa':u'ربات: جایگزینی الگو: %s',
-        'fi':u'Botti substasi mallineen: %s',
-        'fr':u'Robot : Remplace modèle : %s',
-        'he':u'בוט: מכליל תבנית בקוד הדף: %s',
-        'kk':u'Бот: Мына үлгі бәделдірленді: %s',
-        'nds':u'Bot: Vörlaag in Text övernahmen: %s',
-        'ja':u'ロボットによるテンプレートの置換 : %s',
-        'nl':u'Bot: substitueren sjabloon: %s',
-        'no':u'bot: Erstatter mal: %s',
-        'pl':u'Robot podmienia szablon: %s',
-        'pt':u'Bot: Substituindo predefinição: %s',
-        'ru':u'Робот: подстановка шаблона: %s',
-        'uk':u'Робот: підстановка шаблону: %s',
-        'zh':u'機器人: 更換模板 %s',
-    }
-
-    #Needs more translations!
-    msgs_subst={
-        'ar':u'روبوت: نسخ القوالب: %s',
-        'da':u'Bot: Substituerer skabeloner: %s',
-        'de':u'Bot: Umgehe Vorlagen: %s',
-        'en':u'Robot: Substituting templates: %s',
-        'es':u'Robot: Sustituyendo las plantillas: %s',
-        'fa':u'ربات: جایگزینی الگوها: %s',
-        'fi':u'Botti substasi mallineet: %s',
-        'fr':u'Robot : Remplace modèles : %s',
-        'he':u'בוט: מכליל תבניות בקוד הדף: %s',
-        'kk':u'Бот: Мына үлгілер бәделдірленді: %s',
-        'nds':u'Bot: Vörlagen in Text övernahmen: %s',
-        'ja':u'ロボットによるテンプレートの置換 : %s',
-        'nl':u'Bot: substitueren sjablonen: %s',
-        'no':u'bot: Erstatter maler: %s',
-        'pl':u'Robot podmienia szablony: %s',
-        'pt':u'Bot: Substituindo predefinição: %s',
-        'ru':u'Робот: подстановка шаблонов: %s',
-        'uk':u'Робот: підстановка шаблонів: %s',
-        'zh':u'機器人: 更換模板 %s',
-    }
-
     def __init__(self, generator, templates, subst = False, remove = False,
                  editSummary = '', acceptAll = False, addedCat = None):
         """
@@ -358,23 +211,18 @@ class TemplateRobot:
 
         # get edit summary message if it's empty
         if (self.editSummary==''):
-            oldTemplateNames = (', ').join(self.templates.keys())
+            Param = {'list': (', ').join(self.templates.keys()),
+                     'num' : len(self.templates)}
             mysite = pywikibot.getSite()
             if self.remove:
-                if len(self.templates) > 1:
-                    self.editSummary = pywikibot.translate(mysite, self.msgs_remove) % oldTemplateNames
-                else:
-                    self.editSummary = pywikibot.translate(mysite, self.msg_remove) % oldTemplateNames
+                self.editSummary = i18n.twntranslate(
+                    mysite, 'template-removing', Param)
             elif self.subst:
-                if len(self.templates) > 1:
-                    self.editSummary = pywikibot.translate(mysite, self.msgs_subst) % oldTemplateNames
-                else:
-                    self.editSummary = pywikibot.translate(mysite, self.msg_subst) % oldTemplateNames
+                self.editSummary = i18n.twntranslate(
+                    mysite, 'template-substituting', Param)
             else:
-                if len(self.templates) > 1:
-                    self.editSummary = pywikibot.translate(mysite, self.msgs_change) % oldTemplateNames
-                else:
-                    self.editSummary = pywikibot.translate(mysite, self.msg_change) % oldTemplateNames
+                self.editSummary = i18n.twntranslate(
+                    mysite, 'template-changing', Param)
 
     def run(self):
         """
