@@ -75,6 +75,7 @@ Options:
 __version__ = '$Id$'
 #
 import wikipedia as pywikibot
+from pywikibot import i18n
 import pagegenerators, query
 Site = pywikibot.getSite()
 
@@ -88,85 +89,9 @@ except ImportError: #Old python?
     new_hash = md5.md5
 
 language = Site.language()
-messages = {
-        '_default': {
-            'ArchiveFull': u'(ARCHIVE FULL)',
-            'InitialArchiveHeader': u'{{talkarchive}}',
-            'PageSummary': u'Archiving %(count)d thread(s) (%(why)s) to %(archives)s.',
-            'ArchiveSummary': u'Archiving %(count)d thread(s) from [[%(from)s]].',
-            'OlderThanSummary': u'older than',
-            },
-        'ar': {
-            'ArchiveFull': u'(الأرشيف ممتلئ)',
-            'InitialArchiveHeader': u'{{أرشيف نقاش}}',
-            'PageSummary': u'أرشفة %(count)d قسم(أقسام) (%(why)s) إلى %(archives)s.',
-            'ArchiveSummary': u'أرشفة %(count)d قسم(أقسام) من [[%(from)s]].',
-            'OlderThanSummary': u'أقدم من',
-            },
-        'pl': {
-            'ArchiveFull': u'(ARCHIWUM PEŁNE)',
-            'InitialArchiveHeader': u'{{archiwum}}',
-            'PageSummary': u'Archiwizacja %(count)d wątków (%(why)s) do %(archives)s.',
-            'ArchiveSummary': u'Archiwizacja %(count)d wątków z [[%(from)s]].',
-            'OlderThanSummary': u'starsze niż',
-            },
-        'hu': {
-            'ArchiveFull': u'(ARCHÍVUM BETELT)',
-            'InitialArchiveHeader': u'{{archív lap}}',
-            'PageSummary': u'%(count)d szakasz archiválása (%(why)s) a(z) %(archives)s lapra.',
-            'ArchiveSummary': u'%(count)d szakasz archiválása a(z) [[%(from)s]] lapról.',
-            'OlderThanSummary': u'régebbi, mint',
-            },
-
-        'ksh': {
-            'ArchiveFull': u'(DAT ASCHIHV ES VOLL)',
-            'InitialArchiveHeader': u'{{Sigg weed aschiveet}}',
-            'PageSummary': u'* %(count)d Schtöe) (%(why)s) en et Aschif %(archives)s jedonn.',
-            'ArchiveSummary': u'* %(count)d Schtö) vun [[%(from)s]] noh heh en et Aschihf jedonn.',
-            'OlderThanSummary': u'äer wi',
-             },
-        'no': {
-            'ArchiveFull': u'(ARKIV FULLT)',
-            'InitialArchiveHeader': u'{{arkiv}}',
-            'PageSummary': u'Arkiverer %(count)d tråder (%(why)s) til %(archives)s.',
-            'ArchiveSummary': u'Arkiverer %(count)d tråder fra [[%(from)s]].',
-            'OlderThanSummary': u'eldre enn',
-            },
-        'nn': {
-            'ArchiveFull': u'(ARKIV FULLT)',
-            'InitialArchiveHeader': u'{{arkiv}}',
-            'PageSummary': u'Arkiverer %(count)d trådar (%(why)s) til %(archives)s.',
-            'ArchiveSummary': u'Arkiverer %(count)d trådar frå [[%(from)s]].',
-            'OlderThanSummary': u'eldre enn',
-            },
-        'pt': {
-            'ArchiveFull': u'(ARQUIVO COMPLETO)',
-            'InitialArchiveHeader': u'{{talkarchive}}',
-            'PageSummary': u'Arquivando %(count)d thread(s) (%(why)s) to %(archives)s.',
-            'ArchiveSummary': u'Archiving %(count)d thread(s) from [[%(from)s]].',
-            'OlderThanSummary': u'older than',
-            },
-
-        'sv': {
-            'ArchiveFull': u'(ARKIV FULLT)',
-            'InitialArchiveHeader': u'{{arkiv}}',
-            'PageSummary': u'Arkiverar %(count)d trådar (%(why)s) till %(archives)s.',
-            'ArchiveSummary': u'Arkiverar %(count)d trådar från [[%(from)s]].',
-            'OlderThanSummary': u'äldre än',
-            },
-        'fi': {
-            'ArchiveFull' : u'(ARKISTO TÄYSI)',
-            'InitialArchiveHeader': u'{{arkisto}}',
-            'PageSummary': u'Arkistoidaan %(count)d keskustelua (%(why)s) %(archives)s arkistoon.',
-            'ArchiveSummary': u'Arkistoidaan %(count)d keskustelua sivulta [[%(from)s]].',
-            'OlderThanSummary': u'vanhempi kuin',
-            },
-}
 
 def message(key, lang=Site.language()):
-    if not lang in messages:
-        lang = '_default'
-    return messages[lang][key]
+    return i18n.twtranslate(lang, key)
 
 class MalformedConfigError(pywikibot.Error):
     """There is an error in the configuration template."""
@@ -358,7 +283,7 @@ class DiscussionThread(object):
                 #return 'unsigned'
             maxage = str2time(reT.group(1))
             if self.timestamp + maxage < time.time():
-                return message('OlderThanSummary') + ' ' + reT.group(1)
+                return message('archivebot-older-than') + ' ' + reT.group(1)
         return ''
 
 class DiscussionPage(object):
@@ -377,7 +302,7 @@ class DiscussionPage(object):
             self.loadPage()
         except pywikibot.NoPage:
             self.header = archiver.get('archiveheader',
-                                       message('InitialArchiveHeader'))
+                                       message('archivebot-archiveheader'))
             if self.vars:
                 self.header = self.header % self.vars
 
@@ -427,7 +352,7 @@ class DiscussionPage(object):
         for t in self.threads:
             newtext += t.toText()
         if self.full:
-            summary += ' ' + message('ArchiveFull')
+            summary += ' ' + message('archivebot-archive-full')
         self.Page.put(newtext, minorEdit=True, comment=summary)
 
 class PageArchiver(object):
@@ -436,8 +361,8 @@ class PageArchiver(object):
     Execute by running the .run() method."""
 
     algo = 'none'
-    pageSummary = message('PageSummary')
-    archiveSummary = message('ArchiveSummary')
+    pageSummary = message('archivebot-page-summary')
+    archiveSummary = message('archivebot-archive-summary')
 
     def __init__(self, Page, tpl, salt, force=False):
         self.attributes = {
