@@ -13,6 +13,7 @@ Parameters:
 #
 # (C) Leonardo Gregianin, 2007
 # (C) Filnik, 2008
+# (c) xqt, 2011
 #
 # Distributed under the terms of the MIT license.
 #
@@ -61,15 +62,21 @@ except_text = {
 
 def appendtext(page, apptext):
     global always
-    try:
+    if page.isRedirectPage():
+        page = page.getRedirectTarget()
+    if not page.exists():
+        if page.isTalkPage():
+            text = u''
+        else:
+            raise pywikibot.NoPage(u"Page '%s' does not exist" % page.title())
+    else:
         text = page.get()
-    except pywikibot.IsRedirectPage:
-        return
     # Here you can go editing. If you find you do not
     # want to edit this page, just return
-    text += apptext;
-    if text != page.get():
-        pywikibot.showDiff(page.get(),text)
+    oldtext = text
+    text += apptext
+    if text != oldtext:
+        pywikibot.showDiff(oldtext, text)
         if not always:
             choice = pywikibot.inputChoice(
                 u'Do you want to accept these changes?', ['Yes', 'No', 'All'],
