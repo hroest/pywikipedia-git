@@ -334,6 +334,7 @@ class Family(family.Family):
             'pcd': u'Discussion Wikipedia',
             'pdc': u'Wikipedia Diskussion',
             'pfl': u'Wikipedia Diskussion',
+            'pi': u'Wikipedia सम्भासित',
             'pl': u'Dyskusja Wikipedii',
             'pms': u'Discussion ant sla Wikipedia',
             'pnt': u'Βικιπαίδεια καλάτσεμαν',
