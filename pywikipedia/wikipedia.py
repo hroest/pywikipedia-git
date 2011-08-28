@@ -1304,7 +1304,7 @@ not supported by PyWikipediaBot!"""
 
         The framework enforces this restriction by default. It is possible
         to override this by setting ignore_bot_templates=True in
-        user_config.py, or using page.put(force=True).
+        user-config.py, or using page.put(force=True).
 
         """
 
