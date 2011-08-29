@@ -2,7 +2,7 @@
 #
 # (C) Rob W.W. Hooft, 2003
 # (C) Yuri Astrakhan, 2005
-# (C) Pywikipedia bot team, 2003-2010
+# (C) Pywikipedia bot team, 2003-2011
 #
 # Distributed under the terms of the MIT license.
 #
@@ -20,10 +20,6 @@ def _join_to_(result, join):
 
 def translate(page, hints = None, auto = True, removebrackets = False, site = None, family = None):
     """
-    Please comment your source code! --Daniel
-
-    Does some magic stuff. Returns a list of pages.
-
     Goes through all entries in 'hints'. Returns a list of pages.
 
     Entries for single page titles list those pages. Page titles for entries
