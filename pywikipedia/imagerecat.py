@@ -26,7 +26,8 @@ The following command line parameters are supported:
 """
 __version__ = '$Id$'
 #
-#  (C) Multichill 2008
+#  (C) Multichill 2008-2011
+#  (C) Pywikipedia bot team, 2008-2011
 #
 #   Distributed under the terms of the MIT license.
 #

@@ -2,22 +2,23 @@
 """Splits a interwiki.log file into chunks of warnings separated by language"""
 #
 # (C) Rob W.W. Hooft, 2003
+# (C) Pywikipedia bot team, 2004-2011
 #
 # Distributed under the terms of the MIT license.
 #
 __version__ = '$Id$'
 #
 
-import wikipedia
+import wikipedia as pywikibot
 import codecs
 import re
 
-wikipedia.stopme() # No need to have me on the stack - I don't contact the wiki
+pywikibot.stopme() # No need to have me on the stack - I don't contact the wiki
 files={}
 count={}
 
 # TODO: Variable log filename
-fn = wikipedia.config.datafilepath("logs", "interwiki.log")
+fn = pywikibot.config.datafilepath("logs", "interwiki.log")
 logFile = codecs.open(fn, 'r', 'utf-8')
 rWarning = re.compile('WARNING: (?P<family>.+?): \[\[(?P<code>.+?):.*')
 for line in logFile:
@@ -25,10 +26,10 @@ for line in logFile:
     if m:
         family = m.group('family')
         code = m.group('code')
-        if code in wikipedia.getSite().languages():
+        if code in pywikibot.getSite().languages():
             if not code in files:
                 files[code] = codecs.open(
-                                  wikipedia.config.datafilepath('logs',
+                                  pywikibot.config.datafilepath('logs',
                                          'warning-%s-%s.log' % (family, code)),
                                   'w', 'utf-8')
                 count[code] = 0

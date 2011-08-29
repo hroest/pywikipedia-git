@@ -237,7 +237,7 @@ def supportedSite():
             return False
 
     return True
-    
+
 class imageFetcher(threading.Thread):
     '''
     Tries to fetch information for all images in the generator
@@ -519,14 +519,14 @@ class userInteraction(threading.Thread):
         self.uploadQueue.put(None)
         pywikibot.output(u'User worked on all images.')
         return True
-    
+
     def setAutonomous(self):
         '''
         Don't do any user interaction.
         '''
         self.autonomous = True
         return
-    
+
     def processImage(self, fields):
         '''
         Work on a single image
@@ -604,7 +604,7 @@ class Tkdialog:
         self.information_author_label = Label(self.root, text=u'Author : ')
         self.information_permission_label = Label(self.root, text=u'Permission : ')
         self.information_other_versions_label = Label(self.root, text=u'Other versions : ')
-        
+
         self.information_licensetemplate_label = Label(self.root,
                                                        text=u'License : ')
         self.information_categories_label = Label(self.root,
@@ -923,7 +923,7 @@ def main(args):
     if autonomous:
         pywikibot.output(u'Bot is running in autonomous mode. There will be no user interaction.')
         userInteractionThread.setAutonomous()
-        
+
     if not checkTemplate:
         pywikibot.output(u'No check template will be added to the uploaded files.')
         uploaderThread.nochecktemplate()

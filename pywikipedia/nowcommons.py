@@ -48,6 +48,7 @@ Please fix these if you are capable and motivated:
 #
 # (C) Wikipedian, 2006-2007
 # (C) Siebrand Mazeland, 2007
+# (C) Pywikipedia bot team, 2006-2011
 #
 # Distributed under the terms of the MIT license.
 #

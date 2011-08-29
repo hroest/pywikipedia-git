@@ -60,8 +60,8 @@ def main(args):
                     newtext = imagepage.get() + template % (duplicate,)
                     pywikibot.showDiff(imagepage.get(), newtext)
                     imagepage.put(newtext, comment)
-                             
-            
+
+
 if __name__ == "__main__":
     try:
         main(sys.argv[1:])

@@ -286,7 +286,7 @@ class imageTransfer (threading.Thread):
             #If the image is uploaded under a different name, replace all instances
             if self.imagePage.titleWithoutNamespace() != self.newname:
                 moveSummary = i18n.twtranslate(self.imagePage.site(), 'commons-file-moved', {'localfile' : self.imagePage.titleWithoutNamespace(), 'commonsfile' : self.newname})
-                
+
                 imagebot = ImageRobot(generator = self.preloadingGen, oldImage = self.imagePage.titleWithoutNamespace(), newImage = self.newname, summary = moveSummary, always = True, loose = True)
                 imagebot.run()
         return

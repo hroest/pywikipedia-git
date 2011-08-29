@@ -169,11 +169,12 @@ badword at all but can be used for some bad-nickname.
 #
 # (C) Alfio, 2005
 # (C) Kyle/Orgullomoore, 2006-2007
-# (C) Siebrand Mazeland, 2006-2007
-# (C) Filnik, 2007-2010
+# (C) Siebrand Mazeland, 2006-2009
+# (C) Filnik, 2007-2011
 # (C) Daniel Herding, 2007
-# (C) Alex Shih-Han Lin, 2009
+# (C) Alex Shih-Han Lin, 2009-2010
 # (C) xqt, 2009-2011
+# (C) Pywikipedia bot team, 2008-2010
 #
 # Distributed under the terms of the MIT license.
 #

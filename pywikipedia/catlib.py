@@ -9,6 +9,7 @@ Library to work with category pages on Wikipedia
 # (C) Russell Blau, 2005
 # (C) Cyde Weys, 2005-2007
 # (C) Leonardo Gregianin, 2005-2007
+# (C) Pywikipedia bot team, 2007-2011
 #
 # Distributed under the terms of the MIT license.
 #

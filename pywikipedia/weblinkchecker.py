@@ -88,7 +88,7 @@ Syntax examples:
 
 #
 # (C) Daniel Herding, 2005
-# (C) Pywikipedia bot team, 2005-2010
+# (C) Pywikipedia bot team, 2005-2011
 #
 # Distributed under the terms of the MIT license.
 #

@@ -29,20 +29,20 @@ class DataIngestionBot:
         configuration['csvDialect']=u'excel'
         configuration['csvDelimiter']=';'
         configuration['csvEncoding']=u'Windows-1252' #FIXME: Encoding hell
-        
+
         templates = configurationPage.templatesWithParams()
         for (template, params) in templates:
             if template==u'Data ingestion':
                 for param in params:
                     (field, sep, value) = param.partition(u'=')
-                    
+
                     # Remove leading or trailing spaces
                     field = field.strip()
                     value = value.strip()
                     configuration[field] = value
-        print configuration            
+        print configuration
         return configuration
-        
+
 
     def downloadPhoto(self, photoUrl = ''):
         '''
@@ -72,9 +72,9 @@ class DataIngestionBot:
         for key, value in metadata.iteritems():
             description = description + u'|' + key + u'=%(' + key + u')s\n'
         description = description + u'}}\n'
-           
+
         return description % metadata
-        
+
     def getTitle(self, metadata):
         '''
         Build a title.
@@ -92,7 +92,7 @@ class DataIngestionBot:
             description = description[0 : 120]
 
         title = u'%s - %s.jpg' % (description, identifier)
-        
+
         return flickrripper.cleanUpTitle(title)
 
     def cleanDate(self, field):
@@ -131,9 +131,9 @@ class DataIngestionBot:
         description = self.getDescription(metadata)
 
 
-        pywikibot.output(u'Preparing upload for %s.' % title)    
-        pywikibot.output(description)    
-                            
+        pywikibot.output(u'Preparing upload for %s.' % title)
+        pywikibot.output(description)
+
         bot = upload.UploadRobot(url=fileLocation, description=description, useFilename=title, keepFilename=True, verifyDescription=False, targetSite = self.site)
         bot.run()
 
@@ -145,7 +145,7 @@ class DataIngestionBot:
         for row in reader:
             self.metadataCSV(row)
             self.processFile(metadata)
-            
+
     def run(self):
         '''
         Do crap
@@ -153,15 +153,15 @@ class DataIngestionBot:
         if not self.configuration.get('sourceFormat'):
             pywikibot.output(u'The field "sourceFormat" is not set')
             return False
-        
+
         if self.configuration.get('sourceFormat')==u'csv':
             self.processCSV()
         else:
             pywikibot.output(u'%s is not a supported source format')
-        
+
 def main(args):
     generator = None;
-    
+
     genFactory = pagegenerators.GeneratorFactory()
 
     for arg in pywikibot.handleArgs():
@@ -174,7 +174,7 @@ def main(args):
     for page in generator:
         bot  = DataIngestionBot(page)
         bot.run()
-    
+
 if __name__ == "__main__":
     try:
         main(sys.argv[1:])

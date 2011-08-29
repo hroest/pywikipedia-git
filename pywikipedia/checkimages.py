@@ -275,7 +275,7 @@ nothing_notification = {
     'commons':u"\n{{subst:User:Filnik/untagged|File:%s}}\n\n''This message was '''added automatically by " + \
                "__botnick__''', if you need some help about it, please read the text above again and follow the links in it," + \
             "if you still need help ask at the [[File:Human-help-browser.svg|18px|link=Commons:Help desk|?]] '''[[Commons:Help desk|->]]" + \
-            "[[Commons:Help desk]]''' in any language you like to use.'' --__botnick__ ~~~~~""",    
+            "[[Commons:Help desk]]''' in any language you like to use.'' --__botnick__ ~~~~~""",
     'ar'     :u"{{subst:مصدر الصورة|File:%s}} --~~~~",
     'de'     :u'\n{{subst:Benutzer:ABF/D2|%s}} ~~~~ ',
     'en'     :u"{{subst:image source|File:%s}} --~~~~",

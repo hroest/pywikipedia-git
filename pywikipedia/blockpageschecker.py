@@ -54,7 +54,7 @@ python blockpageschecker.py -show -protectedpages:4
 """
 #
 # (C) Monobi a.k.a. Wikihermit, 2007
-# (C) Filnik, 2007-2010
+# (C) Filnik, 2007-2011
 # (C) NicDumZ, 2008-2009
 # (C) Pywikipedia bot team, 2007-2010
 #

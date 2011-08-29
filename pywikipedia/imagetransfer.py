@@ -24,6 +24,7 @@ used on a page reachable via interwiki links.
 """
 #
 # (C) Andre Engels, 2004
+# (C) Pywikipedia bot team, 2004-2011
 #
 # Distributed under the terms of the MIT license.
 #
