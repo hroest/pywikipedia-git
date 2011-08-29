@@ -83,7 +83,8 @@ class MaintcontBot(SingleServerIRCBot):
     def on_welcome(self, c, e):
         self.connection.privmsg("maintcont",
                                 "workerjoin %s.%s %s"
-                                % (site.language(), site.family.name, str(ver))
+                                % (site.language(), site.family.name,
+                                   str(ver)))
 
     def on_privmsg(self, c, e):
         nick = nm_to_n(e.source())
