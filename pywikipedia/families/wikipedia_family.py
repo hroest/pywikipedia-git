@@ -661,6 +661,7 @@ class Family(family.Family):
             'fi': u'Kirja',
             'fr': u'Référence',
             'lt': u'Sąrašas',
+            'pl': u'Archiwum',
             'pt': u'Livro',
         }
 
@@ -671,6 +672,7 @@ class Family(family.Family):
             'fi': u'Keskustelu kirjasta',
             'fr': u'Discussion Référence',
             'lt': u'Sąrašo aptarimas',
+            'pl': u'Dyskusja archiwum',
             'pt': u'Livro Discussão',
         }
 
