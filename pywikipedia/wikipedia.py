@@ -3946,13 +3946,13 @@ class ImagePage(Page):
                 output(
         u"Image description page %s contains invalid reference to [[%s]]."
                     % (self.title(), match.group('title')))
-                
+
     def globalUsage(self):
         '''
         Yield Pages on which the image is used globally.
         Currently this probably only works on Wikimedia Commonas.
         '''
-        
+
         if not self.site().has_api() or self.site().versionnumber() < 11:
             # Not supported, just return none
             return
