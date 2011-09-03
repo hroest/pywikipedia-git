@@ -385,11 +385,7 @@ not supported by PyWikipediaBot!"""
                     raise InvalidTitle(u"Invalid section in category '%s'" % t)
                 else:
                     t, sec = t.split(u'#', 1)
-                    self._section = sec.lstrip()
-                    self._section = sectionencode(self._section,
-                                                  self._site.encoding())
-                    if not self._section:
-                        self._section = None
+                    self._section = sec.lstrip() or None
                     t = t.rstrip()
             elif sectionStart == 0:
                 raise InvalidTitle(u"Invalid title starting with a #: '%s'" % t)
@@ -456,8 +452,8 @@ not supported by PyWikipediaBot!"""
             before Category: and Image: links
         @param as_filename:  - not implemented yet -
 
-        If underscore is True, replace all ' ' characters with '_'.
         If savetitle is True, encode any wiki syntax in the title.
+
         """
         title = self._title
         if asLink:
