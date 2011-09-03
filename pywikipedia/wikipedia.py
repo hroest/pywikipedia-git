@@ -268,16 +268,14 @@ class Page(object):
             # restriction affects us or not
             self._editrestriction = False
 
-            if site is None:
-                site = getSite()
-            elif type(site) in [str, unicode]:
+            if site is None or isinstance(site, basestring):
                 site = getSite(site)
-
             self._site = site
 
             if not insite:
                 insite = site
 
+            # Clean up the name, it can come from anywhere.
             # Convert HTML entities to unicode
             t = html2unicode(title)
 
@@ -285,7 +283,7 @@ class Page(object):
             # Sometimes users copy the link to a site from one to another.
             # Try both the source site and the destination site to decode.
             try:
-                t = url2unicode(t, site = insite, site2 = site)
+                t = url2unicode(t, site=insite, site2=site)
             except UnicodeDecodeError:
                 raise InvalidTitle(u'Bad page title : %s' % t)
 
@@ -296,13 +294,15 @@ class Page(object):
             # (which might result in information loss).
             t = unicodedata.normalize('NFC', t)
 
-            # Clean up the name, it can come from anywhere.
-            # Replace underscores by spaces, also multiple spaces and underscores with a single space
+            if u'\ufffd' in t:
+                raise InvalidTitle("Title contains illegal char (\\uFFFD)")
+
+            # Replace underscores by spaces
             t = t.replace(u"_", u" ")
-            while u"  " in t:
-                t = t.replace(u"  ", u" ")
+            # replace multiple spaces a single space
+            while u"  " in t: t = t.replace(u"  ", u" ")
             # Strip spaces at both ends
-            t = t.strip(u" ")
+            t = t.strip()
             # Remove left-to-right and right-to-left markers.
             t = t.replace(u'\u200e', '').replace(u'\u200f', '')
             # leading colon implies main namespace instead of the default
