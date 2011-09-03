@@ -384,12 +384,13 @@ not supported by PyWikipediaBot!"""
                 if self._namespace == 14:
                     raise InvalidTitle(u"Invalid section in category '%s'" % t)
                 else:
-                    self._section = t[sectionStart+1 : ].lstrip(" ")
+                    t, sec = t.split(u'#', 1)
+                    self._section = sec.lstrip()
                     self._section = sectionencode(self._section,
                                                   self._site.encoding())
                     if not self._section:
                         self._section = None
-                    t = t[ : sectionStart].rstrip(" ")
+                    t = t.rstrip()
             elif sectionStart == 0:
                 raise InvalidTitle(u"Invalid title starting with a #: '%s'" % t)
             else:
@@ -401,7 +402,7 @@ not supported by PyWikipediaBot!"""
 
             # reassemble the title from its parts
             if self._namespace != 0:
-                t = self._site.namespace(self._namespace) + u':' + t
+                t = u'%s:%s' % (self._site.namespace(self._namespace), t)
             if self._section:
                 t += u'#' + self._section
 
@@ -457,7 +458,6 @@ not supported by PyWikipediaBot!"""
 
         If underscore is True, replace all ' ' characters with '_'.
         If savetitle is True, encode any wiki syntax in the title.
-        If decode is True, decodes the section title
         """
         title = self._title
         if asLink:
