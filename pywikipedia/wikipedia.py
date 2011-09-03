@@ -435,8 +435,8 @@ not supported by PyWikipediaBot!"""
         """Return the character encoding used on this Page's wiki Site."""
         return self._site.encoding()
 
-    def title(self, underscore=False, savetitle=False, decode=False,
-              withNamespace=True,
+    @deprecate_arg("decode", None)
+    def title(self, underscore=False, savetitle=False, withNamespace=True,
               withSection=True, asUrl=False, asLink=False,
               allowInterwiki=True, forceInterwiki=False, textlink=False,
               as_filename=False):
@@ -460,16 +460,6 @@ not supported by PyWikipediaBot!"""
         If decode is True, decodes the section title
         """
         title = self._title
-        if decode or asLink:
-            begin = title.find('#')
-            if begin != -1:
-                anchor = self.section(underscore=underscore, decode=True)
-                try:
-                    title = title[:begin + 1] + anchor
-                except TypeError:
-                    print title, begin, anchor
-                    raise
-
         if asLink:
             iw_target_site = getSite()
             iw_target_family = getSite().family
@@ -517,18 +507,16 @@ not supported by PyWikipediaBot!"""
             result = result.replace(forbiddenChar, '_')
         return result
 
-    def section(self, underscore = False, decode=False):
+    @deprecate_arg("decode", None)
+    def section(self, underscore = False):
         """Return the name of the section this Page refers to.
 
         The section is the part of the title following a '#' character, if any.
         If no section is present, return None.
         """
         section = self._section
-        if section and decode:
-            section = section.replace('.', '%')
-            section = url2unicode(section, self._site)
-            if not underscore:
-                section = section.replace('_', ' ')
+        if underscore:
+            section = section.replace(' ', '_')
         return section
 
     def sectionFreeTitle(self, underscore=False):
