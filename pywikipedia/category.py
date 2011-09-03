@@ -651,7 +651,7 @@ class CategoryTidyRobot:
                 if current_cat == original_cat:
                     print 'No changes necessary.'
                 else:
-                    newcat = u'[[:%s|%s]]' % (current_cat.title(savetitle=True, decode=True), current_cat.titleWithoutNamespace())
+                    newcat = u'[[:%s|%s]]' % (current_cat.title(savetitle=True), current_cat.titleWithoutNamespace())
                     editsum = i18n.twtranslate(pywikibot.getSite(),
                                                'category-replacing',
                                                {'oldcat': original_cat.titleWithoutNamespace(),
