@@ -66,7 +66,6 @@ of the text unless otherwise noted --
         within a non-wiki-markup section of text
     decodeEsperantoX: decode Esperanto text using the x convention.
     encodeEsperantoX: convert wikitext to the Esperanto x-encoding.
-    sectionencode: encode text for use as a section title in wiki-links.
     findmarker(text, startwith, append): return a string which is not part
         of text
     expandmarker(text, marker, separator): return marker string expanded
@@ -654,7 +653,7 @@ not supported by PyWikipediaBot!"""
                     self._contents = contents
                 hn = self.section()
                 if hn:
-                    m = re.search("=+ *%s *=+" % hn, self._contents)
+                    m = re.search("=+[ ']*%s[ ']*=+" % hn, self._contents)
                     if verbose and not m:
                         output(u"WARNING: Section does not exist: %s" % self.aslink(forceInterwiki = True))
             # Store any exceptions for later reference
@@ -779,8 +778,8 @@ not supported by PyWikipediaBot!"""
             else:
                 raise IsRedirectPage(redirtarget)
         if self.section():
-            # TODO: What the hell is this? Docu please.
-            m = re.search("\.3D\_*(\.27\.27+)?(\.5B\.5B)?\_*%s\_*(\.5B\.5B)?(\.27\.27+)?\_*\.3D" % re.escape(self.section()), sectionencode(pageInfo['revisions'][0]['*'],self.site().encoding()))
+            m = re.search("=+[ ']*%s[ ']*=+" % re.escape(self.section()),
+                          pageInfo['revisions'][0]['*'])
             if not m:
                 try:
                     self._getexception
@@ -920,8 +919,8 @@ not supported by PyWikipediaBot!"""
             else:
                 raise IsRedirectPage(redirtarget)
         if self.section():
-            # TODO: What the hell is this? Docu please.
-            m = re.search("\.3D\_*(\.27\.27+)?(\.5B\.5B)?\_*%s\_*(\.5B\.5B)?(\.27\.27+)?\_*\.3D" % re.escape(self.section()), sectionencode(text,self.site().encoding()))
+            m = re.search("=+[ ']*%s[ ']*=+" % re.escape(self.section()),
+                          text)
             if not m:
                 try:
                     self._getexception
@@ -4140,8 +4139,7 @@ class _GetAll(object):
                     page2._startTime = time.strftime('%Y%m%d%H%M%S',
                                                      time.gmtime())
                     if section:
-                        m = re.search("\.3D\_*(\.27\.27+)?(\.5B\.5B)?\_*%s\_*(\.5B\.5B)?(\.27\.27+)?\_*\.3D"
-                                      % re.escape(section), sectionencode(text,page2.site().encoding()))
+                        m = re.search("=+[ ']*%s[ ']*=+" % re.escape(section), text)
                         if not m:
                             try:
                                 page2._getexception
@@ -4302,7 +4300,7 @@ class _GetAll(object):
                     # Use the data loading time.
                     page2._startTime = time.strftime('%Y%m%d%H%M%S', time.gmtime())
                     if section:
-                        m = re.search("\.3D\_*(\.27\.27+)?(\.5B\.5B)?\_*%s\_*(\.5B\.5B)?(\.27\.27+)?\_*\.3D" % re.escape(section), sectionencode(text,page2.site().encoding()))
+                        m = re.search("=+[ ']*%s[ ']*=+" % re.escape(section), text)
                         if not m:
                             try:
                                 page2._getexception
@@ -4530,10 +4528,6 @@ def encodeEsperantoX(text):
             text = result
             break
     return text
-
-def sectionencode(text, encoding):
-    """Encode text so that it can be used as a section title in wiki-links."""
-    return urllib.quote(text.replace(" ","_").encode(encoding)).replace("%",".")
 
 ######## Unicode library functions ########
 
