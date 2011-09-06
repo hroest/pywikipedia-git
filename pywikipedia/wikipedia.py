@@ -4392,7 +4392,7 @@ def getall(site, pages, throttle=True, force=False):
     # TODO: why isn't this a Site method?
     pages = list(pages)  # if pages is an iterator, we need to make it a list
     output(u'Getting %d pages %sfrom %s...'
-           % (len(pages), iif(site.has_api() and debug, u'via API ', u''), site))
+           % (len(pages), u'via API ' if site.has_api() and debug else u'', site))
     limit = config.special_page_limit / 4 # default is 500/4, but It might have good point for server.
     if len(pages) > limit:
         # separate export pages for bulk-retrieve
@@ -4419,11 +4419,6 @@ def setAction(s):
     """Set a summary to use for changed page submissions"""
     global action
     action = s
-
-def iif(q, a, b):
-    """inline if"""
-    if q: return a
-    else: return b
 
 # Default action
 setAction('Wikipedia python library')
