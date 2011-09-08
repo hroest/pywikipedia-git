@@ -21,8 +21,8 @@ from nowcommons import nowCommons
 from pywikibot import i18n
 
 
-class NothingFound(pywikibot.Error):
-    """ An exception indicating that a regex has return [] instead of results."""
+class NoEnoughData(pywikibot.Error):
+    """ Error class for when the user doesn't specified all the data needed """
 
 
 def main(args):
