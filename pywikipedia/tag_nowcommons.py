@@ -20,6 +20,11 @@ from imagetransfer import nowCommonsTemplate
 from nowcommons import nowCommons
 from pywikibot import i18n
 
+
+class NothingFound(pywikibot.Error):
+    """ An exception indicating that a regex has return [] instead of results."""
+
+
 def main(args):
     generator = None;
     always = False
@@ -33,7 +38,7 @@ def main(args):
 
     generator = genFactory.getCombinedGenerator()
     if not generator:
-        raise add_text.NoEnoughData('You have to specify the generator you want to use for the script!')
+        raise NoEnoughData('You have to specify the generator you want to use for the script!')
 
     pregenerator = pagegenerators.PreloadingGenerator(generator)
 
