@@ -50,12 +50,12 @@ from pywikibot import i18n
 content = {
     'commons': u'{{Sandbox}}\n<!-- Please edit only below this line. -->',
     'als':u'{{subst:/Vorlage}}',
-    'ar': u'{{من فضلك اترك هذا السطر ولا تعدله (عنوان ساحة التجربة)}}\n<!-- مرحبا! خذ راحتك في تجربة مهارتك في التنسيق والتحرير أسفل هذا السطر. هذه الصفحة لتجارب التعديل ، سيتم تفريغ هذه الصفحة كل 6 ساعات. -->',
+    'ar': u'{{عنوان الملعب}}\n<!-- مرحبا! خذ راحتك في تجربة مهارتك في التنسيق والتحرير أسفل هذا السطر. هذه الصفحة لتجارب التعديل ، سيتم تفريغ هذه الصفحة كل 12 ساعة. -->',
     'bar':u'{{Bitte erst NACH dieser Zeile schreiben! (Begrüßungskasten)}}\r\n',
     'cs': u'{{subst:/uhrabat}}',
     'da': u'{{subst:Sandkasse tekst}}',
     'de': u'{{Bitte erst NACH dieser Zeile schreiben! (Begrüßungskasten)}}\r\n',
-    'en': u'{{Please leave this line alone (sandbox heading)}}\n<!-- Hello! Feel free to try your formatting and editing skills below this line. As this page is for editing experiments, this page will automatically be cleaned every 12 hours. -->',
+    'en': u'{{Sandbox heading}}\n<!-- Hello! Feel free to try your formatting and editing skills below this line. As this page is for editing experiments, this page will automatically be cleaned every 12 hours. -->',
     'fa': u'{{subst:User:Amirobot/sandbox}}',
     'fi': u'{{subst:Hiekka}}',
     'he': u'{{ארגז חול}}\n<!-- נא לערוך מתחת לשורה זו בלבד, תודה. -->',
@@ -82,7 +82,7 @@ content = {
 sandboxTitle = {
     'commons': u'Project:Sandbox',
     'als':u'Project:Sandchaschte',
-    'ar': u'Project:ساحة التجربة',
+    'ar': u'Project:ملعب',
     'bar':u'Project:Spielwiese',
     'cs': u'Project:Pískoviště',
     'da': u'Project:Sandkassen',
