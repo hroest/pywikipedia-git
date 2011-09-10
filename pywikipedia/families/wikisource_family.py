@@ -397,6 +397,7 @@ class Family(family.Family):
         }
 
         self.namespaces[108] = {
+            '-': u'Author',
             'he': u'מחבר',
             'it': u'Pagina',
             'pt': u'Em Tradução',
@@ -404,6 +405,7 @@ class Family(family.Family):
         }
 
         self.namespaces[109] = {
+            '-': u'Author talk',
             'he': u'שיחת מחבר',
             'it': u'Discussioni pagina',
             'pt': u'Discussão Em Tradução',
