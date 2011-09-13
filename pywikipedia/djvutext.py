@@ -25,6 +25,7 @@ and the bot will only work on that single page.
 #
 __version__ = '$Id$'
 import wikipedia as pywikibot
+from pywikibot import i18n
 import os, sys
 import config, codecs
 
@@ -35,16 +36,6 @@ docuReplacements = {
 
 
 class DjVuTextBot:
-    # Edit summary message that should be used.
-    # NOTE: Put a good description here, and add translations, if possible!
-    msg = {
-        'ar': u'روبوت: إنشاء صفحة بنص مستخرج من DjVu',
-        'en': u'Robot: Creating page with text extracted from DjVu',
-        'fa': u'ربات: ایجاد صفحه با متنی که از دژاوو استخراج شد',
-        'fr': u'Bot: Creating page with texte extracted from DjVu',
-        'nl': u'Bot: pagina aangemaakt met tekst geëxtraheerd uit DjVu-bestand',
-        'pt': u'Bot: criando página com texto extraído do DjVu',
-    }
 
     def __init__(self, djvu, index, pages, ask=False, debug=False):
         """
@@ -84,7 +75,8 @@ class DjVuTextBot:
 
     def run(self):
         # Set the edit summary message
-        pywikibot.setAction(pywikibot.translate(pywikibot.getSite(), self.msg))
+        pywikibot.setAction(i18n.twtranslate(pywikibot.getSite(),
+                                             'djvutext-creating'))
 
         linkingPage = pywikibot.Page(pywikibot.getSite(), self.index)
         self.prefix = linkingPage.titleWithoutNamespace()
