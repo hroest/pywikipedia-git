@@ -656,7 +656,7 @@ class RedirectRobot:
                     pywikibot.output(u"Bad Title Error")
                     break
                 text = self.site.redirectRegex().sub(
-                    '#%s %s' % (self.site.redirect(True),
+                    '#%s %s' % (self.site.redirect(),
                                 targetPage.title(asLink=True, textlink=True)),
                     oldText)
                 if text == oldText:
