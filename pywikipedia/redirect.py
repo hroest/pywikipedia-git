@@ -659,7 +659,7 @@ class RedirectRobot:
                     '#%s %s' % (self.site.redirect(),
                                 targetPage.title(asLink=True, textlink=True)),
                     oldText)
-                if text == oldText:
+                if redir.title() == targetPage.title() or text == oldText:
                     pywikibot.output(u"Note: Nothing left to do on %s"
                                      % redir.title(asLink=True))
                     break
