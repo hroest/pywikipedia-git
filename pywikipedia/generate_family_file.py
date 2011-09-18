@@ -16,6 +16,9 @@ __version__ = "$Id$"
 from urllib2 import HTTPError
 import urllib2
 
+from BeautifulSoup import BeautifulSoup
+from distutils.version import StrictVersion as V
+
 def urlopen(url):
     req = urllib2.Request(url, headers = {'User-agent': 'Pywikipedia family generator 0.1 - pywikipediabot.sf.net'})
     return urllib2.urlopen(req)
@@ -225,7 +228,19 @@ class Wiki(object):
                 raise
             data = e.read()
             pass
+        
+        bs = BeautifulSoup(data)
+        try:
+            self.version = bs.find("meta", attrs={'name': "generator"})['content'].replace("MediaWiki ", "")
+        except Exception:
+            self.version = "0.0"
 
+        if V(self.version) < V("1.17.0"):
+            self._parse_pre_117(data)
+        else:
+            self._parse_post_117(bs)
+
+    def _parse_pre_117(self, data):
         if not self.REwgEnableApi.search(data):
             print "*** WARNING: Api does not seem to be enabled on %s" % fromurl
         try:
@@ -236,6 +251,13 @@ class Wiki(object):
         self.scriptpath = self.REwgScriptPath.search(data).groups()[0]
         self.articlepath = self.REwgArticlePath.search(data).groups()[0]
         self.lang = self.REwgContentLanguage.search(data).groups()[0]
+
+    def _parse_post_117(self, bs):
+        apipath = bs.find("link", rel='EditURI')['href'].split("?")[0]
+        info = json.load(urlopen(apipath + "?action=query&meta=siteinfo&format=json"))['query']['general']
+
+        for item in ['server', 'scriptpath', 'articlepath', 'lang']:
+            setattr(self, item, info[item])
 
     def __cmp__(self, other):
         return (self.server + self.scriptpath == other.server + other.scriptpath)
