@@ -176,11 +176,25 @@ class NamespaceStorage(object):
         self.f = family.Family()
 
     def addfromwiki(self, w):
-        data = json.load(urlopen(w.api + "?action=query&format=json&meta=siteinfo&siprop=namespaces|namespacealiases"))['query']
-        for ns in data['namespaces'].itervalues():
-            self.add(ns['id'], w.lang, ns['*'])
-        for ns in data['namespacealiases']:
-            self.add(ns['id'], w.lang, ns['*'])
+        jdata = json.load(urlopen(w.api + "?action=query&format=json&meta=siteinfo&siprop=namespaces|namespacealiases"))
+        if 'query' not in jdata:
+            jdata = json.load(urlopen(w.api + "?action=query&format=json&meta=siteinfo&siprop=namespaces"))
+        if 'query' not in jdata:
+            jdata = {'query': {}}  # empty
+
+        data = jdata['query']
+
+        if 'namespaces' in data:
+            for ns in data['namespaces'].itervalues():
+                self.add(ns['id'], w.lang, ns['*'])
+        else:
+            print "\n*** Notice: cannot retrieve namespaces for %s" % w.lang
+        
+        if 'namespacealiases' in data:
+            for ns in data['namespacealiases']:
+                self.add(ns['id'], w.lang, ns['*'])
+        else:
+            print "\n*** Notice: cannot retrieve namespace aliases for %s" % w.lang
 
     def add(self, ns, lang, translation):
         """ Contains logic for determining whether to define a namespace or not """
@@ -248,10 +262,19 @@ class Wiki(object):
             self.version = self.REwgVersion.search(data).groups()[0]
         except AttributeError:
             self.version = None
+
         self.server = self.REwgServer.search(data).groups()[0]
         self.scriptpath = self.REwgScriptPath.search(data).groups()[0]
         self.articlepath = self.REwgArticlePath.search(data).groups()[0]
         self.lang = self.REwgContentLanguage.search(data).groups()[0]
+
+        if self.version == None:
+            # try to get version using api
+            try:
+                d = json.load(urlopen(self.api + "?version&format=json"))
+                self.version = filter(lambda x: x.startswith("MediaWiki"), [l.strip() for l in d['error']['*'].split("\n")])[0].split()[1]
+            except Exception:
+                pass
 
     def _parse_post_117(self, bs):
         apipath = bs.find("link", rel='EditURI')['href'].split("?")[0]
