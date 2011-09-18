@@ -17,7 +17,7 @@ from urllib2 import HTTPError
 import urllib2
 
 from BeautifulSoup import BeautifulSoup
-from distutils.version import StrictVersion as V
+from distutils.version import LooseVersion as V
 
 def urlopen(url):
     req = urllib2.Request(url, headers = {'User-agent': 'Pywikipedia family generator 0.1 - pywikipediabot.sf.net'})
@@ -219,6 +219,7 @@ class Wiki(object):
     REwgVersion = re.compile(ur'wgVersion ?= ?"([^"]*)"')
 
     def __init__(self, fromurl):
+        self.fromurl = fromurl
         if fromurl.endswith("$1"):
           fromurl = fromurl[:-2]
         try:
@@ -242,7 +243,7 @@ class Wiki(object):
 
     def _parse_pre_117(self, data):
         if not self.REwgEnableApi.search(data):
-            print "*** WARNING: Api does not seem to be enabled on %s" % fromurl
+            print "*** WARNING: Api does not seem to be enabled on %s" % self.fromurl
         try:
             self.version = self.REwgVersion.search(data).groups()[0]
         except AttributeError:
