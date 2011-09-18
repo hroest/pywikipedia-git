@@ -33,15 +33,15 @@ def get_imagelinks(url):
     soup = BeautifulSoup.BeautifulSoup(file.read())
     file.close()
     if not shown:
-	tagname = "a"
+        tagname = "a"
     elif shown == "just":
-	tagname = "img"
+        tagname = "img"
     else:
         tagname = ["a", "img"]
 
     for tag in soup.findAll(tagname):
-	link = tag.get("src", tag.get("href", None))
-	if link:
+        link = tag.get("src", tag.get("href", None))
+        if link:
             ext = os.path.splitext(link)[1].lower().strip('.')
             if ext in fileformats:
                  links.append(urllib.basejoin(url, link))
