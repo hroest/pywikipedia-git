@@ -79,7 +79,7 @@ class CapitalizeBot:
                                            'capitalize_redirects-create_redirect',
                                            {'to': page_t})
                 try:
-                    page_cap.put(u"#%s %s" % (self.site.redirect(True),
+                    page_cap.put(u"#%s %s" % (self.site.redirect(),
                                               page.title(asLink=True,
                                                          textlink=True)),
                                               comment)
