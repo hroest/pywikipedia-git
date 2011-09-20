@@ -20,6 +20,7 @@ __version__='$Id$'
 import re, sys, pickle
 import os.path
 import time
+import urllib
 import wikipedia as pywikibot
 
 cache = {}
@@ -93,7 +94,7 @@ def refresh(site, sysop=False, witheditsonly=True):
     else:
         PATTERN = u'<li>(.*?) *\((.*?),\s(.*?)\)</li>'
     while m1:
-        text = site.getUrl(site.globalusers_address(offset=offset, group='Global_bot'))
+        text = site.getUrl(site.globalusers_address(offset=urllib.quote(offset), group='Global_bot'))
 
         m1 = re.findall(u'<li>.*?</li>', text)
         for item in m1:
