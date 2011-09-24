@@ -510,7 +510,7 @@ not supported by PyWikipediaBot!"""
         If no section is present, return None.
         """
         section = self._section
-        if underscore:
+        if section and underscore:
             section = section.replace(' ', '_')
         return section
 
