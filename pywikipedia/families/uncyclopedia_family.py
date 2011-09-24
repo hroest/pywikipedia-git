@@ -1,6 +1,8 @@
 # -*- coding: utf-8  -*-
 import config, family, urllib
 
+__version__ = '$Id$'
+
 #
 # The Uncyclomedia family, assorted encyclopedi.as from the Uncyclopedia series.
 # This file contains a full set of (currently) fifty languages, excluding forks,
@@ -53,6 +55,7 @@ class Family(family.Family):
             'hy': 'angragitaran.org',
             'id': 'tolololpedia.wikia.com',
             'ie': 'ninciclopedia.org',
+            'info': 'uncyclopedia.info',
             'io': 'io.neciklopedio.org',
             'is': 'is.ikkepedia.org',
             'it': 'nonciclopedia.wikia.com',
@@ -480,6 +483,7 @@ class Family(family.Family):
             'hy': u'Angragitaran',
             'id': u'Tolololpedia',
             'ie': u'Ninciclopedia',
+            'info': u'Uncyclopaedia',
             'io': u'Neciklopedio',
             'is': u'Ekkipedia',
             'it': u'Nonciclopedia',
@@ -565,6 +569,7 @@ class Family(family.Family):
             'hy': u'Angragitaran քննարկում',
             'id': u'Pembicaraan Tolololpedia',
             'ie': u'Ninciclopedia talk',
+            'info': u'Uncyclopaedia talk',
             'io': u'Neciklopedio Debato',
             'is': u'Ekkipediaspjall',
             'it': u'Discussioni Nonciclopedia',
@@ -1306,6 +1311,7 @@ class Family(family.Family):
             'et': u'Foorum',
             'fi': u'Foorumi',
             'got': u'Forum',
+            'info': u'Game',
             'meta': u'UnSource',
             'mo': u'Necţionar',
             'nl': u'Portaal',
@@ -1319,6 +1325,7 @@ class Family(family.Family):
             'dlm': u'Necikloparaula talk',
             'fi': u'Keskustelu foorumista',
             'got': u'Forum gawaurdja',
+            'info': u'Game talk',
             'meta': u'UnSource talk',
             'mo': u'Discuție Necţionar',
             'nl': u'Overleg portaal',
@@ -2070,22 +2077,25 @@ class Family(family.Family):
         # if you carefully avoid the options, you could get away without these
         # for another wiki family.
         self.languages_by_size  = [
-            'nl','mwl','ms','mo','nn','no','pt','pl','oc','mk','mg','lb','la','ko',
-            'li','lo','meta','lv','lt','ro','ru','vls','uk','tr','yi','zh','zombie',
-            'zh-tw','zh-hk','tlh','tl','sk','simple','sco','sl','sr','th','sv','su',
-            'km','ka','dlm','de','da','cy','el','en','et','es','eo','cs','common',
-            'bar','ast','ar','be','bg','ca','bs','bn','fa','fi','ie','id','hy','io',
-            'is','jv','ja','it','hu','hr','fy','fr','fo','ga','gl','he','grc','got',
-            'af',
+            'pt', 'en', 'it', 'bar', 'es', 'fr', 'ja', 'pl', 'zh-tw', 'zh-hk',
+            'fi', 'ko', 'no', 'th', 'ru', 'he', 'nl', 'zh', 'de', 'da', 'cs',
+            'el', 'id', 'eo', 'sk', 'hu', 'sv', 'tr', 'gl', 'uk', 'ar', 'nn',
+            'fa', 'sr', 'hr', 'ca', 'ast', 'tl', 'mg', 'la', 'ro', 'lt',
+            'simple', 'bg', 'lv', 'ms', 'et', 'tlh', 'mo', 'mk', 'lb', 'lo',
+            'got', 'oc', 'sl', 'li', 'ka', 'mwl', 'cy', 'zombie', 'hy', 'bn',
+            'dlm', 'bs', 'km', 'yi', 'be', 'vls', 'sco', 'su', 'jv', 'af',
+            'grc', 'ga', 'ie', 'io', 'fy', 'is', 'fo',
         ]
 
         self.alphabetic_revised = [
-            'af','ar','ast','bar','be','bg','bn','bs','ca','common','cs','cy','da',
-            'de','dlm','el','en','eo','es','et','fa','fi','fo','fr','fy','ga','gl',
-            'got','grc','he','hr','hu','hy','id','ie','io','is','it','ja','jv','ka',
-            'km','ko','la','lb','li','lo','lt','lv','meta','mg','mk','mo','ms','mwl',
-            'nl','nn','no','oc','pl','pt','ro','ru','sco','simple','sk','sl','sr',
-            'su','sv','th','tl','tlh','tr','uk','vls','yi','zh','zh-hk','zh-tw','zombie',
+            'af', 'ar', 'ast', 'bar', 'be', 'bg', 'bn', 'bs', 'ca', 'common',
+            'cs', 'cy', 'da', 'de', 'dlm', 'el', 'en', 'eo', 'es', 'et', 'fa',
+            'fi', 'fo', 'fr', 'fy', 'ga', 'gl', 'got', 'grc', 'he', 'hr', 'hu',
+            'hy', 'id', 'ie', 'info', 'io', 'is', 'it', 'ja', 'jv', 'ka', 'km',
+            'ko', 'la', 'lb', 'li', 'lo', 'lt', 'lv', 'meta', 'mg', 'mk', 'mo',
+            'ms', 'mwl', 'nl', 'nn', 'no', 'oc', 'pl', 'pt', 'ro', 'ru', 'sco',
+            'simple', 'sk', 'sl', 'sr', 'su', 'sv', 'th', 'tl', 'tlh', 'tr',
+            'uk', 'vls', 'yi', 'zh', 'zh-hk', 'zh-tw', 'zombie',
         ]
 
     def scriptpath(self, code):
@@ -2096,7 +2106,8 @@ class Family(family.Family):
     def version(self, code):
         if code == 'ru':
             return '1.16.0'
-        if code in ['ar', 'ast', 'ca', 'cs', 'da', 'de', 'el', 'en', 'eo', 'es', 'fr', 'he', 'id', 'it', 'jv', 'pl', 'sk', 'su', 'yi', 'zh']:
+        if code in ['ar', 'ast', 'ca', 'cs', 'da', 'de', 'el', 'en', 'eo', 'es',
+                    'fr', 'he', 'id', 'it', 'jv', 'pl', 'sk', 'su', 'yi', 'zh']:
             return '1.16.5'
         if code in ['bar', 'ko']:
             return '1.17.0'
