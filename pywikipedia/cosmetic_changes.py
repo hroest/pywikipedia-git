@@ -488,12 +488,14 @@ class CosmeticChangesToolkit:
         German, and French Wikipedia. It might be that it is not wanted on other
         wikis. If there are any complaints, please file a bug report.
         """
-        exceptions = ['comment', 'math', 'nowiki', 'pre', 'source', 'timeline']
+        exceptions = ['comment', 'math', 'nowiki', 'pre', 'source', 'template',
+                      'timeline']
         if not (self.redirect or self.template) and \
            pywikibot.calledModuleName() != 'capitalize_redirects':
             text = pywikibot.replaceExcept(
                 text,
-                r'(?m)^(?P<bullet>[:;]*(\*+|#+)[:;\*#]*)(?P<char>[^\s\*#:;].+?)', '\g<bullet> \g<char>',
+                r'(?m)^(?P<bullet>[:;]*(\*+|#+)[:;\*#]*)(?P<char>[^\s\*#:;].+?)',
+                '\g<bullet> \g<char>',
                 exceptions)
         return text
 
