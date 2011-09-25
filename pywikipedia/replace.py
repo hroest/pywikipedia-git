@@ -101,6 +101,14 @@ other:            First argument is the old text, second argument is the new
                   It is possible to introduce more than one pair of old text
                   and replacement.
 
+-replacementfile  Lines from the given file name(s) will be read as if they
+                  were added to the command line at that point. I.e. a file
+                  containing lines "a" and "b", used as
+                  python replace.py -page:X -replacementfile:file c d
+                  will replace 'a' with 'b' and 'c' with 'd'. However, using
+                  python replace.py -page:X c -replacementfile:file d will
+                  also work, and will replace 'c' with 'a' and 'b' with 'd'.
+
 Examples:
 
 If you want to change templates from the old syntax, e.g. {{msg:Stub}}, to the
@@ -607,6 +615,13 @@ u'Please enter the filename to save the titles \n(will be deleted if exists):')
                     u'Please enter the filename to save the titles:')
             else:
                 filename = arg[6:]
+        elif arg.startswith('-replacementfile'):
+            if len(arg) == len('-replacementfile'):
+                replacefile = pywikibot.input(
+u"""Please enter the filename to read replacements from:""")
+            else:
+                replacefile = arg[len('-replacementfile')+1:]
+            commandline_replacements.extend([x[:-1] for x in open(replacefile)])
         elif arg.startswith('-excepttitle:'):
             exceptions['title'].append(arg[13:])
         elif arg.startswith('-requiretitle:'):
