@@ -7936,6 +7936,8 @@ def flush_output_cache():
         (args, kwargs) = output_cache.pop(0)
         ui.output(*args, **kwargs)
 
+# User input functions
+
 def input(question, password = False):
     """Ask the user a question, return the user's answer.
 
