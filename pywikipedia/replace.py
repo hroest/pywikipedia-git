@@ -158,6 +158,7 @@ import pagegenerators
 import editarticle
 from pywikibot import i18n
 import webbrowser
+import codecs
 
 # Imports predefined replacements tasks from fixes.py
 import fixes
@@ -621,7 +622,7 @@ u'Please enter the filename to save the titles \n(will be deleted if exists):')
 u"""Please enter the filename to read replacements from:""")
             else:
                 replacefile = arg[len('-replacementfile')+1:]
-            commandline_replacements.extend([x[:-1] for x in open(replacefile)])
+            commandline_replacements.extend([x[:-1] for x in codecs.open(replacefile, 'r', 'utf-8')])
         elif arg.startswith('-excepttitle:'):
             exceptions['title'].append(arg[13:])
         elif arg.startswith('-requiretitle:'):
@@ -658,6 +659,9 @@ u"""Please enter the filename to read replacements from:""")
         else:
             if not genFactory.handleArg(arg):
                 commandline_replacements.append(arg)
+
+    if pywikibot.verbose:
+        pywikibot.output(u"commandline_replacements: %r" % commandline_replacements)
 
     if (len(commandline_replacements) % 2):
         raise pywikibot.Error, 'require even number of replacements.'
