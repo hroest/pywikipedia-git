@@ -22,9 +22,6 @@ Command line options:
              info will be loaded from the maintenance page of the live wiki.
              argument can also be given as "-xml:filename.xml".
 
--namespace:  Only process templates in the given namespace number (may be used
-             multiple times).
-
 -user:       Only process pages edited by a given user
 
 -skipuser:   Only process pages not edited by a given user
@@ -65,6 +62,8 @@ If you have a template called [[Template:test]] and want to substitute it only
 on pages in the User: and User talk: namespaces, do:
 
     python template.py test -subst -namespace:2 -namespace:3
+
+Note that -namespace: is a global pywikipedia parameter
 
 
 This next example substitutes the template lived with a supplied edit summary.
@@ -296,11 +295,6 @@ def main(*args):
                     u'Please enter the XML dump\'s filename: ')
             else:
                 xmlfilename = arg[5:]
-        elif arg.startswith('-namespace:'):
-            try:
-                namespaces.append(int(arg[len('-namespace:'):]))
-            except ValueError:
-                namespaces.append(arg[len('-namespace:'):])
         elif arg.startswith('-category:'):
             addedCat = arg[len('-category:'):]
         elif arg.startswith('-summary:'):
@@ -347,8 +341,6 @@ u'Unless using -subst or -remove, you must give an even number of template names
         gen = pagegenerators.CombinedPageGenerator(gens)
         gen = pagegenerators.DuplicateFilterPageGenerator(gen)
 
-    if namespaces:
-        gen =  pagegenerators.NamespaceFilterPageGenerator(gen, namespaces)
     if user:
         gen = UserEditFilterGenerator(gen, user, timestamp, skip)
     preloadingGen = pagegenerators.PreloadingGenerator(gen)
