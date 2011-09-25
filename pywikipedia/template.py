@@ -64,18 +64,14 @@ Move the page [[Template:Cities in Washington]] manually afterwards.
 If you have a template called [[Template:test]] and want to substitute it only
 on pages in the User: and User talk: namespaces, do:
 
-    python template.py test -namespace:2 -namespace:3
-
-Note that, on the English Wikipedia, User: is namespace 2 and User talk: is
-namespace 3. This may differ on other projects so make sure to find out the
-appropriate namespace numbers.
+    python template.py test -subst -namespace:2 -namespace:3
 
 
 This next example substitutes the template lived with a supplied edit summary.
 It only performs substitutions in main article namespace and doesn't prompt to
 start replacing. Note that -putthrottle: is a global pywikipedia parameter.
 
-    python template.py -putthrottle:30 -namespace:0 lived -always
+    python template.py -putthrottle:30 -namespace:0 lived -subst -always
         -summary:"ROBOT: Substituting {{lived}}, see [[WP:SUBST]]."
 
 
