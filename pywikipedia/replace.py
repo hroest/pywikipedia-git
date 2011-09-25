@@ -622,7 +622,7 @@ u'Please enter the filename to save the titles \n(will be deleted if exists):')
 u"""Please enter the filename to read replacements from:""")
             else:
                 replacefile = arg[len('-replacementfile')+1:]
-            commandline_replacements.extend([x[:-1] for x in codecs.open(replacefile, 'r', 'utf-8')])
+            commandline_replacements.extend([x.lstrip(u'\uFEFF').rstrip('\r\n') for x in codecs.open(replacefile, 'r', 'utf-8')])
         elif arg.startswith('-excepttitle:'):
             exceptions['title'].append(arg[13:])
         elif arg.startswith('-requiretitle:'):
