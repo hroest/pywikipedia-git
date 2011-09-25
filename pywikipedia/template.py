@@ -253,7 +253,7 @@ class TemplateRobot:
                 replacements.append((templateRegex, ''))
             elif self.subst:
                 replacements.append((templateRegex, '{{subst:' + old + '\g<parameters>}}'))
-                exceptions['inside-tags']=['ref']
+                exceptions['inside-tags']=['ref', 'gallery']
             else:
                 replacements.append((templateRegex, '{{' + new + '\g<parameters>}}'))
 
