@@ -115,7 +115,7 @@ stopme(): Put this on a bot when it is not or not communicating with the Wiki
 """
 from __future__ import generators
 #
-# (C) Pywikipedia bot team, 2003-2010
+# (C) Pywikipedia bot team, 2003-2011
 #
 # Distributed under the terms of the MIT license.
 #
@@ -7625,6 +7625,8 @@ def setSite(site):
     default_code = site.language()
     default_family = site.family
 
+# Command line parsing and help
+
 def calledModuleName():
     """Return the name of the module calling this function.
 
@@ -7633,18 +7635,17 @@ def calledModuleName():
 
     """
     # get commandline arguments
-    args = sys.argv
-    try:
-        # clip off the '.py' filename extension
-        return os.path.basename(args[0][:args[0].rindex('.')])
-    except ValueError:
-        return os.path.basename(args[0])
+    called = sys.argv[0].strip()
+    if ".py" in called:  # could end with .pyc, .pyw, etc. on some platforms
+        # clip off the '.py?' filename extension
+        called = called[:called.rindex('.py')]
+    return os.path.basename(called)
 
-def decodeArg(arg):
-    if sys.platform=='win32':
-        if config.console_encoding == 'cp850':
+def _decodeArg(arg):
+    if sys.platform == 'win32':
+        if config.console_encoding in ('cp437', 'cp850'):
             # Western Windows versions give parameters encoded as windows-1252
-            # even though the console encoding is cp850.
+            # even though the console encoding is cp850 or cp437.
             return unicode(arg, 'windows-1252')
         elif config.console_encoding == 'cp852':
             # Central/Eastern European Windows versions give parameters encoded
@@ -7669,20 +7670,19 @@ def handleArgs(*args):
 
     """
     global default_code, default_family, verbose, debug
-    # get commandline arguments
+    # get commandline arguments if necessary
     if not args:
         args = sys.argv[1:]
     # get the name of the module calling this function. This is
     # required because the -help option loads the module's docstring and because
     # the module name will be used for the filename of the log.
-    # TODO: check if the following line is platform-independent
     moduleName = calledModuleName()
     nonGlobalArgs = []
+    do_help = False
     for arg in args:
-        arg = decodeArg(arg)
+        arg = _decodeArg(arg)
         if arg == '-help':
-            showHelp(moduleName)
-            sys.exit(0)
+            do_help = True
         elif arg.startswith('-dir:'):
             pass # config_dir = arg[5:] // currently handled in wikipediatools.py - possibly before this routine is called.
         elif arg.startswith('-family:'):
@@ -7734,8 +7734,68 @@ See http://goo.gl/W8lJB for more information.
 """)
     if verbose:
       output(u'Pywikipediabot %s' % (version.getversion()))
-      output(u'Python %s' % (sys.version))
+      output(u'Python %s' % sys.version)
+
+    if do_help:
+        showHelp()
+        sys.exit(0)
     return nonGlobalArgs
+
+def showHelp(moduleName=None):
+    # the parameter moduleName is deprecated and should be left out.
+    moduleName = moduleName or calledModuleName()
+    try:
+        moduleName = moduleName[moduleName.rindex("\\")+1:]
+    except ValueError: # There was no \ in the module name, so presumably no problem
+        pass
+
+    globalHelp = u'''
+Global arguments available for all bots:
+
+-dir:PATH         Read the bot's configuration data from directory given by
+                  PATH, instead of from the default directory.
+
+-lang:xx          Set the language of the wiki you want to work on, overriding
+                  the configuration in user-config.py. xx should be the
+                  language code.
+
+-family:xyz       Set the family of the wiki you want to work on, e.g.
+                  wikipedia, wiktionary, wikitravel, ...
+                  This will override the configuration in user-config.py.
+
+-daemonize:xyz    Immediately return control to the terminal and redirect
+                  stdout and stderr to xyz (only use for bots that require
+                  no input from stdin).
+
+-help             Show this help text.
+
+-log              Enable the logfile. Logs will be stored in the logs
+                  subdirectory.
+
+-log:xyz          Enable the logfile, using 'xyz' as the filename.
+
+-nolog            Disable the logfile (if it is enabled by default).
+
+-putthrottle:n    Set the minimum time (in seconds) the bot will wait between
+-pt:n             saving pages.
+
+-verbose          Have the bot provide additional output that may be
+-v                useful in debugging.
+
+-cosmeticchanges  Toggles the cosmetic_changes setting made in config.py or
+-cc               user_config.py to its inverse and overrules it. All other
+                  settings and restrictions are untouched.
+'''# % moduleName
+    output(globalHelp, toStdout=True)
+    try:
+        exec('import %s as module' % moduleName)
+        helpText = module.__doc__.decode('utf-8')
+        if hasattr(module, 'docuReplacements'):
+            for key, value in module.docuReplacements.iteritems():
+                helpText = helpText.replace(key, value.strip('\n\r'))
+        output(helpText, toStdout=True)
+    except:
+        output(u'Sorry, no help available for %s' % moduleName)
 
 #########################
 # Interpret configuration
@@ -7777,7 +7837,7 @@ def writeToCommandLogFile():
     """
     modname = os.path.basename(sys.argv[0])
     # put quotation marks around all parameters
-    args = [decodeArg(modname)] + [decodeArg('"%s"' % s) for s in sys.argv[1:]]
+    args = [_decodeArg(modname)] + [_decodeArg('"%s"' % s) for s in sys.argv[1:]]
     commandLogFilename = config.datafilepath('logs', 'commands.log')
     try:
         commandLogFile = codecs.open(commandLogFilename, 'a', 'utf-8')
@@ -7825,7 +7885,8 @@ def log(text):
 output_lock = threading.Lock()
 input_lock = threading.Lock()
 output_cache = []
-def output(text, decoder = None, newline = True, toStdout = False):
+
+def output(text, decoder=None, newline=True, toStdout=False, **kwargs):
     """Output a message to the user via the userinterface.
 
     Works like print, but uses the encoding used by the user's console
@@ -7923,62 +7984,6 @@ def inputChoice(question, answers, hotkeys, default = None):
 
     return data
 
-def showHelp(moduleName = None):
-    # the parameter moduleName is deprecated and should be left out.
-    moduleName = moduleName or sys.argv[0][:sys.argv[0].rindex('.')]
-    try:
-        moduleName = moduleName[moduleName.rindex("\\")+1:]
-    except ValueError: # There was no \ in the module name, so presumably no problem
-        pass
-    globalHelp =u'''
-
-Global arguments available for all bots:
-
--dir:PATH         Read the bot's configuration data from directory given by
-                  PATH, instead of from the default directory.
-
--lang:xx          Set the language of the wiki you want to work on, overriding
-                  the configuration in user-config.py. xx should be the
-                  language code.
-
--family:xyz       Set the family of the wiki you want to work on, e.g.
-                  wikipedia, wiktionary, wikitravel, ...
-                  This will override the configuration in user-config.py.
-
--daemonize:xyz    Immediately returns control to the terminal and redirects
-                  stdout and stderr to xyz (only use for bots that require
-                  no input from stdin).
-
--help             Shows this help text.
-
--log              Enable the logfile. Logs will be stored in the logs
-                  subdirectory.
-
--log:xyz          Enable the logfile, using xyz as the filename.
-
--nolog            Disable the logfile (if it is enabled by default).
-
--putthrottle:n    Set the minimum time (in seconds) the bot will wait between
--pt:n             saving pages.
-
--verbose          Have the bot provide additional output that may be useful in
--v                debugging.
-
--cosmeticchanges  Toggles the cosmetic_changes setting made in config.py or
--cc               user_config.py to its inverse and overrules it. All other
-                  settings and restrictions are untouched.
-'''
-    output(globalHelp, toStdout = True)
-    try:
-        exec('import %s as module' % moduleName)
-        helpText = module.__doc__.decode('utf-8')
-        if hasattr(module, 'docuReplacements'):
-            for key, value in module.docuReplacements.iteritems():
-                helpText = helpText.replace(key, value.strip('\n\r'))
-        output(helpText, toStdout = True)
-    except:
-        raise
-        output(u'Sorry, no help available for %s' % moduleName)
 
 page_put_queue = Queue.Queue(config.max_queue_size)
 def async_put():
