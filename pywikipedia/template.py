@@ -5,9 +5,9 @@ and to convert the old MediaWiki boilerplate format to the new template format.
 
 Syntax: python template.py [-remove] [xml[:filename]] oldTemplate [newTemplate]
 
-Specify the template on the command line. The program will
-pick up the template page, and look for all pages using it. It will
-then automatically loop over them, and replace the template.
+Specify the template on the command line. The program will pick up the template
+page, and look for all pages using it. It will then automatically loop over
+them, and replace the template.
 
 Command line options:
 
@@ -16,6 +16,11 @@ Command line options:
 -subst       Resolves the template by putting its text directly into the
              article. This is done by changing {{...}} or {{msg:...}} into
              {{subst:...}}
+
+-assubst     Replaces the first argument as old template with the second
+             argument as new template but substitutes it like -subst does.
+             Using both options -remove and -subst in the same command line has
+             the same effect.
 
 -xml         retrieve information from a local dump
              (http://download.wikimedia.org). If this argument isn\'t given,
@@ -250,12 +255,16 @@ class TemplateRobot:
                                        r'(?P<parameters>\s*\|.+?|) *}}',
                                        re.DOTALL)
 
-            if self.remove:
-                replacements.append((templateRegex, ''))
+            if self.subst and self.remove:
+                replacements.append((templateRegex,
+                                     '{{subst:%s\g<parameters>}}' % new))
+                exceptions['inside-tags']=['ref', 'gallery']
             elif self.subst:
                 replacements.append((templateRegex,
                                      '{{subst:%s\g<parameters>}}' % old))
                 exceptions['inside-tags']=['ref', 'gallery']
+            elif self.remove:
+                replacements.append((templateRegex, ''))
             else:
                 replacements.append((templateRegex,
                                      '{{%s\g<parameters>}}' % new))
@@ -287,6 +296,8 @@ def main(*args):
             remove = True
         elif arg == '-subst':
             subst = True
+        elif arg == '-assubst':
+            subst = remove = True
         elif arg == ('-always'):
             acceptAll = True
         elif arg.startswith('-xml'):
@@ -312,7 +323,7 @@ def main(*args):
                     pywikibot.Page(pywikibot.getSite(), arg,
                                    defaultNamespace=10).titleWithoutNamespace())
 
-    if subst or remove:
+    if subst ^ remove:
         for templateName in templateNames:
             templates[templateName] = None
     else:
@@ -321,7 +332,7 @@ def main(*args):
                 templates[templateNames[i]] = templateNames[i + 1]
         except IndexError:
             pywikibot.output(
-u'Unless using -subst or -remove, you must give an even number of template names.')
+u'Unless using solely -subst or -remove, you must give an even number of template names.')
             return
 
     oldTemplates = []
