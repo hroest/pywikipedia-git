@@ -13,20 +13,24 @@ __version__ = "$Id$"
 # Distributed under the terms of the MIT license
 #
 
-from urllib2 import HTTPError
-import urllib2
-
-from BeautifulSoup import BeautifulSoup
+# system imports
+import sys, re
+import codecs
 from distutils.version import LooseVersion as V
 
+# creating urls
+from urlparse import urlparse, urljoin, ParseResult
+
+# retrieving urls
+import urllib2
+from urllib2 import HTTPError
 def urlopen(url):
     req = urllib2.Request(url, headers = {'User-agent': 'Pywikipedia family generator 0.1 - pywikipediabot.sf.net'})
     return urllib2.urlopen(req)
 
-from urlparse import urlparse, ParseResult
-import codecs
-import sys
-import re
+# parsing response data
+from BeautifulSoup import BeautifulSoup
+
 try:
     import json
 except ImportError:
@@ -253,7 +257,7 @@ class Wiki(object):
         if V(self.version) < V("1.17.0"):
             self._parse_pre_117(data)
         else:
-            self._parse_post_117(bs)
+            self._parse_post_117(bs, fromurl)
 
     def _parse_pre_117(self, data):
         if not self.REwgEnableApi.search(data):
@@ -276,11 +280,13 @@ class Wiki(object):
             except Exception:
                 pass
 
-    def _parse_post_117(self, bs):
+    def _parse_post_117(self, bs, fromurl):
         apipath = bs.find("link", rel='EditURI')['href'].split("?")[0]
-        info = json.load(urlopen(apipath + "?action=query&meta=siteinfo&format=json"))['query']['general']
-
-        for item in ['server', 'scriptpath', 'articlepath', 'lang']:
+        fullurl = urljoin(fromurl, apipath)
+        info = json.load(urlopen(fullurl + "?action=query&meta=siteinfo&format=json"))['query']['general']
+        
+        self.server = urljoin(fromurl, info['server'])
+        for item in ['scriptpath', 'articlepath', 'lang']:
             setattr(self, item, info[item])
 
     def __cmp__(self, other):
