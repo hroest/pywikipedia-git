@@ -153,17 +153,17 @@ def getFilename(photoInfo=None, site=pywikibot.getSite(u'commons', u'commons'),
         title = u''
 
     if pywikibot.Page(site, u'File:%s - %s - %s.jpg'
-                      % (project, username, title) ).exists():
+                      % (title, project, username) ).exists():
         i = 1
         while True:
             if (pywikibot.Page(site, u'File:%s - %s - %s (%s).jpg'
-                               % (project, username, title, str(i))).exists()):
+                               % (title, project, username, str(i))).exists()):
                 i = i + 1
             else:
-                return u'%s - %s - %s (%s).jpg' % (project, username, title,
+                return u'%s - %s - %s (%s).jpg' % (title, project, username,
                                                    str(i))
     else:
-        return u'%s - %s - %s.jpg' % (project, username, title)
+        return u'%s - %s - %s.jpg' % (title, project, username)
 
 def cleanUpTitle(title):
     ''' Clean up the title of a potential mediawiki page. Otherwise the title of
