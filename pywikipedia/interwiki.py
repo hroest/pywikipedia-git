@@ -1740,6 +1740,11 @@ class Subject(object):
             pywikibot.output(u"Not editing %s: page does not exist"
                              % page.aslink(True))
             raise SaveError
+        if page.isEmpty():
+            pywikibot.output(u"Not editing %s: page is empty"
+                             % page.aslink(True))
+            raise SaveError
+            
 
         # clone original newPages dictionary, so that we can modify it to the
         # local page's needs
