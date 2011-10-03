@@ -208,6 +208,7 @@ class Family(family.Family):
             'ms': u'Resipi',
             'ro': u'Raft',
             'ru': u'Полка',
+            'tl': u'Pagluluto',
             'tr': u'Yemek',
             'uk': u'Полиця',
         }
@@ -223,11 +224,13 @@ class Family(family.Family):
             'ms': u'Perbualan Resipi',
             'ro': u'Discuţie Raft',
             'ru': u'Обсуждение полки',
+            'tl': u'Usapang pagluluto',
             'tr': u'Yemek tartışma',
             'uk': u'Обговорення полиці',
         }
 
         self.namespaces[102] = {
+            'az': u'Resept',
             'bn': u'বিষয়',
             'ca': u'Viquiprojecte',
             'cy': u'Silff lyfrau',
@@ -245,6 +248,7 @@ class Family(family.Family):
         }
 
         self.namespaces[103] = {
+            'az': u'Resept müzakirəsi',
             'bn': u'বিষয় আলাপ',
             'ca': u'Viquiprojecte Discussió',
             'cy': u'Sgwrs Silff lyfrau',
