@@ -627,6 +627,7 @@ class Family(family.Family):
             'pl': u'Wikiprojekt',
             'pt': u'Anexo',
             'ro': u'Proiect',
+            'ru': u'Инкубатор',
             'scn': u'Pruggettu',
             'vec': u'Projeto',
         }
@@ -654,6 +655,7 @@ class Family(family.Family):
             'pl': u'Dyskusja Wikiprojektu',
             'pt': u'Anexo Discussão',
             'ro': u'Discuție Proiect',
+            'ru': u'Обсуждение Инкубатора',
             'scn': u'Discussioni pruggettu',
             'vec': u'Discussion projeto',
         }
