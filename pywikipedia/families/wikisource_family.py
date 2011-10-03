@@ -216,6 +216,7 @@ class Family(family.Family):
 
         self.namespaces[102] = {
             'ar': u'مؤلف',
+            'az': u'Müəllif',
             'br': u'Pajenn',
             'ca': u'Pàgina',
             'da': [u'Forfatter', u'Author'],
@@ -247,6 +248,7 @@ class Family(family.Family):
 
         self.namespaces[103] = {
             'ar': u'نقاش المؤلف',
+            'az': u'Müəllif müzakirəsi',
             'br': u'Kaozeadenn pajenn',
             'ca': u'Pàgina Discussió',
             'da': [u'Forfatterdiskussion', u'Author talk'],
