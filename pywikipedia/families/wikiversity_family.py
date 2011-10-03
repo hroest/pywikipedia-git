@@ -141,7 +141,7 @@ class Family(family.Family):
         ]
 
     def version(self,code):
-        return '1.17wmf1'
+        return '1.18wmf1' if code == 'beta' else '1.17wmf1'
 
     def shared_image_repository(self, code):
         return ('commons', 'commons')
