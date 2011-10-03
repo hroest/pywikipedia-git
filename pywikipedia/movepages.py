@@ -41,6 +41,7 @@ __version__='$Id$'
 
 import sys, re
 import wikipedia as pywikibot
+from pywikibot import i18n
 import pagegenerators
 
 # This is required for the text that is shown when you run this script
@@ -85,9 +86,10 @@ class MovePagesBot:
         try:
             msg = self.summary
             if not msg:
-                msg = pywikibot.translate(pywikibot.getSite(), summary)
+                msg = i18n.twtranslate(pywikibot.getSite(), 'movepages-moving')
             pywikibot.output(u'Moving page %s to [[%s]]'
-                             % (page.title(asLink=True), newPageTitle))
+                             % (page.title(asLink=True),
+                                newPageTitle))
             page.move(newPageTitle, msg, throttle=True,
                       leaveRedirect=self.noredirect)
         except pywikibot.NoPage:
@@ -304,7 +306,7 @@ def main():
                            skipredirects, summary)
         bot.run()
     elif not fromToPairs:
-        pywikibot.showHelp('movepages')
+        pywikibot.showHelp()
 
 if __name__ == '__main__':
     try:
