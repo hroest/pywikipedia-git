@@ -4241,7 +4241,8 @@ class _GetAll(object):
             try:
                 rev = data['revisions']
             except KeyError:
-                raise u'NOTE: Last revision of [[%s]] not found' % title
+                raise KeyError(
+                    u'NOTE: Last revision of [[%s]] not found' % title)
             else:
                 username = rev[0]['user']
                 ipedit = 'anon' in rev[0]
@@ -4284,7 +4285,9 @@ class _GetAll(object):
                         page2._editTime = timestamp
                         page2._contents = text
                     else:
-                        raise u'BUG?>>: Last revision of [[%s]] not found' % title
+                        raise KeyError(
+                            u'BUG?>>: Last revision of [[%s]] not found'
+                            % title)
                     page2._revisionId = revisionId
                     section = page2.section()
                     if 'redirect' in data:
