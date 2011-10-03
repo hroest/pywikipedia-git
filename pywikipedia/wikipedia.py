@@ -36,7 +36,7 @@ Objects:
     put_throttle:       Call to limit rate of write-access to wiki
 
 Other functions:
-    getall(): Load a group of pages via Special:Export
+    getall(): Load a group of pages
     handleArgs(): Process all standard command line arguments (such as
         -family, -lang, -log and others)
     translate(xx, dict): dict is a dictionary, giving text depending on
@@ -4041,7 +4041,7 @@ class _GetAll(object):
                     self._norm = dict([(x['from'],x['to']) for x in data['query']['normalized']])
                 for vals in data['query']['pages'].values():
                     self.oneDoneApi(vals)
-            else:
+            else: #read pages via Special:Export
                 while True:
                     try:
                         data = self.getData()
@@ -4383,7 +4383,7 @@ class _GetAll(object):
         return query.GetData(params, self.site)
 
 def getall(site, pages, throttle=True, force=False):
-    """Use Special:Export to bulk-retrieve a group of pages from site
+    """Bulk-retrieve a group of pages from site
 
     Arguments: site = Site object
                pages = iterable that yields Page objects
