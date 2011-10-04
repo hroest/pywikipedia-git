@@ -172,6 +172,7 @@ Rwatchlist = re.compile(r"<input tabindex='[\d]+' type='checkbox' "
                         r"name='wpWatchthis' checked='checked'")
 Rlink = re.compile(r'\[\[(?P<title>[^\]\|\[]*)(\|[^\]]*)?\]\]')
 
+# Page objects (defined here) represent the page itself, including its contents.
 
 class Page(object):
     """Page: A MediaWiki page
@@ -259,6 +260,9 @@ class Page(object):
 
     """
     def __init__(self, site, title, insite=None, defaultNamespace=0):
+        """Instantiate a Page object.
+
+        """
         try:
             # if _editrestriction is True, it means that the page has been found
             # to have an edit restriction, but we do not know yet whether the
@@ -427,6 +431,15 @@ not supported by PyWikipediaBot!"""
         """Return the Site object for the wiki on which this Page resides."""
         return self._site
 
+    def namespace(self):
+        """Return the number of the namespace of the page.
+
+        Only recognizes those namespaces defined in family.py.
+        If not defined, it will return 0 (the main namespace).
+
+        """
+        return self._namespace
+
     def encoding(self):
         """Return the character encoding used on this Page's wiki Site."""
         return self._site.encoding()
@@ -536,11 +549,37 @@ not supported by PyWikipediaBot!"""
         """Return a console representation of the pagelink."""
         return self.aslink().encode(config.console_encoding, 'replace')
 
+    def __unicode__(self):
+        return self.title(asLink=True, forceInterwiki=True)
+
     def __repr__(self):
         """Return a more complete string representation."""
         return "%s{%s}" % (self.__class__.__name__, str(self))
 
-    #@deprecated("Page.title(asLink=True)")
+    def __cmp__(self, other):
+        """Test for equality and inequality of Page objects.
+
+        Page objects are "equal" if and only if they are on the same site
+        and have the same normalized title, including section if any.
+
+        Page objects are sortable by namespace first, then by title.
+
+        """
+        if not isinstance(other, Page):
+            # especially, return -1 if other is None
+            return -1
+        if self._site == other._site:
+            return cmp(self._title, other._title)
+        else:
+            return cmp(self._site, other._site)
+
+    def __hash__(self):
+        # Pseudo method that makes it possible to store Page objects as keys
+        # in hash-tables. This relies on the fact that the string
+        # representation of an instance can not change after the construction.
+        return hash(unicode(self))
+
+    @deprecated("Page.title(asLink=True)")
     def aslink(self, forceInterwiki=False, textlink=False, noInterwiki=False):
         """Return a string representation in the form of a wikilink.
 
@@ -570,9 +609,9 @@ not supported by PyWikipediaBot!"""
         """
         if not hasattr(self, '_autoFormat'):
             import date
-            _autoFormat = date.getAutoFormat(self.site().language(),
-                                             self.titleWithoutNamespace())
-        return _autoFormat
+            self._autoFormat = date.getAutoFormat(self.site().language(),
+                                                  self.titleWithoutNamespace())
+        return self._autoFormat
 
     def isAutoTitle(self):
         """Return True if title of this Page is in the autoFormat dictionary."""
@@ -1320,15 +1359,6 @@ not supported by PyWikipediaBot!"""
                             return True
         # no restricting template found
         return True
-
-    def namespace(self):
-        """Return the number of the namespace of the page.
-
-        Only recognizes those namespaces defined in family.py.
-        If not defined, it will return 0 (the main namespace).
-
-        """
-        return self._namespace
 
     def getReferences(self, follow_redirects=True, withTemplateInclusion=True,
             onlyTemplateInclusion=False, redirectsOnly=False, internal = False):
@@ -2335,22 +2365,6 @@ u'Page %s is semi-protected. Getting edit page to find out if we are allowed to 
                     allDone = True
             return cats
 
-    def __cmp__(self, other):
-        """Test for equality and inequality of Page objects"""
-        if not isinstance(other, Page):
-            # especially, return -1 if other is None
-            return -1
-        if self._site == other._site:
-            return cmp(self._title, other._title)
-        else:
-            return cmp(self._site, other._site)
-
-    def __hash__(self):
-        # Pseudo method that makes it possible to store Page objects as keys
-        # in hash-tables. This relies on the fact that the string
-        # representation of an instance can not change after the construction.
-        return hash(str(self))
-
     def linkedPages(self, withImageLinks = False):
         """Return a list of Pages that this Page links to.
 
@@ -2925,8 +2939,7 @@ u'Page %s is semi-protected. Getting edit page to find out if we are allowed to 
 
     def move(self, newtitle, reason=None, movetalkpage=True, movesubpages=False, sysop=False,
              throttle=True, deleteAndMove=False, safe=True, fixredirects=True, leaveRedirect=True):
-        """Move this page to new title given by newtitle. If safe, don't try
-        to move and delete if not directly requested.
+        """Move this page to new title.
 
         * fixredirects has no effect in MW < 1.13
 
@@ -2938,6 +2951,7 @@ u'Page %s is semi-protected. Getting edit page to find out if we are allowed to 
             (usually requires sysop privileges, depending on wiki settings)
         @param safe: If false, attempt to delete existing page at newtitle
             (if there is one) and then move this page to that title
+
         """
         if not self.site().has_api() or self.site().versionnumber() < 12:
             return self._moveOld(newtitle, reason, movetalkpage, sysop,
@@ -3124,14 +3138,13 @@ u'Page %s is semi-protected. Getting edit page to find out if we are allowed to 
                 return False
 
     def delete(self, reason=None, prompt=True, throttle=True, mark=False):
-        """Deletes the page from the wiki.
+        """Deletes the page from the wiki. Requires administrator status.
 
-        Requires administrator status. If reason is None, asks for a
-        reason. If prompt is True, asks the user if he wants to delete the
-        page.
+        @param reason: The edit summary for the deletion. If None, ask for it.
+        @param prompt: If true, prompt user for confirmation before deleting.
+        @param mark: if true, and user does not have sysop rights, place a
+            speedy-deletion request on the page instead.
 
-        If the user does not have admin rights and mark is True,
-        the page is marked for deletion instead.
         """
         # Login
         try:
@@ -3153,8 +3166,9 @@ u'Page %s is semi-protected. Getting edit page to find out if we are allowed to 
         if throttle:
             put_throttle()
         if reason is None:
+            output(u'Deleting %s.' % (self.title(asLink=True)))
             reason = input(u'Please enter a reason for the deletion:')
-        answer = 'y'
+        answer = u'y'
         if prompt and not hasattr(self.site(), '_noDeletePrompt'):
             answer = inputChoice(u'Do you want to delete %s?' % self.aslink(forceInterwiki = True), ['yes', 'no', 'all'], ['y', 'N', 'a'], 'N')
             if answer == 'a':
@@ -3221,12 +3235,14 @@ u'Page %s is semi-protected. Getting edit page to find out if we are allowed to 
                         output(data)
                         return False
 
-    def loadDeletedRevisions(self):
+    def loadDeletedRevisions(self, step=None, total=None):
         """Retrieve all deleted revisions for this Page from Special/Undelete.
 
-        Stores all revisions' timestamps, dates, editors and comments.
-        Returns list of timestamps (which can be used to retrieve revisions
-        later on).
+        Stores all revisions' timestamps, dates, editors and comments in
+        self._deletedRevs attribute.
+
+        @return: list of timestamps (which can be used to retrieve
+            revisions later on).
 
         """
         # Login
@@ -3287,9 +3303,10 @@ u'Page %s is semi-protected. Getting edit page to find out if we are allowed to 
     def getDeletedRevision(self, timestamp, retrieveText=False):
         """Return a particular deleted revision by timestamp.
 
-        Return value is a list of [date, editor, comment, text, restoration
-        marker]. text will be None, unless retrieveText is True (or has been
-        retrieved earlier).
+        @return: a list of [date, editor, comment, text, restoration
+            marker]. text will be None, unless retrieveText is True (or has
+            been retrieved earlier). If timestamp is not found, returns
+            None.
 
         """
         if self._deletedRevs is None:
@@ -3314,7 +3331,7 @@ u'Page %s is semi-protected. Getting edit page to find out if we are allowed to 
     def markDeletedRevision(self, timestamp, undelete=True):
         """Mark the revision identified by timestamp for undeletion.
 
-        If undelete is False, mark the revision to remain deleted.
+        @param undelete: if False, mark the revision to remain deleted.
 
         """
         if self._deletedRevs is None:
@@ -3325,22 +3342,24 @@ u'Page %s is semi-protected. Getting edit page to find out if we are allowed to 
         self._deletedRevs[timestamp][4] = undelete
         self._deletedRevsModified = True
 
-    def undelete(self, comment='', throttle=True):
-        """Undeletes page based on the undeletion markers set by previous calls.
+    def undelete(self, comment=None, throttle=True):
+        """Undelete page based on the undeletion markers set by previous calls.
 
         If no calls have been made since loadDeletedRevisions(), everything
         will be restored.
 
         Simplest case:
-            wikipedia.Page(...).undelete('This will restore all revisions')
+            Page(...).undelete('This will restore all revisions')
 
         More complex:
-            pg = wikipedia.Page(...)
+            pg = Page(...)
             revs = pg.loadDeletedRevsions()
             for rev in revs:
                 if ... #decide whether to undelete a revision
                     pg.markDeletedRevision(rev) #mark for undeletion
             pg.undelete('This will restore only selected revisions.')
+
+        @param comment: The undeletion edit summary.
 
         """
         # Login
@@ -3350,6 +3369,10 @@ u'Page %s is semi-protected. Getting edit page to find out if we are allowed to 
         self.site().checkBlocks(sysop = True)
 
         token = self.site().getToken(self, sysop=True)
+        if comment is None:
+            output(u'Preparing to undelete %s.'
+                   % (self.title(asLink=True)))
+            comment = input(u'Please enter a reason for the undeletion:')
 
         if throttle:
             put_throttle()
@@ -3399,9 +3422,10 @@ u'Page %s is semi-protected. Getting edit page to find out if we are allowed to 
 
             return result
 
-    def protect(self, editcreate = 'sysop', move = 'sysop', unprotect = False, reason = None, editcreate_duration = 'infinite',
+    def protect(self, editcreate='sysop', move='sysop', unprotect=False,
+                reason=None, editcreate_duration='infinite',
                 move_duration = 'infinite', cascading = False, prompt = True, throttle = True):
-        """(Un)protect a wiki title. Requires administrator status.
+        """(Un)protect a wiki page. Requires administrator status.
 
         If the title is not exist, the protection only ec (aka edit/create) available
         If reason is None,  asks for a reason. If prompt is True, asks the
@@ -4582,12 +4606,13 @@ def unicode2html(x, encoding):
     return x
 
 def html2unicode(text, ignore = []):
-    """Replace all HTML entities in text by equivalent unicode characters."""
+    """Return text, replacing HTML entities by equivalent unicode characters."""
     # This regular expression will match any decimal and hexadecimal entity and
     # also entities that might be named entities.
-    entityR = re.compile(r'&(#(?P<decimal>\d+)|#x(?P<hex>[0-9a-fA-F]+)|(?P<name>[A-Za-z]+));')
-    #These characters are Html-illegal, but sadly you *can* find some of these and
-    #converting them to unichr(decimal) is unsuitable
+    entityR = re.compile(
+        r'&(#(?P<decimal>\d+)|#x(?P<hex>[0-9a-fA-F]+)|(?P<name>[A-Za-z]+));')
+    # These characters are Html-illegal, but sadly you *can* find some of
+    # these and converting them to unichr(decimal) is unsuitable
     convertIllegalHtmlEntities = {
         128 : 8364, # €
         130 : 8218, # ‚
@@ -4639,7 +4664,7 @@ def html2unicode(text, ignore = []):
                     unicodeCodepoint = htmlentitydefs.name2codepoint[name]
             result += text[:match.start()]
             try:
-                unicodeCodepoint=convertIllegalHtmlEntities[unicodeCodepoint]
+                unicodeCodepoint = convertIllegalHtmlEntities[unicodeCodepoint]
             except KeyError:
                 pass
             if unicodeCodepoint and unicodeCodepoint not in ignore and (WIDEBUILD or unicodeCodepoint < 65534):
