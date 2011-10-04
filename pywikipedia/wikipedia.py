@@ -579,7 +579,7 @@ not supported by PyWikipediaBot!"""
         # representation of an instance can not change after the construction.
         return hash(unicode(self))
 
-    @deprecated("Page.title(asLink=True)")
+    #@deprecated("Page.title(asLink=True)")
     def aslink(self, forceInterwiki=False, textlink=False, noInterwiki=False):
         """Return a string representation in the form of a wikilink.
 
