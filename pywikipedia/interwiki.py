@@ -1740,7 +1740,7 @@ class Subject(object):
             pywikibot.output(u"Not editing %s: page does not exist"
                              % page.aslink(True))
             raise SaveError
-        if page.isEmpty():
+        if page.isEmpty() and not page.isCategory():
             pywikibot.output(u"Not editing %s: page is empty"
                              % page.aslink(True))
             raise SaveError
