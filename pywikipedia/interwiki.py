@@ -1036,7 +1036,7 @@ class Subject(object):
                                       linkedPage.namespace(), preferredPage.aslink(True)))
                     return True
                 else:
-                    choice = pywikibot.inputChoice('WARNING: %s is in namespace %i, but %s is in namespace %i. Follow it anyway?'
+                    choice = pywikibot.inputChoice(u'WARNING: %s is in namespace %i, but %s is in namespace %i. Follow it anyway?'
                                                    % (self.originPage.aslink(True), self.originPage.namespace(),
                                                       linkedPage.aslink(True), linkedPage.namespace()),
                                                      ['Yes', 'No', 'Add an alternative', 'give up'], ['y', 'n', 'a', 'g'])
