@@ -146,7 +146,7 @@ class Family(family.Family):
             'mt': u'Wikipedija',
             'mwl': u'Biquipédia',
             'myv': u'Википедиясь',
-            'mzn': u'ویکی‌پدیا',
+            'mzn': [u'ویکی‌پدیا', u'وپ'],
             'nah': u'Huiquipedia',
             'nds-nl': u'Wikipedie',
             'ne': u'विकिपीडिया',
@@ -317,7 +317,7 @@ class Family(family.Family):
             'mt': u'Diskussjoni Wikipedija',
             'mwl': u'Biquipédia cumbersa',
             'myv': u'Википедиясь кортамось',
-            'mzn': u'ویکی‌پدیا گپ',
+            'mzn': [u'ویکی‌پدیا گپ', u'Wikipedia گپ', u'بحث ویکی‌پدیا'],
             'nah': [u'Huiquipedia tēixnāmiquiliztli', u'Wikipedia tēixnāmiquiliztli', u'Wikipedia Discusión'],
             'nap': [u'Wikipedia chiàcchiera', u'Discussioni Wikipedia'],
             'nds': u'Wikipedia Diskuschoon',
@@ -333,7 +333,7 @@ class Family(family.Family):
             'os': u'Дискусси Википеди',
             'pa': u'ਵਿਕਿਪੀਡਿਆ ਚਰਚਾ',
             'pcd': u'Discussion Wikipedia',
-            'pdc': u'Wikipedia Dischbedutt',
+            'pdc': [u'Wikipedia Dischbedutt', u'Wikipedia Diskussion'],
             'pfl': u'Wikipedia Diskussion',
             'pi': u'Wikipedia सम्भासित',
             'pl': u'Dyskusja Wikipedii',
@@ -395,7 +395,7 @@ class Family(family.Family):
             'zea': u'Overleg Wikipedia',
             'zh': [u'Wikipedia talk', u'维基百科讨论'],
             'zh-classical': u'維基大典 talk',
-            'zh-yue': [u'Wikipedia 傾偈', u'WT'],
+            'zh-yue': [u'Wikipedia talk', u'WT', u'Wikipedia 傾偈'],
         }
 
         self.namespaces[90] = {
