@@ -61,8 +61,8 @@ class Family(family.Family):
         self.namespaces[13]['ja'] = [u'Help‐ノート', u'ヘルプ・トーク']
         self.namespaces[14]['ja'] = [u'Category', u'カテゴリ']
         self.namespaces[15]['ja'] = [u'Category‐ノート', u'カテゴリ・トーク']
-        self.namespaces[2]['pl'] = u'Wikipedysta'
-        self.namespaces[3]['pl'] = u'Dyskusja wikipedysty'
+        self.namespaces[2]['pl'] = [u'Wikipedysta', u'Wikipedystka']
+        self.namespaces[3]['pl'] = [u'Dyskusja wikipedysty', u'Dyskusja Wikipedystki']
         self.namespaces[2]['pt'] = u'Usuário'
         self.namespaces[3]['pt'] = u'Usuário Discussão'
 
