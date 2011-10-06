@@ -32,6 +32,7 @@ class Family(family.Family):
         self.namespaces[4] = {
             '_default': [u'Wikiquote', self.namespaces[4]['_default']],
             'ar': u'ويكي الاقتباس',
+            'az': u'Vikisitat',
             'bg': u'Уикицитат',
             'br': u'Wikiarroud',
             'bs': u'Wikicitati',
@@ -73,7 +74,7 @@ class Family(family.Family):
             'am': u'Wikiquote ውይይት',
             'ar': u'نقاش ويكي الاقتباس',
             'ast': u'Wikiquote alderique',
-            'az': u'Wikiquote müzakirəsi',
+            'az': u'Vikisitat müzakirəsi',
             'be': u'Wikiquote размовы',
             'bg': u'Уикицитат беседа',
             'bm': u'Discussion Wikiquote',
