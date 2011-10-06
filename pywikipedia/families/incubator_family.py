@@ -34,9 +34,6 @@ class Family(family.Family):
             'meta', 'mediawiki', 'test', 'commons', 'species',
         ]
 
-    def version(self, code):
-        return '1.17wmf1'
-
     def shared_image_repository(self, code):
         return ('commons', 'commons')
 
