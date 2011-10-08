@@ -10,6 +10,8 @@ Arguments:
 
   -interwiki   Look for images in pages found through interwiki links.
 
+  -keepname    Keep the filename and do not verify description while replacing
+
   -tolang:xx   Copy the image to the wiki in language xx
 
   -tofamily:yy Copy the image to a wiki in the family yy
@@ -127,19 +129,19 @@ licenseTemplates = {
     },
     ('wikipedia:fa', 'commons:commons'): {
         u'مالکیت عمومی':             u'PD',
-	u'مالکیت عمومی-خود':         u'PD-self',
+        u'مالکیت عمومی-خود':         u'PD-self',
         u'مجوز گنو':                  u'GFDL',
-        u'مجوز گنو-خود':       	     u'GFDL-self',
+        u'مجوز گنو-خود':             u'GFDL-self',
         u'نگاره قدیمی':              u'PD-Iran',
-	u'نگاره نوشتاری':            u'PD-textlogo',
-	u'نگاره عراقی':              u'PD-Iraq',
-	u'نگاره بریتانیا':           u'PD-UK',
-	u'نگاره هابل':               u'PD-Hubble',
-	u'نگاره آمریکا':             u'PD-US',
-	u'نگاره دولت آمریکا':        u'PD-USGov',
-	u'کک-یاد-دو':                u'Cc-by-2.0',
-	u'کک-یاد-حفظ-دونیم':         u'Cc-by-sa-2.5',
-	u'کک-یاد-سه':                u'Cc-by-3.0',
+        u'نگاره نوشتاری':            u'PD-textlogo',
+        u'نگاره عراقی':              u'PD-Iraq',
+        u'نگاره بریتانیا':           u'PD-UK',
+        u'نگاره هابل':               u'PD-Hubble',
+        u'نگاره آمریکا':             u'PD-US',
+        u'نگاره دولت آمریکا':        u'PD-USGov',
+        u'کک-یاد-دو':                u'Cc-by-2.0',
+        u'کک-یاد-حفظ-دونیم':         u'Cc-by-sa-2.5',
+        u'کک-یاد-سه':                u'Cc-by-3.0',
     },
     ('wikipedia:fr', 'commons:commons'): {
         u'Domaine public':           u'PD'
@@ -163,10 +165,12 @@ licenseTemplates = {
 
 
 class ImageTransferBot:
-    def __init__(self, generator, targetSite = None, interwiki = False):
+    def __init__(self, generator, targetSite=None, interwiki=False,
+                 keep_name=False):
         self.generator = generator
         self.interwiki = interwiki
         self.targetSite = targetSite
+        self.keep_name = keep_name
 
     def transferImage(self, sourceImagePage, debug=False):
         """Gets a wikilink to an image, downloads it and its description,
@@ -204,7 +208,11 @@ class ImageTransferBot:
             description=''
             print "Image description page is redirect."
         else:
-            bot = upload.UploadRobot(url = url, description = description, targetSite = self.targetSite, urlEncoding = sourceSite.encoding())
+            bot = upload.UploadRobot(url=url, description=description,
+                                     targetSite=self.targetSite,
+                                     urlEncoding=sourceSite.encoding(),
+                                     keepFilename=self.keep_name,
+                                     verifyDescription = not self.keep_name)
             # try to upload
             targetFilename = bot.run()
             if targetFilename and self.targetSite.family.name == 'commons' and self.targetSite.lang == 'commons':
@@ -291,12 +299,15 @@ def main():
     page = None
     gen = None
     interwiki = False
+    keep_name = False
     targetLang = None
     targetFamily = None
 
     for arg in pywikibot.handleArgs():
         if arg == '-interwiki':
             interwiki = True
+        elif arg.startswith('-keepname'):
+            keepname = True
         elif arg.startswith('-tolang:'):
             targetLang = arg[8:]
         elif arg.startswith('-tofamily:'):
@@ -332,7 +343,8 @@ def main():
         if not targetFamily:
             targetFamily = pywikibot.getSite().family
         targetSite = pywikibot.Site(targetLang, targetFamily)
-    bot = ImageTransferBot(gen, interwiki = interwiki, targetSite = targetSite)
+    bot = ImageTransferBot(gen, interwiki=interwiki, targetSite=targetSite,
+                           keep_name=keep_name)
     bot.run()
 
 if __name__ == "__main__":
