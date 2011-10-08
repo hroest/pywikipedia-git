@@ -730,6 +730,7 @@ class Family:
                 'fy': [u'Meidogger', u'Brûker'],
                 'ga': u'Úsáideoir',
                 'gag': u'Kullanıcı',
+                'gan': [u'User', u'用戶'],
                 'gl': [u'Usuario', u'Utilizador', u'Utilizadora'],
                 'glk': u'کاربر',
                 'gn': [u'Puruhára', u'Usuario', u'Usuaria'],
@@ -865,6 +866,8 @@ class Family:
                 'yo': u'Oníṣe',
                 'za': u'用户',
                 'zea': u'Gebruker',
+                'zh': [u'User', u'用户', u'用戶'],
+                'zh-yue': [u'User', u'用戶', u'用户'],
             },
             3: {
                 '_default': u'User talk',
@@ -929,6 +932,7 @@ class Family:
                 'fy': [u'Meidogger oerlis', u'Brûker oerlis'],
                 'ga': u'Plé úsáideora',
                 'gag': [u'Kullanıcı dartışma', u'Kullanıcı mesaj'],
+                'gan': [u'User talk', u'用戶對話', u'用戶討論'],
                 'gl': [u'Conversa usuario', u'Conversa Usuario', u'Utilizador Discussão', u'Utilizadora Discussão'],
                 'glk': u'بحث کاربر',
                 'gn': [u'Puruhára myangekõi', u'Usuario Discusión', u'Usuaria Discusión'],
@@ -1063,6 +1067,8 @@ class Family:
                 'yo': u'Ọ̀rọ̀ oníṣe',
                 'za': [u'用户讨论', u'用户对话'],
                 'zea': u'Overleg gebruker',
+                'zh': [u'User talk', u'用户对话', u'用戶對話', u'用户讨论', u'用戶討論'],
+                'zh-yue': [u'User talk', u'用戶傾偈', u'用戶 對話', u'用户 对话', u'用戶 討論', u'用户 讨论'],
             },
             4: {
                 '_default': u'Project',
