@@ -72,9 +72,9 @@ def refresh(site, sysop=False, witheditsonly=True):
         params['auwitheditsonly'] = ''
 
     pywikibot.output(u'Retrieving bot user list for %s via API.' % repr(site))
-    pywikibot.put_throttle() # It actually is a get, but a heavy one.
     botlist = []
     while True:
+        pywikibot.get_throttle()
         data = pywikibot.query.GetData(params, site, sysop=sysop)
         if 'error' in data:
             raise RuntimeError('ERROR: %s' % data)
@@ -86,14 +86,16 @@ def refresh(site, sysop=False, witheditsonly=True):
             break
 
     pywikibot.output(u'Retrieving global bot user list for %s.' % repr(site))
-    pywikibot.put_throttle() # It actually is a get, but a heavy one.
     m1 = True
     offset = ''
-    if site.versionnumber() >= 17:
+    if   site.live_version()[1] >= 18:
+        PATTERN = u'<li><a.*?>(.*?)</.*?> *\((.*?),\s(.*?)\)(?:.*?)</li>'
+    elif site.live_version()[1] == 17:
         PATTERN = u'<li>(.*?) *\((.*?),\s(.*?)\)(?:.*?)</li>'
     else:
         PATTERN = u'<li>(.*?) *\((.*?),\s(.*?)\)</li>'
     while m1:
+        pywikibot.put_throttle()
         text = site.getUrl(site.globalusers_address(offset=urllib.quote(offset), group='Global_bot'))
 
         m1 = re.findall(u'<li>.*?</li>', text)
