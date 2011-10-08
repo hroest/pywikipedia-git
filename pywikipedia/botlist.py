@@ -95,7 +95,7 @@ def refresh(site, sysop=False, witheditsonly=True):
     else:
         PATTERN = u'<li>(.*?) *\((.*?),\s(.*?)\)</li>'
     while m1:
-        pywikibot.put_throttle()
+        pywikibot.get_throttle()
         text = site.getUrl(site.globalusers_address(offset=urllib.quote(offset), group='Global_bot'))
 
         m1 = re.findall(u'<li>.*?</li>', text)
