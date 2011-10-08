@@ -158,7 +158,6 @@ import pagegenerators
 import editarticle
 from pywikibot import i18n
 import webbrowser
-import codecs
 
 # Imports predefined replacements tasks from fixes.py
 import fixes
