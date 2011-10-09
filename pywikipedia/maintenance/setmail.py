@@ -1,7 +1,7 @@
 """ This tool sets an email address on all bot accounts and email confirms them."""
 
 import sys, os, getpass
-sys.path.append('..')
+sys.path.insert(1, '..')
 
 import poplib
 import wikipedia, config

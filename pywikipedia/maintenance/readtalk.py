@@ -10,7 +10,7 @@ TODO:
 """
 import sys, re
 sys.path.append(re.sub('/[^/]*$', '', sys.path[0]))
-sys.path.append('..')
+sys.path.insert(1, '..')
 import wikipedia, config, userlib
 
 

@@ -11,7 +11,7 @@ __version__ = '$Id$'
 
 import sys, re
 
-sys.path.append('..')
+sys.path.insert(1, '..')
 import wikipedia
 import codecs
 

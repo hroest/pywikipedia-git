@@ -202,7 +202,7 @@ def main():
 
 if __name__ == '__main__':
     import sys
-    sys.path.append('..')
+    sys.path.insert(1, '..')
     import wikipedia
     try:
         wikipedia.handleArgs()
