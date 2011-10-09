@@ -65,6 +65,7 @@ docuReplacements = {
 commonscatTemplates = {
     '_default': (u'Commonscat', []),
     'af' : (u'CommonsKategorie', [u'commonscat']),
+    'an' : (u'Commonscat', [u'Commons cat']),
     'ar' : (u'تصنيف كومنز', [u'Commonscat', u'تصنيف كومونز',
                              u'Commons cat', u'CommonsCat']),
     'az' : (u'CommonsKat', [u'Commonscat']),
@@ -119,7 +120,8 @@ commonscatTemplates = {
                             u'Commonscatbox', u'Commonscat-box']),
     'sw' : (u'Commonscat', [u'Commons2', u'Commons cat']),
     'te' : (u'Commonscat', [u'Commons cat']),
-    'tr' : (u'CommonsKat', [u'Commonscat', u'Commons cat']),
+    'tr' : (u'Commons kategori', [u'CommonsKat', u'Commonscat',
+                                  u'Commons cat']),
     'uk' : (u'Commonscat', [u'Commons cat', u'Category', u'Commonscat-inline']),
     'vi' : (u'Commonscat', [u'Commons2', u'Commons cat', u'Commons category',
                             u'Commons+cat']),
