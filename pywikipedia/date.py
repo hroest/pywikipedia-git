@@ -129,11 +129,11 @@ def dh_simpleYearAD(value):
 
 def dh_number(value, pattern):
     return dh_noConv(value, pattern, formatLimits['Number'][0])
-def dh_centuryAD(value, pattern ):
+def dh_centuryAD(value, pattern):
     return dh_noConv(value, pattern, formatLimits['CenturyAD'][0])
 def dh_centuryBC(value, pattern):
     return dh_noConv(value, pattern, formatLimits['CenturyBC'][0])
-def dh_millenniumAD(value, pattern ):
+def dh_millenniumAD(value, pattern):
     return dh_noConv(value, pattern, formatLimits['MillenniumAD'][0])
 def dh_millenniumBC(value, pattern):
     return dh_noConv(value, pattern, formatLimits['MillenniumBC'][0])
@@ -280,7 +280,7 @@ _digitDecoders = {
     'T' : ( _decimalDigits, lambda v: unicode(v+543), lambda v: int(v)-543 ),
 }
 
-# Allows to search for '(%%)|(%d)|(%R)|...", and allows one digit 1-9  to set
+# Allows to search for '(%%)|(%d)|(%R)|...", and allows one digit 1-9 to set
 # the size of zero-padding for numbers
 _reParameters = re.compile(u'|'.join([ u'(%%[1-9]?%s)' % s for s in _digitDecoders.keys() ]))
 
@@ -1738,7 +1738,7 @@ def getAutoFormat( lang, title, ignoreFirstLetterCase = True ):
     for dictName, dict in formats.iteritems():
         try:
             year = dict[ lang ]( title )
-            return (dictName,year)
+            return (dictName, year)
         except:
             pass
     # sometimes the title may begin with an upper case while its listed as lower case, or the other way around
@@ -1752,7 +1752,7 @@ def getAutoFormat( lang, title, ignoreFirstLetterCase = True ):
             return getAutoFormat(lang, title, ignoreFirstLetterCase = False)
         except:
             pass
-    return (None,None)
+    return (None, None)
 
 
 class FormatDate(object):
@@ -1777,7 +1777,7 @@ def printMonthArray( lang, pattern, capitalize ):
     """
     """
     for s in makeMonthNamedList( lang, pattern, capitalize ):
-        pywikibot.output( s )
+        pywikibot.output(s)
 
 def testMapEntry( formatName, showAll = True, value = None ):
     """This is a test function, to be used interactivelly to test the validity of the above maps.
@@ -1795,7 +1795,7 @@ def testMapEntry( formatName, showAll = True, value = None ):
     if value is not None:
         start, stop = value, value+1
     if showAll:
-        pywikibot.output(u"Processing %s with limits from %d to %d and step %d" % (formatName, start,stop-1,step))
+        pywikibot.output(u"Processing %s with limits from %d to %d and step %d" % (formatName, start, stop - 1, step))
 
     for code, convFunc in formats[formatName].iteritems():
 #        import time
