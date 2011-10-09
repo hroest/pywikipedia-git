@@ -188,8 +188,8 @@ class Family(family.Family):
 
         self.namespaces[5] = {
             '_default': [u'Wikipedia talk', self.namespaces[5]['_default']],
-            'ab': u'Авикипедиа ахцәажәара',
-            'ace': u'Marit Wikipedia',
+            'ab': [u'Авикипедиа ахцәажәара', u'Обсуждение Авикипедиа'],
+            'ace': [u'Marit Wikipedia', u'Pembicaraan Wikipedia'],
             'af': u'Wikipediabespreking',
             'als': u'Wikipedia Diskussion',
             'am': u'ውክፔዲያ ውይይት',

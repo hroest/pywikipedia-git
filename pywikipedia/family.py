@@ -257,7 +257,7 @@ class Family:
             },
             -1: {
                 '_default': u'Special',
-                'ab': u'Цастәи',
+                'ab': [u'Цастәи', u'Служебная'],
                 'ace': [u'Kusuih', u'Istimewa'],
                 'af': u'Spesiaal',
                 'als': u'Spezial',
@@ -1154,7 +1154,7 @@ class Family:
             6: {
                 '_default': [u'File', u'Image'],
                 'ab': [u'Афаил', u'Файл'],
-                'ace': [u'Beureukaih', u'Berkas' u'Gambar'],
+                'ace': [u'Beureukaih', u'Berkas', u'Gambar'],
                 'af': [u'Lêer', u'Beeld'],
                 'als': [u'Datei', u'Bild'],
                 'am': u'ስዕል',
@@ -1361,7 +1361,7 @@ class Family:
             7: {
                 '_default': [u'File talk', u'Image talk'],
                 'ab': [u'Афаил ахцәажәара', u'Обсуждение файла'],
-                'ace': [u'Marit Beureukaih', u'Pembicaraan Berkas', u'Gambar Pembicaraan', u'Pembicaraan_Gambar'],
+                'ace': [u'Marit Beureukaih', u'Pembicaraan Berkas', u'Gambar Pembicaraan', u'Pembicaraan Gambar'],
                 'af': [u'Lêerbespreking', u'Beeldbespreking'],
                 'als': [u'Datei Diskussion', u'Bild Diskussion'],
                 'am': u'ስዕል ውይይት',
@@ -1638,7 +1638,7 @@ class Family:
             },
             9: {
                 '_default': u'MediaWiki talk',
-                'ab': u'Амедиавики ахцәажәара',
+                'ab': [u'Амедиавики ахцәажәара', u'Обсуждение MediaWiki'],
                 'ace': [u'Marit AlatWiki', u'Pembicaraan MediaWiki', u'MediaWiki Pembicaraan'],
                 'af': u'MediaWikibespreking',
                 'als': u'MediaWiki Diskussion',
@@ -2046,7 +2046,7 @@ class Family:
             },
             11: {
                 '_default': u'Template talk',
-                'ab': u'Ашаблон ахцәажәара',
+                'ab': [u'Ашаблон ахцәажәара', u'Обсуждение шаблона'],
                 'ace': [u'Marit Pola', u'Pembicaraan Templat', u'Templat Pembicaraan'],
                 'af': u'Sjabloonbespreking',
                 'als': u'Vorlage Diskussion',
@@ -2458,7 +2458,7 @@ class Family:
             },
             13: {
                 '_default': u'Help talk',
-                'ab': u'Ацхыраара ахцәажәара',
+                'ab': [u'Ацхыраара ахцәажәара', u'Обсуждение справки'],
                 'ace': [u'Marit Beunantu', u'Pembicaraan Bantuan', u'Bantuan Pembicaraan'],
                 'af': u'Hulpbespreking',
                 'als': u'Hilfe Diskussion',
@@ -2874,7 +2874,7 @@ class Family:
             },
             15: {
                 '_default': u'Category talk',
-                'ab': u'Акатегориа ахцәажәара',
+                'ab': [u'Акатегориа ахцәажәара', u'Обсуждение категории'],
                 'ace': [u'Marit Kawan', u'Pembicaraan Kategori', u'Kategori Pembicaraan'],
                 'af': u'Kategoriebespreking',
                 'als': u'Kategorie Diskussion',
