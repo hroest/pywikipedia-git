@@ -49,7 +49,14 @@ your user-config.py:
 
     cosmetic_changes_disable['wikipedia'] = ('de', 'en', 'fr')
 """
+#
+# (C) xqt, 2009-2011
+# (C) Pywikipedia bot team, 2006-2010
+#
+# Distributed under the terms of the MIT license.
+#
 __version__ = '$Id$'
+#
 import wikipedia as pywikibot
 import isbn
 import pagegenerators
@@ -57,7 +64,8 @@ from pywikibot import i18n
 import sys
 import re
 
-warning = """ATTENTION: You can run this script as a stand-alone for testing purposes.
+warning = """
+ATTENTION: You can run this script as a stand-alone for testing purposes.
 However, the changes are that are made are only minor, and other users
 might get angry if you fill the version histories and watchlists with such
 irrelevant changes."""
@@ -67,7 +75,8 @@ docuReplacements = {
     '&warning;': warning,
 }
 
-nn_iw_msg = u'<!--interwiki (no, sv, da first; then other languages alphabetically by name)-->'
+nn_iw_msg = \
+u'<!--interwiki (no, sv, da first; then other languages alphabetically by name)-->'
 
 # This is from interwiki.py;
 # move it to family file and implement global instances
@@ -126,7 +135,8 @@ deprecatedTemplates = {
 }
 
 class CosmeticChangesToolkit:
-    def __init__(self, site, debug=False, redirect=False, namespace=None, pageTitle=None):
+    def __init__(self, site, debug=False, redirect=False, namespace=None,
+                 pageTitle=None):
         self.site = site
         self.debug = debug
         self.redirect = redirect
@@ -174,15 +184,16 @@ class CosmeticChangesToolkit:
         Remove their language code prefix.
         """
         if not self.talkpage and pywikibot.calledModuleName() <> 'interwiki':
-            interwikiR = re.compile(r'\[\[%s\s?:([^\[\]\n]*)\]\]' % self.site.lang)
+            interwikiR = re.compile(r'\[\[%s\s?:([^\[\]\n]*)\]\]'
+                                    % self.site.lang)
             text = interwikiR.sub(r'[[\1]]', text)
         return text
 
     def standardizePageFooter(self, text):
         """
         Makes sure that interwiki links, categories and star templates are
-        put to the correct position and into the right order.
-        This combines the old instances standardizeInterwiki and standardizeCategories
+        put to the correct position and into the right order. This combines the
+        old instances standardizeInterwiki and standardizeCategories
         The page footer has the following section in that sequence:
         1. categories
         2. additional information depending on local site policy
@@ -205,7 +216,8 @@ class CosmeticChangesToolkit:
             u'ligam[ _]adq',
             u'ligoelstara',
             u'ligoleginda',
-            u'link[ _][afgu]a', u'link[ _]adq', u'link[ _]f[lm]', u'link[ _]km', u'link[ _]sm', u'linkfa',
+            u'link[ _][afgu]a', u'link[ _]adq', u'link[ _]f[lm]', u'link[ _]km',
+            u'link[ _]sm', u'linkfa',
             u'na[ _]lotura',
             u'nasc[ _]ar',
             u'tengill[ _][úg]g',
@@ -221,8 +233,9 @@ class CosmeticChangesToolkit:
         allstars = []
         hasCommentLine = False
 
-        # The PyWikipediaBot is no longer allowed to touch categories on the German Wikipedia.
-        # See http://de.wikipedia.org/wiki/Hilfe_Diskussion:Personendaten/Archiv/bis_2006#Position_der_Personendaten_am_.22Artikelende.22
+        # The PyWikipediaBot is no longer allowed to touch categories on the
+        # German Wikipedia. See
+        # http://de.wikipedia.org/wiki/Hilfe_Diskussion:Personendaten/Archiv/bis_2006#Position_der_Personendaten_am_.22Artikelende.22
         # ignoring nn-wiki of cause of the comment line above iw section
         if not self.template and not '{{Personendaten' in text:
             categories = pywikibot.getCategoryLinks(text, site = self.site)
@@ -238,14 +251,16 @@ class CosmeticChangesToolkit:
                     pass
                 if loc != None and loc in self.title:
                     subpage = True
-            interwikiLinks = pywikibot.getLanguageLinks(text, insite=self.site, template_subpage=subpage)
+            interwikiLinks = pywikibot.getLanguageLinks(
+                text, insite=self.site, template_subpage=subpage)
 
             # Removing the interwiki
             text = pywikibot.removeLanguageLinks(text, site = self.site)
             # Removing the stars' issue
             starstext = pywikibot.removeDisabledParts(text)
             for star in starsList:
-                regex = re.compile('(\{\{(?:template:|)%s\|.*?\}\}[\s]*)' % star, re.I)
+                regex = re.compile('(\{\{(?:template:|)%s\|.*?\}\}[\s]*)'
+                                   % star, re.I)
                 found = regex.findall(starstext)
                 if found != []:
                     if pywikibot.verbose:
@@ -256,7 +271,8 @@ class CosmeticChangesToolkit:
         # nn got a message between the categories and the iw's
         # and they want to keep it there, first remove it
         if self.site.language()=='nn':
-            regex = re.compile('(<!-- ?interwiki \(no(?:/nb)?, ?sv, ?da first; then other languages alphabetically by name\) ?-->)')
+            regex = re.compile(
+'(<!-- ?interwiki \(no(?:/nb)?, ?sv, ?da first; then other languages alphabetically by name\) ?-->)')
             found = regex.findall(text)
             if found:
                 if pywikibot.verbose:
@@ -266,9 +282,11 @@ class CosmeticChangesToolkit:
 
         # Adding categories
         if categories:
-            text = pywikibot.replaceCategoryLinks(text, categories, site = self.site)
+            text = pywikibot.replaceCategoryLinks(text, categories,
+                                                  site=self.site)
         # Put the nn iw message back
-        if self.site.language()=='nn' and not self.talkpage and (interwikiLinks or hasCommentLine):
+        if self.site.language()=='nn' and not self.talkpage and \
+           (interwikiLinks or hasCommentLine):
             text = text + '\r\n\r\n' + nn_iw_msg
         # Adding stars templates
         if allstars:
@@ -280,7 +298,10 @@ class CosmeticChangesToolkit:
                     pywikibot.output(u'%s' %element.strip())
         # Adding the interwiki
         if interwikiLinks:
-            text = pywikibot.replaceLanguageLinks(text, interwikiLinks, site = self.site, template = self.template, template_subpage = subpage)
+            text = pywikibot.replaceLanguageLinks(text, interwikiLinks,
+                                                  site=self.site,
+                                                  template=self.template,
+                                                  template_subpage=subpage)
         return text
 
     def translateAndCapitalizeNamespaces(self, text):
@@ -308,7 +329,11 @@ class CosmeticChangesToolkit:
                         namespaces.remove(image)
             # skip main (article) namespace
             if thisNs and namespaces:
-                text = pywikibot.replaceExcept(text, r'\[\[\s*(' + '|'.join(namespaces) + ') *:(?P<nameAndLabel>.*?)\]\]', r'[[' + thisNs + ':\g<nameAndLabel>]]', exceptions)
+                text = pywikibot.replaceExcept(
+                    text,
+                    r'\[\[\s*(' + '|'.join(namespaces) + \
+                    ') *:(?P<nameAndLabel>.*?)\]\]', r'[[' + thisNs + \
+                    ':\g<nameAndLabel>]]', exceptions)
         return text
 
     def cleanUpLinks(self, text):
@@ -349,10 +374,12 @@ class CosmeticChangesToolkit:
                     if not trailingChars:
                         titleLength = len(titleWithSection)
                         titleWithSection = titleWithSection.rstrip()
-                        hadTrailingSpaces = (len(titleWithSection) != titleLength)
+                        hadTrailingSpaces = (len(titleWithSection) !=
+                                             titleLength)
 
                     # Convert URL-encoded characters to unicode
-                    titleWithSection = pywikibot.url2unicode(titleWithSection, site = self.site)
+                    titleWithSection = pywikibot.url2unicode(titleWithSection,
+                                                             site=self.site)
 
                     if titleWithSection == '':
                         # just skip empty links.
@@ -379,18 +406,26 @@ class CosmeticChangesToolkit:
                     if trailingChars:
                         label += trailingChars
 
-                    if titleWithSection == label or titleWithSection[0].lower() + titleWithSection[1:] == label:
+                    if titleWithSection == label or \
+                       titleWithSection[0].lower() + \
+                       titleWithSection[1:] == label:
                         newLink = "[[%s]]" % label
-                    # Check if we can create a link with trailing characters instead of a pipelink
-                    elif len(titleWithSection) <= len(label) and label[:len(titleWithSection)] == titleWithSection and re.sub(trailR, '', label[len(titleWithSection):]) == '':
-                        newLink = "[[%s]]%s" % (label[:len(titleWithSection)], label[len(titleWithSection):])
+                    # Check if we can create a link with trailing characters
+                    # instead of a pipelink
+                    elif len(titleWithSection) <= len(label) and \
+                         label[:len(titleWithSection)] == titleWithSection and \
+                         re.sub(trailR, '',
+                                label[len(titleWithSection):]) == '':
+                        newLink = "[[%s]]%s" % (label[:len(titleWithSection)],
+                                                label[len(titleWithSection):])
                     else:
                         # Try to capitalize the first letter of the title.
                         # Maybe this feature is not useful for languages that
                         # don't capitalize nouns...
                         #if not self.site.nocapitalize:
                         if self.site.sitename() == 'wikipedia:de':
-                            titleWithSection = titleWithSection[0].upper() + titleWithSection[1:]
+                            titleWithSection = titleWithSection[0].upper() + \
+                                               titleWithSection[1:]
                         newLink = "[[%s|%s]]" % (titleWithSection, label)
                     # re-add spaces that were pulled out of the link.
                     # Examples:
@@ -409,15 +444,20 @@ class CosmeticChangesToolkit:
             return match.group()
 
         trailR = re.compile(self.site.linktrail())
-        # The regular expression which finds links. Results consist of four groups:
-        # group title is the target page title, that is, everything before | or ].
-        # group section is the page section. It'll include the # to make life easier for us.
-        # group label is the alternative link title, that's everything between | and ].
-        # group linktrail is the link trail, that's letters after ]] which are part of the word.
-        # note that the definition of 'letter' varies from language to language.
-        linkR = re.compile(r'(?P<newline>[\n]*)\[\[(?P<titleWithSection>[^\]\|]+)(\|(?P<label>[^\]\|]*))?\]\](?P<linktrail>' + self.site.linktrail() + ')')
+    # The regular expression which finds links. Results consist of four groups:
+    # group <newline> depends whether the links starts with a new line.
+    # group <titleWithSection> is the page title and section, that is,
+    # everything before | or ]. It'll include the # to make life easier for us.
+    # group <label> is the alternative link title between | and ].
+    # group <linktrail> is the link trail after ]] which are part of the word.
+    # note that the definition of 'letter' varies from language to language.
+        linkR = re.compile(
+            r'(?P<newline>[\n]*)\[\[(?P<titleWithSection>[^\]\|]+)(\|(?P<label>[^\]\|]*))?\]\](?P<linktrail>' + \
+            self.site.linktrail() + ')')
 
-        text = pywikibot.replaceExcept(text, linkR, handleOneLink, ['comment', 'math', 'nowiki', 'pre', 'startspace'])
+        text = pywikibot.replaceExcept(text, linkR, handleOneLink,
+                                       ['comment', 'math', 'nowiki', 'pre',
+                                        'startspace'])
         return text
 
     def resolveHtmlEntities(self, text):
@@ -441,7 +481,8 @@ class CosmeticChangesToolkit:
         return text
 
     def validXhtml(self, text):
-        text = pywikibot.replaceExcept(text, r'(?i)<br[ /]*>', r'<br />', ['comment', 'math', 'nowiki', 'pre'])
+        text = pywikibot.replaceExcept(text, r'(?i)<br[ /]*>', r'<br />',
+                                       ['comment', 'math', 'nowiki', 'pre'])
         return text
 
     def removeUselessSpaces(self, text):
