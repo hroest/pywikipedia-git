@@ -1,4 +1,6 @@
-""" This tool sets an email address on all bot accounts and email confirms them."""
+# -*- coding: utf-8  -*-
+""" This tool sets an email address on all bot accounts and email confirms them.
+"""
 
 import sys, os, getpass
 sys.path.insert(1, '..')

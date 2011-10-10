@@ -1,3 +1,4 @@
+# -*- coding: utf-8  -*-
 """
 This script checks the language list of each Wikimedia multiple-language site
 against the language lists

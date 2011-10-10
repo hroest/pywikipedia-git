@@ -1,4 +1,5 @@
 """ This module contains a read-write class that represents the user preferences. """
+# -*- coding: utf-8  -*-
 from HTMLParser import HTMLParser
 from htmlentitydefs import name2codepoint
 
