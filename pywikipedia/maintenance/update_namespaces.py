@@ -1,3 +1,4 @@
+# -*- coding: utf-8  -*-
 """
 Check the family files against the live site, and updates
 both the generic family.py and the site-specific family.
@@ -5,9 +6,11 @@ both the generic family.py and the site-specific family.
 options:
     -upmain        Modify the main family.py, too.
     -wikimedia     Update all the wikimedia families
+    <family>       Work on a given wikimedia family file
 """
 #
-# (C) Pywikipedia bot team, 2003-2007
+# (C) xqt, 2010-2011
+# (C) Pywikipedia bot team, 2007-2009
 #
 # Distributed under the terms of the MIT license.
 #
@@ -31,14 +34,13 @@ r_list = '\\[.*?\\]'
 r_namespace_def = re.compile(r'[\'"]([a-z_-]*)[\'"]\s*\:\s*((?:%s)|(?:%s))\s*,' % (r_string, r_list))
 def update_family(family, changes):
     global namespace_section_text, namespace_defs, new_defs
-
     if family:
-        output(u'Updating family %s' % family.name)
+        output(u'\nUpdating family %s' % family.name)
         family_file_name = '../families/%s_family.py' % family.name
         r_namespace_section = r_namespace_section_sub
         base_indent = 8
     else:
-        output(u'Updating family.py')
+        output(u'\nUpdating family.py')
         family_file_name = '../family.py'
         r_namespace_section = r_namespace_section_main
         base_indent = 12
@@ -46,11 +48,14 @@ def update_family(family, changes):
     old_family_text = family_text = family_file.read()
     family_file.close()
 
-    for lang, namespaces in changes.iteritems():
-        for namespace_id, namespace_name, predefined_namespace in namespaces:
-            output(u'Setting namespace[%s] for %s to %s' % (namespace_id, lang, namespace_name))
+    for lang, namespaces in changes:
+        for namespace_id, namespace_list, predefined_namespace in namespaces:
+            msg = u'Setting namespace[%s] for %s to ' \
+                  + (u'[%s]' if len(namespace_list) > 1 else u'%s')
+            output(msg % (namespace_id, lang, ', '.join(namespace_list)))
 
-            namespace_section = re.search(r_namespace_section % namespace_id, family_text)
+            namespace_section = re.search(r_namespace_section
+                                          % namespace_id, family_text)
             #namespace_section2 = re.search(r_namespace_section_once % (namespace_id, lang) ,family_text)
             if not namespace_section:
                 continue
@@ -58,17 +63,21 @@ def update_family(family, changes):
             namespace_defs = dict([(match.group(1), match.group(2))
                 for match in r_namespace_def.finditer(namespace_section_text)])
 
-            if not namespace_defs.get(lang, '').startswith('['):
-                output(u'Updating namespace[%s] to %s' % (namespace_id, namespace_name))
-
-                namespace_defs[lang] = escape_string(namespace_name.encode('utf-8'))
+            msg = u'Updating namespace[%s] to ' \
+                  + (u'[%s]' if len(namespace_list) > 1 else u'%s')
+            output(msg % (namespace_id, ', '.join(namespace_list)))
+            if len(namespace_list) == 1:
+                namespace_defs[lang] = escape_string(namespace_list[0].encode('utf-8'))
             else:
-                output(u'Namespace[%s] definition is a list; not updating.' % namespace_id)
+                namespaces = u", ".join(escape_string(ns) for ns in namespace_list).encode('utf-8')
+                namespace_defs[lang] = '[%s]' % namespaces
 
             new_defs = namespace_defs.items()
             new_defs.sort(key = lambda x: x[0])
-            new_text = '\n' + ''.join([(base_indent + 4) * ' ' + "'%s': %s,\n" % i for i in new_defs]) + ' ' * base_indent
-            family_text = family_text.replace(namespace_section.group(1), new_text)
+            new_text = '\n' + ''.join([(base_indent + 4) * ' ' + "'%s': %s,\n"
+                                       % i for i in new_defs]) + ' ' * base_indent
+            family_text = family_text.replace(namespace_section.group(1),
+                                              new_text)
 
     if family_text == old_family_text:
         output(u'No changes made')
