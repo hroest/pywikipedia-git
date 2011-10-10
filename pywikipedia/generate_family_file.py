@@ -193,7 +193,7 @@ class NamespaceStorage(object):
                 self.add(ns['id'], w.lang, ns['*'])
         else:
             print "\n*** Notice: cannot retrieve namespaces for %s" % w.lang
-        
+
         if 'namespacealiases' in data:
             for ns in data['namespacealiases']:
                 self.add(ns['id'], w.lang, ns['*'])
@@ -247,7 +247,7 @@ class Wiki(object):
                 raise
             data = e.read()
             pass
-        
+
         bs = BeautifulSoup(data)
         try:
             self.version = bs.find("meta", attrs={'name': "generator"})['content'].replace("MediaWiki ", "")
@@ -284,7 +284,7 @@ class Wiki(object):
         apipath = bs.find("link", rel='EditURI')['href'].split("?")[0]
         fullurl = urljoin(fromurl, apipath)
         info = json.load(urlopen(fullurl + "?action=query&meta=siteinfo&format=json"))['query']['general']
-        
+
         self.server = urljoin(fromurl, info['server'])
         for item in ['scriptpath', 'articlepath', 'lang']:
             setattr(self, item, info[item])
