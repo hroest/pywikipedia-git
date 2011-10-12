@@ -362,7 +362,7 @@ noTitleRequired = [u'pl', u'be', u'szl']
 maintenance_category = {
     'wikipedia': {
         'be-x-old': u'Вікіпэдыя:Старонкі з адсутным сьпісам зносак',
-        'de': u'Seiten mit fehlendem References-Tag',
+        'de': u'Wikipedia:Seite mit fehlendem References-Tag',
         'en': u'Pages with missing references list',
         'ja': u'Refタグがあるのにreferencesタグがないページ',
         'simple': u'Wikipedia pages with broken references',
