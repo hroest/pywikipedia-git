@@ -405,11 +405,13 @@ u'Cannot change %s because of spam blacklist entry %s'
                              % oldtemplate,
                              u'{{%s}}' % newtemplate,
                              page.get())
-        else:
+        elif oldcat.strip() != newcat: #strip trailing white space
             newtext = re.sub(u'(?i)\{\{%s\|?[^{}]*(?:\{\{.*\}\})?\}\}'
                              %oldtemplate,
                              u'{{%s|%s}}' % (newtemplate, newcat),
                              page.get())
+        else: # nothing left to do
+            return
         if self.summary:
             comment = self.summary
         else:
