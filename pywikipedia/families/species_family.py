@@ -25,8 +25,9 @@ class Family(family.Family):
 
         self.interwiki_forward = 'wikipedia'
         self.cross_projects = [
-            'wikipedia', 'wiktionary', 'wikibooks', 'wikiquote', 'wikisource', 'wikinews', 'wikiversity',
-            'meta', 'mediawiki', 'test', 'incubator', 'commons',
+            'wikipedia', 'wiktionary', 'wikibooks', 'wikiquote', 'wikisource',
+            'wikinews', 'wikiversity', 'meta', 'mediawiki', 'test', 'incubator',
+            'commons',
         ]
 
     def shared_image_repository(self, code):
