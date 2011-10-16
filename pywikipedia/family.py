@@ -3733,7 +3733,9 @@ class Family:
             raise KeyError('ERROR: Unknown namespace %d for %s:%s' % (ns_number, code, self.name))
         elif self.isNsI18N(ns_number, code):
             v = self.namespaces[ns_number][code]
-            if type(v) is not list:
+            if type(v) == list:
+                v = v[:]
+            else:
                 v = [v,]
             if all and self.isNsI18N(ns_number, fallback):
                 v2 = self.namespaces[ns_number][fallback]
@@ -3743,7 +3745,9 @@ class Family:
                     v.append(v2)
         elif fallback and self.isNsI18N(ns_number, fallback):
             v = self.namespaces[ns_number][fallback]
-            if type(v) is not list:
+            if type(v) == list:
+                v = v[:]
+            else:
                 v = [v,]
         else:
             raise KeyError('ERROR: title for namespace %d in language %s unknown' % (ns_number, code))
