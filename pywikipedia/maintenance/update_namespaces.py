@@ -48,7 +48,7 @@ def update_family(family, changes):
     old_family_text = family_text = family_file.read()
     family_file.close()
 
-    for lang, namespaces in changes:
+    for lang, namespaces in changes.iteritems():
         for namespace_id, namespace_list, predefined_namespace in namespaces:
             msg = u'Setting namespace[%s] for %s to ' \
                   + (u'[%s]' if len(namespace_list) > 1 else u'%s')

@@ -1,4 +1,13 @@
 # -*- coding: utf-8  -*-
+#
+# (C) xqt, 2011
+# (C) Pywikipedia bot team, 2003-2007
+#
+# Distributed under the terms of the MIT license.
+#
+__version__ = '$Id: $'
+#
+
 import sys
 sys.path.insert(1, '..')
 
@@ -10,21 +19,62 @@ def check_namespaces(site):
             wikipedia.output(u'Warning! %s has no apipath() defined!' % site)
             return
     except NotImplementedError:
-#     TODO: If use Special:Export to get XML file and parse details in <namespaces></namespaces>,
-#     we can get the namespace names without API.
         wikipedia.output(u'Warning! %s is not support API!' % site)
         return
     result = []
     for namespace in site.siteinfo('namespaces').itervalues():
+        ns = namespace['id']
+        defined = set()
+        default_namespace = None
+        defined_namespace = None
         try:
-            defined_namespace = site.namespace(namespace['id'])
+            default_namespace = site.family.namespaces[ns]['_default']
         except KeyError:
-            wikipedia.output(u'Warning! %s has no _default for namespace %s' % \
-                (site, namespace['id']))
-            defined_namespace = None
+            wikipedia.output(u'Warning! %s has no _default for namespace %s' %
+                (site, ns))
 
-        if defined_namespace != namespace['*'] and namespace['*']:
-            result.append((namespace['id'], namespace['*'], defined_namespace))
+        if default_namespace:
+            if isinstance(default_namespace, basestring):
+                default_namespace = [default_namespace]
+            defined = set(default_namespace)
+            try:
+                defined_namespace = site.family.namespaces[ns][site.lang]
+            except KeyError:
+                wikipedia.output(u'Warning! %s has only _default for namespace %s' %
+                    (site, ns))
+                defined_namespace = default_namespace[:]
+            else:
+                if isinstance(defined_namespace, basestring):
+                    defined.add(defined_namespace)
+                    defined_namespace = [defined_namespace]
+                else:
+                    defined = defined.union(set(defined_namespace))
+
+        aliases = set([namespace['*']]) if namespace['*'] else set()
+        if 'canonical' in namespace:
+            aliases.add(namespace['canonical'])
+        for alias in site.siteinfo('namespacealiases'):
+            if alias['id'] == ns:
+                aliases.add(alias['*'])
+
+        if aliases and aliases <> defined:
+            result.append((ns, [namespace['*']],
+                           defined_namespace))
+
+    for namespace in site.siteinfo('namespacealiases'):
+        ns =  namespace['id']
+        for alias in result:
+            if alias[0] == ns:
+                try:
+                    default = site.family.namespace('_default', ns, all=True)
+                except KeyError:
+                    pass
+                else:
+                    if not namespace['*'] in default:# and \
+                        if namespace['*'] in alias[1]:
+                            raise
+                        else:
+                            alias[1].append(namespace['*'])
     return result
 
 def check_family(family):
@@ -37,8 +87,16 @@ def check_family(family):
             namespaces = check_namespaces(site)
             if namespaces:
                 for id, name, defined_namespace in namespaces:
-                    wikipedia.output(u'Namespace %s for %s is %s, %s is defined in family file.' % \
-                        (id, site, name, defined_namespace))
+                    try:
+                        msg = u'Namespace %s for %s is ' \
+                              + (u'[%s]. ' if len(name) > 1 else u'%s. ') \
+                              + (u'[%s]' if len(defined_namespace) > 1 else u'%s') \
+                              + u' is defined in family file.'
+                        wikipedia.output(msg % (id, site,
+                                                ', '.join(name),
+                                                ', '.join(defined_namespace)))
+                    except:
+                        pass
                 result[lang] = namespaces
     return result
 
@@ -47,8 +105,9 @@ if __name__ == '__main__':
         wikipedia.handleArgs()
         family = wikipedia.Family(wikipedia.default_family)
         result = check_family(family)
-        wikipedia.output(u'Writing raw Python dictionary to stdout.')
+        wikipedia.output(u'\nWriting raw Python dictionary to stdout.')
         wikipedia.output(u'Format is: (namespace_id, namespace_name, predefined_namespace)')
+        print
         print result
     finally:
         wikipedia.stopme()
