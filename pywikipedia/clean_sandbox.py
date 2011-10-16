@@ -51,6 +51,7 @@ content = {
     'commons': u'{{Sandbox}}\n<!-- Please edit only below this line. -->',
     'als':u'{{subst:/Vorlage}}',
     'ar': u'{{عنوان الملعب}}\n<!-- مرحبا! خذ راحتك في تجربة مهارتك في التنسيق والتحرير أسفل هذا السطر. هذه الصفحة لتجارب التعديل ، سيتم تفريغ هذه الصفحة كل 12 ساعة. -->',
+    'az': u'<!--- LÜTFƏN, BU SƏTRƏ TOXUNMAYIN --->\n{{Qaralama dəftəri}}\n<!-- AŞAĞIDAKI XƏTTİN ALTINDAN YAZA BİLƏRSİNİZ --->',
     'bar':u'{{Bitte erst NACH dieser Zeile schreiben! (Begrüßungskasten)}}\r\n',
     'cs': u'{{subst:/uhrabat}}',
     'da': u'{{subst:Sandkasse tekst}}',
@@ -76,6 +77,7 @@ content = {
     'sr': u'{{песак}}\n<!-- Молимо, испробавајте испод ове линије. Хвала. -->',
     'sv': u'{{subst:Sandlådan}}',
     'th': u'{{กระบะทราย}}\n<!-- กรุณาอย่าแก้ไขบรรทัดนี้ ขอบคุณครับ/ค่ะ -- Please leave this line as they are. Thank you! -->',
+    'tr': u'{{/Bu satırı değiştirmeden bırakın}}',
     'zh': u'{{subst:User:Sz-iwbot/sandbox}}\r\n',
     }
 
@@ -83,6 +85,7 @@ sandboxTitle = {
     'commons': u'Project:Sandbox',
     'als':u'Project:Sandchaschte',
     'ar': u'Project:ملعب',
+    'az': u'Vikipediya:Qaralama dəftəri',
     'bar':u'Project:Spielwiese',
     'cs': u'Project:Pískoviště',
     'da': u'Project:Sandkassen',
@@ -108,6 +111,7 @@ sandboxTitle = {
     'sr': u'Project:Песак',
     'sv': u'Project:Sandlådan',
     'th': u'Project:ทดลองเขียน',
+    'tr': u'Vikipedi:Deneme tahtası',
     'zh': u'Project:沙盒',
     }
 
