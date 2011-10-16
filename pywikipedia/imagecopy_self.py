@@ -126,6 +126,10 @@ skipTemplates = {
            u'Ffd',
            u'PD-user', # Only the self templates are supported for now.
            u'Ticket Scan',
+           u'Non-free 2D art',
+           u'Non-free 3D art',
+           u'Non-free architectural work',
+           u'Non-free fair use in',
            ],
     'lb' : [u'Läschen',
             ],
@@ -169,7 +173,7 @@ sourceGarbage = {
     'en': [u'==\s*Description\s*==',
            u'==\s*Summary\s*==',
            u'==\s*Licensing:?\s*==',
-           u'\{\{(Copy to Wikimedia Commons|Move to Commons|Move to commons|Move to Wikimedia Commons|Copy to commons|Mtc|MtC|MTC|CWC|CtWC|CTWC|Ctwc|Tocommons|Copy to Commons|To Commons|Movetocommons|Move to Wikimedia commons|Move-to-commons|Commons ok|ToCommons|To commons|MoveToCommons|Copy to wikimedia commons|Upload to commons|CopyToCommons|Copytocommons|MITC|MovetoCommons|Do move to Commons)\}\}'
+           u'\{\{(Copy to Wikimedia Commons|Move to Commons|Move to commons|Move to Wikimedia Commons|Copy to commons|Mtc|MtC|MTC|CWC|CtWC|CTWC|Ctwc|Tocommons|Copy to Commons|To Commons|Movetocommons|Move to Wikimedia commons|Move-to-commons|Commons ok|ToCommons|To commons|MoveToCommons|Copy to wikimedia commons|Upload to commons|CopyToCommons|Copytocommons|MITC|MovetoCommons|Do move to Commons|Orphan image)(\|[^\}]+)?\}\}'
            ],
     'lb' : [u'==\s*Résumé\s*==',
             u'==\s*Lizenz:\s*==',
@@ -382,6 +386,9 @@ class imageFetcher(threading.Thread):
         # Permission
         # Still have to filter out crap like "see below" or "yes"
         if not contents[u'permission']==u'':
+            # Strip of the license temlate if it's in the permission section
+            for (regex, repl) in licenseTemplates[imagepage.site().language()]:
+                contents[u'permission'] = re.sub(regex, u'', contents[u'permission'], flags=re.IGNORECASE)
             permission = self.convertLinks(contents[u'permission'], imagepage.site())
 
         # Other_versions
