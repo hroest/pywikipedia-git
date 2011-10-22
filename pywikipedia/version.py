@@ -1,6 +1,8 @@
+# -*- coding: utf-8  -*-
 """ Module to determine the pywikipedia version (tag, revision and date) """
 #
-# (C) Merlijn 'valhallasw' van Deen
+# (C) Merlijn 'valhallasw' van Deen, 2007-2008
+# (C) Pywikipedia bot team, 2007-2011
 #
 # Distributed under the terms of the MIT license.
 #
