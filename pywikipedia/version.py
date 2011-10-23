@@ -29,7 +29,6 @@ def getversiondict():
     try:
         (tag, rev, date) = getversion_svn()
     except Exception, e:
-        print e
         try:
             (tag, rev, date) = getversion_nightly()
         except Exception, e:
