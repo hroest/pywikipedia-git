@@ -343,6 +343,8 @@ class Page(object):
                             raise Error("Can't have an empty self-link")
                     else:
                         self._site = getSite(lowerNs, self._site.family.name)
+                        if t == '':
+                            t = self._site.mediawiki_message('Mainpage')
 
                     # If there's an initial colon after the interwiki, that also
                     # resets the default namespace
