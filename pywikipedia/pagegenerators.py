@@ -340,6 +340,7 @@ class GeneratorFactory(object):
                 gen = RecentchangesPageGenerator()
             else:
                 gen = RecentchangesPageGenerator(number = int(arg[15:]))
+            gen = DuplicateFilterPageGenerator(gen)
         elif arg.startswith('-file'):
             textfilename = arg[6:]
             if not textfilename:
