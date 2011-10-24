@@ -21,6 +21,7 @@ These parameters are supported to specify which pages titles to print:
 __version__='$Id$'
 
 import wikipedia as pywikibot
+from pywikibot import deprecate_arg
 import config
 
 import traceback
@@ -1171,11 +1172,10 @@ class PreloadingGenerator(object):
     Operates asynchronously, so the next batch of pages is loaded in the
     background before the first batch is fully consumed.
     """
-    def __init__(self, generator, pageNumber=60, lookahead=10):
+    @deprecate_arg("lookahead", None)
+    def __init__(self, generator, pageNumber=60):
         self.wrapped_gen = generator
         self.pageNumber = pageNumber
-#        ThreadedGenerator.__init__(self, name="Preloading-Thread",
-#                                   qsize=lookahead)
 
     def __iter__(self):
         try:
@@ -1183,8 +1183,6 @@ class PreloadingGenerator(object):
             # after these pages have been preloaded and yielded.
             somePages = []
             for page in self.wrapped_gen:
-##                if self.finished.isSet():
-##                    return
                 somePages.append(page)
                 # We don't want to load too many pages at once using XML export.
                 # We only get a maximum number at a time.

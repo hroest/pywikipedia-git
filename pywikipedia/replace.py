@@ -806,14 +806,9 @@ LIMIT 200""" % (whereClause, exceptClause)
         # syntax error, show help text from the top of this file
         pywikibot.showHelp('replace')
         return
-    if xmlFilename:
-        # XML parsing can be quite slow, so use smaller batches and
-        # longer lookahead.
-        preloadingGen = pagegenerators.PreloadingGenerator(gen,
-                                            pageNumber=20, lookahead=100)
-    else:
-        preloadingGen = pagegenerators.PreloadingGenerator(gen,
-                        pageNumber=maxquerysize)
+
+    preloadingGen = pagegenerators.PreloadingGenerator(gen,
+                                                       pageNumber=maxquerysize)
 
     #Finally we open the file for page titles or set article to None
     if filename:
