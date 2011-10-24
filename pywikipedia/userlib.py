@@ -288,6 +288,8 @@ class User(object):
         # keeping track of titles
         nbresults = 0
         while True:
+            pywikibot.output(u'Retrieving %d user contributions from %s...'
+                             % (params['uclimit'], self.site()))
             result = query.GetData(params, self.site())
             if 'error' in result:
                 pywikibot.output('%s' % result)
