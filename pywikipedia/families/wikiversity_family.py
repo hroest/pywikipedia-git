@@ -141,6 +141,9 @@ class Family(family.Family):
             'meta', 'mediawiki', 'test', 'incubator', 'commons', 'species'
         ]
 
+        # Global bot allowed languages on http://meta.wikimedia.org/wiki/Bot_policy/Implementation#Current_implementation
+        self.cross_allowed = ['ja',]
+
     def shared_image_repository(self, code):
         return ('commons', 'commons')
 
