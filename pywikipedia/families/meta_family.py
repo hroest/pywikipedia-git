@@ -133,6 +133,7 @@ class Family(family.Family):
         }
         self.namespaces[202] = {
             '_default': u'Research',
+            'meta': [u'Research', u'R'],
         }
         self.namespaces[203] = {
             '_default': u'Research talk',

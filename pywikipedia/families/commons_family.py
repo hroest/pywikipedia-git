@@ -18,6 +18,7 @@ class Family(family.Family):
 
         self.namespaces[4] = {
             '_default': [u'Commons', 'Project'],
+            'commons': [u'Commons', u'COM'],
         }
         self.namespaces[5] = {
             '_default': [u'Commons talk', 'Project talk'],
@@ -42,9 +43,11 @@ class Family(family.Family):
         }
         self.namespaces[106] = {
             '_default': [u'Institution'],
+            'commons': [u'Institution', u'Museum'],
         }
         self.namespaces[107] = {
             '_default': [u'Institution talk'],
+            'commons': [u'Institution talk', u'Museum talk'],
         }
 
         self.interwiki_forward = 'wikipedia'

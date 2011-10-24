@@ -19,9 +19,11 @@ class Family(family.Family):
 
         self.namespaces[4] = {
             '_default': [u'Wikipedia', self.namespaces[4]['_default']],
+            'test': [u'Wikipedia', u'WP'],
         }
         self.namespaces[5] = {
             '_default': [u'Wikipedia talk', self.namespaces[5]['_default']],
+            'test': [u'Wikipedia talk', u'WT'],
         }
         self.namespaces[90] = {
             '_default': u'Thread',
