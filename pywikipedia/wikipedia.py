@@ -36,7 +36,7 @@ Objects:
     put_throttle:       Call to limit rate of write-access to wiki
 
 Other functions:
-    getall(): Load a group of pages via Special:Export
+    getall(): Load a group of pages
     handleArgs(): Process all standard command line arguments (such as
         -family, -lang, -log and others)
     translate(xx, dict): dict is a dictionary, giving text depending on
