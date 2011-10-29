@@ -497,13 +497,10 @@ class Table2WikiRobot:
                 if warningSum == 0:
                     pywikibot.setAction(
                         i18n.twtranslate(site.lang, 'table2wiki-no-warning'))
-                elif warningSum == 1:
-                    pywikibot.setAction(
-                        i18n.twtranslate(site.lang, 'table2wiki-one-warning'))
                 else:
                     pywikibot.setAction(
-                        i18n.twtranslate(site.lang, 'table2wiki-warnings',
-                                         {'count': warningSum}))
+                        i18n.twntranslate(site.lang, 'table2wiki-warnings',
+                                          {'count': warningSum}))
                 page.put_async(newText)
 
     def run(self):
