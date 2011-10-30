@@ -375,7 +375,7 @@ class CategoryRedirectBot(object):
                 if target.namespace() == 14:
                     # this is a hard-redirect to a category page
                     newtext = (u"{{%(template)s|%(cat)s}}"
-                               % {'cat': target.titleWithoutNamespace(),
+                               % {'cat': target.title(withNamespace=False),
                                   'template': template_list[0]})
                     try:
                         page.put(newtext, comment, minorEdit=True)
@@ -428,7 +428,7 @@ class CategoryRedirectBot(object):
         pywikibot.output(u"Preloading %s category redirect pages"
                          % len(catpages))
         for cat in pagegenerators.PreloadingGenerator(catpages, 120):
-            cat_title = cat.titleWithoutNamespace()
+            cat_title = cat.title(withNamespace=False)
             if "category redirect" in cat_title:
                 self.log_text.append(u"* Ignoring %s"
                                       % cat.title(asLink=True, textlink=True))
@@ -448,7 +448,7 @@ class CategoryRedirectBot(object):
                 record[cat_title] = {today: None}
             catlist.append(cat)
             target = cat.getCategoryRedirectTarget()
-            destination = target.titleWithoutNamespace()
+            destination = target.title(withNamespace=False)
             destmap.setdefault(target, []).append(cat)
             catmap[cat] = destination
 ##            if match.group(1):
@@ -511,7 +511,7 @@ class CategoryRedirectBot(object):
                         oldtext = template_regex.sub("", oldtext)
                         newtext = (u"{{%(redirtemp)s|%(ncat)s}}"
                                     % {'redirtemp': template_list[0],
-                                       'ncat': newcat.titleWithoutNamespace()})
+                                       'ncat': newcat.title(withNamespace=False)})
                         newtext = newtext + oldtext.strip()
                         try:
                             d.put(newtext,
@@ -531,7 +531,7 @@ class CategoryRedirectBot(object):
 #        threadpool = ThreadList(limit=1)    # disabling multi-threads
 
         for cat in cats_to_empty:
-            cat_title = cat.titleWithoutNamespace()
+            cat_title = cat.title(withNamespace=False)
             if not self.readyToEdit(cat):
                 counts[cat_title] = None
                 self.log_text.append(

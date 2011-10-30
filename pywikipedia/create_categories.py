@@ -26,7 +26,8 @@ create_categories.py
 """
 __version__ = '$Id$'
 #
-#  (C) Multichill 2011
+# (C) Multichill, 2011
+# (C) xqt, 2011
 #
 #   Distributed under the terms of the MIT license.
 #
@@ -43,7 +44,7 @@ import pagegenerators
 
 
 def createCategory(page, parent, basename):
-    title = page.titleWithoutNamespace()
+    title = page.title(withNamespace=False)
 
     newpage = pywikibot.Page(pywikibot.getSite(u'commons', u'commons'),
                                  u'Category:' + basename + u' ' + title)

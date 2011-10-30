@@ -75,9 +75,8 @@ Known issues/FIXMEs (no critical issues known):
 # (C) Kyle/Orgullomoore, Siebrand Mazeland 2007-2008
 #
 # Another rewrite by:
-#  (C) Multichill 2008-2010
-#
-# (C) Pywikipedia bot team, 2003-2010
+# (C) Multichill 2008-2011
+# (C) Pywikipedia bot team, 2007-2011
 #
 # Distributed under the terms of the MIT license.
 #
@@ -228,7 +227,7 @@ class imageTransfer (threading.Thread):
 
     def run(self):
         tosend={'language':self.imagePage.site().language().encode('utf-8'),
-                'image':self.imagePage.titleWithoutNamespace().encode('utf-8'),
+                'image':self.imagePage.title(withNamespace=False).encode('utf-8'),
                 'newname':self.newname.encode('utf-8'),
                 'project':self.imagePage.site().family.name.encode('utf-8'),
                 'username':'',
@@ -275,7 +274,10 @@ class imageTransfer (threading.Thread):
             else:
                 addTemplate = nowCommonsTemplate['_default'] % self.newname
 
-            commentText = i18n.twtranslate(self.imagePage.site(), 'commons-file-now-available', {'localfile' : self.imagePage.titleWithoutNamespace(), 'commonsfile' : self.newname})
+            commentText = i18n.twtranslate(self.imagePage.site(),
+                                           'commons-file-now-available',
+                                           {'localfile': self.imagePage.title(withNamespace=False),
+                                            'commonsfile': self.newname})
 
             pywikibot.showDiff(self.imagePage.get(), imtxt+addTemplate)
             self.imagePage.put(imtxt + addTemplate, comment = commentText)
@@ -284,10 +286,17 @@ class imageTransfer (threading.Thread):
             self.preloadingGen = pagegenerators.PreloadingGenerator(self.gen)
 
             #If the image is uploaded under a different name, replace all instances
-            if self.imagePage.titleWithoutNamespace() != self.newname:
-                moveSummary = i18n.twtranslate(self.imagePage.site(), 'commons-file-moved', {'localfile' : self.imagePage.titleWithoutNamespace(), 'commonsfile' : self.newname})
+            if self.imagePage.title(withNamespace=False) != self.newname:
+                moveSummary = i18n.twtranslate(self.imagePage.site(),
+                                               'commons-file-moved',
+                                               {'localfile': self.imagePage.title(withNamespace=False),
+                                                'commonsfile': self.newname})
 
-                imagebot = ImageRobot(generator = self.preloadingGen, oldImage = self.imagePage.titleWithoutNamespace(), newImage = self.newname, summary = moveSummary, always = True, loose = True)
+                imagebot = ImageRobot(generator=self.preloadingGen,
+                                      oldImage=self.imagePage.title(withNamespace=False),
+                                      newImage=self.newname,
+                                      summary=moveSummary, always=True,
+                                      loose=True)
                 imagebot.run()
         return
 
@@ -473,15 +482,19 @@ def main(args):
                     #No API, using the page file instead
                     (datetime, username, resolution, size, comment) = imagepage.getFileVersionHistory().pop()
                 if always:
-                    newname=imagepage.titleWithoutNamespace()
-                    CommonsPage=pywikibot.Page(pywikibot.getSite('commons', 'commons'), u'File:'+newname)
+                    newname=imagepage.title(withNamespace=False)
+                    CommonsPage=pywikibot.Page(pywikibot.getSite('commons',
+                                                                 'commons'),
+                                               u'File:%s' % newname)
                     if CommonsPage.exists():
                         skip = True
                 else:
                     while True:
-
                         # Do the Tkdialog to accept/reject and change te name
-                        (newname, skip)=Tkdialog(imagepage.titleWithoutNamespace(), imagepage.get(), username, imagepage.permalink(), imagepage.templates()).getnewname()
+                        (newname, skip) = Tkdialog(
+                            imagepage.title(withNamespace=False),
+                            imagepage.get(), username, imagepage.permalink(),
+                            imagepage.templates()).getnewname()
 
                         if skip:
                             pywikibot.output('Skipping this image')
@@ -490,7 +503,7 @@ def main(args):
                         # Did we enter a new name?
                         if len(newname)==0:
                             #Take the old name
-                            newname=imagepage.titleWithoutNamespace()
+                            newname=imagepage.title(withNamespace=False)
                         else:
                             newname = newname.decode('utf-8')
 

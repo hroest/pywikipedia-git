@@ -341,7 +341,7 @@ def featuredArticles(site, pType):
             arts.append(p)
         # Article talk (like in English)
         elif p.namespace() == 1 and site.lang <> 'el':
-            arts.append(pywikibot.Page(p.site(), p.titleWithoutNamespace()))
+            arts.append(pywikibot.Page(p.site(), p.title(withNamespace=False)))
     pywikibot.output(
         '\03{lightred}** wikipedia:%s has %i %s articles\03{default}'
         % (site.lang, len(arts), pType))

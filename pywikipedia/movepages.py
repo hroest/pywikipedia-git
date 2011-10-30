@@ -32,7 +32,7 @@ Furthermore, the following command line parameters are supported:
 #
 # (C) Leonardo Gregianin, 2006
 # (C) Andreas J. Schwab, 2007
-# (C) Pywikipedia bot team, 2006-2010
+# (C) Pywikipedia bot team, 2006-2011
 #
 # Distributed under the terms of the MIT license.
 #
@@ -110,7 +110,7 @@ class MovePagesBot:
         if self.skipredirects and page.isRedirectPage():
             pywikibot.output(u'Page %s is a redirect; skipping.' % page.title())
             return
-        pagetitle = page.titleWithoutNamespace()
+        pagetitle = page.title(withNamespace=False)
         namesp = page.site().namespace(page.namespace())
         if self.appendAll:
             newPageTitle = (u'%s%s%s'
@@ -184,7 +184,7 @@ class MovePagesBot:
                 self.replacePattern = pywikibot.input(
                     u'Enter the replace pattern:')
                 self.regex=re.compile(searchPattern)
-                if page.title() == page.titleWithoutNamespace():
+                if page.title() == page.title(withNamespace=False):
                     newPageTitle = self.regex.sub(self.replacePattern,
                                                   page.title())
                 else:
@@ -193,7 +193,7 @@ class MovePagesBot:
                         % namesp, ['yes', 'no'], ['y', 'n'])
                     if choice2 == 'y':
                         newPageTitle = self.regex.sub(
-                            self.replacePattern, page.titleWithoutNamespace())
+                            self.replacePattern, page.title(withNamespace=False))
                         noNamespace = True
                     else:
                         newPageTitle = self.regex.sub(self.replacePattern,

@@ -47,7 +47,8 @@ Please fix these if you are capable and motivated:
 """
 #
 # (C) Wikipedian, 2006-2007
-# (C) Siebrand Mazeland, 2007
+# (C) Siebrand Mazeland, 2007-2008
+# (C) xqt,2010-2011
 # (C) Pywikipedia bot team, 2006-2011
 #
 # Distributed under the terms of the MIT license.
@@ -277,7 +278,7 @@ class NowCommonsDeleteBot:
         for templateName, params in localImagePage.templatesWithParams():
             if templateName in self.ncTemplates():
                 if params == []:
-                    filenameOnCommons = localImagePage.titleWithoutNamespace()
+                    filenameOnCommons = localImagePage.title(withNamespace=False)
                 elif self.site.lang in namespaceInTemplate:
                     skip = False
                     filenameOnCommons = None
@@ -291,7 +292,7 @@ class NowCommonsDeleteBot:
                             break
                         skip = True
                     if not filenameOnCommons:
-                        filenameOnCommons = localImagePage.titleWithoutNamespace()
+                        filenameOnCommons = localImagePage.title(withNamespace=False)
                 else:
                     val = params[0].split('=')
                     if len(val) == 1:
@@ -341,26 +342,28 @@ class NowCommonsDeleteBot:
                     continue
                 commonsImagePage = pywikibot.ImagePage(commons, 'Image:%s'
                                                        % filenameOnCommons)
-                if localImagePage.titleWithoutNamespace() == commonsImagePage.titleWithoutNamespace() and use_hash:
+                if localImagePage.title(withNamespace=False) == \
+                   commonsImagePage.title(withNamespace=False) and use_hash:
                     pywikibot.output(
                         u'The local and the commons images have the same name')
-                if localImagePage.titleWithoutNamespace() != commonsImagePage.titleWithoutNamespace():
+                if localImagePage.title(withNamespace=False) != \
+                   commonsImagePage.title(withNamespace=False):
                     usingPages = list(localImagePage.usingPages())
                     if usingPages and usingPages != [localImagePage]:
                         pywikibot.output(
                             u'\"\03{lightred}%s\03{default}\" is still used in %i pages.'
-                            % (localImagePage.titleWithoutNamespace(),
+                            % (localImagePage.title(withNamespace=False),
                                len(usingPages)))
                         if replace == True:
                                 pywikibot.output(
                                     u'Replacing \"\03{lightred}%s\03{default}\" by \"\03{lightgreen}%s\03{default}\".'
-                                    % (localImagePage.titleWithoutNamespace(),
-                                       commonsImagePage.titleWithoutNamespace()))
+                                    % (localImagePage.title(withNamespace=False),
+                                       commonsImagePage.title(withNamespace=False)))
                                 oImageRobot = image.ImageRobot(
                                     pagegenerators.FileLinksGenerator(
                                         localImagePage),
-                                    localImagePage.titleWithoutNamespace(),
-                                    commonsImagePage.titleWithoutNamespace(),
+                                    localImagePage.title(withNamespace=False),
+                                    commonsImagePage.title(withNamespace=False),
                                     '', replacealways, replaceloose)
                                 oImageRobot.run()
                                 # If the image is used with the urlname the
@@ -372,8 +375,10 @@ class NowCommonsDeleteBot:
                                         pagegenerators.FileLinksGenerator(
                                             localImagePage),
                                         self.urlname(
-                                            localImagePage.titleWithoutNamespace()),
-                                        commonsImagePage.titleWithoutNamespace(),
+                                            localImagePage.title(
+                                                withNamespace=False)),
+                                        commonsImagePage.title(
+                                            withNamespace=False),
                                         '', replacealways, replaceloose)
                                     oImageRobot.run()
                                 # refresh because we want the updated list
@@ -391,7 +396,7 @@ class NowCommonsDeleteBot:
                     else:
                         pywikibot.output(
                             u'No page is using \"\03{lightgreen}%s\03{default}\" anymore.'
-                            % localImagePage.titleWithoutNamespace())
+                            % localImagePage.title(withNamespace=False))
                 commonsText = commonsImagePage.get()
                 if replaceonly == False:
                     if md5 == commonsImagePage.getFileMd5Sum():

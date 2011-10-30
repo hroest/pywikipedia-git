@@ -27,6 +27,7 @@ and option can be one of these:
 """
 #
 # (C) Leonardo Gregianin, 2006
+# (C) Pywikipedia team, 2007-2011
 #
 # Distributed under the terms of the MIT license.
 #
@@ -188,7 +189,8 @@ if __name__ == "__main__":
             elif arg.startswith('-start:'):
                 start = pywikibot.Page(pywikibot.getSite(), arg[7:])
                 gen = pagegenerators.AllpagesPageGenerator(
-                    start.titleWithoutNamespace(), namespace=start.namespace(),
+                    start.title(withNamespace=False),
+                    namespace=start.namespace(),
                     includeredirects = False)
             elif arg.startswith('-cat:'):
                 cat = catlib.Category(pywikibot.getSite(),

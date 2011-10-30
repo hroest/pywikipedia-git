@@ -81,7 +81,7 @@ This will move all pages in the category US to the category United States.
 # (C) leogregianin, 2004-2008
 # (C) Cyde, 2006-2010
 # (C) Anreas J Schwab, 2007
-# (C) Pywikipedia team, 2008-2009
+# (C) Pywikipedia team, 2008-2011
 #
 __version__ = '$Id$'
 #
@@ -651,10 +651,11 @@ class CategoryTidyRobot:
                 if current_cat == original_cat:
                     print 'No changes necessary.'
                 else:
-                    newcat = u'[[:%s|%s]]' % (current_cat.title(savetitle=True), current_cat.titleWithoutNamespace())
+                    newcat = u'[[:%s|%s]]' % (current_cat.title(savetitle=True),
+                                              current_cat.title(withNamespace=False))
                     editsum = i18n.twtranslate(pywikibot.getSite(),
                                                'category-replacing',
-                                               {'oldcat': original_cat.titleWithoutNamespace(),
+                                               {'oldcat': original_cat.title(withNamespace=False),
                                                 'newcat': newcat})
                     catlib.change_category(article, original_cat, current_cat, comment = editsum)
                 flag = True

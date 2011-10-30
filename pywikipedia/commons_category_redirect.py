@@ -9,6 +9,7 @@ Moves all images, pages and categories in redirect categories to the target cate
 
 #
 # (C) Multichill, 2008
+# (C) Pywikipedia team, 2008-2011
 #
 # Distributed under the terms of the MIT license.
 #
@@ -72,9 +73,9 @@ def main():
                         catlib.change_category(
                             page, old_category, destination, move_message
                             % (old_category.title(),
-                               old_category.titleWithoutNamespace(),
+                               old_category.title(withNamespace=False),
                                destination.title(),
-                               destination.titleWithoutNamespace()))
+                               destination.title(withNamespace=False)))
                     except pywikibot.IsRedirectPage:
                         pywikibot.output(u'%s is a redirect!' % page.title())
                 for cat in old_category.subcategories():
@@ -82,9 +83,9 @@ def main():
                         catlib.change_category(
                             cat, old_category, destination, move_message
                             % (old_category.title(),
-                               old_category.titleWithoutNamespace(),
+                               old_category.title(withNamespace=False),
                                destination.title(),
-                               destination.titleWithoutNamespace()))
+                               destination.title(withNamespace=False)))
                     except pywikibot.IsRedirectPage:
                         pywikibot.output(u'%s is a redirect!' % page.title())
         #Dummy edit to refresh the page, shouldnt show up in any logs.

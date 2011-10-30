@@ -97,7 +97,7 @@ pages:
 """
 #
 # (C) Daniel Herding, 2004
-# (C) Rob W.W. Hooft, 2003
+# (C) Rob W.W. Hooft, 2003-2005
 # (C) xqt, 2009-2011
 # (C) Pywikipedia team, 2004-2010
 #
@@ -170,7 +170,7 @@ class XmlDumpTemplatePageGenerator:
         # TODO: check site.nocapitalize()
         templatePatterns = []
         for template in self.templates:
-            templatePattern = template.titleWithoutNamespace()
+            templatePattern = template.title(withNamespace=False)
             if not pywikibot.getSite().nocapitalize:
                 templatePattern = '[' + templatePattern[0].upper() + templatePattern[0].lower() + ']' + templatePattern[1:]
             templatePattern = re.sub(' ', '[_ ]', templatePattern)
@@ -320,8 +320,8 @@ def main(*args):
         else:
             if not genFactory.handleArg(arg):
                 templateNames.append(
-                    pywikibot.Page(pywikibot.getSite(), arg,
-                                   defaultNamespace=10).titleWithoutNamespace())
+                    pywikibot.Page(pywikibot.getSite(), arg, defaultNamespace=10
+                                   ).title(withNamespace=False))
 
     if subst ^ remove:
         for templateName in templateNames:

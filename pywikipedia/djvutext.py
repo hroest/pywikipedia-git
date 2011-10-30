@@ -19,7 +19,7 @@ All other parameters will be regarded as part of the title of a single page,
 and the bot will only work on that single page.
 """
 #
-# (C) Pywikipedia bot team, 2008-2010
+# (C) Pywikipedia bot team, 2008-2011
 #
 # Distributed under the terms of the MIT license.
 #
@@ -79,7 +79,7 @@ class DjVuTextBot:
                                              'djvutext-creating'))
 
         linkingPage = pywikibot.Page(pywikibot.getSite(), self.index)
-        self.prefix = linkingPage.titleWithoutNamespace()
+        self.prefix = linkingPage.title(withNamespace=False)
         if self.prefix[0:6] == 'Liber:':
             self.prefix = self.prefix[6:]
         pywikibot.output(u"Using prefix %s" % self.prefix)

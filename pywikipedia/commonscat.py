@@ -45,8 +45,8 @@ TODO:
 
 #
 # (C) Multichill, 2008-2009
-# (C) Xqt, 2010
-# (C) Pywikipedia bot team, 2008-2010
+# (C) Xqt, 2009-2011
+# (C) Pywikipedia bot team, 2008-2011
 #
 # Distributed under the terms of the MIT license.
 #
@@ -395,12 +395,12 @@ u'Cannot change %s because of spam blacklist entry %s'
         if not linktitle and (page.title().lower() in oldcat.lower() or
                               oldcat.lower() in page.title().lower()):
             linktitle = oldcat
-        if linktitle and newcat <> page.titleWithoutNamespace():
+        if linktitle and newcat <> page.title(withNamespace=False):
             newtext = re.sub(u'(?i)\{\{%s\|?[^{}]*(?:\{\{.*\}\})?\}\}'
                              % oldtemplate,
                              u'{{%s|%s|%s}}' % (newtemplate, newcat, linktitle),
                              page.get())
-        elif newcat == page.titleWithoutNamespace():
+        elif newcat == page.title(withNamespace=False):
             newtext = re.sub(u'(?i)\{\{%s\|?[^{}]*(?:\{\{.*\}\})?\}\}'
                              % oldtemplate,
                              u'{{%s}}' % newtemplate,
@@ -463,9 +463,9 @@ u'Cannot change %s because of spam blacklist entry %s'
                     if len(template[1]) > 2:
                         commonscatNote = template[1][2]
                 else:
-                    commonscatTarget = wikipediaPage.titleWithoutNamespace()
-                return (commonscatTemplate, commonscatTarget, commonscatLinktext,
-                        commonscatNote)
+                    commonscatTarget = wikipediaPage.title(withNamespace=False)
+                return (commonscatTemplate, commonscatTarget,
+                        commonscatLinktext, commonscatNote)
         return None
 
     def checkCommonscatLink (self, name = ""):
@@ -489,7 +489,7 @@ u'Cannot change %s because of spam blacklist entry %s'
                 if pywikibot.verbose:
                     pywikibot.output(u"getCommonscat: The category is a redirect")
                 return self.checkCommonscatLink(
-                    commonsPage.getRedirectTarget().titleWithoutNamespace())
+                    commonsPage.getRedirectTarget().title(withNamespace=False))
             elif "Category redirect" in commonsPage.templates():
                 if pywikibot.verbose:
                     pywikibot.output(
@@ -504,7 +504,7 @@ u'Cannot change %s because of spam blacklist entry %s'
                         u"getCommonscat: The category is disambiguation")
                 return u''
             else:
-                return commonsPage.titleWithoutNamespace()
+                return commonsPage.title(withNamespace=False)
         except pywikibot.BadTitle:
             #Funky title so not correct
             return u''

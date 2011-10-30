@@ -41,12 +41,12 @@ Todo:
 # (C) Kyle/Orgullomoore, Siebrand Mazeland 2007
 #
 # Another rewrite by:
-#  (C) Multichill 2008
+# (C) Multichill 2008
 #
 # English Wikipedia specific bot by:
-#  (C) Multichill 2010
+# (C) Multichill 2010
 #
-# (C) Pywikipedia bot team, 2003-2010
+# (C) Pywikipedia bot team, 2003-2011
 #
 # Distributed under the terms of the MIT license.
 #
@@ -313,7 +313,7 @@ class imageFetcher(threading.Thread):
         licensetemplate = self.getNewLicensetemplate(imagepage)
         categories = self.getNewCategories(imagepage)
         return {u'imagepage' : imagepage,
-                u'filename' : imagepage.titleWithoutNamespace(),
+                u'filename' : imagepage.title(withNamespace=False),
                 u'description' : description,
                 u'date' : date,
                 u'source' : source,
@@ -866,7 +866,10 @@ class uploader(threading.Thread):
             else:
                 addTemplate = nowCommonsTemplate['_default'] % filename
 
-            commentText = i18n.twtranslate(imagepage.site(), 'commons-file-now-available', {'localfile' : imagepage.titleWithoutNamespace(), 'commonsfile' : filename})
+            commentText = i18n.twtranslate(imagepage.site(),
+                                           'commons-file-now-available',
+                                           {'localfile': imagepage.title(withNamespace=False),
+                                            'commonsfile': filename})
 
             pywikibot.showDiff(imagepage.get(), imtxt + addTemplate)
             imagepage.put(imtxt + addTemplate, comment = commentText)
@@ -875,13 +878,19 @@ class uploader(threading.Thread):
         '''
         If the image is uploaded under a different name, replace all usage.
         '''
-        if imagepage.titleWithoutNamespace() != filename:
+        if imagepage.title(withNamespace=False) != filename:
             gen = pagegenerators.FileLinksGenerator(imagepage)
             preloadingGen = pagegenerators.PreloadingGenerator(gen)
 
-            moveSummary = i18n.twtranslate(imagepage.site(), 'commons-file-moved', {'localfile' : imagepage.titleWithoutNamespace(), 'commonsfile' : filename})
+            moveSummary = i18n.twtranslate(imagepage.site(),
+                                           'commons-file-moved',
+                                           {'localfile': imagepage.title(withNamespace=False),
+                                            'commonsfile': filename})
 
-            imagebot = ImageRobot(generator = preloadingGen, oldImage = imagepage.titleWithoutNamespace(), newImage = filename, summary = moveSummary, always = True, loose = True)
+            imagebot = ImageRobot(generator=preloadingGen,
+                                  oldImage=imagepage.title(withNamespace=False),
+                                  newImage=filename, summary=moveSummary,
+                                  always=True, loose=True)
             imagebot.run()
 
 

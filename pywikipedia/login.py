@@ -49,7 +49,7 @@ subdirectory.
 """
 #
 # (C) Rob W.W. Hooft, 2003
-# (C) Pywikipedia bot team, 2003-2010
+# (C) Pywikipedia bot team, 2003-2011
 #
 # Distributed under the terms of the MIT license.
 #
@@ -125,7 +125,7 @@ class LoginManager:
                         return True
             else:
                 for linkedPage in botListPage.linkedPages():
-                    if linkedPage.titleWithoutNamespace() == self.username:
+                    if linkedPage.title(withNamespace=False) == self.username:
                         return True
             return False
         else:

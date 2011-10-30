@@ -333,6 +333,7 @@ that you have to break it off, use "-continue" next time.
 # (C) Rob W.W. Hooft, 2003
 # (C) Daniel Herding, 2004
 # (C) Yuri Astrakhan, 2005-2006
+# (C) xqt, 2009-2011
 # (C) Pywikipedia bot team, 2007-2011
 #
 # Distributed under the terms of the MIT license.
@@ -2237,7 +2238,7 @@ class InterwikiBot(object):
                     until = self.generateUntil
                     if page.site().lang not in page.site().family.nocapitalize:
                         until = until[0].upper()+until[1:]
-                    if page.titleWithoutNamespace() > until:
+                    if page.title(withNamespace=False) > until:
                         raise StopIteration
                 self.add(page, hints = globalvar.hints)
                 self.generated += 1
@@ -2598,7 +2599,7 @@ def main():
             namespace = 0
             searchGen = pagegenerators.TextfilePageGenerator(dumpfn, site)
             for page in searchGen:
-                lastPage = page.titleWithoutNamespace()
+                lastPage = page.title(withNamespace=False)
                 if lastPage > nextPage:
                     nextPage = lastPage
                     namespace = page.namespace()

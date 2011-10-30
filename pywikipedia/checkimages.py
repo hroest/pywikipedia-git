@@ -79,8 +79,9 @@ right parameter.
 
 #
 # (C) Kyle/Orgullomoore, 2006-2007 (newimage.py)
-# (C) Siebrand Mazeland, 2007
-# (C) Filnik, 2007-2008
+# (C) Siebrand Mazeland, 2007-2010
+# (C) Filnik, 2007-2011
+# (C) Pywikipedia team, 2007-2011
 #
 # Distributed under the terms of the MIT license.
 #
@@ -1239,7 +1240,7 @@ class main:
         This function check this.
         """
         if template in self.list_licenses: # the list_licenses are loaded in the __init__ (not to load them multimple times)
-            self.license_selected = template.titleWithoutNamespace()
+            self.license_selected = template.title(withNamespace=False)
             self.seems_ok = True
             self.license_found = self.license_selected # let the last "fake" license normally detected
             return True

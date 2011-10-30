@@ -1,7 +1,7 @@
 # -*- coding: utf-8  -*-
 #
-# (C) Rob W.W. Hooft, 2003
-# (C) Yuri Astrakhan, 2005
+# (C) Rob W.W. Hooft, 2003-2004
+# (C) Yuri Astrakhan, 2005-2006
 # (C) Pywikipedia bot team, 2003-2011
 #
 # Distributed under the terms of the MIT license.
@@ -54,7 +54,7 @@ def translate(page, hints = None, auto = True, removebrackets = False, site = No
                 ns = page.namespace()
                 if ns:
                     newname = u'%s:%s' % (family.namespace('_default', ns),
-                                          page.titleWithoutNamespace())
+                                          page.title(withNamespace=False))
                 else:
                     # article in the main namespace
                     newname = page.title()

@@ -274,19 +274,22 @@ class PatrolBot:
 
             title = page[0].title()
             if pywikibot.verbose or self.ask:
-                pywikibot.output(u"User %s has created or modified page %s" % (username, title) )
+                pywikibot.output(u"User %s has created or modified page %s"
+                                 % (username, title) )
 
             if self.autopatroluserns and (page[0].namespace() == 2 or page[0].namespace() == 3):
                 # simple rule to whitelist any user editing their own userspace
-                if page[0].titleWithoutNamespace().startswith(username):
+                if page[0].title(withNamespace=False).startswith(username):
                     if pywikibot.verbose:
-                        pywikibot.output(u'%s is whitelisted to modify %s' % (username, page[0].title()))
+                        pywikibot.output(u'%s is whitelisted to modify %s'
+                                         % (username, page[0].title()))
                     choice = 'y'
 
             if choice != 'y' and username in self.whitelist:
                 if self.in_list(self.whitelist[username], page[0].title() ):
                     if pywikibot.verbose:
-                        pywikibot.output(u'%s is whitelisted to modify %s' % (username, page[0].title()))
+                        pywikibot.output(u'%s is whitelisted to modify %s'
+                                         % (username, page[0].title()))
                     choice = 'y'
 
             if self.ask:

@@ -5,6 +5,7 @@ Bot tag tag files available at Commons with the Nowcommons template.
 """
 #
 # (C) Multichill, 2011
+# (C) xqt,2011
 #
 # Distributed under the terms of the MIT license.
 #
@@ -60,7 +61,10 @@ def main(args):
                 if duplicates:
                     duplicate = duplicates.pop()
                     pywikibot.output(u'Found duplicate image at %s' % duplicate)
-                    comment = i18n.twtranslate(imagepage.site(), 'commons-file-now-available', {'localfile' : imagepage.titleWithoutNamespace(), 'commonsfile' : duplicate})
+                    comment = i18n.twtranslate(imagepage.site(),
+                                               'commons-file-now-available',
+                                               {'localfile': imagepage.title(withNamespace=False),
+                                                'commonsfile': duplicate})
                     template = pywikibot.translate(imagepage.site(), nowCommonsTemplate)
                     newtext = imagepage.get() + template % (duplicate,)
                     pywikibot.showDiff(imagepage.get(), newtext)

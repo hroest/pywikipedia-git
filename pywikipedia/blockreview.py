@@ -16,7 +16,7 @@ All other parameters will be regarded as part of the title of a single page,
 and the bot will only work on that single page.
 """
 #
-# (C) xqt, 2010
+# (C) xqt, 2010-2011
 #
 # Distributed under the terms of the MIT license.
 #
@@ -105,7 +105,7 @@ class BlockreviewBot:
             return
         unblock_tpl = self.unblock_tpl[self.site.lang]
         project_name = self.project_name[self.site.lang]
-        user = userlib.User(self.site, userPage.titleWithoutNamespace())
+        user = userlib.User(self.site, userPage.title(withNamespace=False))
         saveAdmin = saveProject = False
         talkComment = None
         for templates in userPage.templatesWithParams():
