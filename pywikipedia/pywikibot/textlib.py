@@ -484,8 +484,7 @@ def interwikiFormat(links, insite = None):
     s = []
     for site in ar:
         try:
-            link = links[site].title(asLink=True,
-                                     forceInterwiki=True).replace('[[:', '[[')
+            link = unicode(links[site]).replace('[[:', '[[')
             s.append(link)
         except AttributeError:
             s.append(getSite(site).linkto(links[site], othersite=insite))
