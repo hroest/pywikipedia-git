@@ -2916,7 +2916,7 @@ u'Page %s is semi-protected. Getting edit page to find out if we are allowed to 
         @param total: iterate no more than this number of revisions in total
 
         """
-        if total == None:
+        if total is None:
             total = 500 #set to default of getVersionHistory
         edits = self.getVersionHistory(revCount=total)
         users = set([edit[2] for edit in edits])
