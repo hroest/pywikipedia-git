@@ -428,7 +428,7 @@ class GeneratorFactory(object):
                 firstPageTitle = firstPage.title()
             namespace = pywikibot.Page(site, firstPageTitle).namespace()
             firstPageTitle = pywikibot.Page(site,
-                                 firstPageTitle).titleWithoutNamespace()
+                                 firstPageTitle).title(withNamespace=False)
             gen = AllpagesPageGenerator(firstPageTitle, namespace,
                                         includeredirects=False)
         elif arg.startswith('-start'):
@@ -445,7 +445,7 @@ class GeneratorFactory(object):
                 namespace = pywikibot.Page(site, firstPageTitle).namespace()
 
             firstPageTitle = pywikibot.Page(site,
-                                 firstPageTitle).titleWithoutNamespace()
+                                 firstPageTitle).title(withNamespace=False)
             gen = AllpagesPageGenerator(firstPageTitle, namespace,
                                         includeredirects=False)
         elif arg.startswith('-redirectonly'):
@@ -455,7 +455,7 @@ class GeneratorFactory(object):
                     u'At which page do you want to start?')
             namespace = pywikibot.Page(site, firstPageTitle).namespace()
             firstPageTitle = pywikibot.Page(site,
-                                 firstPageTitle).titleWithoutNamespace()
+                                 firstPageTitle).title(withNamespace=False)
             gen = AllpagesPageGenerator(firstPageTitle, namespace,
                                         includeredirects='only')
         elif arg.startswith('-prefixindex'):
@@ -546,7 +546,7 @@ def PrefixingPageGenerator(prefix, namespace=None, includeredirects=True,
     prefixpage = pywikibot.Page(site, prefix)
     if namespace is None:
         namespace = prefixpage.namespace()
-    title = prefixpage.titleWithoutNamespace()
+    title = prefixpage.title(withNamespace=False)
     for page in site.prefixindex(prefix=title, namespace=namespace, includeredirects=includeredirects):
         yield page
 
@@ -1111,10 +1111,7 @@ def RegexFilterPageGenerator(generator, regex, inverse=False, ignore_namespace=T
 
     for page in generator:
         # get the page title
-        if ignore_namespace:
-            title = page.titleWithoutNamespace()
-        else:
-            title = page.title()
+        title = page.title(withNamespace = not ignore_namespace)
 
         if inverse:
             # yield page if NOT matched by all regex
