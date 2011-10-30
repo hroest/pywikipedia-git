@@ -98,7 +98,7 @@ gen = pagegenerators.CategorizedPageGenerator(cat, recurse = True)
 
 for page in gen:
     data = page.get()
-    pywikibot.output(page.aslink())
+    pywikibot.output(page.title(asLink=True))
     output = ''
 
     #

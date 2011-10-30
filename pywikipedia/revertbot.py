@@ -104,7 +104,8 @@ class BaseRevertBot(object):
 
         page = pywikibot.Page(self.site, item['title'])
         pywikibot.output(u"\n\n>>> \03{lightpurple}%s\03{default} <<<"
-                         % page.aslink(True, True))
+                         % page.title(asLink=True, forceInterwiki=True,
+                                      textlink=True))
         old = page.get()
         new = rev['*']
         pywikibot.showDiff(old, new)

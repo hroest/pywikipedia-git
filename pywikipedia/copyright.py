@@ -324,14 +324,16 @@ class URLExclusion:
             download = force_update
             try:
                 if not os.path.exists(path):
-                    print 'Creating file \'%s\' (%s)' % (pywikibot.config.shortpath(path),
-                                                         page.aslink())
+                    print 'Creating file \'%s\' (%s)' \
+                          % (pywikibot.config.shortpath(path),
+                             page.title(asLink=True))
                     download = True
                 else:
                     file_age = time.time() - os.path.getmtime(path)
                     if download or file_age > 24 * 60 * 60:
-                        print 'Updating file \'%s\' (%s)' % (
-                        pywikibot.config.shortpath(path), page.aslink())
+                        print 'Updating file \'%s\' (%s)' \
+                              % (pywikibot.config.shortpath(path),
+                                 page.title(asLink=True))
                         download = True
             except OSError:
                 raise
@@ -1040,17 +1042,20 @@ class CheckRobot:
                 continue
             except pywikibot.IsRedirectPage:
                 newpage = page.getRedirectTarget()
-                pywikibot.output(u'Page %s redirects to \'%s\'' % (page.aslink(), newpage.title()))
+                pywikibot.output(u'Page %s redirects to \'%s\''
+                                 % (page.title(asLink=True), newpage.title()))
                 bot = CheckRobot(iter([newpage,]))
                 bot.run()
                 continue
             except pywikibot.SectionError:
-                error("Page %s has no section %s" % (page.title(), page.section()))
+                error("Page %s has no section %s"
+                      % (page.title(), page.section()))
                 continue
 
             if skip_disambig:
                 if page.isDisambig():
-                    pywikibot.output(u'Page %s is a disambiguation page' % page.aslink())
+                    pywikibot.output(u'Page %s is a disambiguation page'
+                                     % page.title(asLink=True))
                     continue
 
             pywikibot.output(page.title())

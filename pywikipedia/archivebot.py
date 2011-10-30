@@ -592,7 +592,7 @@ def main():
                 time.sleep(10)
             except:
                 pywikibot.output(u'Error occured while processing page %s'
-                                 % pg.aslink(True))
+                                 % pg.title(asLink=True, forceInterwiki=True))
                 traceback.print_exc()
 
 if __name__ == '__main__':

@@ -521,8 +521,9 @@ not supported by PyWikipediaBot!"""
     def section(self, underscore = False):
         """Return the name of the section this Page refers to.
 
-        The section is the part of the title following a '#' character, if any.
-        If no section is present, return None.
+        The section is the part of the title following a '#' character, if
+        any. If no section is present, return None.
+
         """
         section = self._section
         if section and underscore:
@@ -549,14 +550,17 @@ not supported by PyWikipediaBot!"""
 
     def __str__(self):
         """Return a console representation of the pagelink."""
-        return self.aslink().encode(config.console_encoding, 'replace')
+        return self.title(asLink=True
+                          ).encode(config.console_encoding,
+                                   'replace')
 
     def __unicode__(self):
         return self.title(asLink=True, forceInterwiki=True)
 
     def __repr__(self):
         """Return a more complete string representation."""
-        return "%s{%s}" % (self.__class__.__name__, str(self))
+        return "%s{%s}" % (self.__class__.__name__,
+                           str(self))
 
     def __cmp__(self, other):
         """Test for equality and inequality of Page objects.
@@ -581,7 +585,7 @@ not supported by PyWikipediaBot!"""
         # representation of an instance can not change after the construction.
         return hash(unicode(self))
 
-    #@deprecated("Page.title(asLink=True)")
+    @deprecated("Page.title(asLink=True)")
     def aslink(self, forceInterwiki=False, textlink=False, noInterwiki=False):
         """Return a string representation in the form of a wikilink.
 
@@ -655,13 +659,16 @@ not supported by PyWikipediaBot!"""
         for illegalChar in u'#<>[]|{}\n\ufffd':
             if illegalChar in self.sectionFreeTitle():
                 if verbose:
-                    output(u'Illegal character in %s!' % self.aslink())
-                raise NoPage('Illegal character in %s!' % self.aslink())
+                    output(u'Illegal character in %s!'
+                           % self.title(asLink=True))
+                raise NoPage('Illegal character in %s!'
+                             % self.title(asLink=True))
         if self.namespace() == -1:
-            raise NoPage('%s is in the Special namespace!' % self.aslink())
+            raise NoPage('%s is in the Special namespace!'
+                         % self.title(asLink=True))
         if self.site().isInterwikiLink(self.title()):
             raise NoPage('%s is not a local page on %s!'
-                         % (self.aslink(), self.site()))
+                         % (self.title(asLink=True), self.site()))
         if force:
             # When forcing, we retry the page no matter what:
             # * Old exceptions and contents do not apply any more
@@ -696,7 +703,8 @@ not supported by PyWikipediaBot!"""
                 if hn:
                     m = re.search("=+[ ']*%s[ ']*=+" % hn, self._contents)
                     if verbose and not m:
-                        output(u"WARNING: Section does not exist: %s" % self.aslink(forceInterwiki = True))
+                        output(u"WARNING: Section does not exist: %s"
+                               % self.title(asLink=True, forceInterwiki=True))
             # Store any exceptions for later reference
             except NoPage:
                 self._getexception = NoPage
@@ -711,7 +719,9 @@ not supported by PyWikipediaBot!"""
                 raise
             except UserBlocked:
                 if self.site().loggedInAs(sysop=sysop):
-                    raise UserBlocked(self.site(), self.aslink(forceInterwiki = True))
+                    raise UserBlocked(self.site(),
+                                      self.title(asLink=True,
+                                                 forceInterwiki=True))
                 else:
                     if verbose:
                         output("The IP address is blocked, retry by login.")
@@ -766,7 +776,10 @@ not supported by PyWikipediaBot!"""
         pageInfo = data['query']['pages'].values()[0]
         if data['query']['pages'].keys()[0] == "-1":
             if 'missing' in pageInfo:
-                raise NoPage(self.site(), self.aslink(forceInterwiki = True),"Page does not exist. In rare cases, if you are certain the page does exist, look into overriding family.RversionTab" )
+                raise NoPage(self.site(),
+                             self.title(asLink=True,
+                                        forceInterwiki = True),
+"Page does not exist. In rare cases, if you are certain the page does exist, look into overriding family.RversionTab")
             elif 'invalid' in pageInfo:
                 raise BadTitle('BadTitle: %s' % self)
         elif 'revisions' in pageInfo: #valid Title
@@ -833,7 +846,7 @@ not supported by PyWikipediaBot!"""
         """Get the contents of the Page via the edit page."""
 
         if verbose:
-            output(u'Getting page %s' % self.aslink())
+            output(u'Getting page %s' % self.title(asLink=True))
         path = self.site().edit_address(self.urlname())
         if oldid:
             path += "&oldid="+oldid
@@ -861,26 +874,31 @@ not supported by PyWikipediaBot!"""
                 if self.site().mediawiki_message('whitelistedittitle') in text:
                     raise NoPage(u'Page editing is forbidden for anonymous users.')
                 elif self.site().has_mediawiki_message('nocreatetitle') and self.site().mediawiki_message('nocreatetitle') in text:
-                    raise NoPage(self.site(), self.aslink(forceInterwiki = True))
+                    raise NoPage(self.site(), self.title(asLink=True,
+                                                         forceInterwiki=True))
                 # Bad title
                 elif 'var wgPageName = "Special:Badtitle";' in text \
                 or self.site().mediawiki_message('badtitle') in text:
                     raise BadTitle('BadTitle: %s' % self)
                 # find out if the username or IP has been blocked
                 elif self.site().isBlocked():
-                    raise UserBlocked(self.site(), self.aslink(forceInterwiki = True))
+                    raise UserBlocked(self.site(),
+                                      self.title(asLink=True,
+                                                 forceInterwiki=True))
                 # If there is no text area and the heading is 'View Source'
                 # but user is not blocked, the page does not exist, and is
                 # locked
                 elif self.site().mediawiki_message('viewsource') in text:
-                    raise NoPage(self.site(), self.aslink(forceInterwiki = True))
+                    raise NoPage(self.site(), self.title(asLink=True,
+                                                         forceInterwiki = True))
                 # Some of the newest versions don't have a "view source" tag for
                 # non-existant pages
                 # Check also the div class because if the language is not english
                 # the bot can not seeing that the page is blocked.
                 elif self.site().mediawiki_message('badaccess') in text or \
                 "<div class=\"permissions-errors\">" in text:
-                    raise NoPage(self.site(), self.aslink(forceInterwiki = True))
+                    raise NoPage(self.site(), self.title(asLink=True,
+                                                         forceInterwiki=True))
                 elif config.retry_on_fail:
                     if "<title>Wikimedia Error</title>" in text:
                         output( u"Wikimedia has technical problems; will retry in %i minutes." % retry_idle_time)
@@ -934,7 +952,9 @@ not supported by PyWikipediaBot!"""
             RversionTab = re.compile(r'<li id="ca-history"><a href=".*?title=.*?&amp;action=history".*?>.*?</a></li>', re.DOTALL)
         matchVersionTab = RversionTab.search(text)
         if not matchVersionTab and not self.site().family.name == 'wikitravel':
-            raise NoPage(self.site(), self.aslink(forceInterwiki = True),"Page does not exist. In rare cases, if you are certain the page does exist, look into overriding family.RversionTab" )
+            raise NoPage(self.site(),
+                         self.title(asLink=True, forceInterwiki=True),
+"Page does not exist. In rare cases, if you are certain the page does exist, look into overriding family.RversionTab" )
         # Look if the page is on our watchlist
         matchWatching = Rwatchlist.search(text)
         if matchWatching:
@@ -1415,7 +1435,8 @@ not supported by PyWikipediaBot!"""
 
         while not allDone:
             if not internal:
-                output(u'Getting references to %s via API...' % self.aslink())
+                output(u'Getting references to %s via API...'
+                       % self.title(asLink=True))
 
             datas = query.GetData(params, self.site())
             data = datas['query'].values()
@@ -1491,7 +1512,7 @@ not supported by PyWikipediaBot!"""
         # to avoid duplicates:
         refPages = set()
         while path:
-            output(u'Getting references to %s' % self.aslink())
+            output(u'Getting references to %s' % self.title(asLink=True))
             get_throttle()
             txt = self.site().getUrl(path)
             body = BeautifulSoup(txt,
@@ -1634,7 +1655,7 @@ not supported by PyWikipediaBot!"""
         for pageid in text:
             if 'missing' in text[pageid]:
                 self._getexception = NoPage
-                raise NoPage('Page %s does not exist' % self.aslink())
+                raise NoPage('Page %s does not exist' % self.title(asLink=True))
             elif not 'pageid' in text[pageid]:
                 # Don't know what may happen here.
                 # We may want to have better error handling
@@ -1707,7 +1728,7 @@ not supported by PyWikipediaBot!"""
             if not self.botMayEdit(username):
                 raise LockedPage(
                     u'Not allowed to edit %s because of a restricting template'
-                    % self.aslink())
+                    % self.title(asLink=True))
             elif self.site().has_api() and self.namespace() in [2,3] \
                  and (self.title().endswith('.css') or \
                       self.title().endswith('.js')):
@@ -1728,7 +1749,7 @@ not supported by PyWikipediaBot!"""
         if self._editrestriction:
             output(
 u'Page %s is semi-protected. Getting edit page to find out if we are allowed to edit.'
-                   % self.aslink())
+                   % self.title(asLink=True))
             oldtime = self.editTime()
             # Note: change_edit_time=True is always True since
             #       self.get() calls self._getEditPage without this parameter
@@ -1860,10 +1881,10 @@ u'Page %s is semi-protected. Getting edit page to find out if we are allowed to 
                 put_throttle()
             # Which web-site host are we submitting to?
             if newPage:
-                output(u'Creating page %s via API' % self.aslink())
+                output(u'Creating page %s via API' % self.title(asLink=True))
                 params['createonly'] = 1
             else:
-                output(u'Updating page %s via API' % self.aslink())
+                output(u'Updating page %s via API' % self.title(asLink=True))
                 params['nocreate'] = 1
             # Submit the prepared information
             try:
@@ -1877,7 +1898,7 @@ u'Page %s is semi-protected. Getting edit page to find out if we are allowed to 
                 retry_attempt += 1
                 if retry_attempt > config.maxretries:
                     raise
-                output(u'Got a server error when putting %s; will retry in %i minute%s.' % (self.aslink(), retry_delay, retry_delay != 1 and "s" or ""))
+                output(u'Got a server error when putting %s; will retry in %i minute%s.' % (self.title(asLink=True), retry_delay, retry_delay != 1 and "s" or ""))
                 time.sleep(60 * retry_delay)
                 retry_delay *= 2
                 if retry_delay > 30:
@@ -2093,9 +2114,9 @@ u'Page %s is semi-protected. Getting edit page to find out if we are allowed to 
                 put_throttle()
             # Which web-site host are we submitting to?
             if newPage:
-                output(u'Creating page %s' % self.aslink())
+                output(u'Creating page %s' % self.title(asLink=True))
             else:
-                output(u'Changing page %s' % self.aslink())
+                output(u'Changing page %s' % self.title(asLink=True))
             # Submit the prepared information
             try:
                 response, data = self.site().postForm(address, predata, sysop)
@@ -2121,7 +2142,7 @@ u'Page %s is semi-protected. Getting edit page to find out if we are allowed to 
                     raise
                 output(
             u'Got a server error when putting %s; will retry in %i minute%s.'
-                       % (self.aslink(), retry_delay, retry_delay != 1 and "s" or ""))
+                       % (self.title(asLink=True), retry_delay, retry_delay != 1 and "s" or ""))
                 time.sleep(60 * retry_delay)
                 retry_delay *= 2
                 if retry_delay > 30:
@@ -2315,7 +2336,7 @@ u'Page %s is semi-protected. Getting edit page to find out if we are allowed to 
                                                    self.site().language()):
             text = text.replace(u"{{%s}}" % pagenametext, self.title())
 
-        ll = getLanguageLinks(text, insite=self.site(), pageLink=self.aslink())
+        ll = getLanguageLinks(text, insite=self.site(), pageLink=self.title(asLink=True))
 
         result = ll.values()
 
@@ -2348,7 +2369,7 @@ u'Page %s is semi-protected. Getting edit page to find out if we are allowed to 
             if not self.site().isAllowed('apihighlimits') and config.special_page_limit > 500:
                 params['cllimit'] = 500
 
-            output(u'Getting categories in %s via API...' % self.aslink())
+            output(u'Getting categories in %s via API...' % self.title(asLink=True))
             allDone = False
             cats=[]
             while not allDone:
@@ -2698,7 +2719,8 @@ u'Page %s is semi-protected. Getting edit page to find out if we are allowed to 
             pageInfo = result['query']['pages'].values()[0]
             if result['query']['pages'].keys()[0] == "-1":
                 if 'missing' in pageInfo:
-                    raise NoPage(self.site(), self.aslink(forceInterwiki=True),
+                    raise NoPage(self.site(), self.title(asLink=True,
+                                                         forceInterwiki=True),
                                  "Page does not exist.")
                 elif 'invalid' in pageInfo:
                     raise BadTitle('BadTitle: %s' % self)
@@ -2770,9 +2792,11 @@ u'Page %s is semi-protected. Getting edit page to find out if we are allowed to 
 
             if verbose:
                 if startFromPage:
-                    output(u'Continuing to get version history of %s' % self.aslink(forceInterwiki = True))
+                    output(u'Continuing to get version history of %s'
+                           % self.title(asLink=True, forceInterwiki=True))
                 else:
-                    output(u'Getting version history of %s' % self.aslink(forceInterwiki = True))
+                    output(u'Getting version history of %s'
+                           % self.title(asLink=True, forceInterwiki=True))
 
             txt = self.site().getUrl(path)
 
@@ -2867,7 +2891,8 @@ u'Page %s is semi-protected. Getting edit page to find out if we are allowed to 
             pageInfo = result['query']['pages'].values()[0]
             if result['query']['pages'].keys()[0] == "-1":
                 if 'missing' in pageInfo:
-                    raise NoPage(self.site(), self.aslink(forceInterwiki=True),
+                    raise NoPage(self.site(), self.title(asLink=True,
+                                                         forceInterwiki=True),
                                  "Page does not exist.")
                 elif 'invalid' in pageInfo:
                     raise BadTitle('BadTitle: %s' % self)
@@ -3154,7 +3179,7 @@ u'Page %s is semi-protected. Getting edit page to find out if we are allowed to 
         except NoUsername:
              if mark and self.exists():
                  text = self.get(get_redirect = True)
-                 output(u'Cannot delete page %s - marking the page for deletion instead:' % self.aslink())
+                 output(u'Cannot delete page %s - marking the page for deletion instead:' % self.title(asLink=True))
                  # Note: Parameters to {{delete}}, and their meanings, vary from one Wikipedia to another.
                  # If you want or need to use them, you must be careful not to break others. Else don't.
                  self.put(u'{{delete|bot=yes}}\n%s --~~~~\n----\n\n%s' % (reason, text), comment = reason)
@@ -3172,7 +3197,9 @@ u'Page %s is semi-protected. Getting edit page to find out if we are allowed to 
             reason = input(u'Please enter a reason for the deletion:')
         answer = u'y'
         if prompt and not hasattr(self.site(), '_noDeletePrompt'):
-            answer = inputChoice(u'Do you want to delete %s?' % self.aslink(forceInterwiki = True), ['yes', 'no', 'all'], ['y', 'N', 'a'], 'N')
+            answer = inputChoice(u'Do you want to delete %s?'
+                                 % self.title(asLink=True, forceInterwiki=True),
+                                 ['yes', 'no', 'all'], ['y', 'N', 'a'], 'N')
             if answer == 'a':
                 answer = 'y'
                 self.site()._noDeletePrompt = True
@@ -3191,13 +3218,16 @@ u'Page %s is semi-protected. Getting edit page to find out if we are allowed to 
                 }
                 datas = query.GetData(params, self.site(), sysop = True)
                 if 'delete' in datas:
-                    output(u'Page %s deleted' % self.aslink(forceInterwiki = True))
+                    output(u'Page %s deleted'
+                           % self.title(asLink=True, forceInterwiki=True))
                     return True
                 else:
                     if datas['error']['code'] == 'missingtitle':
-                        output(u'Page %s could not be deleted - it doesn\'t exist' % self.aslink(forceInterwiki = True))
+                        output(u'Page %s could not be deleted - it doesn\'t exist'
+                               % self.title(asLink=True, forceInterwiki=True))
                     else:
-                        output(u'Deletion of %s failed for an unknown reason. The response text is:' % self.aslink(forceInterwiki = True))
+                        output(u'Deletion of %s failed for an unknown reason. The response text is:'
+                               % self.title(asLink=True, forceInterwiki=True))
                         output('%s' % datas)
 
                     return False
@@ -3218,13 +3248,16 @@ u'Page %s is semi-protected. Getting edit page to find out if we are allowed to 
                 if data:
                     self.site().checkBlocks(sysop = True)
                     if self.site().mediawiki_message('actioncomplete') in data:
-                        output(u'Page %s deleted' % self.aslink(forceInterwiki = True))
+                        output(u'Page %s deleted'
+                               % self.title(asLink=True, forceInterwiki=True))
                         return True
                     elif self.site().mediawiki_message('cannotdelete') in data:
-                        output(u'Page %s could not be deleted - it doesn\'t exist' % self.aslink(forceInterwiki = True))
+                        output(u'Page %s could not be deleted - it doesn\'t exist'
+                               % self.title(asLink=True, forceInterwiki=True))
                         return False
                     else:
-                        output(u'Deletion of %s failed for an unknown reason. The response text is:' % self.aslink(forceInterwiki = True))
+                        output(u'Deletion of %s failed for an unknown reason. The response text is:'
+                               % self.title(asLink=True, forceInterwiki=True))
                         try:
                             ibegin = data.index('<!-- start content -->') + 22
                             iend = data.index('<!-- end content -->')
@@ -3398,7 +3431,7 @@ u'Page %s is semi-protected. Getting edit page to find out if we are allowed to 
             if 'error' in result:
                 raise RuntimeError("%s" % result['error'])
             elif 'undelete' in result:
-                output(u'Page %s undeleted' % self.aslink())
+                output(u'Page %s undeleted' % self.title(asLink=True))
 
             return result
 
@@ -3420,7 +3453,7 @@ u'Page %s is semi-protected. Getting edit page to find out if we are allowed to 
             self._deletedRevs = None
             #TODO: Check for errors below (have we succeeded? etc):
             result = self.site().postForm(address,formdata,sysop=True)
-            output(u'Page %s undeleted' % self.aslink())
+            output(u'Page %s undeleted' % self.title(asLink=True))
 
             return result
 
@@ -3462,7 +3495,7 @@ u'Page %s is semi-protected. Getting edit page to find out if we are allowed to 
         if prompt and not hasattr(self.site(), '_noProtectPrompt'):
             answer = inputChoice(
                 u'Do you want to change the protection level of %s?'
-                    % self.aslink(forceInterwiki = True),
+                    % self.title(asLink=True, forceInterwiki=True),
                 ['Yes', 'No', 'All'], ['Y', 'N', 'A'], 'N')
             if answer == 'a':
                 answer = 'y'
@@ -3528,7 +3561,7 @@ u'Page %s is semi-protected. Getting edit page to find out if we are allowed to 
                 #
             else:
                 if result['protect']:
-                    output(u'Changed protection level of page %s.' % self.aslink())
+                    output(u'Changed protection level of page %s.' % self.title(asLink=True))
                     return True
 
         return False
@@ -3591,13 +3624,13 @@ u'Page %s is semi-protected. Getting edit page to find out if we are allowed to 
         response, data = self.site().postForm(address, predata, sysop=True)
 
         if response.code == 302 and not data:
-            output(u'Changed protection level of page %s.' % self.aslink())
+            output(u'Changed protection level of page %s.' % self.title(asLink=True))
             return True
         else:
             #Normally, we expect a 302 with no data, so this means an error
             self.site().checkBlocks(sysop = True)
             output(u'Failed to change protection level of page %s:'
-                   % self.aslink())
+                   % self.title(asLink=True))
             output(u"HTTP response code %s" % response.code)
             output(data)
             return False
@@ -3777,7 +3810,8 @@ class ImagePage(Page):
         self._local = pageInfo["imagerepository"] != "shared"
         if data['query']['pages'].keys()[0] == "-1":
             if 'missing' in pageInfo and self._local:
-                raise NoPage(self.site(), self.aslink(forceInterwiki=True),
+                raise NoPage(self.site(),
+                             self.title(asLink=True, forceInterwiki=True),
                              "Page does not exist.")
             elif 'invalid' in pageInfo:
                 raise BadTitle('BadTitle: %s' % self)
@@ -4032,7 +4066,7 @@ class _GetAll(object):
             if (not hasattr(page, '_contents') and not hasattr(page, '_getexception')) or force:
                 self.pages.append(page)
             elif verbose:
-                output(u"BUGWARNING: %s already done!" % page.aslink())
+                output(u"BUGWARNING: %s already done!" % page.title(asLink=True))
 
     def sleep(self):
         time.sleep(self.sleeptime)
@@ -4153,7 +4187,7 @@ class _GetAll(object):
                     page2._contents = text
                     m = self.site.redirectRegex().match(text)
                     if m:
-                        ## output(u"%s is a redirect" % page2.aslink())
+                        ## output(u"%s is a redirect" % page2.title(asLink=True))
                         redirectto = m.group(1)
                         if section and not "#" in redirectto:
                             redirectto += "#" + section
@@ -4170,7 +4204,8 @@ class _GetAll(object):
                             try:
                                 page2._getexception
                                 output(u"WARNING: Section not found: %s"
-                                       % page2.aslink(forceInterwiki = True))
+                                       % page2.title(asLink=True,
+                                                     forceInterwiki=True))
                             except AttributeError:
                                 # There is no exception yet
                                 page2._getexception = SectionError
@@ -4179,9 +4214,10 @@ class _GetAll(object):
                 # might be duplicates in the pages list.
         if not successful:
             output(u"BUG>> title %s (%s) not found in list"
-                   % (title, page.aslink(forceInterwiki=True)))
+                   % (title, page.title(asLink=True, forceInterwiki=True)))
             output(u'Expected one of: %s'
-                   % u','.join([page2.aslink(forceInterwiki=True) for page2 in self.pages]))
+                   % u','.join([page2.title(asLink=True, forceInterwiki=True)
+                                for page2 in self.pages]))
             raise PageNotFound
 
     def headerDone(self, header):
@@ -4317,7 +4353,7 @@ class _GetAll(object):
                     page2._revisionId = revisionId
                     section = page2.section()
                     if 'redirect' in data:
-                        ## output(u"%s is a redirect" % page2.aslink())
+                        ## output(u"%s is a redirect" % page2.title(asLink=True))
                         m = self.site.redirectRegex().match(text)
                         redirectto = m.group(1)
                         if section and not "#" in redirectto:
@@ -4333,7 +4369,8 @@ class _GetAll(object):
                         if not m:
                             try:
                                 page2._getexception
-                                output(u"WARNING: Section not found: %s" % page2.aslink(forceInterwiki = True))
+                                output(u"WARNING: Section not found: %s"
+                                       % page2.title(asLink=True, forceInterwiki=True))
                             except AttributeError:
                                 # There is no exception yet
                                 page2._getexception = SectionError
@@ -4341,8 +4378,11 @@ class _GetAll(object):
                 # Note that there is no break here. The reason is that there
                 # might be duplicates in the pages list.
         if not successful:
-            output(u"BUG>> title %s (%s) not found in list" % (title, page.aslink(forceInterwiki=True)))
-            output(u'Expected one of: %s' % u','.join([page2.aslink(forceInterwiki=True) for page2 in self.pages]))
+            output(u"BUG>> title %s (%s) not found in list"
+                   % (title, page.title(asLink=True, forceInterwiki=True)))
+            output(u'Expected one of: %s'
+                   % u','.join([page2.title(asLink=True, forceInterwiki=True)
+                                for page2 in self.pages]))
             raise PageNotFound
 
     def headerDoneApi(self, header):
@@ -8039,18 +8079,20 @@ def async_put():
             continue
         if isinstance(error, SpamfilterError):
             output(u"Saving page %s prevented by spam filter: %s"
-                   % (page.aslink(True), error.url))
+                   % (page.title(asLink=True, forceInterwiki=True), error.url))
         elif isinstance(error, PageNotSaved):
-            output(u"Saving page %s failed: %s" % (page.aslink(True), error))
+            output(u"Saving page %s failed: %s"
+                   % (page.title(asLink=True, forceInterwiki=True), error))
         elif isinstance(error, LockedPage):
-            output(u"Page %s is locked; not saved." % page.aslink(True))
+            output(u"Page %s is locked; not saved."
+                   % page.title(asLink=True, forceInterwiki=True))
         elif isinstance(error, NoUsername):
             output(u"Page %s not saved; sysop privileges required."
-                   % page.aslink(True))
+                   % page.title(asLink=True, forceInterwiki=True))
         elif error is not None:
             tb = traceback.format_exception(*sys.exc_info())
             output(u"Saving page %s failed:\n%s"
-                   % (page.aslink(True), "".join(tb)))
+                   % (page.title(asLink=True, forceInterwiki=True), "".join(tb)))
 
 _putthread = threading.Thread(target=async_put)
 # identification for debugging purposes

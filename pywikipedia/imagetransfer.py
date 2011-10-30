@@ -200,7 +200,9 @@ class ImageTransferBot:
             description += '\n\n' + sourceImagePage.getFileVersionHistoryTable()
             # add interwiki link
             if sourceSite.family == self.targetSite.family:
-                description += "\r\n\r\n" + sourceImagePage.aslink(forceInterwiki = True)
+                description += "\r\n\r\n" + \
+                               sourceImagePage.title(asLink=True,
+                                                     forceInterwiki=True)
         except pywikibot.NoPage:
             description=''
             print "Image does not exist or description page is empty."
@@ -215,24 +217,33 @@ class ImageTransferBot:
                                      verifyDescription = not self.keep_name)
             # try to upload
             targetFilename = bot.run()
-            if targetFilename and self.targetSite.family.name == 'commons' and self.targetSite.lang == 'commons':
+            if targetFilename and self.targetSite.family.name == 'commons' and \
+               self.targetSite.lang == 'commons':
                 # upload to Commons was successful
                 reason = pywikibot.translate(sourceSite, nowCommonsMessage)
                 # try to delete the original image if we have a sysop account
-                if sourceSite.family.name in config.sysopnames and sourceSite.lang in config.sysopnames[sourceSite.family.name]:
+                if sourceSite.family.name in config.sysopnames and \
+                   sourceSite.lang in config.sysopnames[sourceSite.family.name]:
                     if sourceImagePage.delete(reason):
                         return
-                if sourceSite.lang in nowCommonsTemplate and sourceSite.family.name in config.usernames and sourceSite.lang in config.usernames[sourceSite.family.name]:
+                if sourceSite.lang in nowCommonsTemplate and \
+                   sourceSite.family.name in config.usernames and \
+                   sourceSite.lang in config.usernames[sourceSite.family.name]:
                     # add the nowCommons template.
-                    pywikibot.output(u'Adding nowCommons template to %s' % sourceImagePage.title())
-                    sourceImagePage.put(sourceImagePage.get() + '\n\n' + nowCommonsTemplate[sourceSite.lang] % targetFilename, comment = nowCommonsMessage[sourceSite.lang])
+                    pywikibot.output(u'Adding nowCommons template to %s'
+                                     % sourceImagePage.title())
+                    sourceImagePage.put(sourceImagePage.get() + '\n\n' +
+                                        nowCommonsTemplate[sourceSite.lang]
+                                        % targetFilename,
+                                        comment=nowCommonsMessage[sourceSite.lang])
 
     def showImageList(self, imagelist):
         for i in range(len(imagelist)):
             image = imagelist[i]
             #sourceSite = sourceImagePage.site()
             print "-"*60
-            pywikibot.output(u"%s. Found image: %s"% (i, image.aslink()))
+            pywikibot.output(u"%s. Found image: %s"
+                             % (i, image.title(asLink=True)))
             try:
                 # Show the image description page's contents
                 pywikibot.output(image.get(throttle=False))
@@ -242,10 +253,12 @@ class ImageTransferBot:
                 # to upload anyway, using another name.
                 try:
                     # Maybe the image is on the target site already
-                    targetTitle = '%s:%s' % (self.targetSite.image_namespace(), image.title().split(':', 1)[1])
+                    targetTitle = '%s:%s' % (self.targetSite.image_namespace(),
+                                             image.title().split(':', 1)[1])
                     targetImage = pywikibot.Page(self.targetSite, targetTitle)
                     targetImage.get(throttle=False)
-                    pywikibot.output(u"Image with this name is already on %s." % self.targetSite)
+                    pywikibot.output(u"Image with this name is already on %s."
+                                     % self.targetSite)
                     print "-"*60
                     pywikibot.output(targetImage.get(throttle=False))
                     sys.exit()
@@ -253,7 +266,8 @@ class ImageTransferBot:
                     # That's the normal case
                     pass
                 except pywikibot.IsRedirectPage:
-                    pywikibot.output(u"Description page on target wiki is redirect?!")
+                    pywikibot.output(
+                        u"Description page on target wiki is redirect?!")
 
             except pywikibot.NoPage:
                 break
@@ -264,7 +278,7 @@ class ImageTransferBot:
             if self.interwiki:
                 imagelist = []
                 for linkedPage in page.interwiki():
-                    imagelist += linkedPage.imagelinks(followRedirects = True)
+                    imagelist += linkedPage.imagelinks(followRedirects=True)
             elif page.isImage():
                 imagePage = pywikibot.ImagePage(page.site(), page.title())
                 imagelist = [imagePage]
@@ -277,14 +291,16 @@ class ImageTransferBot:
                     # no need to query the user, only one possibility
                     todo = 0
                 else:
-                    pywikibot.output(u"Give the number of the image to transfer.")
+                    pywikibot.output(
+                        u"Give the number of the image to transfer.")
                     todo = pywikibot.input(u"To end uploading, press enter:")
                     if not todo:
                         break
                     todo = int(todo)
                 if todo in range(len(imagelist)):
                     if imagelist[todo].fileIsOnCommons():
-                        pywikibot.output(u'The image is already on Wikimedia Commons.')
+                        pywikibot.output(
+                            u'The image is already on Wikimedia Commons.')
                     else:
                         self.transferImage(imagelist[todo], debug = False)
                     # remove the selected image from the list
@@ -314,7 +330,8 @@ def main():
             targetFamily = arg[10:]
         elif arg.startswith('-file'):
             if len(arg) == 5:
-                filename = pywikibot.input(u'Please enter the list\'s filename: ')
+                filename = pywikibot.input(
+                    u'Please enter the list\'s filename: ')
             else:
                 filename = arg[6:]
             gen = pagegenerators.TextfilePageGenerator(filename)

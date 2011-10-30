@@ -146,7 +146,8 @@ def get_stats():
         sn = len(data)
         gnt += gn ; ynt += yn ; mnt += mn ; ent += en ; snt += sn
         if en > 0:
-            output += u"|%s||%s||%s KB||%s||%s||%s\n|-\n" % (page.aslink(), en, sn / 1024, gn, yn, mn)
+            output += u"|%s||%s||%s KB||%s||%s||%s\n|-\n" \
+                      % (page.title(asLink=True), en, sn / 1024, gn, yn, mn)
     output += u"""|&nbsp;||||||||
 |-
 |'''%s'''||%s||%s KB||%s||%s||%s

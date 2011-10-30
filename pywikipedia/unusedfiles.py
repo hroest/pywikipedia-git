@@ -111,7 +111,8 @@ def main():
            'http://' not in page.get():
             pywikibot.output(u'\n' + page.title())
             if template_image in page.get():
-                pywikibot.output(u"%s done already" % page.aslink())
+                pywikibot.output(u"%s done already"
+                                 % page.title(asLink=True))
                 continue
             appendtext(page, u"\n\n"+template_image)
             uploader = page.getFileVersionHistory().pop()[1]

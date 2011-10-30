@@ -74,11 +74,12 @@ class InlineImagesRobot:
                 #if text != originalText:
                 #    page.put(text)
             except pywikibot.NoPage:
-                print "Page %s does not exist?!" % page.aslink()
+                print "Page %s does not exist?!" % page.title(asLink=True)
             except pywikibot.IsRedirectPage:
-                print "Page %s is a redirect; skipping." % page.aslink()
+                print "Page %s is a redirect; skipping." \
+                      % page.title(asLink=True)
             except pywikibot.LockedPage:
-                print "Page %s is locked?!" % page.aslink()
+                print "Page %s is locked?!" % page.title(asLink=True)
 
 def main():
     #page generator

@@ -142,7 +142,8 @@ class DjVuTextBot:
             ask = True
             old_text = page.get()
             if old_text == text:
-                pywikibot.output(u"No changes were needed on %s" % page.aslink())
+                pywikibot.output(u"No changes were needed on %s"
+                                 % page.title(asLink=True))
                 return
         else:
             old_text = ''
@@ -162,7 +163,8 @@ class DjVuTextBot:
                 # Save the page
                 page.put_async(text)
             except pywikibot.LockedPage:
-                pywikibot.output(u"Page %s is locked; skipping." % page.aslink())
+                pywikibot.output(u"Page %s is locked; skipping."
+                                 % page.title(asLink=True))
             except pywikibot.EditConflict:
                 pywikibot.output(u'Skipping %s because of edit conflict' % (page.title()))
             except pywikibot.SpamfilterError, error:
@@ -215,7 +217,8 @@ def main():
                                         u"%s:%s" % (index_namespace, index))
         if not index_page.exists():
             raise pywikibot.NoPage(u"Page '%s' does not exist" % index)
-        pywikibot.output(u"uploading text from %s to %s" % (djvu, index_page.aslink()) )
+        pywikibot.output(u"uploading text from %s to %s"
+                         % (djvu, index_page.title(asLink=True)) )
         bot = DjVuTextBot(djvu, index, pages, ask, dry)
         if not bot.has_text():
             raise ValueError("No text layer in djvu file")

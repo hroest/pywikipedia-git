@@ -314,10 +314,12 @@ class PatrolBot:
             self.rc_item_counter = self.rc_item_counter + 1
 
         except pywikibot.NoPage:
-            pywikibot.output(u"Page %s does not exist; skipping." % page.aslink())
+            pywikibot.output(u"Page %s does not exist; skipping."
+                             % page.title(asLink=True))
             return
         except pywikibot.IsRedirectPage:
-            pywikibot.output(u"Page %s is a redirect; skipping." % page.aslink())
+            pywikibot.output(u"Page %s is a redirect; skipping."
+                             % page.title(asLink=True))
             return
 
 def title_match(prefix, title):
