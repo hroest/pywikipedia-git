@@ -172,8 +172,8 @@ Rwatchlist = re.compile(r"<input tabindex='[\d]+' type='checkbox' "
                         r"name='wpWatchthis' checked='checked'")
 Rlink = re.compile(r'\[\[(?P<title>[^\]\|\[]*)(\|[^\]]*)?\]\]')
 
-# Page objects (defined here) represent the page itself, including its contents.
 
+# Page objects (defined here) represent the page itself, including its contents.
 class Page(object):
     """Page: A MediaWiki page
 
@@ -454,7 +454,7 @@ not supported by PyWikipediaBot!"""
         """Return the title of this Page, as a Unicode string.
 
         @param underscore: if true, replace all ' ' characters with '_'
-        @param withNamespace: - not implemented yet -
+        @param withNamespace: if false, omit the namespace prefix
         @param withSection: - not implemented yet -
         @param asUrl: - not implemented yet -
         @param asLink: if true, return the title in the form of a wikilink
@@ -465,11 +465,12 @@ not supported by PyWikipediaBot!"""
         @param textlink: (only used if asLink is true) if true, place a ':'
             before Category: and Image: links
         @param as_filename:  - not implemented yet -
-
-        If savetitle is True, encode any wiki syntax in the title.
+        @param savetitle: if True, encode any wiki syntax in the title.
 
         """
         title = self._title
+        if not withNamespace and  self.namespace() != 0:
+            title = title.split(':', 1)[1]
         if asLink:
             iw_target_site = getSite()
             iw_target_family = getSite().family
@@ -496,13 +497,12 @@ not supported by PyWikipediaBot!"""
         if underscore:
             title = title.replace(' ', '_')
         return title
-
+    
+    @deprecated("Page.title(withNamespace=False)")
     def titleWithoutNamespace(self, underscore=False):
         """Return title of Page without namespace and without section."""
-        if self.namespace() == 0:
-            return self.sectionFreeTitle(underscore=underscore)
-        else:
-            return self.sectionFreeTitle(underscore=underscore).split(':', 1)[1]
+        return self.title(underscore=underscore, withNamespace=False,
+                          withSection=False)
 
     def titleForFilename(self):
         """
@@ -3737,6 +3737,7 @@ u'Page %s is semi-protected. Getting edit page to find out if we are allowed to 
 
         return result
 
+
 class ImagePage(Page):
     """A subclass of Page representing an image descriptor wiki page.
 
@@ -4044,6 +4045,7 @@ class ImagePage(Page):
                 params['gucontinue'] = data['query-continue']['globalusage']['gucontinue']
             else:
                 break
+
 
 class _GetAll(object):
     """For internal use only - supports getall() function"""
@@ -8174,6 +8176,7 @@ def decompress_gzip(data):
 def parsetime2stamp(tz):
     s = time.strptime(tz, "%Y-%m-%dT%H:%M:%SZ")
     return int(time.strftime("%Y%m%d%H%M%S", s))
+
 
 #Redirect Handler for urllib2
 class U2RedirectHandler(urllib2.HTTPRedirectHandler):
