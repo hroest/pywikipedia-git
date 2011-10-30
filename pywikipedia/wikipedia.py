@@ -550,9 +550,9 @@ not supported by PyWikipediaBot!"""
 
     def __str__(self):
         """Return a console representation of the pagelink."""
-        return self.title(asLink=True, forceInterwiki=True
+        return self.title(asLink=True
                           ).encode(config.console_encoding,
-                                   "xmlcharrefreplace")
+                                   'replace')
 
     def __unicode__(self):
         return self.title(asLink=True, forceInterwiki=True)
@@ -703,8 +703,7 @@ not supported by PyWikipediaBot!"""
                 if hn:
                     m = re.search("=+[ ']*%s[ ']*=+" % hn, self._contents)
                     if verbose and not m:
-                        output(u"WARNING: Section does not exist: %s"
-                               % self.title(asLink=True, forceInterwiki=True))
+                        output(u"WARNING: Section does not exist: %s" % self)
             # Store any exceptions for later reference
             except NoPage:
                 self._getexception = NoPage
@@ -777,8 +776,7 @@ not supported by PyWikipediaBot!"""
         if data['query']['pages'].keys()[0] == "-1":
             if 'missing' in pageInfo:
                 raise NoPage(self.site(),
-                             self.title(asLink=True,
-                                        forceInterwiki = True),
+                             self.title(asLink=True, forceInterwiki=True),
 "Page does not exist. In rare cases, if you are certain the page does exist, look into overriding family.RversionTab")
             elif 'invalid' in pageInfo:
                 raise BadTitle('BadTitle: %s' % self)
@@ -890,7 +888,7 @@ not supported by PyWikipediaBot!"""
                 # locked
                 elif self.site().mediawiki_message('viewsource') in text:
                     raise NoPage(self.site(), self.title(asLink=True,
-                                                         forceInterwiki = True))
+                                                         forceInterwiki=True))
                 # Some of the newest versions don't have a "view source" tag for
                 # non-existant pages
                 # Check also the div class because if the language is not english
@@ -2792,11 +2790,9 @@ u'Page %s is semi-protected. Getting edit page to find out if we are allowed to 
 
             if verbose:
                 if startFromPage:
-                    output(u'Continuing to get version history of %s'
-                           % self.title(asLink=True, forceInterwiki=True))
+                    output(u'Continuing to get version history of %s' % self)
                 else:
-                    output(u'Getting version history of %s'
-                           % self.title(asLink=True, forceInterwiki=True))
+                    output(u'Getting version history of %s' % self)
 
             txt = self.site().getUrl(path)
 
@@ -3197,8 +3193,7 @@ u'Page %s is semi-protected. Getting edit page to find out if we are allowed to 
             reason = input(u'Please enter a reason for the deletion:')
         answer = u'y'
         if prompt and not hasattr(self.site(), '_noDeletePrompt'):
-            answer = inputChoice(u'Do you want to delete %s?'
-                                 % self.title(asLink=True, forceInterwiki=True),
+            answer = inputChoice(u'Do you want to delete %s?' % self,
                                  ['yes', 'no', 'all'], ['y', 'N', 'a'], 'N')
             if answer == 'a':
                 answer = 'y'
@@ -3218,16 +3213,15 @@ u'Page %s is semi-protected. Getting edit page to find out if we are allowed to 
                 }
                 datas = query.GetData(params, self.site(), sysop = True)
                 if 'delete' in datas:
-                    output(u'Page %s deleted'
-                           % self.title(asLink=True, forceInterwiki=True))
+                    output(u'Page %s deleted' % self)
                     return True
                 else:
                     if datas['error']['code'] == 'missingtitle':
                         output(u'Page %s could not be deleted - it doesn\'t exist'
-                               % self.title(asLink=True, forceInterwiki=True))
+                               % self)
                     else:
                         output(u'Deletion of %s failed for an unknown reason. The response text is:'
-                               % self.title(asLink=True, forceInterwiki=True))
+                               % self)
                         output('%s' % datas)
 
                     return False
@@ -3248,16 +3242,15 @@ u'Page %s is semi-protected. Getting edit page to find out if we are allowed to 
                 if data:
                     self.site().checkBlocks(sysop = True)
                     if self.site().mediawiki_message('actioncomplete') in data:
-                        output(u'Page %s deleted'
-                               % self.title(asLink=True, forceInterwiki=True))
+                        output(u'Page %s deleted' % self)
                         return True
                     elif self.site().mediawiki_message('cannotdelete') in data:
                         output(u'Page %s could not be deleted - it doesn\'t exist'
-                               % self.title(asLink=True, forceInterwiki=True))
+                               % self)
                         return False
                     else:
                         output(u'Deletion of %s failed for an unknown reason. The response text is:'
-                               % self.title(asLink=True, forceInterwiki=True))
+                               % self)
                         try:
                             ibegin = data.index('<!-- start content -->') + 22
                             iend = data.index('<!-- end content -->')
@@ -3494,8 +3487,7 @@ u'Page %s is semi-protected. Getting edit page to find out if we are allowed to 
         answer = 'y'
         if prompt and not hasattr(self.site(), '_noProtectPrompt'):
             answer = inputChoice(
-                u'Do you want to change the protection level of %s?'
-                    % self.title(asLink=True, forceInterwiki=True),
+                u'Do you want to change the protection level of %s?' % self,
                 ['Yes', 'No', 'All'], ['Y', 'N', 'A'], 'N')
             if answer == 'a':
                 answer = 'y'
@@ -4203,9 +4195,7 @@ class _GetAll(object):
                         if not m:
                             try:
                                 page2._getexception
-                                output(u"WARNING: Section not found: %s"
-                                       % page2.title(asLink=True,
-                                                     forceInterwiki=True))
+                                output(u"WARNING: Section not found: %s" % page2)
                             except AttributeError:
                                 # There is no exception yet
                                 page2._getexception = SectionError
@@ -4213,11 +4203,9 @@ class _GetAll(object):
                 # Note that there is no break here. The reason is that there
                 # might be duplicates in the pages list.
         if not successful:
-            output(u"BUG>> title %s (%s) not found in list"
-                   % (title, page.title(asLink=True, forceInterwiki=True)))
+            output(u"BUG>> title %s (%s) not found in list" % (title, page))
             output(u'Expected one of: %s'
-                   % u','.join([page2.title(asLink=True, forceInterwiki=True)
-                                for page2 in self.pages]))
+                   % u','.join([unicode(page2) for page2 in self.pages]))
             raise PageNotFound
 
     def headerDone(self, header):
@@ -4370,7 +4358,7 @@ class _GetAll(object):
                             try:
                                 page2._getexception
                                 output(u"WARNING: Section not found: %s"
-                                       % page2.title(asLink=True, forceInterwiki=True))
+                                       % page2)
                             except AttributeError:
                                 # There is no exception yet
                                 page2._getexception = SectionError
@@ -4378,11 +4366,9 @@ class _GetAll(object):
                 # Note that there is no break here. The reason is that there
                 # might be duplicates in the pages list.
         if not successful:
-            output(u"BUG>> title %s (%s) not found in list"
-                   % (title, page.title(asLink=True, forceInterwiki=True)))
+            output(u"BUG>> title %s (%s) not found in list" % (title, page))
             output(u'Expected one of: %s'
-                   % u','.join([page2.title(asLink=True, forceInterwiki=True)
-                                for page2 in self.pages]))
+                   % u','.join([unicode(page2) for page2 in self.pages]))
             raise PageNotFound
 
     def headerDoneApi(self, header):
@@ -8079,20 +8065,16 @@ def async_put():
             continue
         if isinstance(error, SpamfilterError):
             output(u"Saving page %s prevented by spam filter: %s"
-                   % (page.title(asLink=True, forceInterwiki=True), error.url))
+                   % (page, error.url))
         elif isinstance(error, PageNotSaved):
-            output(u"Saving page %s failed: %s"
-                   % (page.title(asLink=True, forceInterwiki=True), error))
+            output(u"Saving page %s failed: %s" % (page, error))
         elif isinstance(error, LockedPage):
-            output(u"Page %s is locked; not saved."
-                   % page.title(asLink=True, forceInterwiki=True))
+            output(u"Page %s is locked; not saved." % page)
         elif isinstance(error, NoUsername):
-            output(u"Page %s not saved; sysop privileges required."
-                   % page.title(asLink=True, forceInterwiki=True))
+            output(u"Page %s not saved; sysop privileges required." % page)
         elif error is not None:
             tb = traceback.format_exception(*sys.exc_info())
-            output(u"Saving page %s failed:\n%s"
-                   % (page.title(asLink=True, forceInterwiki=True), "".join(tb)))
+            output(u"Saving page %s failed:\n%s" % (page, "".join(tb)))
 
 _putthread = threading.Thread(target=async_put)
 # identification for debugging purposes
