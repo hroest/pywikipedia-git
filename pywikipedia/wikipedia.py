@@ -541,10 +541,7 @@ not supported by PyWikipediaBot!"""
 
     def urlname(self, withNamespace=True):
         """Return the Page title encoded for use in an URL."""
-        if withNamespace:
-            title = self.title(underscore=True)
-        else:
-            title = self.titleWithoutNamespace(underscore=True)
+        title = self.title(withNamespace=withNamespace, underscore=True)
         encodedTitle = title.encode(self.site().encoding())
         return urllib.quote(encodedTitle)
 
@@ -616,7 +613,7 @@ not supported by PyWikipediaBot!"""
         if not hasattr(self, '_autoFormat'):
             import date
             self._autoFormat = date.getAutoFormat(self.site().language(),
-                                                  self.titleWithoutNamespace())
+                                                  self.title(withNamespace=False))
         return self._autoFormat
 
     def isAutoTitle(self):
@@ -1178,7 +1175,7 @@ not supported by PyWikipediaBot!"""
             catredirs = self.site().category_redirects()
             for (t, args) in self.templatesWithParams(thistxt=text):
                 template = Page(self.site(), t, defaultNamespace=10
-                                ).titleWithoutNamespace() # normalize title
+                                ).title(withNamespace=False) # normalize title
                 if template in catredirs:
                     # Get target (first template argument)
                     if not args:
@@ -1236,9 +1233,10 @@ not supported by PyWikipediaBot!"""
             ns += 1
 
         if ns == 6:
-            return ImagePage(self.site(), self.titleWithoutNamespace())
+            return ImagePage(self.site(), self.title(withNamespace=False))
 
-        return Page(self.site(), self.titleWithoutNamespace(), defaultNamespace=ns)
+        return Page(self.site(), self.title(withNamespace=False),
+                    defaultNamespace=ns)
 
     def isCategory(self):
         """Return True if the page is a Category, False otherwise."""
@@ -1282,7 +1280,7 @@ not supported by PyWikipediaBot!"""
                     try:
                         disambigpages = Page(self._site,
                                              "MediaWiki:Disambiguationspage")
-                        disambigs = set(link.titleWithoutNamespace()
+                        disambigs = set(link.title(withNamespace=False)
                                         for link in disambigpages.linkedPages()
                                         if link.namespace() == 10)
                         # add index article templates
@@ -3285,7 +3283,7 @@ u'Page %s is semi-protected. Getting edit page to find out if we are allowed to 
             params = {
                 'action': 'query',
                 'list': 'deletedrevs',
-                'drfrom': self.titleWithoutNamespace(),
+                'drfrom': self.title(withNamespace=False),
                 'drnamespace': self.namespace(),
                 'drprop': ['revid','user','comment','content'],#','minor','len','token'],
                 'drlimit': 100,
@@ -3303,7 +3301,9 @@ u'Page %s is semi-protected. Getting edit page to find out if we are allowed to 
                         count += 1
                         self._deletedRevs[parsetime2stamp(y['timestamp'])] = [y['timestamp'], y['user'], y['comment'] , y['*'], False]
 
-                if 'query-continue' in data and data['query-continue']['deletedrevs']['drcontinue'].split('|')[1] == self.titleWithoutNamespace():
+                if 'query-continue' in data and \
+                   data['query-continue']['deletedrevs']['drcontinue'].split(
+                       '|')[1] == self.title(withNamespace=False):
                     params['drcontinue'] = data['query-continue']['deletedrevs']['drcontinue']
                 else:
                     break
@@ -6751,7 +6751,7 @@ u"WARNING: Could not open '%s'. Maybe the server or\n your connection is down. R
         if namespace is None:
             page = Page(self, start)
             namespace = page.namespace()
-            start = page.titleWithoutNamespace()
+            start = page.title(withNamespace=False)
 
         if not self.has_api():
             for page in self._allpagesOld(start, namespace, includeredirects, throttle):
@@ -6875,7 +6875,7 @@ u"WARNING: Could not open '%s'. Maybe the server or\n your connection is down. R
                 # save the last hit, so that we know where to continue when we
                 # finished all articles on the current page. Append a '!' so that
                 # we don't yield a page twice.
-                start = Page(self,hit).titleWithoutNamespace() + '!'
+                start = Page(self, hit).title(withNamespace=False) + '!'
             # A small shortcut: if there are less than 100 pages listed on this
             # page, there is certainly no next. Probably 480 would do as well,
             # but better be safe than sorry.
@@ -6890,7 +6890,9 @@ u"WARNING: Could not open '%s'. Maybe the server or\n your connection is down. R
                         # In this special case, no pages of the requested type
                         # were found, and "start" will remain and be double-encoded.
                         # Use the last page as the start of the next page.
-                        start = Page(self, allLinks[-1]).titleWithoutNamespace() + '!'
+                        start = Page(self,
+                                     allLinks[-1]).title(
+                                         withNamespace=False) + '!'
                 else:
                     break
             #else:
@@ -6919,7 +6921,7 @@ u"WARNING: Could not open '%s'. Maybe the server or\n your connection is down. R
         PrefixingPageGenerator from pagegenerators.py instead.
         """
         for page in self.allpages(start = prefix, namespace = namespace, includeredirects = includeredirects):
-            if page.titleWithoutNamespace().startswith(prefix):
+            if page.title(withNamespace=False).startswith(prefix):
                 yield page
             else:
                 break
