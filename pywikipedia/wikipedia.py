@@ -560,7 +560,7 @@ not supported by PyWikipediaBot!"""
     def __repr__(self):
         """Return a more complete string representation."""
         return "%s{%s}" % (self.__class__.__name__,
-                           str(self))
+                           self.title(asLink=True).encode(config.console_encoding))
 
     def __cmp__(self, other):
         """Test for equality and inequality of Page objects.
