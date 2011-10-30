@@ -715,9 +715,7 @@ not supported by PyWikipediaBot!"""
                 raise
             except UserBlocked:
                 if self.site().loggedInAs(sysop=sysop):
-                    raise UserBlocked(self.site(),
-                                      self.title(asLink=True,
-                                                 forceInterwiki=True))
+                    raise UserBlocked(self.site(), unicode(self))
                 else:
                     if verbose:
                         output("The IP address is blocked, retry by login.")
@@ -772,8 +770,7 @@ not supported by PyWikipediaBot!"""
         pageInfo = data['query']['pages'].values()[0]
         if data['query']['pages'].keys()[0] == "-1":
             if 'missing' in pageInfo:
-                raise NoPage(self.site(),
-                             self.title(asLink=True, forceInterwiki=True),
+                raise NoPage(self.site(), unicode(self),
 "Page does not exist. In rare cases, if you are certain the page does exist, look into overriding family.RversionTab")
             elif 'invalid' in pageInfo:
                 raise BadTitle('BadTitle: %s' % self)
@@ -869,31 +866,26 @@ not supported by PyWikipediaBot!"""
                 if self.site().mediawiki_message('whitelistedittitle') in text:
                     raise NoPage(u'Page editing is forbidden for anonymous users.')
                 elif self.site().has_mediawiki_message('nocreatetitle') and self.site().mediawiki_message('nocreatetitle') in text:
-                    raise NoPage(self.site(), self.title(asLink=True,
-                                                         forceInterwiki=True))
+                    raise NoPage(self.site(), unicode(self))
                 # Bad title
                 elif 'var wgPageName = "Special:Badtitle";' in text \
                 or self.site().mediawiki_message('badtitle') in text:
                     raise BadTitle('BadTitle: %s' % self)
                 # find out if the username or IP has been blocked
                 elif self.site().isBlocked():
-                    raise UserBlocked(self.site(),
-                                      self.title(asLink=True,
-                                                 forceInterwiki=True))
+                    raise UserBlocked(self.site(), unicode(self))
                 # If there is no text area and the heading is 'View Source'
                 # but user is not blocked, the page does not exist, and is
                 # locked
                 elif self.site().mediawiki_message('viewsource') in text:
-                    raise NoPage(self.site(), self.title(asLink=True,
-                                                         forceInterwiki=True))
+                    raise NoPage(self.site(), unicode(self))
                 # Some of the newest versions don't have a "view source" tag for
                 # non-existant pages
                 # Check also the div class because if the language is not english
                 # the bot can not seeing that the page is blocked.
                 elif self.site().mediawiki_message('badaccess') in text or \
                 "<div class=\"permissions-errors\">" in text:
-                    raise NoPage(self.site(), self.title(asLink=True,
-                                                         forceInterwiki=True))
+                    raise NoPage(self.site(), unicode(self))
                 elif config.retry_on_fail:
                     if "<title>Wikimedia Error</title>" in text:
                         output( u"Wikimedia has technical problems; will retry in %i minutes." % retry_idle_time)
@@ -947,8 +939,7 @@ not supported by PyWikipediaBot!"""
             RversionTab = re.compile(r'<li id="ca-history"><a href=".*?title=.*?&amp;action=history".*?>.*?</a></li>', re.DOTALL)
         matchVersionTab = RversionTab.search(text)
         if not matchVersionTab and not self.site().family.name == 'wikitravel':
-            raise NoPage(self.site(),
-                         self.title(asLink=True, forceInterwiki=True),
+            raise NoPage(self.site(), unicode(self),
 "Page does not exist. In rare cases, if you are certain the page does exist, look into overriding family.RversionTab" )
         # Look if the page is on our watchlist
         matchWatching = Rwatchlist.search(text)
@@ -2715,8 +2706,7 @@ u'Page %s is semi-protected. Getting edit page to find out if we are allowed to 
             pageInfo = result['query']['pages'].values()[0]
             if result['query']['pages'].keys()[0] == "-1":
                 if 'missing' in pageInfo:
-                    raise NoPage(self.site(), self.title(asLink=True,
-                                                         forceInterwiki=True),
+                    raise NoPage(self.site(), unicode(self),
                                  "Page does not exist.")
                 elif 'invalid' in pageInfo:
                     raise BadTitle('BadTitle: %s' % self)
@@ -2885,8 +2875,7 @@ u'Page %s is semi-protected. Getting edit page to find out if we are allowed to 
             pageInfo = result['query']['pages'].values()[0]
             if result['query']['pages'].keys()[0] == "-1":
                 if 'missing' in pageInfo:
-                    raise NoPage(self.site(), self.title(asLink=True,
-                                                         forceInterwiki=True),
+                    raise NoPage(self.site(), unicode(self),
                                  "Page does not exist.")
                 elif 'invalid' in pageInfo:
                     raise BadTitle('BadTitle: %s' % self)
@@ -3803,8 +3792,7 @@ class ImagePage(Page):
         self._local = pageInfo["imagerepository"] != "shared"
         if data['query']['pages'].keys()[0] == "-1":
             if 'missing' in pageInfo and self._local:
-                raise NoPage(self.site(),
-                             self.title(asLink=True, forceInterwiki=True),
+                raise NoPage(self.site(), unicode(self),
                              "Page does not exist.")
             elif 'invalid' in pageInfo:
                 raise BadTitle('BadTitle: %s' % self)

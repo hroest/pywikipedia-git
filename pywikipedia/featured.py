@@ -474,10 +474,8 @@ def featuredbot(arts, cc, tosite, template_on_top, pType, quiet, dry):
                                 continue
                             site = pywikibot.getSite()
                             comment = pywikibot.setAction(
-                                i18n.twtranslate(
-                                    site, 'featured-' + pType,
-                                    {'page': a.title(
-                                        asLink=True, forceInterwiki=True)}))
+                                i18n.twtranslate(site, 'featured-' + pType,
+                                                 {'page': unicode(a)}))
                             ### Moving {{Link FA|xx}} to top of interwikis ###
                             if template_on_top == True:
                                 # Getting the interwiki
@@ -521,10 +519,8 @@ def featuredbot(arts, cc, tosite, template_on_top, pType, quiet, dry):
                                 continue
                             site = pywikibot.getSite()
                             comment = pywikibot.setAction(
-                                i18n.twtranslate(
-                                    site, 'featured-former',
-                                    {'page': a.title(
-                                        asLink=True, forceInterwiki=True)}))
+                                i18n.twtranslate(site, 'featured-former',
+                                                 {'page': unicode(a)}))
                             text = re.sub(re_Link_FA,'',text)
                             if not dry:
                                 try:

@@ -591,8 +591,7 @@ def main():
                 Archiver.run()
                 time.sleep(10)
             except:
-                pywikibot.output(u'Error occured while processing page %s'
-                                 % pg.title(asLink=True, forceInterwiki=True))
+                pywikibot.output(u'Error occured while processing page %s' % pg)
                 traceback.print_exc()
 
 if __name__ == '__main__':

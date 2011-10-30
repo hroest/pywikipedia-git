@@ -200,9 +200,7 @@ class ImageTransferBot:
             description += '\n\n' + sourceImagePage.getFileVersionHistoryTable()
             # add interwiki link
             if sourceSite.family == self.targetSite.family:
-                description += "\r\n\r\n" + \
-                               sourceImagePage.title(asLink=True,
-                                                     forceInterwiki=True)
+                description += "\r\n\r\n" + unicode(sourceImagePage)
         except pywikibot.NoPage:
             description=''
             print "Image does not exist or description page is empty."
