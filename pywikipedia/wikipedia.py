@@ -550,9 +550,9 @@ not supported by PyWikipediaBot!"""
 
     def __str__(self):
         """Return a console representation of the pagelink."""
-        return self.title(asLink=True
+        return self.title(asLink=True, forceInterwiki=True
                           ).encode(config.console_encoding,
-                                   'replace')
+                                   "xmlcharrefreplace")
 
     def __unicode__(self):
         return self.title(asLink=True, forceInterwiki=True)
