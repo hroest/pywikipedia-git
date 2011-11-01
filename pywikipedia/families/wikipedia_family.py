@@ -46,8 +46,8 @@ class Family(family.Family):
             self.langs = dict([(lang, '%s.wikipedia.org' % lang) for lang in self.languages_by_size])
 
         # Override defaults
-        self.namespaces[2]['cs'] = u'Wikipedista'
-        self.namespaces[3]['cs'] = u'Diskuse s wikipedistou'
+        self.namespaces[2]['cs'] = [u'Wikipedista', u'Uživatel', u'Wikipedistka', u'Uživatelka']
+        self.namespaces[3]['cs'] = [u'Diskuse s wikipedistou', u'Diskuse s uživatelem', u'Diskuse s wikipedistkou', u'Wikipedista diskuse', u'Wikipedistka diskuse', u'Diskuse s uživatelkou', u'Uživatel diskuse', u'Uživatelka diskuse']
         self.namespaces[9]['da'] = u'MediaWiki-diskussion'
         self.namespaces[13]['da'] = u'Hjælp-diskussion'
         self.namespaces[1]['ja'] = [u'ノート', u'トーク']
@@ -63,8 +63,8 @@ class Family(family.Family):
         self.namespaces[15]['ja'] = [u'Category‐ノート', u'カテゴリ・トーク']
         self.namespaces[2]['pl'] = [u'Wikipedysta', u'Wikipedystka']
         self.namespaces[3]['pl'] = [u'Dyskusja wikipedysty', u'Dyskusja Wikipedystki']
-        self.namespaces[2]['pt'] = u'Usuário'
-        self.namespaces[3]['pt'] = u'Usuário Discussão'
+        self.namespaces[2]['pt'] = [u'Usuário', u'Utilizador', u'Utilizadora'],
+        self.namespaces[3]['pt'] = [u'Usuário Discussão', u'Utilizador Discussão', u'Utilizadora Discussão']
 
         # Most namespaces are inherited from family.Family.
         # Translation used on all wikis for the different namespaces.
