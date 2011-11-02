@@ -420,7 +420,7 @@ def getTemplateList (lang, pType):
     elif pType == 'list':
         try:
             templates = template_lists[lang]
-            templatest += template_lists['_default']
+            templates += template_lists['_default']
         except KeyError:
             templates = template_lists['_default']
     else: #pType in ['former', 'featured']
