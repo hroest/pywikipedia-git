@@ -1696,6 +1696,7 @@ addFmt ('zh-min-nan',True,  makeMonthList( u"%%d nî %d goe̍h" ))
 formatLimits = {
     'MonthName'         : (lambda v: 1 <=v and v < 13,                 1, 13),
     'Number'            : (lambda v: 0 <=v and v < 1000000,            0, 1001),
+
     'YearAD'            : (lambda v: 0 <=v and v < 2501,               0, 2501),
     'YearBC'            : (lambda v: 0 <=v and v < 4001,               0, 501),   # zh: has years as old as 前1700年
     'DecadeAD'          : (lambda v: 0 <=v and v < 2501,               0, 2501),  # At some point need to re-add  "and v%10==0" to the limitation
@@ -1765,7 +1766,10 @@ class FormatDate(object):
 
 
 def formatYear(lang, year):
-    return formats['YearBC'][lang](abs(year))
+    if year < 0:
+        return formats['YearBC'][lang](-year)
+    else:
+        return formats['YearAD'][lang](year)
 
 #
 #  Map testing methods
