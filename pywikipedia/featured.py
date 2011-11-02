@@ -122,6 +122,7 @@ template_good = {
 
 template_lists = {
     '_default': ['Link FL'],
+    'no': ['Link GL'],
 }
 
 featured_name = {
