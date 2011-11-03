@@ -1742,7 +1742,7 @@ u'Page %s is semi-protected. Getting edit page to find out if we are allowed to 
             #       self.get() calls self._getEditPage without this parameter
             self.get(force=True, change_edit_time=True)
             newtime = self.editTime()
-            if oldtime != newtime: # page was changed
+            if str(oldtime) != str(newtime): # page was changed
                 raise EditConflict(u'Page has been changed after first read.')
             self._editrestriction = False
         # If no comment is given for the change, use the default
