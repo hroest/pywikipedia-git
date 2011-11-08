@@ -569,34 +569,34 @@ def change_category(article, oldCat, newCat, comment=None, sortKey=None, inPlace
     changesMade = False
 
     if not article.canBeEdited():
-        wikipedia.output("Can't edit %s, skipping it..." % article.aslink())
+        wikipedia.output("Can't edit %s, skipping it..." % article.title(asLink=True))
         return False
     if inPlace == True:
         oldtext = article.get(get_redirect=True)
         newtext = wikipedia.replaceCategoryInPlace(oldtext, oldCat, newCat)
         if newtext == oldtext:
             wikipedia.output(
-                u'No changes in made in page %s.' % article.aslink())
+                u'No changes in made in page %s.' % article.title(asLink=True))
             return False
         try:
             article.put(newtext, comment)
             return True
         except wikipedia.EditConflict:
             wikipedia.output(
-                u'Skipping %s because of edit conflict' % article.aslink())
+                u'Skipping %s because of edit conflict' % article.title(asLink=True))
         except wikipedia.LockedPage:
-            wikipedia.output(u'Skipping locked page %s' % article.aslink())
+            wikipedia.output(u'Skipping locked page %s' % article.title(asLink=True))
         except wikipedia.SpamfilterError, error:
             wikipedia.output(
                 u'Changing page %s blocked by spam filter (URL=%s)'
-                             % (article.aslink(), error.url))
+                             % (article.title(asLink=True), error.url))
         except wikipedia.NoUsername:
             wikipedia.output(
                 u"Page %s not saved; sysop privileges required."
-                             % article.aslink())
+                             % article.title(asLink=True))
         except wikipedia.PageNotSaved, error:
             wikipedia.output(u"Saving page %s failed: %s"
-                             % (article.aslink(), error.message))
+                             % (article.title(asLink=True), error.message))
         return False
 
     # This loop will replace all occurrences of the category to be changed,
