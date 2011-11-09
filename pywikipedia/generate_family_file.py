@@ -206,7 +206,7 @@ class NamespaceStorage(object):
         if ns == 0: # never translate the article namespace
             return
         try:
-            if translation not in self.f.namespace(lang, ns, all=True): # self.f.namespace might return KeyError itself
+            if translation != self.f.namespace(lang, ns): # self.f.namespace might return KeyError itself
                 raise KeyError
         except KeyError:
             self._store(ns, lang, translation)
