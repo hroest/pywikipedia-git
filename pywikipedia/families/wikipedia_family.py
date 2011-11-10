@@ -33,11 +33,11 @@ class Family(family.Family):
             'pcd', 'pfl', 'krc', 'frr', 'to', 'ace', 'crh', 'eml', 'gn', 'myv',
             'ay', 'arc', 'kl', 'ce', 'pap', 'bjn', 'lbe', 'gag', 'tpi', 'jbo',
             'wo', 'zea', 'mdf', 'av', 'kab', 'ty', 'dsb', 'srn', 'xmf', 'lo',
-            'ab', 'as', 'sn', 'ig', 'na', 'tet', 'mwl', 'kg', 'kaa', 'ltg',
-            'rmy', 'cu', 'kbd', 'sm', 'ks', 'sd', 'bi', 'bm', 'ik', 'ss', 'iu',
-            'pih', 'za', 'pnt', 'chr', 'cdo', 'got', 'ee', 'ha', 'zu', 'ti',
-            'tn', 'bxr', 'om', 've', 'ts', 'rn', 'sg', 'cr', 'dz', 'tum', 'fj',
-            'lg', 'ak', 'ch', 'ny', 'ff', 'st', 'chy', 'xh', 'ki', 'tw',
+            'ab', 'as', 'sn', 'ig', 'na', 'tet', 'mwl', 'kg', 'kaa', 'nso',
+            'ltg', 'rmy', 'cu', 'kbd', 'sm', 'ks', 'sd', 'bi', 'bm', 'ik', 'ss',
+            'iu', 'pih', 'za', 'pnt', 'chr', 'cdo', 'got', 'ee', 'ha', 'zu',
+            'ti', 'tn', 'bxr', 'om', 've', 'ts', 'rn', 'sg', 'cr', 'dz', 'tum',
+            'fj', 'lg', 'ak', 'ch', 'ny', 'ff', 'st', 'chy', 'xh', 'ki', 'tw',
         ]
 
         if family.config.SSL_connection:
