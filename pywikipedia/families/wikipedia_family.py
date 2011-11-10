@@ -243,6 +243,7 @@ class Family(family.Family):
             'no': u'Wikipedia',
             'nov': u'Wikipedia',
             'nrm': u'Wikipedia',
+            'nso': u'Wikipedia',
             'nv': u'Wikiibíídiiya',
             'ny': u'Wikipedia',
             'oc': u'Wikipèdia',
