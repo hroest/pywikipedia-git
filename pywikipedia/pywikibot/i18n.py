@@ -9,9 +9,8 @@
 #
 __version__ = '$Id$'
 
-import re
+import re, sys
 from pywikibot import Error
-from plural import plural_rules
 
 # Languages to use for comment text after the actual language but before
 # en:. For example, if for language 'xx', you want the preference of
@@ -358,13 +357,19 @@ def twntranslate(code, twtitle, parameters=None):
             num = parameters
         # get the alternate language code modified by twtranslate
         lang = code.pop()
-        # we only need the lang or _default, not a _altlang code
-        # maybe we should implement this to i18n.translate()
-        try:
-            plural_func = plural_rules[lang]['plural']
-        except KeyError:
-            plural_func = plural_rules['_default']['plural']
-        # TODO: check against plural_rules[lang]['nplurals']
+        # Compatibility check for old python releases which are unable
+        # to use plural.py - use _default rules for all
+        if sys.version_info < (2, 5):
+            plural_func = lambda n: (n != 1)
+        else:        
+            from plural import plural_rules
+            # we only need the lang or _default, not a _altlang code
+            # maybe we should implement this to i18n.translate()
+            # TODO: check against plural_rules[lang]['nplurals']
+            try:
+                plural_func = plural_rules[lang]['plural']
+            except KeyError:
+                plural_func = plural_rules['_default']['plural']
         repl = variants.split('|')[plural_func(num)]
         trans = re.sub(PATTERN, repl, trans)
     if param:
