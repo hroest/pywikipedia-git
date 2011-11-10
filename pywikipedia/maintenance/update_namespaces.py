@@ -32,6 +32,7 @@ r_namespace_section_once = r'(?s)self\.namespaces\[%s]\[\'%s\']\s*\=\s*\(.*?)'
 r_string = '[u]?[r]?[\'"].*?[\'"]'
 r_list = '\\[.*?\\]'
 r_namespace_def = re.compile(r'[\'"]([a-z_-]*)[\'"]\s*\:\s*((?:%s)|(?:%s))\s*,' % (r_string, r_list))
+
 def update_family(family, changes):
     global namespace_section_text, namespace_defs, new_defs
     if family:
@@ -39,17 +40,21 @@ def update_family(family, changes):
         family_file_name = '../families/%s_family.py' % family.name
         r_namespace_section = r_namespace_section_sub
         base_indent = 8
+        skip_namespace = []
     else:
         output(u'\nUpdating family.py')
         family_file_name = '../family.py'
         r_namespace_section = r_namespace_section_main
         base_indent = 12
+        skip_namespace = [4, 5]
     family_file = open(family_file_name, 'r')
     old_family_text = family_text = family_file.read()
     family_file.close()
 
     for lang, namespaces in changes.iteritems():
         for namespace_id, namespace_list, predefined_namespace in namespaces:
+            if namespace_id in skip_namespace:
+                continue
             msg = u'Setting namespace[%s] for %s to ' \
                   + (u'[%s]' if len(namespace_list) > 1 else u'%s')
             output(msg % (namespace_id, lang, ', '.join(namespace_list)))
