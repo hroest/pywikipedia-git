@@ -138,6 +138,12 @@ class Family(family.Family):
         self.namespaces[203] = {
             '_default': u'Research talk',
         }
+        self.namespaces[1198] = {
+            '_default': u'Translations',
+        }
+        self.namespaces[1199] = {
+            '_default': u'Translations talk',
+        }
 
         self.interwiki_forward = 'wikipedia'
         self.cross_allowed = ['meta',]
