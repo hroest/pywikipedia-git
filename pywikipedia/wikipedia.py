@@ -741,7 +741,7 @@ not supported by PyWikipediaBot!"""
         """
         if not self.site().has_api() or self.site().versionnumber() < 12:
             return self._getEditPageOld(get_redirect, throttle, sysop, oldid, change_edit_time)
-
+        print '######'
         params = {
             'action': 'query',
             'titles': self.title(),
@@ -783,6 +783,8 @@ not supported by PyWikipediaBot!"""
         # deleted but there was not 'missing' in pageInfo as expected
         # I raise a ServerError() yet, but maybe it should be NoPage().
         if not textareaFound:
+            if verbose:
+                print pageInfo
             raise ServerError('ServerError: No textarea found in %s' % self)
 
         self.editRestriction = ''
