@@ -1,4 +1,7 @@
 # -*- coding: utf-8  -*-
+__version__ = '$Id$'
+
+
 class transliterator(object):
     def __init__(self):
         self.trans = {}
