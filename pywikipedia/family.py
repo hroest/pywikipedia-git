@@ -3165,7 +3165,7 @@ class Family:
             'dmoz':             'dmoz',
             'dmozs':            'dmozs',
             'docbook':          'docbook',
-            'doi':              'doi',
+##            'doi':              'doi',
             'doom_wiki':        'doom_wiki',
             'download':         'download',
             'drae':             'drae',
