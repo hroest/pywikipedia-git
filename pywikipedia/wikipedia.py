@@ -2929,6 +2929,19 @@ u'Page %s is semi-protected. Getting edit page to find out if we are allowed to 
                 'action': 'watch',
                 'title': self.title()
             }
+            # watchtoken is needed for mw 1.18
+            # TODO: Find a better implementation for other actions too
+            #       who needs a token
+            if self.site().versionnumber() >= 18:
+                api = {
+                    'action': 'query',
+                    'prop': 'info',
+                    'titles' : self.title(),
+                    'intoken' : 'watch',
+                }
+                data = query.GetData(api, self.site())
+                key = data['query']['pages'].keys()[0]
+                params['token'] = data['query']['pages'][key]['watchtoken']
             if unwatch:
                 params['unwatch'] = ''
 
@@ -2947,8 +2960,9 @@ u'Page %s is semi-protected. Getting edit page to find out if we are allowed to 
     def unwatch(self):
         self.watch(unwatch=True)
 
-    def move(self, newtitle, reason=None, movetalkpage=True, movesubpages=False, sysop=False,
-             throttle=True, deleteAndMove=False, safe=True, fixredirects=True, leaveRedirect=True):
+    def move(self, newtitle, reason=None, movetalkpage=True, movesubpages=False,
+             sysop=False, throttle=True, deleteAndMove=False, safe=True,
+             fixredirects=True, leaveRedirect=True):
         """Move this page to new title.
 
         * fixredirects has no effect in MW < 1.13
