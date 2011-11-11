@@ -1,4 +1,4 @@
-
+# -*- coding: utf-8  -*-
 __version__ = '$Id$'
 
 import sys; sys.path.append('..')
@@ -8,6 +8,7 @@ import terminal_interface
 import wx
 
 app = wx.App()
+
 
 class UI(terminal_interface.UI):
     def __init__(self):
@@ -56,9 +57,9 @@ class UI(terminal_interface.UI):
             elif default and answer=='':# empty string entered
                 return default
 
+
 if __name__ == '__main__':
     ui = UI()
     print ui.input('Test?')
 
 app.MainLoop()
-
