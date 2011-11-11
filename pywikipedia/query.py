@@ -37,7 +37,8 @@ except ImportError:
     import simplejson as json
 
 
-def GetData(params, site = None, useAPI = True, retryCount = 5, encodeTitle = True, sysop = False, back_response = False):
+def GetData(params, site=None, useAPI=True, retryCount=5, encodeTitle=True,
+            sysop=False, back_response=False):
     """Get data from the query api, and convert it into a data object
     """
     if not site:
@@ -74,7 +75,7 @@ def GetData(params, site = None, useAPI = True, retryCount = 5, encodeTitle = Tr
     if wikipedia.verbose: #dump params info.
         wikipedia.output(u"==== API action:%s ====" % params[u'action'])
         if data and 'file' not in data:
-            wikipedia.output(u"%s: (%d items)" % (data.keys()[0], titlecount ) )
+            wikipedia.output(u"%s: (%d items)" % (data.keys()[0], titlecount))
 
         for k, v in params.iteritems():
             if k not in ['action', 'format', 'file', 'xml', 'text']:
@@ -87,9 +88,12 @@ def GetData(params, site = None, useAPI = True, retryCount = 5, encodeTitle = Tr
 
 
     postAC = [
-        'edit', 'login', 'purge', 'rollback', 'delete', 'undelete', 'protect', 'parse',
-        'block', 'unblock', 'move', 'emailuser','import', 'userrights', 'upload', 'patrol'
+        'edit', 'login', 'purge', 'rollback', 'delete', 'undelete', 'protect',
+        'parse', 'block', 'unblock', 'move', 'emailuser','import', 'userrights',
+        'upload', 'patrol'
     ]
+    if site.versionnumber() >= 18:
+        postAC.append('watch')
     if useAPI:
         if params['action'] in postAC:
             path = site.api_address()
@@ -102,7 +106,8 @@ def GetData(params, site = None, useAPI = True, retryCount = 5, encodeTitle = Tr
 
     if wikipedia.verbose:
         if titlecount > 1:
-            wikipedia.output(u"Requesting %d %s from %s" % (titlecount, data.keys()[0], site))
+            wikipedia.output(u"Requesting %d %s from %s"
+                             % (titlecount, data.keys()[0], site))
         else:
             wikipedia.output(u"Requesting API query from %s" % site)
 
