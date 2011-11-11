@@ -168,9 +168,6 @@ def GetData(params, site=None, useAPI=True, retryCount=5, encodeTitle=True,
                     retry_idle_time = 30
             else:
                 wikipedia.debugDump('ApiGetDataParse', site, str(error) + '\n%s\n%s' % (site.hostname(), path), jsontext)
-
-
-
     raise lastError
 
 def GetInterwikies(site, titles, extraParams = None ):
