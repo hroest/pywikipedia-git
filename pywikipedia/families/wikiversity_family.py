@@ -26,24 +26,30 @@ class Family(family.Family):
         # (Please sort languages alphabetically)
         # You only need to enter translations that differ from _default.
         self.namespaces[4] = {
-            '_default': [u'Wikiversity', self.namespaces[4]['_default']],
+            '_default': self.namespaces[4]['_default'],
             'ar': [u'ويكي الجامعة', u'وج'],
+            'beta': u'Wikiversity',
             'cs': [u'Wikiverzita', u'WV'],
+            'de': u'Wikiversity',
             'el': u'Βικιεπιστήμιο',
             'en': [u'Wikiversity', u'WV'],
             'es': u'Wikiversidad',
             'fi': u'Wikiopisto',
             'fr': u'Wikiversité',
             'it': u'Wikiversità',
+            'ja': u'Wikiversity',
             'pt': u'Wikiversidade',
             'ru': u'Викиверситет',
+            'sv': u'Wikiversity',
         }
         self.namespaces[5] = {
-            '_default': [u'Wikiversity talk', self.namespaces[5]['_default']],
+            '_default': self.namespaces[5]['_default'],
             'ar': u'نقاش ويكي الجامعة',
+            'beta': u'Wikiversity talk',
             'cs': [u'Diskuse k Wikiverzitě', u'Wikiversity diskuse', u'Wikiverzita diskuse'],
             'de': u'Wikiversity Diskussion',
             'el': u'Συζήτηση Βικιεπιστημίου',
+            'en': u'Wikiversity talk',
             'es': u'Wikiversidad discusión',
             'fi': u'Keskustelu Wikiopistosta',
             'fr': u'Discussion Wikiversité',

@@ -33,12 +33,13 @@ class Family(family.Family):
         # (Please sort languages alphabetically)
         # You only need to enter translations that differ from _default.
         self.namespaces[4] = {
-            '_default': [u'Wikinews', self.namespaces[4]['_default']],
+            '_default': self.namespaces[4]['_default'],
             'ar': u'ويكي الأخبار',
             'bg': u'Уикиновини',
             'bs': u'Wikivijesti',
             'ca': u'Viquinotícies',
             'cs': [u'Wikizprávy', u'WN', u'WZ'],
+            'de': u'Wikinews',
             'el': u'Βικινέα',
             'en': [u'Wikinews', u'WN'],
             'eo': u'Vikinovaĵoj',
@@ -52,9 +53,11 @@ class Family(family.Family):
             'ja': u'ウィキニュース',
             'ko': [u'위키뉴스', u'뉴'],
             'no': u'Wikinytt',
+            'pl': u'Wikinews',
             'pt': u'Wikinotícias',
             'ro': u'Wikiştiri',
             'ru': [u'Викиновости', u'ВикиНовости', u'ВН'],
+            'sd': u'Wikinews',
             'sq': [u'Wikilajme', u'WL'],
             'sr': u'Викивести',
             'sv': [u'Wikinews', u'WN'],
@@ -65,7 +68,7 @@ class Family(family.Family):
             'zh': u'Wikinews',
         }
         self.namespaces[5] = {
-            '_default': [u'Wikinews talk', self.namespaces[5]['_default']],
+            '_default': self.namespaces[5]['_default'],
             'ar': u'نقاش ويكي الأخبار',
             'bg': u'Уикиновини беседа',
             'bs': u'Razgovor s Wikivijestima',
@@ -73,6 +76,7 @@ class Family(family.Family):
             'cs': [u'Diskuse k Wikizprávám', u'Wikinews diskuse', u'Wikizprávy diskuse'],
             'de': u'Wikinews Diskussion',
             'el': u'Βικινέα συζήτηση',
+            'en': u'Wikinews talk',
             'eo': u'Vikinovaĵoj diskuto',
             'es': u'Wikinoticias discusión',
             'fa': u'بحث ویکی‌خبر',
