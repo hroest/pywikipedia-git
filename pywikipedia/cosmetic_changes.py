@@ -319,6 +319,9 @@ class CosmeticChangesToolkit:
             if not family.isDefinedNSLanguage(nsNumber, self.site.lang):
                 # Skip undefined namespaces
                 continue
+            if nsNumber in (2, 3):
+                # Skip user namespace, maybe gender is used
+                continue
             namespaces = list(self.site.namespace(nsNumber, all = True))
             thisNs = namespaces.pop(0)
             if nsNumber == 6 and family.name == 'wikipedia' and \
