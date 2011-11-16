@@ -29,8 +29,29 @@ class Family(family.Family):
             self.langs['-'] = 'wikisource.org'
 
         # Override defaults
-        self.namespaces[2]['pl'] = 'Wikiskryba'
-        self.namespaces[3]['pl'] = 'Dyskusja wikiskryby'
+        self.namespaces[10]['zh'] = [u'Template', u'模板', u'样板', u'樣板']
+        self.namespaces[12]['zh'] = [u'Help', u'帮助', u'幫助']
+        self.namespaces[14]['zh'] = [u'Category', u'分类', u'分類']
+        self.namespaces[3]['ca'] = [u'Usuari Discussió']
+        self.namespaces[2]['ca'] = [u'Usuari']
+        self.namespaces[3]['cs'] = [u'Diskuse s uživatelem', u'Diskuse s uživatelkou', u'Uživatel diskuse', u'Uživatelka diskuse']
+        self.namespaces[2]['cs'] = [u'Uživatel', u'Uživatelka']
+        self.namespaces[12]['nl'] = [u'Help']
+        self.namespaces[3]['pt'] = [u'Utilizador Discussão', u'Usuário Discussão', u'Utilizadora Discussão']
+        self.namespaces[2]['pt'] = [u'Utilizador', u'Usuário', u'Utilizadora']
+        self.namespaces[6]['vec'] = [u'File', u'Imagine']
+        self.namespaces[3]['pl'] = [u'Dyskusja wikiskryby', u'Dyskusja użytkownika', u'Dyskusja użytkowniczki']
+        self.namespaces[2]['pl'] = [u'Wikiskryba', u'Użytkownik', u'Użytkowniczka']
+        self.namespaces[3]['fr'] = [u'Discussion utilisateur', u'Discussion Utilisateur']
+        self.namespaces[2]['fr'] = [u'Utilisateur']
+        self.namespaces[15]['bn'] = [u'বিষয়শ্রেণী আলোচনা']
+        self.namespaces[14]['bn'] = [u'বিষয়শ্রেণী']
+        self.namespaces[3]['de'] = [u'Benutzer Diskussion', u'Benutzerin Diskussion']
+        self.namespaces[13]['de'] = [u'Hilfe Diskussion']
+        self.namespaces[12]['de'] = [u'Hilfe']
+        self.namespaces[9]['da'] = [u'MediaWiki diskussion', u'MediaWiki-diskussion']
+        self.namespaces[13]['da'] = [u'Hjælp diskussion', u'Hjælp-diskussion']
+        self.namespaces[3]['ro'] = [u'Discuție Utilizator', u'Discuţie Utilizator']
 
         # Most namespaces are inherited from family.Family.
         # Translation used on all wikis for the different namespaces.
@@ -43,22 +64,22 @@ class Family(family.Family):
             'ar': [u'ويكي مصدر', u'وم'],
             'az': u'VikiMənbə',
             'bg': u'Уикиизточник',
-            'bn': u'উইকিসংকলন',
+            'bn': [u'উইকিসংকলন', u'Wikisource'],
             'br': u'Wikimammenn',
-            'bs': u'Wikizvor',
+            'bs': [u'Wikizvor', u'Wikisource'],
             'ca': u'Viquitexts',
-            'cs': [u'Wikizdroje', u'WS', u'WZ'],
-            'cy': u'Wicitestun',
+            'cs': [u'Wikizdroje', u'WS', u'WZ', u'Wikisource'],
+            'cy': [u'Wicitestun', u'Wikisource'],
             'da': u'Wikisource',
             'de': [u'Wikisource', u'WS'],
             'el': u'Βικιθήκη',
             'en': u'Wikisource',
-            'eo': u'Vikifontaro',
+            'eo': [u'Vikifontaro', u'Wikisource'],
             'es': u'Wikisource',
             'et': u'Vikitekstid',
             'fa': u'ویکی‌نبشته',
-            'fi': u'Wikiaineisto',
-            'fo': u'Wikiheimild',
+            'fi': [u'Wikiaineisto', u'Wikisource'],
+            'fo': [u'Wikiheimild', u'Wikisource'],
             'fr': u'Wikisource',
             'gl': u'Wikisource',
             'he': u'ויקיטקסט',
@@ -67,14 +88,14 @@ class Family(family.Family):
             'hu': u'Wikiforrás',
             'hy': u'Վիքիդարան',
             'id': u'Wikisource',
-            'is': u'Wikiheimild',
+            'is': [u'Wikiheimild', u'Wikisource'],
             'it': u'Wikisource',
             'ja': u'Wikisource',
             'kn': u'Wikisource',
-            'ko': u'위키문헌',
-            'la': u'Vicifons',
-            'li': u'Wikibrónne',
-            'lt': u'Vikišaltiniai',
+            'ko': [u'위키문헌', u'Wikisource'],
+            'la': [u'Vicifons', u'Wikisource'],
+            'li': [u'Wikibrónne', u'Wikisource'],
+            'lt': [u'Vikišaltiniai', u'Wikisource'],
             'mk': u'Wikisource',
             'ml': u'വിക്കിഗ്രന്ഥശാല',
             'nb': u'Wikikilden',
@@ -85,14 +106,14 @@ class Family(family.Family):
             'ro': u'Wikisource',
             'ru': u'Викитека',
             'sa': u'Wikisource',
-            'sah': u'Бикитиэкэ',
+            'sah': [u'Бикитиэкэ', u'Wikisource'],
             'sk': u'Wikisource',
             'sl': u'Wikivir',
-            'sr': u'Викизворник',
+            'sr': [u'Викизворник', u'Wikisource'],
             'sv': u'Wikisource',
             'ta': [u'Wikisource', u'விக்கிபீடியா'],
             'te': u'Wikisource',
-            'th': u'วิกิซอร์ซ',
+            'th': [u'วิกิซอร์ซ', u'Wikisource'],
             'tr': u'VikiKaynak',
             'uk': [u'Wikisource', u'ВД'],
             'vec': u'Wikisource',
@@ -112,7 +133,7 @@ class Family(family.Family):
             'br': u'Kaozeadenn Wikimammenn',
             'bs': u'Razgovor s Wikizvor',
             'ca': u'Viquitexts Discussió',
-            'cs': [u'Diskuse k Wikizdrojům', u'Wikisource diskuse', u'Wikizdroje diskuse'],
+            'cs': [u'Diskuse k Wikizdrojům', u'Wikisource diskuse', u'Wikisource talk', u'Wikizdroje diskuse'],
             'cy': u'Sgwrs Wicitestun',
             'da': [u'Wikisource diskussion', u'Wikisource-diskussion'],
             'de': u'Wikisource Diskussion',
@@ -136,7 +157,7 @@ class Family(family.Family):
             'it': u'Discussioni Wikisource',
             'ja': [u'Wikisource・トーク', u'Wikisource‐ノート'],
             'kn': u'Wikisource ಚರ್ಚೆ',
-            'ko': u'위키문헌토론',
+            'ko': [u'위키문헌토론', u'Wikisource talk'],
             'la': u'Disputatio Vicifontis',
             'li': u'Euverlèk Wikibrónne',
             'lt': u'Vikišaltiniai aptarimas',
@@ -315,7 +336,7 @@ class Family(family.Family):
             'da': u'Side',
             'de': u'Index',
             'eo': u'Paĝo',
-            'es': [u'Índice', u'Index'],
+            'es': u'Índice',
             'et': [u'Register', u'Index'],
             'fa': [u'برگه', u'Page'],
             'he': u'עמוד',
@@ -346,7 +367,7 @@ class Family(family.Family):
             'da': u'Sidediskussion',
             'de': [u'Index Diskussion', u'Index talk'],
             'eo': u'Paĝo-Diskuto',
-            'es': [u'Índice Discusión', u'Index talk'],
+            'es': u'Índice Discusión',
             'et': [u'Registri arutelu', u'Index talk'],
             'fa': u'گفتگوی برگه',
             'fr': u'Discussion Page',

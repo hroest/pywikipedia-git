@@ -25,6 +25,35 @@ class Family(family.Family):
         else:
             self.langs = dict([(lang, '%s.wikiquote.org' % lang) for lang in self.languages_by_size])
 
+        # Override defaults
+        self.namespaces[3]['fr'] = [u'Discussion utilisateur', u'Discussion Utilisateur']
+        self.namespaces[2]['fr'] = [u'Utilisateur']
+        self.namespaces[12]['nl'] = [u'Help']
+        self.namespaces[3]['pt'] = [u'Utilizador Discussão', u'Usuário Discussão', u'Utilizadora Discussão']
+        self.namespaces[2]['pt'] = [u'Utilizador', u'Usuário', u'Utilizadora']
+        self.namespaces[3]['ca'] = [u'Usuari Discussió']
+        self.namespaces[2]['ca'] = [u'Usuari']
+        self.namespaces[13]['de'] = [u'Hilfe Diskussion']
+        self.namespaces[12]['de'] = [u'Hilfe']
+        self.namespaces[13]['da'] = [u'Hjælp diskussion', u'Hjælp-diskussion']
+        self.namespaces[9]['da'] = [u'MediaWiki diskussion', u'MediaWiki-diskussion']
+        self.namespaces[11]['hi'] = [u'साँचा वार्ता']
+        self.namespaces[10]['hi'] = [u'साँचा']
+        self.namespaces[15]['hi'] = [u'श्रेणी वार्ता']
+        self.namespaces[14]['hi'] = [u'श्रेणी']
+        self.namespaces[3]['hi'] = [u'सदस्य वार्ता']
+        self.namespaces[2]['hi'] = [u'सदस्य']
+        self.namespaces[9]['hi'] = [u'मीडियाविकि वार्ता']
+        self.namespaces[8]['hi'] = [u'मीडियाविकि']
+        self.namespaces[3]['cs'] = [u'Diskuse s uživatelem', u'Diskuse s uživatelkou', u'Uživatel diskuse', u'Uživatelka diskuse']
+        self.namespaces[2]['cs'] = [u'Uživatel', u'Uživatelka']
+        self.namespaces[10]['zh'] = [u'Template', u'模板', u'样板', u'樣板']
+        self.namespaces[12]['zh'] = [u'Help', u'帮助', u'幫助']
+        self.namespaces[14]['zh'] = [u'Category', u'分类', u'分類']
+        self.namespaces[3]['ro'] = [u'Discuție Utilizator', u'Discuţie Utilizator']
+        self.namespaces[3]['pl'] = [u'Dyskusja użytkownika', u'Dyskusja użytkowniczki']
+        self.namespaces[2]['pl'] = [u'Użytkownik', u'Użytkowniczka']
+
         # Most namespaces are inherited from family.Family.
         # Translation used on all wikis for the different namespaces.
         # (Please sort languages alphabetically)
@@ -34,71 +63,71 @@ class Family(family.Family):
             'af': u'Wikiquote',
             'am': u'Wikiquote',
             'ang': u'Wikiquote',
-            'ar': u'ويكي الاقتباس',
-            'az': u'Vikisitat',
+            'ar': [u'ويكي الاقتباس', u'Wikiquote'],
+            'az': [u'Vikisitat', u'Wikiquote'],
             'be': u'Wikiquote',
-            'bg': u'Уикицитат',
-            'br': u'Wikiarroud',
-            'bs': u'Wikicitati',
-            'ca': u'Viquidites',
+            'bg': [u'Уикицитат', u'Wikiquote'],
+            'br': [u'Wikiarroud', u'Wikiquote'],
+            'bs': [u'Wikicitati', u'Wikiquote'],
+            'ca': [u'Viquidites', u'Wikiquote'],
             'co': u'Wikiquote',
-            'cs': [u'Wikicitáty', u'WC', u'WQ'],
+            'cs': [u'Wikicitáty', u'WC', u'WQ', u'Wikiquote'],
             'cy': u'Wikiquote',
             'da': u'Wikiquote',
             'de': [u'Wikiquote', u'WQ'],
-            'el': u'Βικιφθέγματα',
+            'el': [u'Βικιφθέγματα', u'Wikiquote'],
             'en': u'Wikiquote',
-            'eo': u'Vikicitaro',
+            'eo': [u'Vikicitaro', u'Wikiquote'],
             'es': u'Wikiquote',
-            'et': u'Vikitsitaadid',
+            'et': [u'Vikitsitaadid', u'Wikiquote'],
             'eu': u'Wikiquote',
-            'fa': u'ویکی‌گفتاورد',
-            'fi': u'Wikisitaatit',
+            'fa': [u'ویکی‌گفتاورد', u'Wikiquote'],
+            'fi': [u'Wikisitaatit', u'Wikiquote'],
             'fr': u'Wikiquote',
             'ga': u'Vicísliocht',
             'gl': u'Wikiquote',
             'gu': u'Wikiquote',
-            'he': u'ויקיציטוט',
+            'he': [u'ויקיציטוט', u'Wikiquote'],
             'hi': u'Wikiquote',
-            'hr': u'Wikicitat',
-            'hu': u'Wikidézet',
-            'hy': u'Վիքիքաղվածք',
+            'hr': [u'Wikicitat', u'Wikiquote'],
+            'hu': [u'Wikidézet', u'Wikiquote'],
+            'hy': [u'Վիքիքաղվածք', u'Wikiquote'],
             'id': u'Wikiquote',
-            'is': u'Wikivitnun',
+            'is': [u'Wikivitnun', u'Wikiquote'],
             'it': u'Wikiquote',
             'ja': u'Wikiquote',
             'ka': [u'ვიკიციტატა', u'Wikiquote'],
             'kk': u'Уикидәйек',
             'kn': u'Wikiquote',
-            'ko': u'위키인용집',
+            'ko': [u'위키인용집', u'Wikiquote'],
             'ku': u'Wikiquote',
             'ky': u'Wikiquote',
-            'la': u'Vicicitatio',
+            'la': [u'Vicicitatio', u'Wikiquote'],
             'lb': u'Wikiquote',
             'li': u'Wikiquote',
             'lt': u'Wikiquote',
-            'ml': u'വിക്കി ചൊല്ലുകൾ',
+            'ml': [u'വിക്കി ചൊല്ലുകൾ', u'Wikiquote'],
             'mr': u'Wikiquote',
             'nl': u'Wikiquote',
             'nn': u'Wikiquote',
             'no': u'Wikiquote',
-            'pl': u'Wikicytaty',
+            'pl': [u'Wikicytaty', u'Wikiquote'],
             'pt': u'Wikiquote',
-            'ro': u'Wikicitat',
+            'ro': [u'Wikicitat', u'Wikiquote'],
             'ru': [u'Викицитатник', u'ВЦ'],
-            'sk': u'Wikicitáty',
-            'sl': u'Wikinavedek',
+            'sk': [u'Wikicitáty', u'Wikiquote'],
+            'sl': [u'Wikinavedek', u'Wikiquote'],
             'sq': u'Wikiquote',
             'sr': u'Wikiquote',
             'su': u'Wikiquote',
             'sv': u'Wikiquote',
             'ta': [u'Wikiquote', u'விக்கிபீடியா'],
             'te': u'Wikiquote',
-            'th': u'วิกิคำคม',
-            'tr': u'Vikisöz',
+            'th': [u'วิกิคำคม', u'Wikiquote'],
+            'tr': [u'Vikisöz', u'Wikiquote'],
             'uk': [u'Вікіцитати', u'ВЦ'],
-            'ur': u'وکی اقتباسات',
-            'uz': u'Vikiiqtibos',
+            'ur': [u'وکی اقتباسات', u'Wikiquote'],
+            'uz': [u'Vikiiqtibos', u'Wikiquote'],
             'vi': u'Wikiquote',
             'wo': u'Wikiquote',
             'zh': u'Wikiquote',
@@ -113,7 +142,7 @@ class Family(family.Family):
             'ang': u'Wikiquote talk',
             'ar': u'نقاش ويكي الاقتباس',
             'ast': u'Wikiquote alderique',
-            'az': u'Vikisitat müzakirəsi',
+            'az': [u'Vikisitat müzakirəsi', u'Wikiquote talk'],
             'be': u'Wikiquote размовы',
             'bg': u'Уикицитат беседа',
             'bm': u'Discussion Wikiquote',
@@ -121,7 +150,7 @@ class Family(family.Family):
             'bs': u'Razgovor s Wikicitatima',
             'ca': u'Viquidites Discussió',
             'co': u'Wikiquote talk',
-            'cs': [u'Diskuse k Wikicitátům', u'Wikiquote diskuse', u'Wikicitáty diskuse'],
+            'cs': [u'Diskuse k Wikicitátům', u'Wikiquote diskuse', u'Wikiquote talk', u'Wikicitáty diskuse'],
             'cy': u'Sgwrs Wikiquote',
             'da': [u'Wikiquote diskussion', u'Wikiquote-diskussion'],
             'de': u'Wikiquote Diskussion',
