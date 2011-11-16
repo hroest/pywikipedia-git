@@ -1217,7 +1217,8 @@ class main:
         if self.site.lang == 'commons':
             no_licenses_to_skip = catlib.categoryAllPageObjectsAPI('Category:License-related tags')
             for license_given in no_licenses_to_skip:
-                list_licenses.remove(license_given)
+                if license_given in list_licenses:
+                    list_licenses.remove(license_given)
         pywikibot.output('') # blank line
 
         # Add the licenses set in the default page as licenses
