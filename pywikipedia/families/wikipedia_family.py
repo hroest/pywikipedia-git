@@ -45,40 +45,6 @@ class Family(family.Family):
         else:
             self.langs = dict([(lang, '%s.wikipedia.org' % lang) for lang in self.languages_by_size])
 
-        # Override defaults
-        self.namespaces[14]['bn'] = [u'বিষয়শ্রেণী', u'വിഭാഗം']
-        self.namespaces[15]['bn'] = [u'বিষয়শ্রেণী আলোচনা', u'വിഭാഗത്തിന്റെ സംവാദം']
-        self.namespaces[2]['ca'] = [u'Usuari', u'Usuària']
-        self.namespaces[3]['ca'] = [u'Usuari Discussió', u'Usuària discussió']
-        self.namespaces[2]['cs'] = [u'Wikipedista', u'Uživatel', u'Wikipedistka', u'Uživatelka']
-        self.namespaces[12]['de'] = [u'Hilfe', u'H']
-        self.namespaces[13]['de'] = [u'Hilfe Diskussion', u'HD']
-        self.namespaces[2]['fr'] = [u'Utilisateur', u'Utilisatrice']
-        self.namespaces[2]['hi'] = [u'सदस्य', u'U', u'स', u'सवा']
-        self.namespaces[3]['hi'] = [u'सदस्य वार्ता', u'UT']
-        self.namespaces[8]['hi'] = [u'मीडियाविकि', u'मी']
-        self.namespaces[9]['hi'] = [u'मीडियाविकि वार्ता', u'मीवा']
-        self.namespaces[10]['hi'] = [u'साँचा', u'सा', u'T']
-        self.namespaces[11]['hi'] = [u'साँचा वार्ता', u'सावा']
-        self.namespaces[14]['hi'] = [u'श्रेणी', u'श्र', u'C']
-        self.namespaces[15]['hi'] = [u'श्रेणी वार्ता', u'श्रवा', u'CT']
-        self.namespaces[1]['ja'] = [u'ノート', u'トーク']
-        self.namespaces[3]['ja'] = [u'利用者‐会話', u'利用者・トーク']
-        self.namespaces[7]['ja'] = [u'ファイル‐ノート', u'ファイル・トーク']
-        self.namespaces[9]['ja'] = [u'MediaWiki‐ノート', u'MediaWiki・トーク']
-        self.namespaces[10]['ja'] = [u'Template', u'テンプレート']
-        self.namespaces[11]['ja'] = [u'Template‐ノート', u'テンプレート・トーク']
-        self.namespaces[12]['ja'] = [u'Help', u'ヘルプ']
-        self.namespaces[13]['ja'] = [u'Help‐ノート', u'ヘルプ・トーク']
-        self.namespaces[14]['ja'] = [u'Category', u'カテゴリ']
-        self.namespaces[15]['ja'] = [u'Category‐ノート', u'カテゴリ・トーク']
-        self.namespaces[12]['nl'] = [u'Help', u'H']
-        self.namespaces[2]['pl'] = [u'Wikipedysta', u'Wikipedystka']
-        self.namespaces[2]['pt'] = [u'Usuário', u'Utilizador', u'Utilizadora']
-        self.namespaces[3]['pt'] = [u'Usuário Discussão', u'Utilizador Discussão', u'Utilizadora Discussão']
-        self.namespaces[2]['stq'] = [u'Benutser', u'Benutserske']
-        self.namespaces[3]['stq'] =  [u'Benutser Diskussion', u'Benutserske Diskussion']
-
         # Most namespaces are inherited from family.Family.
         # Translation used on all wikis for the different namespaces.
         # (Please sort languages alphabetically)
@@ -282,7 +248,7 @@ class Family(family.Family):
             'rm': u'Wikipedia',
             'rmy': u'Vikipidiya',
             'rn': u'Wikipedia',
-            'ro': u'Wikipedia',
+            'ro': [u'Wikipedia', u'Discuţie Wikiştiri'],
             'roa-rup': u'Wikipedia',
             'roa-tara': u'Wikipedia',
             'ru': [u'Википедия', u'ВП'],
