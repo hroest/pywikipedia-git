@@ -133,7 +133,7 @@ class Family(family.Family):
             'crh': u'Vikipediya',
             'cs': [u'Wikipedie', u'WP'],
             'csb': u'Wiki',
-            'cu': [u'Википєдїꙗ', Википє́дїꙗ],
+            'cu': [u'Википєдїꙗ', u'Википє́дїꙗ'],
             'cv': u'Википеди',
             'cy': u'Wicipedia',
             'da': [u'Wikipedia', u'WP'],
