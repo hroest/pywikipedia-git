@@ -20,6 +20,7 @@ class Family(family.Family):
         else:
             self.langs = dict([(lang, '%s.wikiversity.org' % lang) for lang in self.languages_by_size])
 
+        # Override defaults
 
         # Most namespaces are inherited from family.Family.
         # Translation used on all wikis for the different namespaces.
@@ -29,24 +30,24 @@ class Family(family.Family):
             '_default': self.namespaces[4]['_default'],
             'ar': [u'ويكي الجامعة', u'وج'],
             'beta': u'Wikiversity',
-            'cs': [u'Wikiverzita', u'WV'],
+            'cs': [u'Wikiverzita', u'WV', u'Wikiversity'],
             'de': u'Wikiversity',
-            'el': u'Βικιεπιστήμιο',
+            'el': [u'Βικιεπιστήμιο', u'Wikiversity'],
             'en': [u'Wikiversity', u'WV'],
-            'es': u'Wikiversidad',
-            'fi': u'Wikiopisto',
-            'fr': u'Wikiversité',
-            'it': u'Wikiversità',
+            'es': [u'Wikiversidad', u'Wikiversity'],
+            'fi': [u'Wikiopisto', u'Wikiversity'],
+            'fr': [u'Wikiversité', u'Wikiversity'],
+            'it': [u'Wikiversità', u'Wikiversity'],
             'ja': u'Wikiversity',
-            'pt': u'Wikiversidade',
-            'ru': u'Викиверситет',
+            'pt': [u'Wikiversidade', u'Wikiversity'],
+            'ru': [u'Викиверситет', u'Wikiversity'],
             'sv': u'Wikiversity',
         }
         self.namespaces[5] = {
             '_default': self.namespaces[5]['_default'],
             'ar': u'نقاش ويكي الجامعة',
             'beta': u'Wikiversity talk',
-            'cs': [u'Diskuse k Wikiverzitě', u'Wikiversity diskuse', u'Wikiverzita diskuse'],
+            'cs': [u'Diskuse k Wikiverzitě', u'Wikiversity diskuse', u'Wikiversity talk', u'Wikiverzita diskuse'],
             'de': u'Wikiversity Diskussion',
             'el': u'Συζήτηση Βικιεπιστημίου',
             'en': u'Wikiversity talk',
@@ -54,7 +55,7 @@ class Family(family.Family):
             'fi': u'Keskustelu Wikiopistosta',
             'fr': u'Discussion Wikiversité',
             'it': u'Discussioni Wikiversità',
-            'ja': [u'Wikiversity・トーク', u'Wikiversity‐ノート'],
+            'ja': [u'Wikiversity・トーク', u'Wikiversity talk', u'Wikiversity‐ノート'],
             'pt': u'Wikiversidade Discussão',
             'ru': u'Обсуждение Викиверситета',
             'sv': u'Wikiversitydiskussion',
