@@ -22,9 +22,79 @@ from nowcommons import nowCommons
 from pywikibot import i18n
 
 
+skips = {}
+skips['wikipedia'] = {}
+skips['wikipedia']['en'] = [u'NowCommons',
+			    u'CommonsNow',
+			    u'Nowcommons',
+			    u'NowCommonsThis',
+			    u'Nowcommons2',
+			    u'NCT',
+			    u'Nowcommonsthis',
+			    u'Moved to commons',
+			    u'Now Commons',
+			    u'Now at commons',
+			    u'Db-nowcommons',
+			    u'WikimediaCommons',
+			    u'Now commons',
+			    u'Do not move to Commons',
+			    u'KeepLocal',
+			    u'Keeplocal',
+			    u'NoCommons',
+			    u'Nocommons',
+			    u'NotMovedToCommons',
+			    u'Nmtc',
+			    u'Not moved to Commons',
+			    u'Notmovedtocommons',
+			    ]
+skips['wikipedia']['fy'] = [u'NowCommons',
+			    u'Nowcommons',
+			    ]
+skips['_default'] = [u'NowCommons']
+
+
+
 class NoEnoughData(pywikibot.Error):
     """ Error class for when the user doesn't specified all the data needed """
 
+
+def tagNowCommons(page):
+    
+    imagepage = pywikibot.ImagePage(page.site(), page.title())
+    site = page.site()
+    language = site.language()
+    family = site.family.name
+    
+    if not imagepage.fileIsOnCommons():
+
+        if skips.get(family) and skips.get(family).get(language):
+            localskips = skips.get(family).get(language)
+        else:
+            localskips = skips.get('_default')
+            
+        for template in imagepage.templates():
+            #FIXME: Move the templates list to a lib.
+            if template in localskips:
+                pywikibot.output(u'The file %s is already tagged with NowCommons' % imagepage.title())
+                return
+
+        imagehash = imagepage.getHash()
+        commons = pywikibot.getSite(u'commons', u'commons')
+        duplicates = commons.getFilesFromAnHash(imagehash)
+        if duplicates:
+            duplicate = duplicates.pop()
+            pywikibot.output(u'Found duplicate image at %s' % duplicate)
+            comment = i18n.twtranslate(imagepage.site(),
+                                       'commons-file-now-available',
+                                       {'localfile': imagepage.title(withNamespace=False),
+                                        'commonsfile': duplicate})
+            template = pywikibot.translate(imagepage.site(), nowCommonsTemplate)
+            newtext = imagepage.get() + template % (duplicate,)
+            pywikibot.showDiff(imagepage.get(), newtext)
+            try:
+                imagepage.put(newtext, comment)
+            except wikipedia.LockedPage:
+                return
 
 def main(args):
     generator = None;
@@ -46,29 +116,7 @@ def main(args):
     for page in pregenerator:
         if page.exists() and (page.namespace() == 6) and \
             (not page.isRedirectPage()):
-            imagepage = pywikibot.ImagePage(page.site(), page.title())
-            foundNowCommons = False
-            for template in imagepage.templates():
-                #FIXME: Move the templates list to a lib.
-                if template in pywikibot.translate(imagepage.site(), nowCommons):
-                    foundNowCommons = True
-            if foundNowCommons:
-                pywikibot.output(u'The file %s is already tagged with NowCommons' % imagepage.title())
-            else:
-                imagehash = imagepage.getHash()
-                commons = pywikibot.getSite(u'commons', u'commons')
-                duplicates = commons.getFilesFromAnHash(imagehash)
-                if duplicates:
-                    duplicate = duplicates.pop()
-                    pywikibot.output(u'Found duplicate image at %s' % duplicate)
-                    comment = i18n.twtranslate(imagepage.site(),
-                                               'commons-file-now-available',
-                                               {'localfile': imagepage.title(withNamespace=False),
-                                                'commonsfile': duplicate})
-                    template = pywikibot.translate(imagepage.site(), nowCommonsTemplate)
-                    newtext = imagepage.get() + template % (duplicate,)
-                    pywikibot.showDiff(imagepage.get(), newtext)
-                    imagepage.put(newtext, comment)
+            tagNowCommons(page)
 
 
 if __name__ == "__main__":
