@@ -161,7 +161,7 @@ def getFilename(photoInfo=None, site=pywikibot.getSite(u'commons', u'commons'),
             else:
                 title = description
         else:
-            title = u'
+            title = u''
             # Should probably have the id of the photo as last resort.
         
 
