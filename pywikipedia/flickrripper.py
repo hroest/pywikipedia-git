@@ -155,11 +155,9 @@ def getFilename(photoInfo=None, site=pywikibot.getSite(u'commons', u'commons'),
     if title == u'':
         description = photoInfo.find('photo').find('description').text
         if description:
-            description =  cleanUpTitle(description)
             if len(description)>120:
-                title = description[0 : 120]
-            else:
-                title = description
+                description = description[0 : 120]
+            title =  cleanUpTitle(description)
         else:
             title = u''
             # Should probably have the id of the photo as last resort.
