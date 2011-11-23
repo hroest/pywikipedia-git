@@ -152,6 +152,19 @@ def getFilename(photoInfo=None, site=pywikibot.getSite(u'commons', u'commons'),
     else:
         title = u''
 
+    if title == u'':
+        description = photoInfo.find('photo').find('description').text
+        if description:
+            description =  cleanUpTitle(description)
+            if len(description)>120:
+                title = description[0 : 120]
+            else:
+                title = description
+        else:
+            title = u'
+            # Should probably have the id of the photo as last resort.
+        
+
     if pywikibot.Page(site, u'File:%s - %s - %s.jpg'
                       % (title, project, username) ).exists():
         i = 1
