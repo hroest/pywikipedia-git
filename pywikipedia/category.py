@@ -657,7 +657,15 @@ class CategoryTidyRobot:
                                                'category-replacing',
                                                {'oldcat': original_cat.title(withNamespace=False),
                                                 'newcat': newcat})
-                    catlib.change_category(article, original_cat, current_cat, comment = editsum)
+                    if pywikibot.getSite().family.name == "commons":
+                        if original_cat.title(withNamespace=False).startswith("Media needing categories as of"):
+                            parts = original_cat.title().split()
+                            catstring = u"{{Uncategorized|year=%s|month=%s|day=%s}}"%(parts[-1], parts[-2], parts[-3])
+                            if catstring in article.get():
+                                article.put(article.get().replace(catstring, u"[[%s]]"%current_cat.title(savetitle=True)), comment = editsum)
+                                flag = True
+                    if not flag:
+                        catlib.change_category(article, original_cat, current_cat, comment = editsum)
                 flag = True
             elif choice in ['j', 'J']:
                 newCatTitle = pywikibot.input(u'Please enter the category the article should be moved to:')
