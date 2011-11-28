@@ -47,7 +47,7 @@ Furthermore, the following command line parameters are supported:
 
 -excepttitle:XYZ  Skip pages with titles that contain XYZ. If the -regex
                   argument is given, XYZ will be regarded as a regular
-                  expression.
+                  expression. Use multiple times to ignore multiple pages.
 
 -requiretitle:XYZ Only do pages with titles that contain XYZ. If the -regex
                   argument is given, XYZ will be regarded as a regular
