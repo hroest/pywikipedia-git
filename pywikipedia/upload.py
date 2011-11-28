@@ -312,6 +312,7 @@ u"WARNING: No check length to retrieved data is possible.")
                                                ['Yes', 'No'], ['y', 'N'], 'N')
                 if answer == "y":
                     self.ignoreWarning = 1
+                    self.useFilename = filename
                     self.keepFilename = True
                     return self.upload_image(debug,
                                              sessionKey=data['sessionkey'])
