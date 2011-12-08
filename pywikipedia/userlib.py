@@ -275,7 +275,7 @@ class User(object):
             'list': 'usercontribs',
             'ucuser': self.name(),
             'ucprop': ['ids','title','timestamp','comment'],# 'size','flags'],
-            'uclimit': int(limit),
+            'uclimit': limit,
             'ucdir': 'older',
         }
         if limit > pywikibot.config.special_page_limit:
@@ -288,7 +288,7 @@ class User(object):
         # keeping track of titles
         nbresults = 0
         while True:
-            pywikibot.output(u'Retrieving %d user contributions from %s...'
+            pywikibot.output(u'Retrieving %s user contributions from %s...'
                              % (params['uclimit'], self.site()))
             result = query.GetData(params, self.site())
             if 'error' in result:
