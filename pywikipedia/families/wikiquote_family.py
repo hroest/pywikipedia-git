@@ -99,7 +99,7 @@ class Family(family.Family):
             'ka': [u'ვიკიციტატა', u'Wikiquote'],
             'kk': u'Уикидәйек',
             'kn': u'Wikiquote',
-            'ko': [u'위키인용집', u'Wikiquote'],
+            'ko': [u'위키인용집', u'인'],
             'ku': u'Wikiquote',
             'ky': u'Wikiquote',
             'la': [u'Vicicitatio', u'Wikiquote'],
