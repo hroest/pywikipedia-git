@@ -172,7 +172,7 @@ class Family(family.Family):
             'kl': u'Wikipedia',
             'km': u'វិគីភីឌា',
             'kn': [u'ವಿಕಿಪೀಡಿಯ', u'Wikipedia'],
-            'ko': [u'위키백과', u'백', u'인'],
+            'ko': [u'위키백과', u'백'],
             'koi': u'Википедия',
             'krc': u'Википедия',
             'ks': u'Wikipedia',
