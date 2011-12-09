@@ -4643,7 +4643,7 @@ def html2unicode(text, ignore = []):
     # This regular expression will match any decimal and hexadecimal entity and
     # also entities that might be named entities.
     entityR = re.compile(
-        r'&(#(?P<decimal>\d+)|#x(?P<hex>[0-9a-fA-F]+)|(?P<name>[A-Za-z]+));')
+        r'&(?:amp;)?(#(?P<decimal>\d+)|#x(?P<hex>[0-9a-fA-F]+)|(?P<name>[A-Za-z]+));')
     # These characters are Html-illegal, but sadly you *can* find some of
     # these and converting them to unichr(decimal) is unsuitable
     convertIllegalHtmlEntities = {
