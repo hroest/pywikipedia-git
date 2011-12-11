@@ -345,6 +345,7 @@ class Family(family.Family):
         }
 
         self.namespaces[104] = {
+            'az': u'Vikikitab',
             'he': u'מדף',
             'ka': u'თარო',
             'nl': u'Wikijunior',
@@ -354,6 +355,7 @@ class Family(family.Family):
         }
 
         self.namespaces[105] = {
+            'az': u'Vikikitab müzakirəsi',
             'he': u'שיחת מדף',
             'ka': u'თარო განხილვა',
             'nl': u'Overleg Wikijunior',
