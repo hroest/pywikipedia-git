@@ -45,6 +45,17 @@ class Family(family.Family):
         else:
             self.langs = dict([(lang, '%s.wikipedia.org' % lang) for lang in self.languages_by_size])
 
+        # Override defaults
+        self.namespaces[1]['ja'] = [u'ノート', u'トーク']
+        self.namespaces[7]['ja'] = [u'ファイル‐ノート', u'ファイル・トーク', u'Image talk', u'画像‐ノート']
+        self.namespaces[9]['ja'] = [u'MediaWiki‐ノート', u'MediaWiki・トーク']
+        self.namespaces[10]['ja'] = [u'Template', u'テンプレート']
+        self.namespaces[11]['ja'] = [u'Template‐ノート', u'テンプレート・トーク']
+        self.namespaces[12]['ja'] = [u'Help', u'ヘルプ']
+        self.namespaces[13]['ja'] = [u'Help‐ノート', u'ヘルプ・トーク']
+        self.namespaces[14]['ja'] = [u'Category', u'カテゴリ']
+        self.namespaces[15]['ja'] = [u'Category‐ノート', u'カテゴリ・トーク']
+
         # Most namespaces are inherited from family.Family.
         # Translation used on all wikis for the different namespaces.
         # (Please sort languages alphabetically)
