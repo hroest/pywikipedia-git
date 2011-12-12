@@ -324,12 +324,15 @@ class CosmeticChangesToolkit:
                 continue
             namespaces = list(self.site.namespace(nsNumber, all = True))
             thisNs = namespaces.pop(0)
-            if nsNumber == 6 and family.name == 'wikipedia' and \
-               self.site.lang in ('en', 'fr'):
-                # do not change "Image" on en-wiki and fr-wiki
-                for image in [u'Image', u'image']:
-                    if image in namespaces:
-                        namespaces.remove(image)
+            if nsNumber == 6 and family.name == 'wikipedia'
+                if self.site.lang in ('en', 'fr'):
+                    # do not change "Image" on en-wiki and fr-wiki
+                    for image in [u'Image', u'image']:
+                        if image in namespaces:
+                            namespaces.remove(image)
+                elif self.site.lang == 'pt':
+                    # bug #3346901 should be implemented
+                    continue
             # skip main (article) namespace
             if thisNs and namespaces:
                 text = pywikibot.replaceExcept(
