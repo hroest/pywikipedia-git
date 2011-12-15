@@ -696,7 +696,7 @@ not supported by PyWikipediaBot!"""
                     self._expandcontents = contents
                 else:
                     self._contents = contents
-                hn = self.section()
+                hn = re.escape(self.section())
                 if hn:
                     m = re.search("=+[ ']*%s[ ']*=+" % hn, self._contents)
                     if verbose and not m:
