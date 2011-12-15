@@ -696,9 +696,10 @@ not supported by PyWikipediaBot!"""
                     self._expandcontents = contents
                 else:
                     self._contents = contents
-                hn = re.escape(self.section())
+                hn = self.section()
                 if hn:
-                    m = re.search("=+[ ']*%s[ ']*=+" % hn, self._contents)
+                    m = re.search("=+[ ']*%s[ ']*=+" % re.escape(hn),
+                                  self._contents)
                     if verbose and not m:
                         output(u"WARNING: Section does not exist: %s" % self)
             # Store any exceptions for later reference
