@@ -16,37 +16,21 @@ options -file, -ref, -links, ...
 #
 # This script based on disambredir.py and solve_disambiguation.py
 #
-# (C) Pywikipedia team, 2004-2010
+# (C) Pywikipedia team, 2004-2011
 #
 # Distributed under the terms of the MIT license.
 #
 __version__='$Id$'
 #
+import re, sys
 import wikipedia as pywikibot
 import pagegenerators
-import re, sys
+from pywikibot import i18n
 
 # This is required for the text that is shown when you run this script
 # with the parameter -help.
 docuReplacements = {
     '&params;':     pagegenerators.parameterHelp,
-}
-
-msg = {
-    'ar': u'بوت: إصلاح التحويلات',
-    'cs': u'Robot opravil přesměrování',
-    'en': u'Bot: Fixing redirects',
-    'fa': u'ربات:تصحیح تغییرمسیرها',
-    'he': u'בוט: מתקן הפניות',
-    'is': u'Robot: Laga tilvísanir',
-    'ja': u'ロボットによる:リダイレクト回避',
-    'nn': u'robot: retta omdirigeringar',
-    'no': u'Robot: Retter omdirigeringer',
-    'pl': u'Bot: naprawa przekierowań',
-    'pt': u'Bot: Arrumando redirects',
-    'sv': u'Bot: Rättar omdirigeringar',
-    'vi': u'Robot: Sửa đổi hướng',
-    'zh': u'機器人: 修復重定向',
 }
 
 featured_articles = {
@@ -191,7 +175,7 @@ def workon(page):
             continue
         text = treat(text, page2, target)
     if text != page.get():
-        comment = pywikibot.translate(mysite, msg)
+        comment = i18n.twtranslate(mysite, 'fixing_redirects-fixing')
         pywikibot.showDiff(page.get() ,text)
         try:
             page.put(text, comment)
