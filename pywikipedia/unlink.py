@@ -28,22 +28,7 @@ import re
 import wikipedia as pywikibot
 import pagegenerators
 import editarticle
-
-# Summary messages in different languages
-msg = {
-          'ar':u'روبوت: إزالة وصلات "%s"',
-          'de':u'Bot: Entlinke "%s"',
-          'en':u'Robot: Unlinking "%s"',
-          'fa':u'ربات: حذف پیوند %s',
-          'fr':u'Robot: Retire le lien "%s"',
-          'fi':u'Botti poisti linkin sivulle "%s"',
-          'he':u'בוט: מסיר קישורים לדף "%s"',
-          'nn':u'robot: fjerna lenkje til "%s"',
-          'no':u'robot: fjerner lenke til "%s"',
-          'nl':u'Bot: verwijzing naar "%s" verwijderd',
-          'pl':u'Robot odlinkowuje "%s"',
-          'pt':u'Bot: Retirando link para "%s"',
-       }
+from pywikibot import i18n
 
 
 class UnlinkBot:
@@ -64,8 +49,8 @@ class UnlinkBot:
         self.linkR = re.compile(r'\[\[(?P<title>[^\]\|#]*)(?P<section>#[^\]\|]*)?(\|(?P<label>[^\]]*))?\]\](?P<linktrail>' + linktrail + ')')
         self.always = always
         self.done = False
-        self.comment = pywikibot.translate(pywikibot.getSite(), msg) \
-                       % self.pageToUnlink.title()
+        self.comment = i18n.twtranslate(pywikibot.getSite(), 'unlink-unlinking',
+                                        self.pageToUnlink.title())
 
     def handleNextLink(self, text, match, context = 100):
         """
