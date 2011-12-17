@@ -29,6 +29,7 @@ msg={
     'fr':u'Bot: Change categories',
     'he':u'בוט: משנה קטגוריות',
     'ia':u'Bot: Alteration de categorias',
+    'is':u'Vélmenni: Breyti flokkum',
     'it':u'Bot: Cambio categorie',
     'ja':u'ロボットによる: カテゴリ変更',
     'lt':u'robotas: Keičiamos kategorijos',
