@@ -99,6 +99,7 @@ skipTemplates = {
            u'Db-f8',
            u'Db-f9',
            u'Db-f10',
+           u'Do not move to Commons',
            u'NowCommons',
            u'CommonsNow',
            u'Nowcommons',
