@@ -194,11 +194,9 @@ class Page(object):
                             section if any
     urlname               : Title, in a form suitable for a URL
     namespace             : The namespace in which the page is found
-    titleWithoutNamespace : Title, with the namespace part removed
     section               : The section of the page (the part of the title
                             after '#', if any)
     sectionFreeTitle      : Title, without the section part
-    aslink                : Title in the form [[Title]] or [[lang:Title]]
     site                  : The wiki this page is in
     encoding              : The encoding of the page
     isAutoTitle           : Title can be translated using the autoFormat method
