@@ -54,6 +54,12 @@ class Family(family.Family):
         self.namespaces[105] = {
             '_default': u'API talk',
         }
+        self.namespaces[1198] = {
+            '_default': u'Translations',
+        }
+        self.namespaces[1199] = {
+            '_default': u'Translations talk',
+        }
         self.cross_projects = [
             'wikipedia', 'wiktionary', 'wikibooks', 'wikiquote', 'wikisource',
             'wikinews', 'wikiversity', 'meta', 'test', 'incubator', 'commons',
