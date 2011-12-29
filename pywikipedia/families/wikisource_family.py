@@ -52,6 +52,7 @@ class Family(family.Family):
         self.namespaces[9]['da'] = [u'MediaWiki diskussion', u'MediaWiki-diskussion']
         self.namespaces[13]['da'] = [u'Hjælp diskussion', u'Hjælp-diskussion']
         self.namespaces[3]['ro'] = [u'Discuție Utilizator', u'Discuţie Utilizator']
+        self.namespaces[9]['ro'] = [u'Discuție MediaWiki', u'Discuţie MediaWiki']
 
         # Most namespaces are inherited from family.Family.
         # Translation used on all wikis for the different namespaces.
@@ -274,7 +275,7 @@ class Family(family.Family):
             'eo': u'Aŭtoro',
             'es': u'Página',
             'et': u'Lehekülg',
-            'fa': u'مؤلف',
+            'fa': [u'پدیدآورنده', u'Autor'],
             'fr': u'Auteur',
             'hr': u'Stranica',
             'hy': u'Պորտալ',
@@ -307,7 +308,7 @@ class Family(family.Family):
             'eo': u'Aŭtoro-Diskuto',
             'es': u'Página Discusión',
             'et': u'Lehekülje arutelu',
-            'fa': u'بحث مؤلف',
+            'fa': [u'گفتگو پدیدآورنده', u'Autor talk'],
             'fr': u'Discussion Auteur',
             'hr': u'Razgovor o stranici',
             'hy': u'Պորտալի քննարկում',

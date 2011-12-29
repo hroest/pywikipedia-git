@@ -68,7 +68,7 @@ class Family(family.Family):
             'no': [u'Wikinytt', u'Wikinews'],
             'pl': u'Wikinews',
             'pt': [u'Wikinotícias', u'Wikinews'],
-            'ro': [u'Wikiștiri', u'Wikinews'],
+            'ro': [u'Wikiștiri', u'Wikiştiri', u'Wikinews'],
             'ru': [u'Викиновости', u'ВикиНовости', u'ВН'],
             'sd': u'Wikinews',
             'sq': [u'Wikilajme', u'WL'],
@@ -104,7 +104,7 @@ class Family(family.Family):
             'no': u'Wikinytt-diskusjon',
             'pl': u'Dyskusja Wikinews',
             'pt': u'Wikinotícias Discussão',
-            'ro': [u'Discuție Wikiștiri', u'Discuţie Wikiștiri'],
+            'ro': [u'Discuție Wikiștiri', u'Discuţie Wikiştiri', u'Discuţie Wikiștiri'],
             'ru': [u'Обсуждение Викиновостей', u'Обсуждение ВикиНовостей'],
             'sd': u'Wikinews بحث',
             'sq': u'Wikilajme diskutim',
@@ -209,10 +209,12 @@ class Family(family.Family):
 
         self.namespaces[104] = {
             'fr': u'Page',
+            'pt': u'Transwiki',
         }
 
         self.namespaces[105] = {
             'fr': u'Discussion Page',
+            'pt': u'Transwiki Discussão',
         }
 
         self.namespaces[106] = {
