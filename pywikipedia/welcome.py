@@ -253,7 +253,7 @@ netext = {
         'ru': u'{{Hello}} %s',
         'sq': u'{{subst:tung}} %s',
         'sr': u'{{Добродошлица}} %s',
-        'vec': u'{{subst:Benvegnù|%s}}'
+        'vec': u'{{subst:Benvegnù|%s}}',
         'vo': u'{{benokömö}} %s',
         'zh': u'{{subst:welcome|sign=%s}}',
         'zh-yue': u'{{歡迎}}--%s',
