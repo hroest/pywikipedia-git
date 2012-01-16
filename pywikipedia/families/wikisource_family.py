@@ -78,7 +78,7 @@ class Family(family.Family):
             'eo': [u'Vikifontaro', u'Wikisource'],
             'es': u'Wikisource',
             'et': u'Vikitekstid',
-            'fa': u'ویکی‌نبشته',
+            'fa': [u'ویکی‌نبشته', u'ون'],
             'fi': [u'Wikiaineisto', u'Wikisource'],
             'fo': [u'Wikiheimild', u'Wikisource'],
             'fr': u'Wikisource',
