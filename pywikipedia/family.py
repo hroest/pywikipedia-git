@@ -960,7 +960,7 @@ class Family:
                 'io': u'Uzanto Debato',
                 'is': u'Notandaspjall',
                 'it': u'Discussioni utente',
-                'ja': [u'利用者‐会話', u'利用者・トーク'],
+                'ja': [u'利用者・トーク', u'利用者‐会話'],
                 'jv': u'Dhiskusi Panganggo',
                 'ka': [u'მომხმარებლის განხილვა', u'მონაწილის განხილვა', u'მომხმარებელი განხილვა'],
                 'kaa': [u'Paydalanıwshı sa\'wbeti', u'Қатысушы талқылауы', u'قاتىسۋشى تالقىلاۋى'],
