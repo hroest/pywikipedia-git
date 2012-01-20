@@ -351,7 +351,7 @@ class Family(family.Family):
             'ar': [u'نقاش ويكيبيديا', u'نو'],
             'arc': u'ܡܡܠܠܐ ܕܘܝܩܝܦܕܝܐ',
             'arz': u'نقاش ويكيبيديا',
-            'as': [u'ৱিকিপিডিয়া বাৰ্তা', u'Wikipedia talk', u'প্ৰকল্প আলোচনা', u'ৱিকিপিডিয়া वार्ता', u'ৱিকিপিডিয়া বার্তা'],
+            'as': [u'ৱিকিপিডিয়া বাৰ্তা', u'Wikipedia talk', u'প্ৰকল্প আলোচনা', u'Wikipedia বার্তা', u'ৱিকিপিডিয়া वार्ता', u'ৱিকিপিডিয়া বার্তা'],
             'ast': [u'Uiquipedia alderique', u'Uiquipedia discusión'],
             'av': u'Обсуждение Wikipedia',
             'ay': u'Wikipidiyan Aruskipäwi',
