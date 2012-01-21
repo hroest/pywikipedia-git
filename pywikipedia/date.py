@@ -1119,14 +1119,12 @@ formats = {
         'cs' :      lambda v: dh_centuryAD( v, u'%d. století' ),
         'da' :      lambda v: dh_centuryAD( v, u'%d. århundrede' ),
         'no' :      lambda v: dh( v, u'%d-tallet', lambda i: (i-1)*100, lambda ii: ii[0]/100+1 ),
-        'ksh':      lambda v: dh_constVal( v, 1, u'Joohunndot' ),
     },
 
     'CenturyBC_Cat':{
         'cs' :      lambda v: dh_centuryBC( v, u'%d. století př. n. l.' ),
         'de' :      lambda v: dh_centuryBC( v, u'Jahr (%d. Jh. v. Chr.)' ),
         'no' :      lambda v: dh( v, u'%d-tallet f.Kr.', lambda i: (i-1)*100, lambda ii: ii[0]/100+1 ),
-        'ksh':      lambda v: dh_constVal( v, 1, u'Joohunndot' ),
     },
 
     'MillenniumAD': {
