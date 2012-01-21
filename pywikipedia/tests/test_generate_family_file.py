@@ -1,3 +1,6 @@
+if __name__ != "__main__":
+    raise Exception("generate_family_file can only be tested using the manual test runner due to monkey patching")
+
 import sys, os
 sys.path.append(os.getcwd())
 
