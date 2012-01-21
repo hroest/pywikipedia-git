@@ -16,7 +16,17 @@ class PyWikiQueryTestCase(tests.test_pywiki.PyWikiTestCase):
 
     def assertEqualQueryResult(self, params, expectedresult):
         data = query.GetData(params, self.site)
-        self.assertEqual(data[u'query'], expectedresult)
+        self.recursiveConfirmKeyValues(expectedresult, data[u'query'])
+
+    def recursiveConfirmKeyValues(self, expected, measured):
+        if isinstance(expected, dict) and isinstance(measured, dict):
+            for key in expected.keys():
+                self.recursiveConfirmKeyValues(expected[key], measured[key])
+        elif isinstance(expected, list) and isinstance(measured, list):
+            for key in range((len(expected))):
+                self.recursiveConfirmKeyValues(expected[key], measured[key])
+        else:
+            self.assertEqual(expected, measured)
 
     def test_basic(self):
         params = {
