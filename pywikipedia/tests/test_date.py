@@ -1,1 +1,5 @@
-from date import test as test_date
+import date
+
+def test_date_formats():
+    for formatName in date.formats.keys():
+        yield date.testMapEntry, formatName, False
