@@ -4081,7 +4081,7 @@ class Family:
         return "%s?title=%s:Categories&limit=%d&useskin=monobook" % (self.path(code), self.special_namespace_url(code), limit)
 
     def unusedfiles_address(self, code, limit=500):
-            return "%s?title=%s:Unusedimages&limit=%d&useskin=monobook" % (self.path(code), self.special_namespace_url(code), limit)
+            return "%s?title=%s:UnusedFiles&limit=%d&useskin=monobook" % (self.path(code), self.special_namespace_url(code), limit)
 
     def deadendpages_address(self, code, limit=500):
         return "%s?title=%s:Deadendpages&limit=%d&useskin=monobook" % (self.path(code), self.special_namespace_url(code), limit)
