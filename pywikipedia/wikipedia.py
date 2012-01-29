@@ -5412,10 +5412,15 @@ sysopnames['%s']['%s']='name' to your user-config.py"""
         contentEncoding = headers.get('content-encoding', '')
 
         # Ensure that all sent data is received
-        if int(headers.get('content-length', '0')) != len(text) and 'content-length' in headers:
-            output(u'Warning! len(text) does not match content-length: %s != %s' % \
-                (len(text), headers.get('content-length')))
-            return self.postData(address, data, contentType, sysop, compress, cookies)
+        # In rare cases we found a douple Content-Length in the header.
+        # We need to split it to get a value
+        content_length = int(headers.get('content-length', '0').split(',')[0])
+        if content_length != len(text) and 'content-length' in headers:
+            output(
+                u'Warning! len(text) does not match content-length: %s != %s'
+                % (len(text), content_length))
+            return self.postData(address, data, contentType, sysop, compress,
+                                 cookies)
 
         if compress and contentEncoding == 'gzip':
             text = decompress_gzip(text)
@@ -5571,10 +5576,13 @@ u"WARNING: Could not open '%s'. Maybe the server or\n your connection is down. R
         # Ensure that all sent data is received
         # In rare cases we found a douple Content-Length in the header.
         # We need to split it to get a value
-        if int(headers.get('content-length', '0').split(',')[0]) != len(text) and 'content-length' in headers:
-            output(u'Warning! len(text) does not match content-length: %s != %s' % \
-                (len(text), headers.get('content-length')))
-            return self.getUrl(path, retry, sysop, data, compress, no_hostname, cookie_only, back_response)
+        content_length = int(headers.get('content-length', '0').split(',')[0])
+        if content_length != len(text) and 'content-length' in headers:
+            output(
+                u'Warning! len(text) does not match content-length: %s != %s'
+                % (len(text), content_length))
+            return self.getUrl(path, retry, sysop, data, compress, no_hostname,
+                               cookie_only, back_response)
 
         if compress and contentEncoding == 'gzip':
             text = decompress_gzip(text)
