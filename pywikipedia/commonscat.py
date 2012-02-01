@@ -45,8 +45,8 @@ TODO:
 
 #
 # (C) Multichill, 2008-2009
-# (C) Xqt, 2009-2011
-# (C) Pywikipedia bot team, 2008-2011
+# (C) Xqt, 2009-2012
+# (C) Pywikipedia bot team, 2008-2012
 #
 # Distributed under the terms of the MIT license.
 #
@@ -106,6 +106,7 @@ commonscatTemplates = {
     'mk' : (u'Ризница-врска', [u'Commonscat', u'Commons cat', u'CommonsCat',
                                u'Commons2', u'Commons category']),
     'ml' : (u'Commonscat', [u'Commons cat', u'Commons2']),
+    'ms' : (u'Kategori Commons', [u'Commonscat', u'Commons category']),
     'nn' : (u'Commonscat', [u'Commons cat']),
     'os' : (u'Commonscat', [u'Commons cat']),
     'pt' : (u'Commonscat', [u'Commons cat']),
@@ -160,6 +161,7 @@ ignoreTemplates = {
     'is' : [u'Systurverkefni', u'Commons'],
     'it' : [(u'Ip', 'commons='), (u'Interprogetto', 'commons=')],
     'ja' : [u'CommonscatS', u'SisterlinksN', u'Interwikicat'],
+    'ms' : [u'Commons', u'Sisterlinks', u'Commons cat show2'],
     'nds-nl' : [u'Commons'],
     'nl' : [u'Commons', u'Commonsklein', u'Commonscatklein', u'Catbeg',
             u'Catsjab', u'Catwiki'],
