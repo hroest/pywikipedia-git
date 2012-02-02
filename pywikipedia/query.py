@@ -25,7 +25,8 @@ This module allow you to use the API in a simple and easy way.
 __version__ = '$Id$'
 #
 
-import wikipedia, time
+import time
+import wikipedia as pywikibot
 try:
     #For Python 2.6 newer
     import json
@@ -42,7 +43,7 @@ def GetData(params, site=None, useAPI=True, retryCount=5, encodeTitle=True,
     """Get data from the query api, and convert it into a data object
     """
     if not site:
-        site = wikipedia.getSite()
+        site = pywikibot.getSite()
     data = {}
     titlecount = 0
 
@@ -72,19 +73,19 @@ def GetData(params, site=None, useAPI=True, retryCount=5, encodeTitle=True,
         for k in data:
             del params[k]
 
-    if wikipedia.verbose: #dump params info.
-        wikipedia.output(u"==== API action:%s ====" % params[u'action'])
+    if pywikibot.verbose: #dump params info.
+        pywikibot.output(u"==== API action:%s ====" % params[u'action'])
         if data and 'file' not in data:
-            wikipedia.output(u"%s: (%d items)" % (data.keys()[0], titlecount))
+            pywikibot.output(u"%s: (%d items)" % (data.keys()[0], titlecount))
 
         for k, v in params.iteritems():
             if k not in ['action', 'format', 'file', 'xml', 'text']:
-                if k == 'lgpassword' and wikipedia.verbose == 1:
+                if k == 'lgpassword' and pywikibot.verbose == 1:
                     v = u'XXXXX'
                 elif not isinstance(v, unicode):
                     v = v.decode('utf-8')
-                wikipedia.output(u"%s: %s" % (k, v) )
-        wikipedia.output(u'-' * 16 )
+                pywikibot.output(u"%s: %s" % (k, v) )
+        pywikibot.output(u'-' * 16 )
 
 
     postAC = [
@@ -104,12 +105,12 @@ def GetData(params, site=None, useAPI=True, retryCount=5, encodeTitle=True,
     else:
         path = site.query_address() + site.urlEncode(params.items())
 
-    if wikipedia.verbose:
+    if pywikibot.verbose:
         if titlecount > 1:
-            wikipedia.output(u"Requesting %d %s from %s"
+            pywikibot.output(u"Requesting %d %s from %s"
                              % (titlecount, data.keys()[0], site))
         else:
-            wikipedia.output(u"Requesting API query from %s" % site)
+            pywikibot.output(u"Requesting API query from %s" % site)
 
     lastError = None
     retry_idle_time = 1
@@ -139,7 +140,7 @@ def GetData(params, site=None, useAPI=True, retryCount=5, encodeTitle=True,
             if "error" in jsontext:
                 errorDetails = jsontext["error"]
                 if errorDetails["code"] == 'badtoken':
-                    wikipedia.output('Received a bad login token error from the server.  Attempting to refresh.')
+                    pywikibot.output('Received a bad login token error from the server.  Attempting to refresh.')
                     params['token'] = site.getToken(sysop = sysop, getagain = True)
                     continue
 
@@ -150,24 +151,24 @@ def GetData(params, site=None, useAPI=True, retryCount=5, encodeTitle=True,
 
         except ValueError, error:
             if "<title>Wiki does not exist</title>" in jsontext:
-                raise wikipedia.NoSuchSite(u'Wiki %s does not exist yet' % site)
+                raise pywikibot.NoSuchSite(u'Wiki %s does not exist yet' % site)
 
             if 'Wikimedia Error' in jsontext: #wikimedia server error
-                raise wikipedia.ServerError
+                raise pywikibot.ServerError
 
             retryCount -= 1
-            wikipedia.output(u"Error downloading data: %s" % error)
-            wikipedia.output(u"Request %s:%s" % (site.lang, path))
+            pywikibot.output(u"Error downloading data: %s" % error)
+            pywikibot.output(u"Request %s:%s" % (site.lang, path))
             lastError = error
             if retryCount >= 0:
-                wikipedia.output(u"Retrying in %i minutes..." % retry_idle_time)
+                pywikibot.output(u"Retrying in %i minutes..." % retry_idle_time)
                 time.sleep(retry_idle_time*60)
                 # Next time wait longer, but not longer than half an hour
                 retry_idle_time *= 2
                 if retry_idle_time > 30:
                     retry_idle_time = 30
             else:
-                wikipedia.debugDump('ApiGetDataParse', site, str(error) + '\n%s\n%s' % (site.hostname(), path), jsontext)
+                pywikibot.debugDump('ApiGetDataParse', site, str(error) + '\n%s\n%s' % (site.hostname(), path), jsontext)
     raise lastError
 
 def GetInterwikies(site, titles, extraParams = None ):
@@ -270,18 +271,18 @@ def ListToParam( list ):
     for item in list:
         if isinstance(item, basestring):
             if u'|' in item:
-                raise wikipedia.Error(u"item '%s' contains '|' symbol" % item)
+                raise pywikibot.Error(u"item '%s' contains '|' symbol" % item)
             encList += ToUtf8(item) + u'|'
         elif type(item) == int:
             encList += ToUtf8(item) + u'|'
-        elif isinstance(item, wikipedia.Page):
+        elif isinstance(item, pywikibot.Page):
             encList += ToUtf8(item.title()) + u'|'
         elif item.__class__.__name__ == 'User':
             # delay loading this until it is needed
             import userlib
             encList += ToUtf8(item.name()) + u'|'
         else:
-            raise wikipedia.Error(u'unknown item class %s'
+            raise pywikibot.Error(u'unknown item class %s'
                                   % item.__class__.__name__)
 
     # strip trailing '|' before returning
@@ -292,14 +293,14 @@ def ToUtf8(s):
         try:
             s = unicode(s)
         except UnicodeDecodeError:
-            s = s.decode(wikipedia.config.console_encoding)
+            s = s.decode(pywikibot.config.console_encoding)
     return s
 
 if __name__ == '__main__':
     """
     Testing code for this module
     """
-    wikipedia.output("""
+    pywikibot.output("""
     This module is not for direct usage from the command prompt.
     """)
     # unit tests
