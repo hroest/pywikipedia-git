@@ -31,6 +31,7 @@ mediawiki_messages.py  : Access to the various translations of the MediaWiki
                          software interface.
 pagegenerators.py      : Generator pages.
 userlib.py             : Library to work with users, their pages and talk pages.
+apispec.py             : Library to handle special pages through API
 BeautifulSoup.py       : is a Python HTML/XML parser designed for quick
                          turnaround projects like screen-scraping. See
                          more:
@@ -174,7 +175,6 @@ welcome.py             : Script to welcome new users.
 
 === Directories ===
 
-archive                : Contains old bots. Maybe they not run no more
 category               :
 copyright              : Contains information retrieved by copyright.py
 deadlinks              : Contains information retrieved by weblinkchecker.py
