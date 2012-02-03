@@ -13,10 +13,10 @@ class Family(family.Family):
         self.languages_by_size = [
             'en', 'fr', 'ru', 'zh', 'pt', 'de', 'it', 'es', 'he', 'pl', 'fa',
             'ar', 'hu', 'cs', 'th', 'ro', 'ko', 'sv', 'hr', 'te', 'fi', 'sl',
-            'vi', 'nl', 'bn', 'tr', 'el', 'sa', 'sr', 'uk', 'ja', 'ca', 'ml',
+            'vi', 'nl', 'bn', 'tr', 'sa', 'el', 'sr', 'uk', 'ja', 'ca', 'ml',
             'br', 'la', 'hy', 'li', 'yi', 'az', 'mk', 'vec', 'ta', 'is', 'bs',
             'no', 'id', 'da', 'eo', 'et', 'bg', 'sah', 'lt', 'gl', 'kn', 'cy',
-            'sk', 'fo', 'zh-min-nan',
+            'sk', 'fo', 'zh-min-nan', 'mr',
         ]
 
         if family.config.SSL_connection:
@@ -99,6 +99,7 @@ class Family(family.Family):
             'lt': [u'Vikišaltiniai', u'Wikisource'],
             'mk': u'Wikisource',
             'ml': u'വിക്കിഗ്രന്ഥശാല',
+            'mr': u'Wikisource',
             'nb': u'Wikikilden',
             'nl': u'Wikisource',
             'no': u'Wikikilden',
@@ -164,6 +165,7 @@ class Family(family.Family):
             'lt': u'Vikišaltiniai aptarimas',
             'mk': u'Разговор за Wikisource',
             'ml': u'വിക്കിഗ്രന്ഥശാല സംവാദം',
+            'mr': u'Wikisource चर्चा',
             'nb': u'Wikikilden-diskusjon',
             'nl': u'Overleg Wikisource',
             'no': u'Wikikilden-diskusjon',
