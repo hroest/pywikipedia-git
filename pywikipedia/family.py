@@ -46,7 +46,7 @@ class Family:
             'sl', 'cu', 'szl', 'so', 'ckb', 'srn', 'sr', 'sh', 'su', 'fi', 'sv',
             'tl', 'ta', 'kab', 'roa-tara', 'tt', 'te', 'tet', 'th', 'ti', 'tg',
             'to', 'chr', 'chy', 've', 'tr', 'tk', 'tw', 'udm', 'bug', 'uk',
-            'ur', 'ug', 'za', 'vec', 'vi', 'vo', 'fiu-vro', 'wa',
+            'ur', 'ug', 'za', 'vec', 'vep', 'vi', 'vo', 'fiu-vro', 'wa',
             'zh-classical', 'vls', 'war', 'wo', 'wuu', 'ts', 'yi', 'yo',
             'zh-yue', 'diq', 'zea', 'bat-smg', 'zh', 'zh-tw', 'zh-cn',
         ]
@@ -80,7 +80,7 @@ class Family:
             'cu', 'szl', 'so', 'ckb', 'srn', 'sr', 'sh', 'fi', 'sv', 'tl', 'ta',
             'kab',  'roa-tara', 'tt', 'te', 'tet', 'th', 'vi', 'ti', 'tg',
             'tpi', 'tokipona', 'tp', 'chr', 'chy', 've', 'tr', 'tk', 'tw',
-            'udm', 'uk', 'ur', 'ug', 'za', 'vec', 'vo', 'fiu-vro', 'wa',
+            'udm', 'uk', 'ur', 'ug', 'za', 'vec', 'vep', 'vo', 'fiu-vro', 'wa',
             'zh-classical', 'vls', 'war', 'wo', 'wuu', 'ts', 'yi', 'yo',
             'zh-yue', 'diq', 'zea', 'bat-smg', 'zh', 'zh-tw', 'zh-cn',
         ]
