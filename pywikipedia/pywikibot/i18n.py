@@ -38,6 +38,8 @@ def _altlang(code):
     #Arab
     if code in ['arc', 'arz', 'fa', 'so']:
         return ['ar']
+    if code == 'kab':
+        return ['ar', 'fr']
     #Bulgarian
     if code in ['cu', 'mk']:
         return ['bg', 'sr', 'sh']
@@ -92,7 +94,7 @@ def _altlang(code):
     if code == 'fit':
         return ['fi', 'sv']
     #French
-    if code in ['bm', 'br', 'ht', 'kab', 'kg', 'ln', 'mg', 'nrm', 'pcd',
+    if code in ['bm', 'br', 'ht', 'kg', 'ln', 'mg', 'nrm', 'pcd',
                 'rw', 'sg', 'ty', 'wa']:
         return ['fr']
     if code == 'oc':
