@@ -364,21 +364,6 @@ def correctcap(link, text):
     else:
         return linkupper
 
-def firstlinks(page):
-    #Returns a list of first links of every line beginning with *
-    #When a disambpage is full of unnecessary links, this may be useful
-    #to sort out the relevant links. E.g. from line
-    #*[[Jim Smith (smith)|Jim Smith]] ([[1832]]-[[1932]]) [[English]] [[smith]]
-    #it returns only Jim Smith (smith)
-    #No check for page existence, it has already been done.
-    list = []
-    reg = re.compile(r'\*.*?\[\[(.*?)(\||\]\])')
-    for line in page.get().splitlines():
-        found = reg.match(line)
-        if found:
-            list.append(found.group(1))
-    return list
-
 class ReferringPageGeneratorWithIgnore:
     def __init__(self, disambPage, primary=False, minimum = 0):
         self.disambPage = disambPage
@@ -537,20 +522,6 @@ class DisambiguationRobot(object):
         # are part of the word.
         # note that the definition of 'letter' varies from language to language.
         self.linkR = re.compile(r'\[\[(?P<title>[^\]\|#]*)(?P<section>#[^\]\|]*)?(\|(?P<label>[^\]]*))?\]\](?P<linktrail>' + linktrail + ')')
-
-    def firstize(self, page, links):
-        #duma
-        #check param
-        titles = [t.capitalize() for t in firstlinks(page)]
-        pywikibot.output('\t'.join(titles))
-        print len (titles), len(links)
-        pywikibot.output('\t'.join(l.title() for l in links))
-        for l in links[:]:
-            pywikibot.output(l.title())
-            if l.title() not in titles:
-                links.remove(l)
-                print 'meghalt'
-        return links
 
     def treat(self, refPage, disambPage):
         """
@@ -903,7 +874,6 @@ or press enter to quit:""")
                             primary_topic_format[self.mylang]
                             % disambPage.title())
                         links = disambPage2.linkedPages()
-                        links = self.firstize(disambPage2, links)
                         links = [correctcap(l, disambPage2.get())
                                  for l in links]
                     except pywikibot.NoPage:
