@@ -73,7 +73,7 @@ To complete a move of a page, one can use:
 # (C) Daniel Herding, 2004
 # (C) Andre Engels, 2003-2004
 # (C) WikiWichtel, 2004
-# (C) Pywikipedia team, 2003-2009
+# (C) Pywikipedia team, 2003-2012
 #
 __version__='$Id$'
 #
@@ -350,9 +350,6 @@ ignore_title = {
         ],
     },
 }
-
-def firstcap(string):
-    return string[0].upper()+string[1:]
 
 def correctcap(link, text):
     # If text links to a page with title link uncapitalized, uncapitalize link,
@@ -792,8 +789,8 @@ u"Choice out of range. Please select a number between 0 and %i."
                     # check if we can create a link with trailing characters
                     # instead of a pipelink
                     elif len(new_page_title) <= len(link_text) \
-                         and firstcap(link_text[:len(new_page_title)]) \
-                         == firstcap(new_page_title) \
+                         and link_text[:len(new_page_title)].capitalize() \
+                         == new_page_title.capitalize() \
                          and re.sub(self.trailR, '',
                                     link_text[len(new_page_title):]) == '' \
                          and not section:
