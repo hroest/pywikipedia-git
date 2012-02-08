@@ -35,6 +35,10 @@ Options for "remove" action:
                  deletion reason.  Instead, it uses the default deletion reason
                  for the language, which is "Category was disbanded" in English.
 
+Options for "move" action:
+ * -hist       - Creates a nice wikitable on the talk page of target category
+                 that contains detailed page history of the source category.
+
 Options for several actions:
  * -rebuild    - reset the database
  * -from:      - The category to move from (for the move option)
@@ -372,6 +376,13 @@ u'Cannot change %s because of spam blacklist entry %s'
 
 class CategoryMoveRobot:
     """Robot to move pages from one category to another."""
+
+    #Section title and edit summary for keeping page history:
+    historySectionTitle = {
+        'en':u'Page history of former %s',
+        'hu':u'A megszűnt %s laptörténete',
+    }
+
     def __init__(self, oldCatTitle, newCatTitle, batchMode=False,
                  editSummary='', inPlace=False, moveCatPage=True,
                  deleteEmptySourceCat=True, titleRegex=None,
@@ -402,6 +413,10 @@ class CategoryMoveRobot:
             reason = i18n.twtranslate(site, deletion_reason_move) \
                      % {'newcat': self.newCatTitle, 'title': self.newCatTitle}
 
+        # Set the section title for the old cat's history on the new cat's 
+        # talk page.
+        sectionTitle = pywikibot.translate(site,                        
+                       self.historySectionTitle) % self.oldCat.title()
 
         # Copy the category contents to the new category page
         copied = False
@@ -425,6 +440,21 @@ class CategoryMoveRobot:
                     else:
                         if talkMoved:
                             oldMovedTalk = oldTalk
+                #Whether or not there was an old talk page, we write
+                #the page history to the new talk page
+                history = self.oldCat.getVersionHistoryTable()
+                #Should be OK, we are within if self.oldCat.exists()
+                historySection = u'\n== %s ==\n%s' % (sectionTitle, history)
+                try:
+                    text = newCat.toggleTalkPage().get() + historySection
+                except pywikibot.NoPage:
+                    text = historySection
+                try:
+                    newCat.toggleTalkPage().put(text,sectionTitle)
+                except:
+                    pywikibot.output(
+                    'History of the category has not been saved to new talk page')
+                    #TODO: some nicer exception handling (not too important)
 
         # Move articles
         gen = pagegenerators.CategorizedPageGenerator(self.oldCat,
@@ -822,6 +852,7 @@ def main(*args):
     showImages = False
     talkPages = False
     recurse = False
+    withHistory = False
     titleRegex = None
 
     # This factory is responsible for processing command line arguments
@@ -888,8 +919,10 @@ def main(*args):
             talkPages = True
         elif arg == '-recurse':
             recurse = True
-        elif arg == '-create':
+        elif arg == '-hist':
             create_pages = True
+        elif arg == '-create':
+            withHistory = True
         else:
             genFactory.handleArg(arg)
 
