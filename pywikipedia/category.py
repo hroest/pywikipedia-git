@@ -85,7 +85,7 @@ This will move all pages in the category US to the category United States.
 # (C) leogregianin, 2004-2008
 # (C) Cyde, 2006-2010
 # (C) Anreas J Schwab, 2007
-# (C) Pywikipedia team, 2008-2011
+# (C) Pywikipedia team, 2008-2012
 #
 __version__ = '$Id$'
 #
@@ -919,9 +919,9 @@ def main(*args):
             talkPages = True
         elif arg == '-recurse':
             recurse = True
-        elif arg == '-hist':
-            create_pages = True
         elif arg == '-create':
+            create_pages = True
+        elif arg == '-hist':
             withHistory = True
         else:
             genFactory.handleArg(arg)
