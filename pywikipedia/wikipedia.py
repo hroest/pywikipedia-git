@@ -2940,8 +2940,7 @@ u'Page %s is semi-protected. Getting edit page to find out if we are allowed to 
                     'intoken' : 'watch',
                 }
                 data = query.GetData(api, self.site())
-                key = data['query']['pages'].keys()[0]
-                params['token'] = data['query']['pages'][key]['watchtoken']
+                params['token'] = data['query']['pages'].values()[0]['watchtoken']
             if unwatch:
                 params['unwatch'] = ''
 
