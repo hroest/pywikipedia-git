@@ -194,7 +194,7 @@ editor_filename_extension = 'wiki'
 # Per default, logging of interwiki.py is enabled because its logfiles can
 # be used to generate so-called warnfiles.
 # This setting can be overridden by the -log or -nolog command-line arguments.
-log = ['*']
+log = ['interwiki']
 
 ############## INTERWIKI SETTINGS ##############
 
