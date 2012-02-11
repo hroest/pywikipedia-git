@@ -93,12 +93,12 @@ class Blocks(object):
     Each dictionary represents a block. Keys are shown at
       http://www.mediawiki.org/wiki/API:Blocks
     under 'bkprop'. Note that 'user' key is not present if it is an autoblock,
-    and flags are not present if they are not valid for that block. It is your 
+    and flags are not present if they are not valid for that block. It is your
     task to handle this. Even numeric values such as id's come as strings!
     The list is ordered by timestamp of applying the block unless noted.
     Timestamps of beginning and expiry are in UTC and ISO 8601 format.
         http://www.mediawiki.org/wiki/API:Data_formats#Timestamps
-    Convert them to local time if necessary. 
+    Convert them to local time if necessary.
     See http://docs.python.org/library/datetime.html for help.
 
     Methods:
@@ -134,7 +134,7 @@ class Blocks(object):
                 beginning of the string.
 
     2. Simplified lists of blocked users/IPs:
-    These lists, unlike others, contain simple Unicode strings rather than 
+    These lists, unlike others, contain simple Unicode strings rather than
     block directories. The first one is ordered chronologically by date of
     blocking, which is useful for hunting the reincarnations of a vandal,
     while the others in alphanumerical order.
@@ -148,12 +148,12 @@ class Blocks(object):
     finiteblocks    List of all finite blocks
     infiniteblocks  List of all infinite and indefinite blocks
     expindays       Blocks expiring within n days (from the second of calling)
-    expnotindays    Finite blocks not expiring within n days 
+    expnotindays    Finite blocks not expiring within n days
                     (use with infiniteblocks to get all the remaining blocks)
     expuntil        Blocks expiring by the given timestamp
     expafter        Finite blocks expiring after the given timestamp
                     (use with infiniteblocks to get all the remaining blocks)
-                    For valid timestamps see 
+                    For valid timestamps see
                     http://www.mediawiki.org/wiki/API:Data_formats#Timestamps
 
     The next three are ordered by ascending duration:
@@ -167,8 +167,8 @@ class Blocks(object):
                     human-readable details of the given dictionary that
                     represents a block (with English keywords at this time).
                     You may use it with pywikibot.output or insert into
-                    a wikipage between <pre> tags. This may be iterated or 
-                    joined on a list of blocks, but don't blame me if your 
+                    a wikipage between <pre> tags. This may be iterated or
+                    joined on a list of blocks, but don't blame me if your
                     monitor is not tall enough.
                     Should 'bot' be an instance of this class and b a block,
                     bot.display(b) returns the text in Unicode.
@@ -186,7 +186,7 @@ class Blocks(object):
     site        site as usual, autodetected if missing
                 This has some bug at the moment, but works well in home wiki.
     top         'new'/'old' (newest or oldest block on top; default='new')
-    limit       Maximum number of blocks to get in one query as integer or 
+    limit       Maximum number of blocks to get in one query as integer or
                 string. Defaults to 5000. That is the allowed maximum for bots
                 in Wikimedia wikis. You MUST set it to no more than 500 if your
                 bot does not have a flag.
@@ -196,16 +196,16 @@ class Blocks(object):
                 !! Setting this value too low may result in an infinite loop
                 or duplicated results. Use as great limit as possible.
                 See https://bugzilla.wikimedia.org/show_bug.cgi?id=34029
-                Additionally, decreasing this limit will cause a 
+                Additionally, decreasing this limit will cause a
                 quasi-exponential increase of running time!
-    
+
     help: http://www.mediawiki.org/wiki/API:Blocks
     TODO:
     * Explore the bug of site parameter
     * A function listing all blocked IPs, expanding ranges
     * Some statistics from blocks
     """
-    
+
     #################################################
     #          Methods for internal use             #
     #################################################
@@ -213,7 +213,7 @@ class Blocks(object):
         self.site = site
         self.bkdir = ['older','newer'][top=='old'] #a bit strange
         # bkdir: Direction to list in.
-        #older: List newest blocks first (default). 
+        #older: List newest blocks first (default).
         #Note: bkstart has to be later than bkend.
         #newer: List oldest blocks first. Note: bkstart has to be before bkend.
         self.bklimit = limit #Allowed maximum for bots=5000
@@ -228,7 +228,7 @@ class Blocks(object):
             'list':     'blocks',
             'bklimit':  self.bklimit,
             'bkdir':    self.bkdir,
-            'bkprop':   
+            'bkprop':
                 'id|user|userid|by|byid|timestamp|expiry|reason|range|flags',
         }
 
@@ -246,8 +246,8 @@ class Blocks(object):
                 break
             result = query.GetData(self.params)
             blocklist += result['query']['blocks']
-        #Finally we remove possible duplicates. This piece of code may be 
-        #removed after successful closing of 
+        #Finally we remove possible duplicates. This piece of code may be
+        #removed after successful closing of
         #https://bugzilla.wikimedia.org/show_bug.cgi?id=34029
         for b in blocklist:
             if blocklist.count(b) > 1:
@@ -298,7 +298,7 @@ class Blocks(object):
         """Returns anonblocks, excluding range blocks"""
         self.empty()
         try:
-            return filter(lambda x: x['rangestart'] == x['rangeend'], 
+            return filter(lambda x: x['rangestart'] == x['rangeend'],
                             self.anonblocks())
         except KeyError:
             return [errordic]
@@ -307,7 +307,7 @@ class Blocks(object):
         """Returns range blocks"""
         self.empty()
         try:
-            return filter(lambda x: x['rangestart'] != x['rangeend'], 
+            return filter(lambda x: x['rangestart'] != x['rangeend'],
                             self.anonblocks())
         except KeyError:
             return [errordic]
@@ -321,68 +321,68 @@ class Blocks(object):
         """Returns blocks raised by given admin"""
         self.empty()
         return filter(lambda x: x['by']==admin, self.query())
-        
+
     def user(self, user):
         """Returns blocks of the given user or single IP"""
         self.empty()
         self.params['bkusers'] = user
         return self.query()
-        
+
     def userfragment(self, user):
         """Returns blocks of the given user or single IP (part of name)"""
         self.empty()
         return filter(lambda x: user in x['user'], self.notautoblocks())
-        
+
     def userregex(self, regex):
         """Returns blocks of the given user or single IP (regex)"""
         self.empty()
         return filter(
                 lambda x: re.search(regex, x['user']), self.notautoblocks())
-        
+
     def IP(self, IP):
         """Returns blocks of the given single IP or range (max. /16)"""
         self.empty()
         self.params['bkip'] = IP
         return self.query()
-        
+
     def reason(self, reason):
         """Returns blocks raised with the given reason (exact text)"""
         self.empty()
         return filter(lambda x: x['reason'] == reason, self.query())
-        
+
     def reasonfragment(self, reason):
         """Returns blocks raised with the given reason (part of it)"""
         self.empty()
         return filter(lambda x: reason in x['reason'], self.query())
-        
+
     def reasonregex(self, regex):
         """Returns blocks raised with the given reason (regex)"""
         self.empty()
         return filter(
                 lambda x: re.search(regex, x['reason']), self.allblocks())
-        
+
     #################################################
     #        Lists of blocked users/IPs             #
     #################################################
     #These methods return ordered list of Unicode strings
     def blockedusernames_chrono(self):
         return [b['user'] for b in self.reguserblocks()]
-        
+
     def blockedusernames(self):
         return sorted(self.blockedusernames_chrono())
-        
+
     def blockedanons(self):
         return sorted(
             [b['user'] for b in self.anonblocks()], key=self.IPsortkey)
-        
+
     def blockedanons_norange(self):
         return sorted(
             [b['user'] for b in self.anonblocks_norange()], key=self.IPsortkey)
-        
+
     def blockedranges(self):
         return sorted(
             [b['user'] for b in self.rangeblocks()], key=self.IPsortkey)
-        
+
     #################################################
     #             Lists by expiry                   #
     #################################################
@@ -395,7 +395,7 @@ class Blocks(object):
         """Returns infinite and indefinite blocks"""
         self.empty()
         return filter(lambda x: x['expiry'].isalpha(), self.query())
-        
+
     def expindays(self, days):
         """Returns blocks expiring within days days"""
         limit = iso(datetime.datetime.utcnow() + datetime.timedelta(days))

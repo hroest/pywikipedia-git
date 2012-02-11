@@ -495,7 +495,7 @@ not supported by PyWikipediaBot!"""
         if underscore:
             title = title.replace(' ', '_')
         return title
-    
+
     #@deprecated("Page.title(withNamespace=False)")
     def titleWithoutNamespace(self, underscore=False):
         """Return title of Page without namespace and without section."""

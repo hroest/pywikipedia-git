@@ -413,9 +413,9 @@ class CategoryMoveRobot:
             reason = i18n.twtranslate(site, deletion_reason_move) \
                      % {'newcat': self.newCatTitle, 'title': self.newCatTitle}
 
-        # Set the section title for the old cat's history on the new cat's 
+        # Set the section title for the old cat's history on the new cat's
         # talk page.
-        sectionTitle = pywikibot.translate(site,                        
+        sectionTitle = pywikibot.translate(site,
                        self.historySectionTitle) % self.oldCat.title()
 
         # Copy the category contents to the new category page

@@ -57,10 +57,10 @@ Command line options:
    -first      Uses only the first link of every line on the disambiguation
                page that begins with an asterisk. Useful if the page is full
                of irrelevant links that are not subject to disambiguation.
-               You won't get all af them as options, just the first on each 
+               You won't get all af them as options, just the first on each
                line. For a moderated example see
                http://en.wikipedia.org/wiki/Szerdahely
-               A really exotic one is 
+               A really exotic one is
                http://hu.wikipedia.org/wiki/Brabant_(egyértelműsítő lap)
 
    -start:XY   goes through all disambiguation pages in the category on your
