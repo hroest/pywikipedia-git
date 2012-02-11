@@ -380,7 +380,7 @@ class CategoryMoveRobot:
     def __init__(self, oldCatTitle, newCatTitle, batchMode=False,
                  editSummary='', inPlace=False, moveCatPage=True,
                  deleteEmptySourceCat=True, titleRegex=None,
-                 useSummaryForDeletion=True):
+                 useSummaryForDeletion=True, withHistory=False):
         site = pywikibot.getSite()
         self.editSummary = editSummary
         self.oldCat = catlib.Category(site, oldCatTitle)
@@ -391,6 +391,7 @@ class CategoryMoveRobot:
         self.deleteEmptySourceCat = deleteEmptySourceCat
         self.titleRegex = titleRegex
         self.useSummaryForDeletion = useSummaryForDeletion
+        self.withHistory = withHistory
 
     def run(self):
         site = pywikibot.getSite()
@@ -429,27 +430,32 @@ class CategoryMoveRobot:
                     else:
                         if talkMoved:
                             oldMovedTalk = oldTalk
-                #Whether or not there was an old talk page, we write
-                #the page history to the new talk page
-                history = self.oldCat.getVersionHistoryTable()
-                # Set the section title for the old cat's history on the new cat's
-                # talk page.
-                sectionTitle = i18n.twtranslate(site, 'category-section-title',
-                                                self.oldCat.title()
-                #Should be OK, we are within if self.oldCat.exists()
-                historySection = u'\n== %s ==\n%s' % (sectionTitle, history)
-                try:
-                    text = newCat.toggleTalkPage().get() + historySection
-                except pywikibot.NoPage:
-                    text = historySection
-                try:
-                    newCat.toggleTalkPage().put(
-                        text, i18n.twtranslate(site, 'category-version-history',
-                                               self.oldCat.title())
-                except:
-                    pywikibot.output(
-                    'History of the category has not been saved to new talk page')
-                    #TODO: some nicer exception handling (not too important)
+
+                if self.withHistory:
+                    # Whether or not there was an old talk page, we write
+                    # the page history to the new talk page
+                    history = self.oldCat.getVersionHistoryTable()
+                    # Set the section title for the old cat's history on the new
+                    # cat's talk page.
+                    sectionTitle = i18n.twtranslate(site,
+                                                    'category-section-title',
+                                                    self.oldCat.title()
+                    #Should be OK, we are within if self.oldCat.exists()
+                    historySection = u'\n== %s ==\n%s' % (sectionTitle, history)
+                    try:
+                        text = newCat.toggleTalkPage().get() + historySection
+                    except pywikibot.NoPage:
+                        text = historySection
+                    try:
+                        newCat.toggleTalkPage().put(
+                            text, i18n.twtranslate(site,
+                                                   'category-version-history',
+                                                   self.oldCat.title())
+                    except:
+                        pywikibot.output(
+                        'History of the category has not been saved to new talk page')
+                        #TODO: some nicer exception handling (not too important)
+                        #      first move the page, than tagg the vh
 
         # Move articles
         gen = pagegenerators.CategorizedPageGenerator(self.oldCat,
@@ -952,7 +958,8 @@ u'Please enter the name of the category that should be removed:')
             newCatTitle = pywikibot.input(
                 u'Please enter the new name of the category:')
         bot = CategoryMoveRobot(oldCatTitle, newCatTitle, batchMode,
-                                editSummary, inPlace, titleRegex=titleRegex)
+                                editSummary, inPlace, titleRegex=titleRegex,
+                                withHistory=withHistory)
         bot.run()
     elif action == 'tidy':
         catTitle = pywikibot.input(u'Which category do you want to tidy up?')
