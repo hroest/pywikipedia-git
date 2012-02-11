@@ -898,10 +898,6 @@ def main(*args):
             batchMode = True
         elif arg == '-inplace':
             inPlace = True
-        elif arg == '-delsum':
-            # This parameter is kept for historical reasons,
-            # as it was previously not the default option.
-            pass
         elif arg == '-nodelsum':
             useSummaryForDeletion = False
         elif arg == '-overwrite':
