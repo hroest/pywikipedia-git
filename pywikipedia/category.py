@@ -377,12 +377,6 @@ u'Cannot change %s because of spam blacklist entry %s'
 class CategoryMoveRobot:
     """Robot to move pages from one category to another."""
 
-    #Section title and edit summary for keeping page history:
-    historySectionTitle = {
-        'en':u'Page history of former %s',
-        'hu':u'A megszűnt %s laptörténete',
-    }
-
     def __init__(self, oldCatTitle, newCatTitle, batchMode=False,
                  editSummary='', inPlace=False, moveCatPage=True,
                  deleteEmptySourceCat=True, titleRegex=None,
@@ -413,11 +407,6 @@ class CategoryMoveRobot:
             reason = i18n.twtranslate(site, deletion_reason_move) \
                      % {'newcat': self.newCatTitle, 'title': self.newCatTitle}
 
-        # Set the section title for the old cat's history on the new cat's
-        # talk page.
-        sectionTitle = pywikibot.translate(site,
-                       self.historySectionTitle) % self.oldCat.title()
-
         # Copy the category contents to the new category page
         copied = False
         oldMovedTalk = None
@@ -443,6 +432,10 @@ class CategoryMoveRobot:
                 #Whether or not there was an old talk page, we write
                 #the page history to the new talk page
                 history = self.oldCat.getVersionHistoryTable()
+                # Set the section title for the old cat's history on the new cat's
+                # talk page.
+                sectionTitle = i18n.twtranslate(site, 'category-section-title',
+                                                self.oldCat.title()
                 #Should be OK, we are within if self.oldCat.exists()
                 historySection = u'\n== %s ==\n%s' % (sectionTitle, history)
                 try:
@@ -450,7 +443,9 @@ class CategoryMoveRobot:
                 except pywikibot.NoPage:
                     text = historySection
                 try:
-                    newCat.toggleTalkPage().put(text,sectionTitle)
+                    newCat.toggleTalkPage().put(
+                        text, i18n.twtranslate(site, 'category-version-history',
+                                               self.oldCat.title())
                 except:
                     pywikibot.output(
                     'History of the category has not been saved to new talk page')
