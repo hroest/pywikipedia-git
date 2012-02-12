@@ -438,8 +438,8 @@ class CategoryMoveRobot:
                     # Set the section title for the old cat's history on the new
                     # cat's talk page.
                     sectionTitle = i18n.twtranslate(site,
-                                                    'category-section-title',
-                                                    self.oldCat.title())
+                                                    'category-section-title') \
+                                   % {'oldcat': self.oldCat.title()}
                     #Should be OK, we are within if self.oldCat.exists()
                     historySection = u'\n== %s ==\n%s' % (sectionTitle, history)
                     try:
@@ -449,8 +449,8 @@ class CategoryMoveRobot:
                     try:
                         newCat.toggleTalkPage().put(
                             text, i18n.twtranslate(site,
-                                                   'category-version-history',
-                                                   self.oldCat.title()))
+                                                   'category-version-history')
+                            % {'oldcat': self.oldCat.title()})
                     except:
                         pywikibot.output(
                         'History of the category has not been saved to new talk page')
