@@ -895,6 +895,7 @@ class Family(family.Family):
             'fr': u'Référence',
             'lt': u'Sąrašas',
             'pt': u'Livro',
+            'ru': u'Проект',
         }
 
         self.namespaces[105] = {
@@ -905,6 +906,7 @@ class Family(family.Family):
             'fr': u'Discussion Référence',
             'lt': u'Sąrašo aptarimas',
             'pt': u'Livro Discussão',
+            'ru': u'Обсуждение проекта',
         }
 
         self.namespaces[106] = {
