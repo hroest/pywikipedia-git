@@ -4713,12 +4713,16 @@ def html2unicode(text, ignore = []):
 # two statements. Always ensure that a local reference is created when
 # accessing Family objects
 _familyCache = weakref.WeakValueDictionary()
-def Family(fam = None, fatal = True, force = False):
-    """
-    Import the named family.
+def Family(fam=None, fatal=True, force=False):
+    """Import the named family.
 
-    If fatal is True, the bot will stop running when the given family is
-    unknown. If fatal is False, it will only raise a ValueError exception.
+    @param fam: family name (if omitted, uses the configured default)
+    @type fam: str
+    @param fatal: if True, the bot will stop running if the given family is
+        unknown. If False, it will only raise a ValueError exception.
+    @param fatal: bool
+    @return: a Family instance configured for the named family.
+
     """
     if fam is None:
         fam = config.family
