@@ -4755,16 +4755,8 @@ does not exist. Also check your configuration file."""
 class Site(object):
     """A MediaWiki site. Do not instantiate directly; use getSite() function.
 
-    Constructor takes four arguments; only code is mandatory:
-
-    code            language code for Site
-    fam             Wiki family (optional: defaults to configured).
-                    Can either be a string or a Family object.
-    user            User to use (optional: defaults to configured)
-    persistent_http Use a persistent http connection. An http connection
-                    has to be established only once, making stuff a whole
-                    lot faster. Do NOT EVER use this if you share Site
-                    objects across threads without proper locking.
+    Constructor takes three arguments; only code is mandatory:
+        see __init__() param
 
     Methods:
 
@@ -4923,41 +4915,51 @@ class Site(object):
         contribs_address(target): Special:Contributions for user 'target'.
 
     """
-    def __init__(self, code, fam=None, user=None, persistent_http = None):
-        self.lang = code.lower()
+
+    @deprecate_arg("persistent_http", None)
+    def __init__(self, code, fam=None, user=None):
+        """
+        @param code: the site's language code
+        @type code: str
+        @param fam: wiki family name (optional)
+        @type fam: str or Family
+        @param user: bot user name (optional)
+        @type user: str
+
+        """
+        self.__code = code.lower()
         if isinstance(fam, basestring) or fam is None:
-            self.family = Family(fam, fatal = False)
+            self.__family = Family(fam, fatal = False)
         else:
-            self.family = fam
+            self.__family = fam
 
         # if we got an outdated language code, use the new one instead.
-        if self.lang in self.family.obsolete:
-            if self.family.obsolete[self.lang] is not None:
-                self.lang = self.family.obsolete[self.lang]
+        if self.__code in self.__family.obsolete:
+            if self.__family.obsolete[self.__code] is not None:
+                self.__code = self.__family.obsolete[self.__code]
             else:
                 # no such language anymore
                 raise NoSuchSite("Language %s in family %s is obsolete"
-                                 % (self.lang, self.family.name))
-
-        if self.lang not in self.languages():
-            if self.lang == 'zh-classic' \
+                                 % (self.__code, self.__family.name))
+        if self.__code not in self.languages():
+            if self.__code == 'zh-classic' \
                and 'zh-classical' in self.languages():
-                self.lang = 'zh-classical'
+                self.__code = 'zh-classical'
                 # database hack (database is varchar[10], so zh-classical
                 # is cut to zh-classic)
-            elif self.family.name in self.family.langs.keys() \
-                 or len(self.family.langs) == 1:
-                self.lang = self.family.name
+            elif self.__family.name in self.__family.langs.keys() \
+                 or len(self.__family.langs) == 1:
+                self.__code = self.__family.name
             else:
                 raise NoSuchSite("Language %s does not exist in family %s"
-                                 %(self.lang,self.family.name))
+                                 % (self.__code, self.__family.name))
 
         self._mediawiki_messages = {}
         self._info = {}
-        self.nocapitalize = self.lang in self.family.nocapitalize
+        self._userName = [None, None]
+        self.nocapitalize = self.code in self.family.nocapitalize
         self.user = user
         self._userData = [False, False]
-        self._userName = [None, None]
         self._isLoggedIn = [None, None]
         self._isBlocked = [None, None]
         self._messages = [None, None]
@@ -4972,7 +4974,39 @@ class Site(object):
             if not language[0].upper() + language[1:] in self.namespaces():
                 self._validlanguages.append(language)
 
-        self.persistent_http = False
+    @property
+    def family(self):
+        """The Family object for this Site's wiki family."""
+
+        return self.__family
+
+    @property
+    def code(self):
+        """The identifying code for this Site.
+
+        By convention, this is usually an ISO language code, but it does
+        not have to be.
+
+        """
+        return self.__code
+
+    @property
+    def lang(self):
+        """The ISO language code for this Site.
+
+        Presumed to be equal to the wiki prefix, but this can be overridden.
+
+        """
+        return self.__code
+
+    def __cmp__(self, other):
+        """Perform equality and inequality tests on Site objects."""
+
+        if not isinstance(other, Site):
+            return 1
+        if self.family.name == other.family.name:
+            return cmp(self.code ,other.code)
+        return cmp(self.family.name, other.family.name)
 
     def _userIndex(self, sysop = False):
         """Returns the internal index of the user."""
@@ -4983,6 +5017,72 @@ class Site(object):
 
     def username(self, sysop = False):
         return self._userName[self._userIndex(sysop = sysop)]
+
+    def sitename(self):
+        """Return string representing this Site's name and code."""
+
+        return self.family.name+':'+self.code
+
+    def __repr__(self):
+        return '%s:%s' % (self.family.name, self.code)
+
+    def __hash__(self):
+        return hash(repr(self))
+
+    def linktrail(self):
+        """Return regex for trailing chars displayed as part of a link.
+
+        Returns a string, not a compiled regular expression object.
+
+        This reads from the family file, and ''not'' from
+        [[MediaWiki:Linktrail]], because the MW software currently uses a
+        built-in linktrail from its message files and ignores the wiki
+        value.
+
+        """
+        return self.family.linktrail(self.code)
+
+    def languages(self):
+        """Return list of all valid language codes for this site's Family."""
+
+        return self.family.iwkeys
+
+    def validLanguageLinks(self):
+        """Return list of language codes that can be used in interwiki links."""
+        return self._validlanguages
+
+    def namespaces(self):
+        """Return list of canonical namespace names for this Site."""
+
+        # n.b.: this does not return namespace numbers; to determine which
+        # numeric namespaces the framework recognizes for this Site (which
+        # may or may not actually exist on the wiki), use
+        # self.family.namespaces.keys()
+
+        if self in _namespaceCache:
+            return _namespaceCache[self]
+        else:
+            nslist = []
+            for n in self.family.namespaces:
+                try:
+                    ns = self.family.namespace(self.lang, n)
+                except KeyError:
+                    # No default namespace defined
+                    continue
+                if ns is not None:
+                    nslist.append(self.family.namespace(self.lang, n))
+            _namespaceCache[self] = nslist
+            return nslist
+
+    def redirect(self, default=False):
+        """Return the localized redirect tag for the site.
+
+        """
+        # return the magic word without the preceding '#' character
+        if default or self.versionnumber() <= 13:
+            return u'REDIRECT'
+        else:
+            return self.getmagicwords('redirect')[0].lstrip("#")
 
     def loggedInAs(self, sysop = False):
         """Return the current username if logged in, otherwise return None.
@@ -7038,9 +7138,6 @@ u"WARNING: Could not open '%s'. Maybe the server or\n your connection is down. R
                                 yield Page(self, title)
                     offset += limit
 
-    def __repr__(self):
-        return self.family.name+":"+self.lang
-
     def linkto(self, title, othersite = None):
         """Return unicode string in the form of a wikilink to 'title'
 
@@ -7091,16 +7188,6 @@ u"WARNING: Could not open '%s'. Maybe the server or\n your connection is down. R
         if self.versionnumber() <= 13:
             raise NotImplementedError
         return self.siteinfo('magicwords').get(word)
-
-    def redirect(self, default=False):
-        """Return the localized redirect tag for the site.
-
-        """
-        # return the magic word without the preceding '#' character
-        if default or self.versionnumber() <= 13:
-            return u'REDIRECT'
-        else:
-            return self.getmagicwords('redirect')[0].lstrip("#")
 
     def redirectRegex(self):
         """Return a compiled regular expression matching on redirect pages.
@@ -7433,9 +7520,6 @@ u"WARNING: Could not open '%s'. Maybe the server or\n your connection is down. R
         """Return path to Special:GlobalUsers for user 'target' and/or group 'group'."""
         return self.family.globalusers_address(self.lang, target, limit, offset, group)
 
-    def __hash__(self):
-        return hash(repr(self))
-
     def version(self):
         """Return MediaWiki version number as a string."""
         return self.family.version(self.lang)
@@ -7492,14 +7576,6 @@ u"WARNING: Could not open '%s'. Maybe the server or\n your connection is down. R
         """Return a tuple of image repositories used by this site."""
         return self.family.shared_image_repository(self.lang)
 
-    def __cmp__(self, other):
-        """Perform equality and inequality tests on Site objects."""
-        if not isinstance(other, Site):
-            return 1
-        if self.family.name == other.family.name:
-            return cmp(self.lang ,other.lang)
-        return cmp(self.family.name, other.family.name)
-
     def category_on_one_line(self):
         """Return True if this site wants all category links on one line."""
         return self.lang in self.family.category_on_one_line
@@ -7554,36 +7630,9 @@ u"WARNING: Could not open '%s'. Maybe the server or\n your connection is down. R
             value = value[0].lower().upper() + value[1:]
         return self.family.normalizeNamespace(self.lang, value)
 
-    def namespaces(self):
-        """Return list of canonical namespace names for this Site."""
-
-        # n.b.: this does not return namespace numbers; to determine which
-        # numeric namespaces the framework recognizes for this Site (which
-        # may or may not actually exist on the wiki), use
-        # self.family.namespaces.keys()
-
-        if self in _namespaceCache:
-            return _namespaceCache[self]
-        else:
-            nslist = []
-            for n in self.family.namespaces:
-                try:
-                    ns = self.family.namespace(self.lang, n)
-                except KeyError:
-                    # No default namespace defined
-                    continue
-                if ns is not None:
-                    nslist.append(self.family.namespace(self.lang, n))
-            _namespaceCache[self] = nslist
-            return nslist
-
     def getNamespaceIndex(self, namespace):
         """Given a namespace name, return its int index, or None if invalid."""
         return self.family.getNamespaceIndex(self.lang, namespace)
-
-    def linktrail(self):
-        """Return regex for trailing chars displayed as part of a link."""
-        return self.family.linktrail(self.lang)
 
     def language(self):
         """Return Site's language code."""
@@ -7592,18 +7641,6 @@ u"WARNING: Could not open '%s'. Maybe the server or\n your connection is down. R
     def fam(self):
         """Return Family object for this Site."""
         return self.family
-
-    def sitename(self):
-        """Return string representing this Site's name and language."""
-        return self.family.name+':'+self.lang
-
-    def languages(self):
-        """Return list of all valid language codes for this site's Family."""
-        return self.family.iwkeys
-
-    def validLanguageLinks(self):
-        """Return list of language codes that can be used in interwiki links."""
-        return self._validlanguages
 
     def disambcategory(self):
         """Return Category in which disambig pages are listed."""
@@ -7681,15 +7718,15 @@ u"WARNING: Could not open '%s'. Maybe the server or\n your connection is down. R
 _sites = {}
 _namespaceCache = {}
 
-def getSite(code=None, fam=None, user=None, persistent_http=None, noLogin=False):
+@deprecate_arg("persistent_http", None)
+def getSite(code=None, fam=None, user=None, noLogin=False):
     if code is None:
         code = default_code
     if fam is None:
         fam = default_family
-    key = '%s:%s:%s:%s' % (fam, code, user, persistent_http)
+    key = '%s:%s:%s:%s' % (fam, code, user)
     if key not in _sites:
-        _sites[key] = Site(code=code, fam=fam, user=user,
-                           persistent_http=persistent_http)
+        _sites[key] = Site(code=code, fam=fam, user=user)
     ret =  _sites[key]
     if not ret.family.isPublic() and not noLogin:
         ret.forceLogin()
