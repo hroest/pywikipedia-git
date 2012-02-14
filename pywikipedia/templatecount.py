@@ -49,27 +49,31 @@ class TemplateCountRobot:
         #Nothing
     def countTemplates(self, templates, namespaces):
         mysite = pywikibot.getSite()
-        mytpl  = mysite.template_namespace()+':'
-        finalText = [u'', u'Number of transclusions per template', u'-' * 36]
         total = 0
         # The names of the templates are the keys, and the numbers of
         # transclusions are the values.
         templateDict = {}
-        for template in templates:
-            gen = pagegenerators.ReferringPageGenerator(
-                pywikibot.Page(mysite, mytpl + template),
+        pg = pagegenerators
+        getall = templates
+        mytpl  = mysite.template_namespace()+':'
+        for template in getall:
+            gen = pg.ReferringPageGenerator(pywikibot.Page(mysite,
+                                                           mytpl + template),
                 onlyTemplateInclusion = True)
             if namespaces:
-                gen = pagegenerators.NamespaceFilterPageGenerator(gen,
-                                                                  namespaces)
+                gen = pg.NamespaceFilterPageGenerator(gen, namespaces)
             count = 0
             for page in gen:
                 count += 1
             templateDict[template] = count
-            finalText.append(u'%-10s: %5d' % (template, count))
+
             total += count
-        for line in finalText:
-            pywikibot.output(line, toStdout=True)
+        pywikibot.output(u'\nNumber of transclusions per template',
+                         toStdout=True)
+        pywikibot.output(u'-' * 36, toStdout=True)
+        for key in templateDict.keys():
+            pywikibot.output(u'%-10s: %5d' % (key, templateDict[key]),
+                             toStdout=True)
         pywikibot.output(u'TOTAL     : %5d' % total, toStdout=True)
         pywikibot.output(u'Report generated on %s'
                          % datetime.datetime.utcnow().isoformat(),
