@@ -50,7 +50,7 @@ class TemplateCountRobot:
     def countTemplates(self, templates, namespaces):
         mysite = pywikibot.getSite()
         mytpl  = mysite.template_namespace()+':'
-        finalText = [u'Number of transclusions per template', u'-' * 36]
+        finalText = [u'', u'Number of transclusions per template', u'-' * 36]
         total = 0
         # The names of the templates are the keys, and the numbers of
         # transclusions are the values.
@@ -66,11 +66,11 @@ class TemplateCountRobot:
             for page in gen:
                 count += 1
             templateDict[template] = count
-            finalText.append(u'%s: %d' % (template, count))
+            finalText.append(u'%-10s: %5d' % (template, count))
             total += count
         for line in finalText:
             pywikibot.output(line, toStdout=True)
-        pywikibot.output(u'TOTAL: %d' % total, toStdout=True)
+        pywikibot.output(u'TOTAL     : %5d' % total, toStdout=True)
         pywikibot.output(u'Report generated on %s'
                          % datetime.datetime.utcnow().isoformat(),
                          toStdout=True)
