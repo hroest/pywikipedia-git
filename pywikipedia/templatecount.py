@@ -30,6 +30,8 @@ Lists all the category pages that transclude {{cfd}} and {{cfdu}}.
 
 """
 #
+# (C) Pywikipedia bot team, 2006-2012
+#
 # Distributed under the terms of the MIT license.
 #
 __version__ = '$Id$'
@@ -80,7 +82,7 @@ class TemplateCountRobot:
         # The names of the templates are the keys, and lists of pages
         # transcluding templates are the values.
         templateDict = {}
-        finalText = [u'List of pages transcluding templates:']
+        finalText = [u'', u'List of pages transcluding templates:']
         for template in templates:
             finalText.append(u'* %s' % template)
         finalText.append(u'-' * 36)
