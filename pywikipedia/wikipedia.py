@@ -5554,10 +5554,12 @@ sysopnames['%s']['%s']='name' to your user-config.py"""
 
         return f, text
 
+    #@deprecated("pywikibot.comms.http.request")    # in 'trunk' not yet...
     def getUrl(self, path, retry = None, sysop = False, data = None, compress = True,
                no_hostname = False, cookie_only=False, refer=None, back_response=False):
         """
-        Low-level routine to get a URL from the wiki.
+        Low-level routine to get a URL from the wiki. Tries to login if it is
+        another wiki.
 
         Parameters:
             path        - The absolute path, without the hostname.
@@ -5569,149 +5571,10 @@ sysopnames['%s']['%s']='name' to your user-config.py"""
 
            Returns the HTML text of the page converted to unicode.
         """
+        from pywikibot.comms import http
 
-        if retry is None:
-            retry = config.retry_on_fail
-
-        headers = {
-            'User-agent': useragent,
-            #'Accept-Language': config.mylang,
-            #'Accept-Charset': config.textfile_encoding,
-            #'Keep-Alive': '115',
-            #'Connection': 'keep-alive',
-            #'Cache-Control': 'max-age=0',
-            #'': '',
-        }
-
-        if not no_hostname and self.cookies(sysop = sysop):
-            headers['Cookie'] = self.cookies(sysop = sysop)
-        if compress:
-            headers['Accept-encoding'] = 'gzip'
-
-        if refer:
-            headers['Refer'] = refer
-
-        if no_hostname: # This allow users to parse also toolserver's script
-            url = path  # and other useful pages without using some other functions.
-        else:
-            url = '%s://%s%s' % (self.protocol(), self.hostname(), path)
-        data = self.urlEncode(data)
-
-        # Try to retrieve the page until it was successfully loaded (just in
-        # case the server is down or overloaded).
-        # Wait for retry_idle_time minutes (growing!) between retries.
-        retry_idle_time = 1
-        retry_attempt = 0
-        while True:
-            try:
-                request = urllib2.Request(url, data, headers)
-                f = MyURLopener.open(request)
-
-                # read & info can raise socket.error
-                text = f.read()
-                headers = f.info()
-                break
-            except KeyboardInterrupt:
-                raise
-            except urllib2.HTTPError, e:
-                if e.code in [401, 404]:
-                    raise PageNotFound(
-u'Page %s could not be retrieved. Check your family file.'
-                                       % url)
-                elif e.code in [403]:
-                    raise PageNotFound(
-u'Page %s could not be retrieved. Check your virus wall.'
-                                       % url)
-                elif e.code == 504:
-                    output(u'HTTPError: %s %s' % (e.code, e.msg))
-                    if retry:
-                        retry_attempt += 1
-                        if retry_attempt > config.maxretries:
-                            raise MaxTriesExceededError()
-                        output(
-u"WARNING: Could not open '%s'.Maybe the server or\n your connection is down. Retrying in %i minutes..."
-                               % (url, retry_idle_time))
-                        time.sleep(retry_idle_time * 60)
-                        # Next time wait longer,
-                        # but not longer than half an hour
-                        retry_idle_time *= 2
-                        if retry_idle_time > 30:
-                            retry_idle_time = 30
-                        continue
-                    raise
-                else:
-                    output(u"Result: %s %s" % (e.code, e.msg))
-                    raise
-            except Exception, e:
-                output(u'%s' %e)
-                if retry:
-                    retry_attempt += 1
-                    if retry_attempt > config.maxretries:
-                        raise MaxTriesExceededError()
-                    output(
-u"WARNING: Could not open '%s'. Maybe the server or\n your connection is down. Retrying in %i minutes..."
-                           % (url, retry_idle_time))
-                    time.sleep(retry_idle_time * 60)
-                    retry_idle_time *= 2
-                    if retry_idle_time > 30:
-                        retry_idle_time = 30
-                    continue
-
-                raise
-        # check cookies return or not, if return, send its to update.
-        if hasattr(f, 'sheaders'):
-            ck = f.sheaders
-        else:
-            ck = f.info().getallmatchingheaders('set-cookie')
-        if not no_hostname and ck:
-            Reat=re.compile(': (.*?)=(.*?);')
-            tmpc = {}
-            for d in ck:
-                m = Reat.search(d)
-                if m: tmpc[m.group(1)] = m.group(2)
-            self.updateCookies(tmpc, sysop)
-
-        if cookie_only:
-            return headers.get('set-cookie', '')
-        contentType = headers.get('content-type', '')
-        contentEncoding = headers.get('content-encoding', '')
-
-        # Ensure that all sent data is received
-        # In rare cases we found a douple Content-Length in the header.
-        # We need to split it to get a value
-        content_length = int(headers.get('content-length', '0').split(',')[0])
-        if content_length != len(text) and 'content-length' in headers:
-            output(
-                u'Warning! len(text) does not match content-length: %s != %s'
-                % (len(text), content_length))
-            return self.getUrl(path, retry, sysop, data, compress, no_hostname,
-                               cookie_only, back_response)
-
-        if compress and contentEncoding == 'gzip':
-            text = decompress_gzip(text)
-
-        R = re.compile('charset=([^\'\";]+)')
-        m = R.search(contentType)
-        if m:
-            charset = m.group(1)
-        else:
-            if verbose:
-                output(u"WARNING: No character set found.")
-            # UTF-8 as default
-            charset = 'utf-8'
-        # Check if this is the charset we expected
-        self.checkCharset(charset)
-        # Convert HTML to Unicode
-        try:
-            text = unicode(text, charset, errors = 'strict')
-        except UnicodeDecodeError, e:
-            print e
-            if no_hostname:
-                output(u'ERROR: Invalid characters found on %s, replaced by \\ufffd.' % path)
-            else:
-                output(u'ERROR: Invalid characters found on %s://%s%s, replaced by \\ufffd.' % (self.protocol(), self.hostname(), path))
-            # We use error='replace' in case of bad encoding.
-            text = unicode(text, charset, errors = 'replace')
+        f, text = http.request(self, path, retry, sysop, data, compress,
+                               no_hostname, cookie_only, refer, back_response = True)
 
         # If a wiki page, get user data
         self._getUserDataOld(text, sysop = sysop)
