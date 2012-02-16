@@ -920,12 +920,14 @@ class Family(family.Family):
         self.namespaces[108] = {
             'als': u'Spruch',
             'en': u'Book',
+            'he': u'ספר',
             'yo': u'Ìwé',
         }
 
         self.namespaces[109] = {
             'als': u'Spruch Diskussion',
             'en': u'Book talk',
+            'he': u'שיחת ספר',
             'yo': u'Ọ̀rọ̀ ìwé',
         }
 
