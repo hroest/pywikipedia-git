@@ -7546,14 +7546,18 @@ u"WARNING: Could not open '%s'. Maybe the server or\n your connection is down. R
             versionpage = self.getUrl(self.get_address("Special:Version"))
             htmldata = BeautifulSoup(versionpage, convertEntities="html")
             # try to find the live version
+            versionlist = []
             # 1st try is for mw < 1.17wmf1
-            # 2nd try is for mw 1.17wmf1
+            versionlist.append(lambda: htmldata.findAll(
+                                       text="MediaWiki")[1].parent.nextSibling )
+            # 2nd try is for mw >=1.17wmf1
+            versionlist.append(lambda: htmldata.body.table.findAll(
+                                       'td')[1].contents[0] )
             # 3rd uses family file which is not live
-            for versionstring in [htmldata.findAll(
-                                      text="MediaWiki")[1].parent.nextSibling,
-                                  htmldata.body.table.findAll(
-                                      'td')[1].contents[0],
-                                  self.family.version(self.lang)]:
+            versionlist.append(lambda: self.family.version(self.lang) )
+            for versionfunc in versionlist:
+                try:    versionstring = versionfunc()
+                except: continue
                 m = re.match(PATTERN, str(versionstring).strip())
                 if m: break
             else:
