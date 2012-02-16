@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 """
-This bot cleans a sandbox by replacing the current contents with predefined
-text.
+This bot cleans a (user) sandbox by replacing the current contents with
+predefined text.
 
 This script understands the following command-line arguments:
 
@@ -14,14 +14,13 @@ This script understands the following command-line arguments:
                    hours and limits it between 5 and 15 minutes.
                    The minimum delay time is 5 minutes.
 
-    -userlist      Use this parameter to run the script in the user name-
+    -user          Use this parameter to run the script in the user name-
                    space.
                    > ATTENTION: on most wiki THIS IS FORBIDEN FOR BOTS ! <
                    > (please talk with your admin first)                 <
                    Since it is considered bad style to edit user page with-
-                   out permission, you have to pass a page containing a
-                   list of user to process. Argument e.g. is given as
-                   "-userlist:Benutzer:DrTrigonBot/Diene_Mir\!".
+                   out permission, the 'user_sandboxTitle' for given
+                   language has to be set-up (no fall-back will be used).
                    Please be also aware that the rules when to clean the
                    user sandbox differ from those for project sandbox.
 
@@ -32,7 +31,7 @@ This script understands the following command-line arguments:
 # (C) Andre Engels, 2007
 # (C) Siebrand Mazeland, 2007
 # (C) xqt, 2009
-# (C) Dr. Trigon, 2011
+# (C) Dr. Trigon, 2011-2012
 #
 # DrTrigonBot: http://de.wikipedia.org/wiki/Benutzer:DrTrigonBot
 # Clean User Sandbox Robot (clean_user_sandbox.py)
@@ -115,19 +114,33 @@ sandboxTitle = {
     'zh': u'Project:沙盒',
     }
 
+user_content = {
+    'de': u'{{Benutzer:DrTrigonBot/Spielwiese}}',
+    }
+
+user_sandboxTitle = {
+    'de': u'User:DrTrigonBot/Spielwiese',
+    }
+
 class SandboxBot:
-    def __init__(self, hours, no_repeat, delay, userlist):
+    def __init__(self, hours, no_repeat, delay, user):
         self.hours = hours
         self.no_repeat = no_repeat
         if delay == None:
             self.delay = min(15, max(5, int(self.hours *60)))
         else:
             self.delay = max(5, delay)
+        self.user = user
         self.site = pywikibot.getSite()
-        if userlist == None:
-            self.userlist = None
-        else:
-            self.userlist = [page.title().split(u'/')[0] for page in pywikibot.Page(self.site, userlist).linkedPages()]
+        if self.user:
+            localSandboxTitle = pywikibot.translate(self.site, user_sandboxTitle)
+            localSandbox      = pywikibot.Page(self.site, localSandboxTitle)
+            content.update(user_content)
+            sandboxTitle[self.site.lang] = [item.title() \
+              for item in localSandbox.getReferences(onlyTemplateInclusion=True)]
+            if self.site.lang not in user_sandboxTitle:
+                sandboxTitle[self.site.lang] = []
+                pywikibot.output(u'Not properly set-up to run in user namespace!')
 
     def run(self):
 
@@ -149,10 +162,6 @@ class SandboxBot:
             wait = False
             now = time.strftime("%d %b %Y %H:%M:%S (UTC)", time.gmtime())
             localSandboxTitle = pywikibot.translate(mySite, sandboxTitle)
-            IsUserSandbox = (self.userlist is not None)  # DrTrigonBot (Clean User Sandbox Robot)
-            if IsUserSandbox:
-                localSandboxTitle = u'%s/' + localSandboxTitle.split(u':')[-1]
-                localSandboxTitle = [localSandboxTitle % user for user in self.userlist]
             if type(localSandboxTitle) is list:
                 titles = localSandboxTitle
             else:
@@ -172,7 +181,7 @@ class SandboxBot:
                     elif subst and sandboxPage.userName() == mySite.loggedInAs():
                         pywikibot.output(u'The sandbox might be clean, no change necessary.')
                     elif pos <> 0 and not subst:
-                        if IsUserSandbox:
+                        if self.user:
                             endpos = pos + len(translatedContent.strip())
                             if (pos < 0) or (endpos == len(text)):
                                 pywikibot.output(u'The user sandbox is still clean or not set up, no change necessary.')
@@ -211,7 +220,7 @@ class SandboxBot:
 def main():
     hours = 1
     delay = None
-    userlist = None
+    user  = False
     no_repeat = True
     for arg in pywikibot.handleArgs():
         if arg.startswith('-hours:'):
@@ -219,13 +228,13 @@ def main():
             no_repeat = False
         elif arg.startswith('-delay:'):
             delay = int(arg[7:])
-        elif arg.startswith('-userlist:'):
-            userlist = arg[10:]
+        elif arg == '-user':
+            user  = True
         else:
             pywikibot.showHelp('clean_sandbox')
             return
 
-    bot = SandboxBot(hours, no_repeat, delay, userlist)
+    bot = SandboxBot(hours, no_repeat, delay, user)
     try:
         bot.run()
     except KeyboardInterrupt:
