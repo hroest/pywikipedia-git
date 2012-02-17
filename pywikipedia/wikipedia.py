@@ -7422,10 +7422,13 @@ sysopnames['%s']['%s']='name' to your user-config.py"""
             # 3rd uses family file which is not live
             versionlist.append(lambda: self.family.version(self.lang) )
             for versionfunc in versionlist:
-                try:    versionstring = versionfunc()
-                except: continue
+                try:
+                    versionstring = versionfunc()
+                except:
+                    continue
                 m = re.match(PATTERN, str(versionstring).strip())
-                if m: break
+                if m:
+                    break
             else:
                 raise Error(u'Cannot find any live version!')
             self._mw_version = (int(m.group(1)), int(m.group(2)), m.group(3))
