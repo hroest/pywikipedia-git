@@ -51,7 +51,7 @@ your user-config.py:
 """
 #
 # (C) xqt, 2009-2011
-# (C) Pywikipedia bot team, 2006-2010
+# (C) Pywikipedia bot team, 2006-2012
 #
 # Distributed under the terms of the MIT license.
 #
@@ -66,9 +66,9 @@ import re
 
 warning = """
 ATTENTION: You can run this script as a stand-alone for testing purposes.
-However, the changes are that are made are only minor, and other users
+However, the changes that are made are only minor, and other users
 might get angry if you fill the version histories and watchlists with such
-irrelevant changes."""
+irrelevant changes. Some wikis prohibit stand-alone running."""
 
 docuReplacements = {
     '&params;': pagegenerators.parameterHelp,
@@ -235,7 +235,7 @@ class CosmeticChangesToolkit:
 
         # The PyWikipediaBot is no longer allowed to touch categories on the
         # German Wikipedia. See
-        # http://de.wikipedia.org/wiki/Hilfe_Diskussion:Personendaten/Archiv/bis_2006#Position_der_Personendaten_am_.22Artikelende.22
+        # http://de.wikipedia.org/wiki/Hilfe_Diskussion:Personendaten/Archiv/1#Position_der_Personendaten_am_.22Artikelende.22
         # ignoring nn-wiki of cause of the comment line above iw section
         if not self.template and not '{{Personendaten' in text:
             categories = pywikibot.getCategoryLinks(text, site = self.site)
@@ -392,7 +392,8 @@ class CosmeticChangesToolkit:
                         return match.group()
 
                     # Remove unnecessary initial and final spaces from label.
-                    # Please note that some editors prefer spaces around pipes. (See [[en:Wikipedia:Semi-bots]]). We remove them anyway.
+                    # Please note that some editors prefer spaces around pipes.
+                    #(See [[en:Wikipedia:Semi-bots]]). We remove them anyway.
                     if label is not None:
                         # Remove unnecessary leading spaces from label,
                         # but remember if we did this because we want
