@@ -4807,7 +4807,10 @@ class Site(object):
     versionnumber: Return int identifying the MediaWiki version.
     live_version: Return version number read from Special:Version.
     checkCharset(charset): Warn if charset doesn't match family file.
-    server_time : returns server time (currently userclock depending)
+    server_time: returns server time (currently userclock depending)
+
+    getParsedString: Parses the string with API and returns html content.
+    getExpandedString: Expands the string with API and returns wiki content.
 
     linktrail: Return regex for trailing chars displayed as part of a link.
     disambcategory: Category in which disambiguation pages are listed.
@@ -7580,6 +7583,67 @@ sysopnames['%s']['%s']='name' to your user-config.py"""
             image = imagedata[u'name']
             files.append(image)
         return files
+
+    def getParsedString(self, string, keeptags = [u'*']):
+        """Parses the string with API and returns html content.
+
+           @param string: String that should be parsed.
+           @type  string: string
+           @param keeptags: Defines which tags (wiki, HTML) should NOT be removed.
+           @type  keeptags: list
+
+           Returns the string given, parsed through the wiki parser.
+        """
+
+        if not self.has_api():
+            raise Exception('parse: no API: not implemented')
+
+        # call the wiki to get info
+        params = {
+            u'action' : u'parse',
+            u'text'   : string,
+        }
+
+        pywikibot.get_throttle()
+        pywikibot.output(u"Parsing string through the wiki parser via API.")
+
+        result = query.GetData(params, self)
+        r = result[u'parse'][u'text'][u'*']
+
+        # disable/remove comments
+        r = pywikibot.removeDisabledParts(r, tags = ['comments']).strip()        
+
+        # disable/remove ALL tags
+        if not (keeptags == [u'*']):
+            r = removeHTMLParts(r, keeptags = keeptags).strip()
+
+        return r
+
+    def getExpandedString(self, string):
+        """Expands the string with API and returns wiki content.
+
+           @param string: String that should be expanded.
+           @type  string: string
+
+           Returns the string given, expanded through the wiki parser.
+        """
+
+        if not self.has_api():
+            raise Exception('expandtemplates: no API: not implemented')
+
+        # call the wiki to get info
+        params = {
+            u'action' : u'expandtemplates',
+            u'text'   : string,
+        }
+
+        pywikibot.get_throttle()
+        pywikibot.output(u"Expanding string through the wiki parser via API.")
+
+        result = query.GetData(params, self)
+        r = result[u'expandtemplates'][u'*']
+
+        return r
 
 # Caches to provide faster access
 _sites = {}
