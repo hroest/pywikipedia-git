@@ -880,3 +880,19 @@ def extract_templates_and_params(text):
             # Add it to the result
             result.append((name, params))
     return result
+
+
+def glue_template_and_params(template_and_params):
+    """Return wiki text of template glued from params.
+
+    You can use items from extract_templates_and_params here to get
+    an equivalent template wiki text (it may happen that the order
+    of the params changes).
+    """
+    (template, params) = template_and_params
+
+    text = u''
+    for item in params:
+        text +=  u'|%s=%s\n' % (item, params[item])
+
+    return u'{{%s\n%s}}' % (template, text)
