@@ -464,6 +464,13 @@ use_diskcache = False
 # up to 30 minutes)
 retry_on_fail = True
 
+# Defines what actions the bots are NOT allowed to do (e.g. 'edit') on wikipedia
+# servers. Setting this to:
+# actions_to_block = ['edit', 'watch', 'move', 'delete', 'undelete', 'protect']
+# allows simulation runs of bots to be carried out without changing any page on
+# the server side.
+actions_to_block = []
+
 # How many pages should be put to a queue in asynchroneous mode.
 # If maxsize is <= 0, the queue size is infinite.
 # Increasing this value will increase memory space but could speed up

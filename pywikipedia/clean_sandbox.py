@@ -187,12 +187,10 @@ class SandboxBot:
                             if (pos < 0) or (endpos == len(text)):
                                 pywikibot.output(u'The user sandbox is still clean or not set up, no change necessary.')
                             else:
-                                if not pywikibot.debug:
-                                    sandboxPage.put(text[:endpos], translatedMsg)
+                                sandboxPage.put(text[:endpos], translatedMsg)
                                 pywikibot.output(u'Standard content was changed, user sandbox cleaned.')
                         else:
-                            if not pywikibot.debug:
-                                sandboxPage.put(translatedContent, translatedMsg)
+                            sandboxPage.put(translatedContent, translatedMsg)
                             pywikibot.output(u'Standard content was changed, sandbox cleaned.')
                     else:
                         diff = minutesDiff(sandboxPage.editTime(), time.strftime("%Y%m%d%H%M%S", time.gmtime()))
@@ -200,8 +198,7 @@ class SandboxBot:
                             print sandboxPage.editTime(), time.strftime("%Y%m%d%H%M%S", time.gmtime())
                         #Is the last edit more than 5 minutes ago?
                         if diff >= self.delay:
-                            if not pywikibot.debug:
-                                sandboxPage.put(translatedContent, translatedMsg)
+                            sandboxPage.put(translatedContent, translatedMsg)
                         else: #wait for the rest
                             pywikibot.output(u'Sleeping for %d minutes.' % (self.delay-diff))
                             time.sleep((self.delay-diff)*60)
@@ -237,9 +234,6 @@ def main():
         else:
             pywikibot.showHelp('clean_sandbox')
             return
-
-    if pywikibot.debug:
-        pywikibot.output(u'\03{lightyellow}DEBUG: write actions blocked.\03{default}')
 
     bot = SandboxBot(hours, no_repeat, delay, user)
     try:

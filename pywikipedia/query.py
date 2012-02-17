@@ -42,6 +42,18 @@ def GetData(params, site=None, useAPI=True, retryCount=5, encodeTitle=True,
             sysop=False, back_response=False):
     """Get data from the query api, and convert it into a data object
     """
+    if ('action' in params) and (params['action'] in pywikibot.config.actions_to_block):
+        pywikibot.output(u'\03{lightyellow}SIMULATION: %s action blocked.\03{default}'%\
+                         params['action'])
+        jsontext_dummy = {params['action']: {u'result':u''}}
+        if back_response:
+            import StringIO
+            res_dummy = StringIO.StringIO()
+            res_dummy.__dict__.update({u'code': 0, u'msg': u''})
+            return res_dummy, jsontext_dummy
+        else:
+            return jsontext_dummy
+
     if not site:
         site = pywikibot.getSite()
     data = {}

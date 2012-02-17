@@ -7762,6 +7762,9 @@ def handleArgs(*args):
         elif arg == '-debug':
             debug = True
             config.special_page_limit = 500
+        elif arg == '-simulate':
+            config.actions_to_block = ['edit', 'watch', 'move', 'delete', 
+                                       'undelete', 'protect']
         else:
             # the argument is not global. Let the specific bot script care
             # about it.
@@ -7827,10 +7830,14 @@ Global arguments available for all bots:
 
 -verbose          Have the bot provide additional output that may be
 -v                useful in debugging.
+-debug            
 
 -cosmeticchanges  Toggles the cosmetic_changes setting made in config.py or
 -cc               user_config.py to its inverse and overrules it. All other
                   settings and restrictions are untouched.
+
+-simulate         Toggles writing to the wikipedia server. Useful for testing
+                  and debugging of new code.
 '''# % moduleName
     output(globalHelp, toStdout=True)
     try:
