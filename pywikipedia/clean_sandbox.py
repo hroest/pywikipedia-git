@@ -19,8 +19,9 @@ This script understands the following command-line arguments:
                    > ATTENTION: on most wiki THIS IS FORBIDEN FOR BOTS ! <
                    > (please talk with your admin first)                 <
                    Since it is considered bad style to edit user page with-
-                   out permission, the 'user_sandboxTitle' for given
+                   out permission, the 'user_sandboxTemplate' for given
                    language has to be set-up (no fall-back will be used).
+                   All pages containing that template will get cleaned.
                    Please be also aware that the rules when to clean the
                    user sandbox differ from those for project sandbox.
 
@@ -118,7 +119,7 @@ user_content = {
     'de': u'{{Benutzer:DrTrigonBot/Spielwiese}}',
     }
 
-user_sandboxTitle = {
+user_sandboxTemplate = {
     'de': u'User:DrTrigonBot/Spielwiese',
     }
 
@@ -133,12 +134,12 @@ class SandboxBot:
         self.user = user
         self.site = pywikibot.getSite()
         if self.user:
-            localSandboxTitle = pywikibot.translate(self.site, user_sandboxTitle)
+            localSandboxTitle = pywikibot.translate(self.site, user_sandboxTemplate)
             localSandbox      = pywikibot.Page(self.site, localSandboxTitle)
             content.update(user_content)
             sandboxTitle[self.site.lang] = [item.title() \
               for item in localSandbox.getReferences(onlyTemplateInclusion=True)]
-            if self.site.lang not in user_sandboxTitle:
+            if self.site.lang not in user_sandboxTemplate:
                 sandboxTitle[self.site.lang] = []
                 pywikibot.output(u'Not properly set-up to run in user namespace!')
 
