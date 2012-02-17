@@ -102,12 +102,12 @@ u'Page %s could not be retrieved. Check your family file.'
 u'Page %s could not be retrieved. Check your virus wall.'
                                    % url)
             elif e.code == 504:
-                output(u'HTTPError: %s %s' % (e.code, e.msg))
+                pywikibot.output(u'HTTPError: %s %s' % (e.code, e.msg))
                 if retry:
                     retry_attempt += 1
                     if retry_attempt > config.maxretries:
                         raise MaxTriesExceededError()
-                    output(
+                    pywikibot.output(
 u"WARNING: Could not open '%s'.Maybe the server or\n your connection is down. Retrying in %i minutes..."
                            % (url, retry_idle_time))
                     time.sleep(retry_idle_time * 60)
@@ -119,15 +119,15 @@ u"WARNING: Could not open '%s'.Maybe the server or\n your connection is down. Re
                     continue
                 raise
             else:
-                output(u"Result: %s %s" % (e.code, e.msg))
+                pywikibot.output(u"Result: %s %s" % (e.code, e.msg))
                 raise
         except Exception, e:
-            output(u'%s' %e)
+            pywikibot.output(u'%s' %e)
             if retry:
                 retry_attempt += 1
                 if retry_attempt > config.maxretries:
                     raise MaxTriesExceededError()
-                output(
+                pywikibot.output(
 u"WARNING: Could not open '%s'. Maybe the server or\n your connection is down. Retrying in %i minutes..."
                        % (url, retry_idle_time))
                 time.sleep(retry_idle_time * 60)
@@ -160,7 +160,7 @@ u"WARNING: Could not open '%s'. Maybe the server or\n your connection is down. R
     # We need to split it to get a value
     content_length = int(headers.get('content-length', '0').split(',')[0])
     if content_length != len(text) and 'content-length' in headers:
-        output(
+        pywikibot.output(
             u'Warning! len(text) does not match content-length: %s != %s'
             % (len(text), content_length))
         return request(site, uri, retry, sysop, data, compress, no_hostname,
@@ -175,7 +175,7 @@ u"WARNING: Could not open '%s'. Maybe the server or\n your connection is down. R
         charset = m.group(1)
     else:
         if verbose:
-            output(u"WARNING: No character set found.")
+            pywikibot.output(u"WARNING: No character set found.")
         # UTF-8 as default
         charset = 'utf-8'
     # Check if this is the charset we expected
@@ -186,9 +186,9 @@ u"WARNING: Could not open '%s'. Maybe the server or\n your connection is down. R
     except UnicodeDecodeError, e:
         print e
         if no_hostname:
-            output(u'ERROR: Invalid characters found on %s, replaced by \\ufffd.' % uri)
+            pywikibot.output(u'ERROR: Invalid characters found on %s, replaced by \\ufffd.' % uri)
         else:
-            output(u'ERROR: Invalid characters found on %s://%s%s, replaced by \\ufffd.' % (site.protocol(), site.hostname(), uri))
+            pywikibot.output(u'ERROR: Invalid characters found on %s://%s%s, replaced by \\ufffd.' % (site.protocol(), site.hostname(), uri))
         # We use error='replace' in case of bad encoding.
         text = unicode(text, charset, errors = 'replace')
 
