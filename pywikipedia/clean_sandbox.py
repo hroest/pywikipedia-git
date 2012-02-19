@@ -185,7 +185,7 @@ class SandboxBot:
                         if self.user:
                             endpos = pos + len(translatedContent.strip())
                             if (pos < 0) or (endpos == len(text)):
-                                pywikibot.output(u'The user sandbox is still clean or not set up, no change necessary.')
+                                pywikibot.output(u'The user sandbox is still clean, no change necessary.')
                             else:
                                 sandboxPage.put(text[:endpos], translatedMsg)
                                 pywikibot.output(u'Standard content was changed, user sandbox cleaned.')
