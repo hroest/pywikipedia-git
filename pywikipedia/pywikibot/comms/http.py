@@ -174,7 +174,7 @@ u"WARNING: Could not open '%s'. Maybe the server or\n your connection is down. R
     if m:
         charset = m.group(1)
     else:
-        if verbose:
+        if pywikibot.verbose:
             pywikibot.output(u"WARNING: No character set found.")
         # UTF-8 as default
         charset = 'utf-8'
