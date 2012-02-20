@@ -61,7 +61,7 @@ def getversion_svn():
         from datetime import datetime
         con = sqlite.connect(os.path.join(_program_dir, ".svn/wc.db"))
         cur = con.cursor()
-        cur.execute( '''select local_relpath, repos_path, revision, changed_date from nodes order by revision desc''')
+        cur.execute( '''select local_relpath, repos_path, revision, changed_date from nodes order by revision desc, changed_date desc''')
         name, tag, rev, date = cur.fetchone()
         con.close()
         tag = tag.rstrip(name)
