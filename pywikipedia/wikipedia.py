@@ -7688,6 +7688,10 @@ def calledModuleName():
     return os.path.basename(called)
 
 def _decodeArg(arg):
+    # We may pass a Unicode string to a script upon importing and calling
+    # main() from another script.
+    if isinstance(arg,unicode):
+        return arg
     if sys.platform == 'win32':
         if config.console_encoding in ('cp437', 'cp850'):
             # Western Windows versions give parameters encoded as windows-1252
