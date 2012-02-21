@@ -43,6 +43,22 @@ Furthermore, the following command line parameters are supported:
 -savenew          Just like -save, except that overwrites the existing file.
                   Argument may also be given as "-savenew:filename".
 
+-saveexc          With this parameter a new option will appear in choices:
+                  "no+eXcept". If you press x, the text will not be replaced,
+                  and the title of page will be saved to the given exception
+                  file to exclude this page from future replacements. At the
+                  moment you may paste the contents directly into 'title' list
+                  of the exceptions dictionary of your fix (use tab to indent).
+                  Reading back the list from file will be implemented later.
+                  Argument may also be given as "-saveexc:filename".
+                  Opens the file for append, if exists.
+
+-saveexcnew       Just like -saveexc, except that overwrites the existing file.
+                  Argument may also be given as "-saveexcnew:filename".
+
+-readexc          Reserved for reading saved exceptions from a file.
+                  Not implemented yet.
+
 -addcat:cat_name  Adds "cat_name" category to every altered page.
 
 -excepttitle:XYZ  Skip pages with titles that contain XYZ. If the -regex
@@ -252,7 +268,8 @@ class ReplaceRobot:
     """
     def __init__(self, generator, replacements, exceptions={},
                  acceptall=False, allowoverlap=False, recursive=False,
-                 addedCat=None, sleep=None, editSummary='', articles=None):
+                 addedCat=None, sleep=None, editSummary='', articles=None,
+                 exctitles=None):
         """
         Arguments:
             * generator    - A generator that yields Page objects.
@@ -269,6 +286,10 @@ class ReplaceRobot:
                              touched.
             * articles     - An open file to save the page titles. If None,
                              we work on our wikisite immediately (default).
+                             Corresponds to titlefile variable of main().
+            * exctitles    - An open file to save the excepted titles. If None,
+                             we don't ask the user about saving them (default).
+                             Corresponds to excoutfile variable of main().
 
         Structure of the exceptions dictionary:
         This dictionary can have these keys:
@@ -308,10 +329,13 @@ class ReplaceRobot:
         # Some function to set default editSummary should probably be added
         self.editSummary = editSummary
         self.articles = articles
+        self.exctitles = exctitles
 
-        #An edit counter to split the file by 100 titles if -save or -savenew
-        #is on, and to display the number of edited articles otherwise.
+        # An edit counter to split the file by 100 titles if -save or -savenew
+        # is on, and to display the number of edited articles otherwise.
         self.editcounter = 0
+        # A counter for saved exceptions
+        self.exceptcounter = 0 
 
     def isTitleExcepted(self, title):
         """
@@ -368,6 +392,16 @@ class ReplaceRobot:
                              % (self.editcounter,
                                 (lambda x: bool(x-1) and 's were' or ' was')
                                 (self.editcounter)))
+
+    def writeExceptCounter(self):
+        """ This writes the counter of saved exceptions if applicable. """
+        if self.exctitles:
+            pywikibot.output(u'%d exception%s saved.'
+                             % (self.exceptcounter,
+                                (lambda x: bool(x-1) and 's were' or ' was')
+                                (self.exceptcounter)))
+        else:
+            print 888
 
     def splitLine(self):
         """Returns a splitline after every 100th title. Splitline is in HTML
@@ -433,7 +467,14 @@ class ReplaceRobot:
                 pywikibot.showDiff(original_text, new_text)
                 if self.acceptall:
                     break
-                choice = pywikibot.inputChoice(
+                if self.exctitles:
+                    choice = pywikibot.inputChoice(
+                            u'Do you want to accept these changes?',
+                            ['Yes', 'No', 'no+eXcept', 'Edit', 
+                             'open in Browser', 'All', 'Quit'],
+                            ['y', 'N', 'x', 'e', 'b', 'a', 'q'], 'N')
+                else:
+                    choice = pywikibot.inputChoice(
                             u'Do you want to accept these changes?',
                             ['Yes', 'No', 'Edit', 'open in Browser', 'All',
                              'Quit'],
@@ -461,17 +502,22 @@ class ReplaceRobot:
                     continue
                 if choice == 'q':
                     self.writeEditCounter()
+                    self.writeExceptCounter()
                     return
                 if choice == 'a':
                     self.acceptall = True
+                if choice == 'x': #May happen only if self.exctitles isn't None
+                    self.exctitles.write(u"u'%s',\n" % page.title())
+                    self.exctitles.flush()
+                    self.exceptcounter += 1
                 if choice == 'y':
                     if not self.articles:
-                        #Primary behaviour: working on wiki
+                        # Primary behaviour: working on wiki
                         page.put_async(new_text, self.editSummary)
                         self.editcounter += 1
-                        #Bug: this increments even if put_async fails
-                        #This is separately in two clauses of if for
-                        #future purposes to get feedback form put_async
+                        # Bug: this increments even if put_async fails
+                        # This is separately in two clauses of if for
+                        # future purposes to get feedback form put_async
                     else:
                         #Save the title for later processing instead of editing
                         self.editcounter += 1
@@ -510,6 +556,7 @@ class ReplaceRobot:
 
         #Finally:
         self.writeEditCounter()
+        self.writeExceptCounter()
 
 def prepareRegexForMySQL(pattern):
     pattern = pattern.replace('\s', '[:space:]')
@@ -579,10 +626,17 @@ def main(*args):
     # too much CPU
     sleep = None
     # Do not save the page titles, rather work on wiki
-    titlefile = None
-    filename = None
+    filename = None # The name of the file to save titles
+    titlefile = None # The file object itself
     # If we save, primary behaviour is append rather then new file
     append = True
+    # Default: don't write titles to exception file and don't read them.
+    excoutfilename = None # The name of the file to save exceptions
+    excoutfile = None # The file object itself
+    # excinfilename: reserved for later use (reading back exceptions)
+    # If we save exceptions, primary behaviour is append
+    excappend = True
+
 
     # Read commandline parameters.
     for arg in pywikibot.handleArgs(*args):
@@ -608,11 +662,26 @@ def main(*args):
                     u'Which page do you want to change?'))
             else:
                 PageTitles.append(arg[6:])
+        elif arg.startswith('-saveexcnew'):
+            excappend = False
+            if len(arg) == 11:
+                excoutfilename = pywikibot.input(
+                    u'Please enter the filename to save the excepted titles' +\
+                    u'\n(will be deleted if exists):')
+            else:
+                excoutfilename = arg[12:]
+        elif arg.startswith('-saveexc'):
+            if len(arg) == 8:
+                excoutfilename = pywikibot.input(
+                    u'Please enter the filename to save the excepted titles:')
+            else:
+                excoutfilename = arg[9:]
         elif arg.startswith('-savenew'):
             append = False
             if len(arg) == 8:
                 filename = pywikibot.input(
-u'Please enter the filename to save the titles \n(will be deleted if exists):')
+                    u'Please enter the filename to save the titles' + \
+                    u'\n(will be deleted if exists):')
             else:
                 filename = arg[9:]
         elif arg.startswith('-save'):
@@ -718,7 +787,8 @@ u'Please enter another text that should be replaced, or press Enter to start:')
             pywikibot.output(u'The summary message will default to: %s'
                              % default_summary_message)
             summary_message = pywikibot.input(
-u'Press Enter to use this default message, or enter a description of the\nchanges your bot will make:')
+                u'Press Enter to use this default message, or enter a' + \
+                u'description of the\nchanges your bot will make:')
             if summary_message == '':
                 summary_message = default_summary_message
             editSummary = summary_message
@@ -752,7 +822,7 @@ u'Press Enter to use this default message, or enter a description of the\nchange
             pywikibot.output(u"No replacements given in fix, don't joke with me!")
             return
 
-    #Set the regular expression flags
+    # Set the regular expression flags
     flags = re.UNICODE
     if caseInsensitive:
         flags = flags | re.IGNORECASE
@@ -816,27 +886,38 @@ LIMIT 200""" % (whereClause, exceptClause)
     preloadingGen = pagegenerators.PreloadingGenerator(gen,
                                                        pageNumber=maxquerysize)
 
-    #Finally we open the file for page titles or set article to None
+    # Finally we open the file for page titles or set parameter article to None
     if filename:
         try:
-            #This opens in strict error mode, that means bot will stop
-            #on encoding errors with ValueError.
-            #See http://docs.python.org/library/codecs.html#codecs.open
+            # This opens in strict error mode, that means bot will stop
+            # on encoding errors with ValueError.
+            # See http://docs.python.org/library/codecs.html#codecs.open
             titlefile = codecs.open(filename, encoding='utf-8',
                                     mode=(lambda x: x and 'a' or 'w')(append))
         except IOError:
             pywikibot.output("%s cannot be opened for writing." %
                              filename)
             return
+    # The same process with exceptions file:
+    if excoutfilename:
+        try:
+            excoutfile = codecs.open(
+                            excoutfilename, encoding='utf-8',
+                            mode=(lambda x: x and 'a' or 'w')(excappend))
+        except IOError:
+            pywikibot.output("%s cannot be opened for writing." %
+                             excoutfilename)
+            return
     bot = ReplaceRobot(preloadingGen, replacements, exceptions, acceptall,
                        allowoverlap, recursive, add_cat, sleep, editSummary,
-                       titlefile)
+                       titlefile, excoutfile)
     try:
         bot.run()
     finally:
         if titlefile:
-            #Just for the spirit of programming (it was flushed)
+            # Just for the spirit of programming (they were flushed)
             titlefile.close()
+            excoutfile.close()
 
 
 if __name__ == "__main__":
