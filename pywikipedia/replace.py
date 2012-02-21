@@ -230,7 +230,8 @@ class XmlDumpReplacePageGenerator:
                         and not self.isTextExcepted(entry.text):
                     new_text = entry.text
                     for old, new in self.replacements:
-                        new_text = pywikibot.replaceExcept(new_text, old, new, self.excsInside, self.site)
+                        new_text = pywikibot.replaceExcept(
+                            new_text, old, new, self.excsInside, self.site)
                     if new_text != entry.text:
                         yield pywikibot.Page(self.site, entry.title)
         except KeyboardInterrupt:
@@ -665,7 +666,7 @@ def main(*args):
             excappend = False
             if len(arg) == 11:
                 excoutfilename = pywikibot.input(
-                    u'Please enter the filename to save the excepted titles' +\
+                    u'Please enter the filename to save the excepted titles' +
                     u'\n(will be deleted if exists):')
             else:
                 excoutfilename = arg[12:]
@@ -679,7 +680,7 @@ def main(*args):
             append = False
             if len(arg) == 8:
                 filename = pywikibot.input(
-                    u'Please enter the filename to save the titles' + \
+                    u'Please enter the filename to save the titles' +
                     u'\n(will be deleted if exists):')
             else:
                 filename = arg[9:]
@@ -692,10 +693,16 @@ def main(*args):
         elif arg.startswith('-replacementfile'):
             if len(arg) == len('-replacementfile'):
                 replacefile = pywikibot.input(
-u"""Please enter the filename to read replacements from:""")
+                    u'Please enter the filename to read replacements from:')
             else:
                 replacefile = arg[len('-replacementfile')+1:]
-            commandline_replacements.extend([x.lstrip(u'\uFEFF').rstrip('\r\n') for x in codecs.open(replacefile, 'r', 'utf-8')])
+            try:
+                commandline_replacements.extend(
+                    [x.lstrip(u'\uFEFF').rstrip('\r\n')
+                    for x in codecs.open(replacefile, 'r', 'utf-8')])
+            except IOError:
+                raise pywikibot.Error(
+               '\n%s cannot be opened. Try again :-)' % replacefile)
         elif arg.startswith('-excepttitle:'):
             exceptions['title'].append(arg[13:])
         elif arg.startswith('-requiretitle:'):
@@ -734,7 +741,8 @@ u"""Please enter the filename to read replacements from:""")
                 commandline_replacements.append(arg)
 
     if pywikibot.verbose:
-        pywikibot.output(u"commandline_replacements: %r" % commandline_replacements)
+        pywikibot.output(u"commandline_replacements: " +
+                         ', '.join(commandline_replacements))
 
     if (len(commandline_replacements) % 2):
         raise pywikibot.Error, 'require even number of replacements.'
@@ -772,7 +780,8 @@ u"""Please enter the filename to read replacements from:""")
         replacements.append((old, new))
         while True:
             old = pywikibot.input(
-u'Please enter another text that should be replaced, or press Enter to start:')
+                    u'Please enter another text that should be replaced,' +
+                    u'\nor press Enter to start:')
             if old == '':
                 change += ')'
                 break
@@ -786,7 +795,7 @@ u'Please enter another text that should be replaced, or press Enter to start:')
             pywikibot.output(u'The summary message will default to: %s'
                              % default_summary_message)
             summary_message = pywikibot.input(
-                u'Press Enter to use this default message, or enter a' + \
+                u'Press Enter to use this default message, or enter a ' +
                 u'description of the\nchanges your bot will make:')
             if summary_message == '':
                 summary_message = default_summary_message
@@ -818,7 +827,8 @@ u'Please enter another text that should be replaced, or press Enter to start:')
         try:
             replacements = fix['replacements']
         except KeyError:
-            pywikibot.output(u"No replacements given in fix, don't joke with me!")
+            pywikibot.output(
+                        u"No replacements given in fix, don't joke with me!")
             return
 
     # Set the regular expression flags
@@ -838,7 +848,8 @@ u'Please enter another text that should be replaced, or press Enter to start:')
         oldR = re.compile(old, flags)
         replacements[i] = oldR, new
 
-    for exceptionCategory in ['title', 'require-title', 'text-contains', 'inside']:
+    for exceptionCategory in [
+                        'title', 'require-title', 'text-contains', 'inside']:
         if exceptionCategory in exceptions:
             patterns = exceptions[exceptionCategory]
             if not regex:
