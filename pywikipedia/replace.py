@@ -145,7 +145,7 @@ Please type "replace.py -help | more" if you can't read the top of the help.
 """
 from __future__ import generators
 #
-# (C) Daniel Herding & the Pywikipedia team, 2004-2011
+# (C) Daniel Herding & the Pywikipedia team, 2004-2012
 #
 __version__='$Id$'
 #
@@ -287,6 +287,12 @@ class ReplaceRobot:
             inside-tags
                 A list of strings. These strings must be keys from the
                 exceptionRegexes dictionary in pywikibot.replaceExcept().
+            require-title
+                Opposite of title. Only pages with titles that are matched by
+                ALL of these regular expressions will be processed.
+                This is not an exception, and is here for technical reasons.
+                Listing the same regex in title and require-title will thus
+                prevent the bot of doing anything.
 
         """
         self.generator = generator
