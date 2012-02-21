@@ -505,7 +505,8 @@ class ReplaceRobot:
                 if choice == 'a':
                     self.acceptall = True
                 if choice == 'x': #May happen only if self.exctitles isn't None
-                    self.exctitles.write(u"u'%s',\n" % page.title())
+                    self.exctitles.write(
+                        u"u'%s$',\n" % re.escape(page.title()))
                     self.exctitles.flush()
                     self.exceptcounter += 1
                 if choice == 'y':
@@ -912,9 +913,10 @@ LIMIT 200""" % (whereClause, exceptClause)
     try:
         bot.run()
     finally:
+        # Just for the spirit of programming (they were flushed)
         if titlefile:
-            # Just for the spirit of programming (they were flushed)
             titlefile.close()
+        if excoutfile:
             excoutfile.close()
 
 
