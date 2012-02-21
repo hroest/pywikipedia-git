@@ -400,8 +400,6 @@ class ReplaceRobot:
                              % (self.exceptcounter,
                                 (lambda x: bool(x-1) and 's were' or ' was')
                                 (self.exceptcounter)))
-        else:
-            print 888
 
     def splitLine(self):
         """Returns a splitline after every 100th title. Splitline is in HTML
