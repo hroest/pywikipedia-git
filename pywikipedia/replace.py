@@ -94,8 +94,8 @@ Furthermore, the following command line parameters are supported:
                   Default value is 60. Ignored when reading an XML file.
 
 -fix:XYZ          Perform one of the predefined replacements tasks, which are
-                  given in the dictionary 'fixes' defined inside the file
-                  fixes.py.
+                  given in the dictionary 'fixes' defined inside the files
+                  fixes.py and user-fixes.py.
                   The -regex, -recursive and -nocase argument and given 
                   replacements and exceptions will be ignored if you use -fix
                   and they are present in the 'fixes' dictionary.
@@ -315,6 +315,14 @@ class ReplaceRobot:
                 This is not an exception, and is here for technical reasons.
                 Listing the same regex in title and require-title will thus
                 prevent the bot of doing anything.
+            include
+                One standalone value, either the name of a dictionary in your
+                file or the name of a callable function that returns such a
+                dictionary. This dictionary may have any of the five above keys
+                (but not 'include' itself!), and the lists belonging to those
+                keys will be added to your exceptions. This way you may define
+                one or more basic collection of exceptions used for multiple
+                fixes, and add separate exceptions to each fix.
 
         """
         self.generator = generator
@@ -820,6 +828,26 @@ def main(*args):
                                                   fix['msg'])
         if "exceptions" in fix:
             exceptions = fix['exceptions']
+            # Try to append common extensions for multiple fixes.
+            # It must be either a dictionary or a function that returns a dict.
+            if 'include' in exceptions:
+                incl = exceptions['include']
+                if callable(incl):
+                    baseExcDict = incl()
+                else:
+                    try:
+                        baseExcDict = incl
+                    except NameError:
+                        pywikibot.output(
+                          u'\nIncluded exceptions dictionary does not exist.' +
+                          u' Continuing with the exceptions\ngiven in fix.\n')
+                        baseExcDict = None
+                if baseExcDict:
+                    for l in baseExcDict:
+                        try:
+                            exceptions[l].extend(baseExcDict[l])
+                        except KeyError:
+                            exceptions[l] = baseExcDict[l]
         if "recursive" in fix:
             recursive = fix['recursive']
         if "nocase" in fix:
