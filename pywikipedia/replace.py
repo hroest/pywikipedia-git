@@ -317,12 +317,13 @@ class ReplaceRobot:
                 prevent the bot of doing anything.
             include
                 One standalone value, either the name of a dictionary in your
-                file or the name of a callable function that returns such a
-                dictionary. This dictionary may have any of the five above keys
-                (but not 'include' itself!), and the lists belonging to those
-                keys will be added to your exceptions. This way you may define
-                one or more basic collection of exceptions used for multiple
-                fixes, and add separate exceptions to each fix.
+                file or the name of a callable function that takes the name of
+                the fix as argument and returns a dictionary of exceptions.
+                This dictionary may have any of the five above keys (but not
+                'include' itself!), and the lists belonging to those keys will
+                be added to your exceptions. This way you may define one or
+                more basic collection of exceptions used for multiple fixes,
+                and add separate exceptions to each fix.
 
         """
         self.generator = generator
@@ -811,6 +812,7 @@ def main(*args):
 
     else:
         # Perform one of the predefined actions.
+        fixname = fix # Save the name for passing to exceptions function.
         try:
             fix = fixes.fixes[fix]
         except KeyError:
@@ -833,7 +835,7 @@ def main(*args):
             if 'include' in exceptions:
                 incl = exceptions['include']
                 if callable(incl):
-                    baseExcDict = incl()
+                    baseExcDict = incl(fixname)
                 else:
                     try:
                         baseExcDict = incl
