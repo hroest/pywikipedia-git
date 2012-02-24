@@ -115,7 +115,7 @@ stopme(): Put this on a bot when it is not or not communicating with the Wiki
 """
 from __future__ import generators
 #
-# (C) Pywikipedia bot team, 2003-2011
+# (C) Pywikipedia bot team, 2003-2012
 #
 # Distributed under the terms of the MIT license.
 #
@@ -7840,7 +7840,7 @@ Global arguments available for all bots:
 -cc               user_config.py to its inverse and overrules it. All other
                   settings and restrictions are untouched.
 
--simulate         Toggles writing to the wikipedia server. Useful for testing
+-simulate         Disables writing to the server. Useful for testing
                   and debugging of new code.
 '''# % moduleName
     output(globalHelp, toStdout=True)
