@@ -336,15 +336,18 @@ class Family(family.Family):
         }
 
         self.namespaces[104] = {
+            '-': u'Page',
             'ar': u'صفحة',
             'br': [u'Oberour', u'Author'],
             'ca': [u'Llibre', u'Index'],
             'da': u'Side',
             'de': u'Index',
+            'en': u'Page',
             'eo': u'Paĝo',
             'es': u'Índice',
             'et': [u'Register', u'Index'],
             'fa': [u'برگه', u'Page'],
+            'fr': u'Page',
             'he': u'עמוד',
             'hr': [u'Sadržaj', u'Index'],
             'hu': u'Oldal',
@@ -365,14 +368,17 @@ class Family(family.Family):
             'te': [u'పుట', u'పేజీ'],
             'vec': [u'Indice', u'Index'],
             'vi': u'Trang',
+            'zh': u'Page',
         }
 
         self.namespaces[105] = {
+            '-': u'Page talk',
             'ar': u'نقاش الصفحة',
             'br': [u'Kaozeadenn oberour', u'Author talk'],
             'ca': [u'Llibre Discussió', u'Index talk'],
             'da': u'Sidediskussion',
             'de': [u'Index Diskussion', u'Index talk'],
+            'en': u'Page talk',
             'eo': u'Paĝo-Diskuto',
             'es': u'Índice Discusión',
             'et': [u'Registri arutelu', u'Index talk'],
